@@ -771,7 +771,7 @@ static const char *__pyx_f[] = {
 
 /*--- Type declarations ---*/
 struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order;
-struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue;
+struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS;
 struct __pyx_opt_args_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_queued;
 
 /* "QUANTAXIS/QAMARKET/QAOrder.pyx":346
@@ -833,11 +833,11 @@ struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order {
 /* "QUANTAXIS/QAMARKET/QAOrder.pyx":552
  * 
  * 
- * cdef class QA_OrderQueue(): # also the order tree  what's the tree means?             # <<<<<<<<<<<<<<
+ * cdef class QA_OMS(): # also the order tree  what's the tree means?             # <<<<<<<<<<<<<<
  *     """
  * 
  */
-struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue {
+struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS {
   PyObject_HEAD
   PyObject *order_list;
   PyObject *deal_list;
@@ -1320,9 +1320,9 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_settle(struct _
 
 /* Module declarations from 'QUANTAXIS.QAMARKET.QAOrder' */
 static PyTypeObject *__pyx_ptype_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order = 0;
-static PyTypeObject *__pyx_ptype_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue = 0;
+static PyTypeObject *__pyx_ptype_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS = 0;
 static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__set_state(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *, PyObject *); /*proto*/
-static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQueue__set_state(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *, PyObject *); /*proto*/
+static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OMS__set_state(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *, PyObject *); /*proto*/
 #define __Pyx_MODULE_NAME "QUANTAXIS.QAMARKET.QAOrder"
 extern int __pyx_module_is_main_QUANTAXIS__QAMARKET__QAOrder;
 int __pyx_module_is_main_QUANTAXIS__QAMARKET__QAOrder = 0;
@@ -1449,7 +1449,7 @@ static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_trade_amount[] = "trade_amount";
 static const char __pyx_k_volume_orign[] = "volume_orign";
 static const char __pyx_k_ORDER_MODEL_2[] = "ORDER_MODEL";
-static const char __pyx_k_QA_ORDERQueue[] = "< QA_ORDERQueue >";
+static const char __pyx_k_QA_OMS[] = "< QA_OMS >";
 static const char __pyx_k_cancel_amount[] = "cancel_amount";
 static const char __pyx_k_exchange_code[] = "exchange_code";
 static const char __pyx_k_instrument_id[] = "instrument_id";
@@ -1478,7 +1478,7 @@ static const char __pyx_k_QA_util_random_with_topic[] = "QA_util_random_with_top
 static const char __pyx_k_QUANTAXIS_QAMarket_common[] = "QUANTAXIS.QAMarket.common";
 static const char __pyx_k_ORDER_STATUS_CANNNOT_TRADE[] = "ORDER STATUS {} CANNNOT TRADE";
 static const char __pyx_k_QUANTAXIS_QAMARKET_QAOrder[] = "QUANTAXIS.QAMARKET.QAOrder";
-static const char __pyx_k_pyx_unpickle_QA_OrderQueue[] = "__pyx_unpickle_QA_OrderQueue";
+static const char __pyx_k_pyx_unpickle_QA_OMS[] = "__pyx_unpickle_QA_OMS";
 static const char __pyx_k_QA_util_to_json_from_pandas[] = "QA_util_to_json_from_pandas";
 static const char __pyx_k_QUANTAXIS_QAUtil_QAParameter[] = "QUANTAXIS.QAUtil.QAParameter";
 static const char __pyx_k_QA_Order_realorder_id_datetime[] = "< QA_Order realorder_id {} datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >";
@@ -1510,7 +1510,7 @@ static PyObject *__pyx_kp_s_ORDER_STATUS_CANNNOT_TRADE;
 static PyObject *__pyx_n_s_Order;
 static PyObject *__pyx_n_s_PickleError;
 static PyObject *__pyx_kp_s_QAERROR_Wrong_for_get_None_type;
-static PyObject *__pyx_kp_s_QA_ORDERQueue;
+static PyObject *__pyx_kp_s_QA_OMS;
 static PyObject *__pyx_kp_s_QA_Order_realorder_id_datetime;
 static PyObject *__pyx_n_s_QA_util_log_info;
 static PyObject *__pyx_n_s_QA_util_random_with_topic;
@@ -1598,7 +1598,7 @@ static PyObject *__pyx_n_s_pyx_result;
 static PyObject *__pyx_n_s_pyx_state;
 static PyObject *__pyx_n_s_pyx_type;
 static PyObject *__pyx_n_s_pyx_unpickle_QA_Order;
-static PyObject *__pyx_n_s_pyx_unpickle_QA_OrderQueue;
+static PyObject *__pyx_n_s_pyx_unpickle_QA_OMS;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_queued;
 static PyObject *__pyx_n_s_realorder_id;
@@ -1745,32 +1745,32 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_13exchange_code_2__s
 static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_13exchange_code_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_38__setstate_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_2__repr__(CYTHON_UNUSED struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_4__call__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6insert_order(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_order); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8update_order(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_order); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9order_ids___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3len___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10settle(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8canceled___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_12set_status(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_order_id, PyObject *__pyx_v_new_status); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_14to_df(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__reduce_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_18__setstate_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_2__repr__(CYTHON_UNUSED struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_4__call__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6insert_order(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_order); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8update_order(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_order); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9order_ids___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3len___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10settle(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7pending___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6failed___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8canceled___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7untrade___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_12set_status(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_order_id, PyObject *__pyx_v_new_status); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_14to_df(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_16__reduce_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_18__setstate_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_OrderQueue(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_OMS(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_keys = {0, &__pyx_n_s_keys, 0, 0, 0};
 static __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values = {0, &__pyx_n_s_values, 0, 0, 0};
 static PyObject *__pyx_float_0_001;
@@ -11170,26 +11170,26 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_38__setstate_c
  */
 
 /* Python wrapper */
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__[] = "\351\207\215\346\226\260\344\277\256\346\224\271 \344\274\230\345\214\226\346\200\247\350\203\275\n\n        1. \347\273\264\346\212\244\344\270\244\344\270\252dict\n           order_list \346\230\257\344\270\200\345\244\251\347\232\204\346\211\200\346\234\211\350\256\242\345\215\225\n           deal_list \346\230\257\345\216\206\345\217\262\347\232\204\346\210\220\344\272\244\345\215\225(settle\344\273\245\345\220\216 , \346\212\212order_list append\350\277\233\345\216\273)\n        ";
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__[] = "\351\207\215\346\226\260\344\277\256\346\224\271 \344\274\230\345\214\226\346\200\247\350\203\275\n\n        1. \347\273\264\346\212\244\344\270\244\344\270\252dict\n           order_list \346\230\257\344\270\200\345\244\251\347\232\204\346\211\200\346\234\211\350\256\242\345\215\225\n           deal_list \346\230\257\345\216\206\345\217\262\347\232\204\346\210\220\344\272\244\345\215\225(settle\344\273\245\345\220\216 , \346\212\212order_list append\350\277\233\345\216\273)\n        ";
 #if CYTHON_COMPILING_IN_CPYTHON
-struct wrapperbase __pyx_wrapperbase_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__;
+struct wrapperbase __pyx_wrapperbase_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__;
 #endif
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__ (wrapper)", 0);
   if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
     __Pyx_RaiseArgtupleInvalid("__init__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
   if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__init__", 0))) return -1;
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11238,7 +11238,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__(struc
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -11249,24 +11249,24 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__(struc
  *         self.deal_list = {}
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
- *         return '< QA_ORDERQueue >'
- *         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
+ *         return '< QA_OMS >'
+ *         # return '< QA_OMS AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3__repr__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3__repr__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3__repr__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3__repr__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_2__repr__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_2__repr__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_2__repr__(CYTHON_UNUSED struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_2__repr__(CYTHON_UNUSED struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
@@ -11274,21 +11274,21 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_2__repr_
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":582
  * 
  *     def __repr__(self):
- *         return '< QA_ORDERQueue >'             # <<<<<<<<<<<<<<
- *         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
+ *         return '< QA_OMS >'             # <<<<<<<<<<<<<<
+ *         # return '< QA_OMS AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_kp_s_QA_ORDERQueue);
-  __pyx_r = __pyx_kp_s_QA_ORDERQueue;
+  __Pyx_INCREF(__pyx_kp_s_QA_OMS);
+  __pyx_r = __pyx_kp_s_QA_OMS;
   goto __pyx_L0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":581
  *         self.deal_list = {}
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
- *         return '< QA_ORDERQueue >'
- *         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
+ *         return '< QA_OMS >'
+ *         # return '< QA_OMS AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
  */
 
   /* function exit code */
@@ -11299,7 +11299,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_2__repr_
 }
 
 /* "QUANTAXIS/QAMARKET/QAOrder.pyx":585
- *         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
+ *         # return '< QA_OMS AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
  * 
  *     def __call__(self):             # <<<<<<<<<<<<<<
  *         return self.order_list
@@ -11307,22 +11307,22 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_2__repr_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_5__call__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__call__ (wrapper)", 0);
   if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
     __Pyx_RaiseArgtupleInvalid("__call__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return NULL;}
   if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__call__", 0))) return NULL;
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_4__call__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_4__call__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_4__call__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_4__call__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__call__", 0);
@@ -11340,7 +11340,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_4__call_
   goto __pyx_L0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":585
- *         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
+ *         # return '< QA_OMS AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
  * 
  *     def __call__(self):             # <<<<<<<<<<<<<<
  *         return self.order_list
@@ -11363,20 +11363,20 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_4__call_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7insert_order(PyObject *__pyx_v_self, PyObject *__pyx_v_order); /*proto*/
-static char __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6insert_order[] = "\n        :param order: QA_Order\347\261\273\345\236\213\n        :return:\n        ";
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7insert_order(PyObject *__pyx_v_self, PyObject *__pyx_v_order) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7insert_order(PyObject *__pyx_v_self, PyObject *__pyx_v_order); /*proto*/
+static char __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6insert_order[] = "\n        :param order: QA_Order\347\261\273\345\236\213\n        :return:\n        ";
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7insert_order(PyObject *__pyx_v_self, PyObject *__pyx_v_order) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("insert_order (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6insert_order(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self), ((PyObject *)__pyx_v_order));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6insert_order(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self), ((PyObject *)__pyx_v_order));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6insert_order(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_order) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6insert_order(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_order) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -11456,7 +11456,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6insert_
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.insert_order", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.insert_order", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -11473,19 +11473,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6insert_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9update_order(PyObject *__pyx_v_self, PyObject *__pyx_v_order); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9update_order(PyObject *__pyx_v_self, PyObject *__pyx_v_order) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9update_order(PyObject *__pyx_v_self, PyObject *__pyx_v_order); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9update_order(PyObject *__pyx_v_self, PyObject *__pyx_v_order) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("update_order (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8update_order(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self), ((PyObject *)__pyx_v_order));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8update_order(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self), ((PyObject *)__pyx_v_order));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8update_order(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_order) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8update_order(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_order) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11520,7 +11520,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8update_
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.update_order", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.update_order", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -11537,19 +11537,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8update_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9order_ids_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9order_ids_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9order_ids_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9order_ids_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9order_ids___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9order_ids___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9order_ids___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9order_ids___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11589,7 +11589,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9order_i
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.order_ids.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.order_ids.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -11606,19 +11606,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9order_i
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3len_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3len_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3len_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3len_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3len___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3len___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3len___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3len___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11658,7 +11658,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3len___g
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.len.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.len.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -11675,20 +11675,20 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3len___g
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_11settle(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10settle[] = "\347\273\223\347\256\227\n        \346\270\205\347\251\272\350\256\242\345\215\225\347\260\277\n        ";
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_11settle(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_11settle(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10settle[] = "\347\273\223\347\256\227\n        \346\270\205\347\251\272\350\256\242\345\215\225\347\260\277\n        ";
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_11settle(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("settle (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10settle(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10settle(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10settle(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10settle(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11782,7 +11782,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10settle
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.settle", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.settle", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -11799,19 +11799,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10settle
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7pending_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7pending_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7pending___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7pending___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_v_item = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -12034,7 +12034,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending
  * 
  */
     /*except:*/ {
-      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.pending.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.pending.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5) < 0) __PYX_ERR(0, 649, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
@@ -12100,7 +12100,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.pending.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.pending.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_item);
@@ -12118,19 +12118,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6failed_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6failed_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6failed___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6failed___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_v_item = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -12307,7 +12307,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed_
  * 
  */
     /*except:*/ {
-      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.failed.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.failed.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5) < 0) __PYX_ERR(0, 659, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
@@ -12373,7 +12373,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed_
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.failed.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.failed.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_item);
@@ -12391,19 +12391,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8canceled_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8canceled_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8canceled_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8canceled_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8canceled___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8canceled___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8canceled___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8canceled___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_v_item = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -12596,7 +12596,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8cancele
  * 
  */
     /*except:*/ {
-      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.canceled.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.canceled.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5) < 0) __PYX_ERR(0, 670, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
@@ -12662,7 +12662,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8cancele
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.canceled.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.canceled.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_item);
@@ -12680,19 +12680,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8cancele
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7untrade_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7untrade_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7untrade___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7untrade___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_v_item = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -12869,7 +12869,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade
  * 
  */
     /*except:*/ {
-      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.untrade.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.untrade.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5) < 0) __PYX_ERR(0, 680, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
@@ -12935,7 +12935,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.untrade.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.untrade.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_item);
@@ -12953,8 +12953,8 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_13set_status(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_13set_status(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_13set_status(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_13set_status(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_order_id = 0;
   PyObject *__pyx_v_new_status = 0;
   PyObject *__pyx_r = 0;
@@ -13002,18 +13002,18 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_13set_st
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("set_status", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 685, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.set_status", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.set_status", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_12set_status(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self), __pyx_v_order_id, __pyx_v_new_status);
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_12set_status(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self), __pyx_v_order_id, __pyx_v_new_status);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_12set_status(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_order_id, PyObject *__pyx_v_new_status) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_12set_status(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_order_id, PyObject *__pyx_v_new_status) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -13116,7 +13116,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_12set_st
  * 
  */
     /*except:*/ {
-      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.set_status", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.set_status", __pyx_clineno, __pyx_lineno, __pyx_filename);
       if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_7, &__pyx_t_8) < 0) __PYX_ERR(0, 692, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_7);
@@ -13174,7 +13174,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_12set_st
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.set_status", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.set_status", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -13191,19 +13191,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_12set_st
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_15to_df(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_15to_df(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_15to_df(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_15to_df(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("to_df (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_14to_df(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_14to_df(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_14to_df(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_14to_df(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_v_x = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -13449,19 +13449,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_14to_df(
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -13478,19 +13478,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_
 }
 
 /* Python wrapper */
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_2__set__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_2__set__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -13509,7 +13509,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_2
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.order_list.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.order_list.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -13517,19 +13517,19 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_2
 }
 
 /* Python wrapper */
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_5__del__(PyObject *__pyx_v_self); /*proto*/
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_5__del__(PyObject *__pyx_v_self) {
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_5__del__(PyObject *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_4__del__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_4__del__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__", 0);
@@ -13554,19 +13554,19 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_4
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
@@ -13583,19 +13583,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_li
 }
 
 /* Python wrapper */
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_2__set__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_2__set__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -13614,7 +13614,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_2__
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.deal_list.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.deal_list.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -13622,19 +13622,19 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_2__
 }
 
 /* Python wrapper */
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_5__del__(PyObject *__pyx_v_self); /*proto*/
-static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_5__del__(PyObject *__pyx_v_self) {
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_5__del__(PyObject *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_4__del__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_4__del__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__del__", 0);
@@ -13657,19 +13657,19 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_4__
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_17__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_17__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_17__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_17__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__reduce_cython__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_16__reduce_cython__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__reduce_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_16__reduce_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self) {
   int __pyx_v_use_setstate;
   PyObject *__pyx_v_state = NULL;
   PyObject *__pyx_v__dict = NULL;
@@ -13766,7 +13766,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__redu
  *     else:
  *         use_setstate = self.deal_list is not None or self.order_list is not None             # <<<<<<<<<<<<<<
  *     if use_setstate:
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, None), state
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, None), state
  */
   /*else*/ {
     __pyx_t_2 = (__pyx_v_self->deal_list != ((PyObject*)Py_None));
@@ -13788,7 +13788,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__redu
  *     else:
  *         use_setstate = self.deal_list is not None or self.order_list is not None
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, None), state
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, None), state
  *     else:
  */
   __pyx_t_3 = (__pyx_v_use_setstate != 0);
@@ -13797,12 +13797,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__redu
     /* "(tree fragment)":11
  *         use_setstate = self.deal_list is not None or self.order_list is not None
  *     if use_setstate:
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, None), state             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, None), state             # <<<<<<<<<<<<<<
  *     else:
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, state)
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, state)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_pyx_unpickle_QA_OrderQueue); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 11, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_pyx_unpickle_QA_OMS); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 11, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 11, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -13834,21 +13834,21 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__redu
  *     else:
  *         use_setstate = self.deal_list is not None or self.order_list is not None
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, None), state
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, None), state
  *     else:
  */
   }
 
   /* "(tree fragment)":13
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, None), state
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, None), state
  *     else:
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, state)             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, state)             # <<<<<<<<<<<<<<
  * def __setstate_cython__(self, __pyx_state):
- *     __pyx_unpickle_QA_OrderQueue__set_state(self, __pyx_state)
+ *     __pyx_unpickle_QA_OMS__set_state(self, __pyx_state)
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_pyx_unpickle_QA_OrderQueue); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 13, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_pyx_unpickle_QA_OMS); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -13885,7 +13885,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__redu
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_state);
@@ -13897,45 +13897,45 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_16__redu
 
 /* "(tree fragment)":14
  *     else:
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, state)
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_unpickle_QA_OrderQueue__set_state(self, __pyx_state)
+ *     __pyx_unpickle_QA_OMS__set_state(self, __pyx_state)
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_19__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_19__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_19__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_19__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_18__setstate_cython__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_18__setstate_cython__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_18__setstate_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_18__setstate_cython__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__setstate_cython__", 0);
 
   /* "(tree fragment)":15
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, state)
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, state)
  * def __setstate_cython__(self, __pyx_state):
- *     __pyx_unpickle_QA_OrderQueue__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
+ *     __pyx_unpickle_QA_OMS__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
   if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(1, 15, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQueue__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 15, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OMS__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "(tree fragment)":14
  *     else:
- *         return __pyx_unpickle_QA_OrderQueue, (type(self), 0xec10c9d, state)
+ *         return __pyx_unpickle_QA_OMS, (type(self), 0xec10c9d, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_unpickle_QA_OrderQueue__set_state(self, __pyx_state)
+ *     __pyx_unpickle_QA_OMS__set_state(self, __pyx_state)
  */
 
   /* function exit code */
@@ -13943,7 +13943,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_18__sets
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_OMS.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -14765,21 +14765,21 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
 }
 
 /* "(tree fragment)":1
- * def __pyx_unpickle_QA_OrderQueue(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
+ * def __pyx_unpickle_QA_OMS(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     if __pyx_checksum != 0xec10c9d:
  *         from pickle import PickleError as __pyx_PickleError
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OrderQueue(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OrderQueue = {"__pyx_unpickle_QA_OrderQueue", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OrderQueue, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OrderQueue(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OMS(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OMS = {"__pyx_unpickle_QA_OMS", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OMS, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OMS(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v___pyx_type = 0;
   long __pyx_v___pyx_checksum;
   PyObject *__pyx_v___pyx_state = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__pyx_unpickle_QA_OrderQueue (wrapper)", 0);
+  __Pyx_RefNannySetupContext("__pyx_unpickle_QA_OMS (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_pyx_type,&__pyx_n_s_pyx_checksum,&__pyx_n_s_pyx_state,0};
     PyObject* values[3] = {0,0,0};
@@ -14805,17 +14805,17 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_Order
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pyx_checksum)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_QA_OrderQueue", 1, 3, 3, 1); __PYX_ERR(1, 1, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_QA_OMS", 1, 3, 3, 1); __PYX_ERR(1, 1, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pyx_state)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_QA_OrderQueue", 1, 3, 3, 2); __PYX_ERR(1, 1, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_QA_OMS", 1, 3, 3, 2); __PYX_ERR(1, 1, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_unpickle_QA_OrderQueue") < 0)) __PYX_ERR(1, 1, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_unpickle_QA_OMS") < 0)) __PYX_ERR(1, 1, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -14830,20 +14830,20 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_Order
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_QA_OrderQueue", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 1, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_unpickle_QA_OMS", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 1, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.__pyx_unpickle_QA_OrderQueue", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.__pyx_unpickle_QA_OMS", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_OrderQueue(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_OMS(__pyx_self, __pyx_v___pyx_type, __pyx_v___pyx_checksum, __pyx_v___pyx_state);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_OrderQueue(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_OMS(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_v___pyx_PickleError = NULL;
   PyObject *__pyx_v___pyx_result = NULL;
   PyObject *__pyx_r = NULL;
@@ -14855,10 +14855,10 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   int __pyx_t_7;
-  __Pyx_RefNannySetupContext("__pyx_unpickle_QA_OrderQueue", 0);
+  __Pyx_RefNannySetupContext("__pyx_unpickle_QA_OMS", 0);
 
   /* "(tree fragment)":2
- * def __pyx_unpickle_QA_OrderQueue(__pyx_type, long __pyx_checksum, __pyx_state):
+ * def __pyx_unpickle_QA_OMS(__pyx_type, long __pyx_checksum, __pyx_state):
  *     if __pyx_checksum != 0xec10c9d:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
  *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xec10c9d = (deal_list, order_list))" % __pyx_checksum)
@@ -14867,11 +14867,11 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
   if (__pyx_t_1) {
 
     /* "(tree fragment)":3
- * def __pyx_unpickle_QA_OrderQueue(__pyx_type, long __pyx_checksum, __pyx_state):
+ * def __pyx_unpickle_QA_OMS(__pyx_type, long __pyx_checksum, __pyx_state):
  *     if __pyx_checksum != 0xec10c9d:
  *         from pickle import PickleError as __pyx_PickleError             # <<<<<<<<<<<<<<
  *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xec10c9d = (deal_list, order_list))" % __pyx_checksum)
- *     __pyx_result = QA_OrderQueue.__new__(__pyx_type)
+ *     __pyx_result = QA_OMS.__new__(__pyx_type)
  */
     __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 3, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -14892,7 +14892,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
  *     if __pyx_checksum != 0xec10c9d:
  *         from pickle import PickleError as __pyx_PickleError
  *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xec10c9d = (deal_list, order_list))" % __pyx_checksum)             # <<<<<<<<<<<<<<
- *     __pyx_result = QA_OrderQueue.__new__(__pyx_type)
+ *     __pyx_result = QA_OMS.__new__(__pyx_type)
  *     if __pyx_state is not None:
  */
     __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 4, __pyx_L1_error)
@@ -14952,7 +14952,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
     __PYX_ERR(1, 4, __pyx_L1_error)
 
     /* "(tree fragment)":2
- * def __pyx_unpickle_QA_OrderQueue(__pyx_type, long __pyx_checksum, __pyx_state):
+ * def __pyx_unpickle_QA_OMS(__pyx_type, long __pyx_checksum, __pyx_state):
  *     if __pyx_checksum != 0xec10c9d:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
  *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xec10c9d = (deal_list, order_list))" % __pyx_checksum)
@@ -14962,11 +14962,11 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
   /* "(tree fragment)":5
  *         from pickle import PickleError as __pyx_PickleError
  *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xec10c9d = (deal_list, order_list))" % __pyx_checksum)
- *     __pyx_result = QA_OrderQueue.__new__(__pyx_type)             # <<<<<<<<<<<<<<
+ *     __pyx_result = QA_OMS.__new__(__pyx_type)             # <<<<<<<<<<<<<<
  *     if __pyx_state is not None:
- *         __pyx_unpickle_QA_OrderQueue__set_state(<QA_OrderQueue> __pyx_result, __pyx_state)
+ *         __pyx_unpickle_QA_OMS__set_state(<QA_OMS> __pyx_result, __pyx_state)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -15016,9 +15016,9 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
 
   /* "(tree fragment)":6
  *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xec10c9d = (deal_list, order_list))" % __pyx_checksum)
- *     __pyx_result = QA_OrderQueue.__new__(__pyx_type)
+ *     __pyx_result = QA_OMS.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
- *         __pyx_unpickle_QA_OrderQueue__set_state(<QA_OrderQueue> __pyx_result, __pyx_state)
+ *         __pyx_unpickle_QA_OMS__set_state(<QA_OMS> __pyx_result, __pyx_state)
  *     return __pyx_result
  */
   __pyx_t_1 = (__pyx_v___pyx_state != Py_None);
@@ -15026,31 +15026,31 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
   if (__pyx_t_7) {
 
     /* "(tree fragment)":7
- *     __pyx_result = QA_OrderQueue.__new__(__pyx_type)
+ *     __pyx_result = QA_OMS.__new__(__pyx_type)
  *     if __pyx_state is not None:
- *         __pyx_unpickle_QA_OrderQueue__set_state(<QA_OrderQueue> __pyx_result, __pyx_state)             # <<<<<<<<<<<<<<
+ *         __pyx_unpickle_QA_OMS__set_state(<QA_OMS> __pyx_result, __pyx_state)             # <<<<<<<<<<<<<<
  *     return __pyx_result
- * cdef __pyx_unpickle_QA_OrderQueue__set_state(QA_OrderQueue __pyx_result, tuple __pyx_state):
+ * cdef __pyx_unpickle_QA_OMS__set_state(QA_OMS __pyx_result, tuple __pyx_state):
  */
     if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(1, 7, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQueue__set_state(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 7, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OMS__set_state(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 7, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":6
  *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xec10c9d = (deal_list, order_list))" % __pyx_checksum)
- *     __pyx_result = QA_OrderQueue.__new__(__pyx_type)
+ *     __pyx_result = QA_OMS.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
- *         __pyx_unpickle_QA_OrderQueue__set_state(<QA_OrderQueue> __pyx_result, __pyx_state)
+ *         __pyx_unpickle_QA_OMS__set_state(<QA_OMS> __pyx_result, __pyx_state)
  *     return __pyx_result
  */
   }
 
   /* "(tree fragment)":8
  *     if __pyx_state is not None:
- *         __pyx_unpickle_QA_OrderQueue__set_state(<QA_OrderQueue> __pyx_result, __pyx_state)
+ *         __pyx_unpickle_QA_OMS__set_state(<QA_OMS> __pyx_result, __pyx_state)
  *     return __pyx_result             # <<<<<<<<<<<<<<
- * cdef __pyx_unpickle_QA_OrderQueue__set_state(QA_OrderQueue __pyx_result, tuple __pyx_state):
+ * cdef __pyx_unpickle_QA_OMS__set_state(QA_OMS __pyx_result, tuple __pyx_state):
  *     __pyx_result.deal_list = __pyx_state[0]; __pyx_result.order_list = __pyx_state[1]
  */
   __Pyx_XDECREF(__pyx_r);
@@ -15059,7 +15059,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
   goto __pyx_L0;
 
   /* "(tree fragment)":1
- * def __pyx_unpickle_QA_OrderQueue(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
+ * def __pyx_unpickle_QA_OMS(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     if __pyx_checksum != 0xec10c9d:
  *         from pickle import PickleError as __pyx_PickleError
  */
@@ -15071,7 +15071,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.__pyx_unpickle_QA_OrderQueue", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.__pyx_unpickle_QA_OMS", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v___pyx_PickleError);
@@ -15082,14 +15082,14 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_Order
 }
 
 /* "(tree fragment)":9
- *         __pyx_unpickle_QA_OrderQueue__set_state(<QA_OrderQueue> __pyx_result, __pyx_state)
+ *         __pyx_unpickle_QA_OMS__set_state(<QA_OMS> __pyx_result, __pyx_state)
  *     return __pyx_result
- * cdef __pyx_unpickle_QA_OrderQueue__set_state(QA_OrderQueue __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
+ * cdef __pyx_unpickle_QA_OMS__set_state(QA_OMS __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_result.deal_list = __pyx_state[0]; __pyx_result.order_list = __pyx_state[1]
  *     if len(__pyx_state) > 2 and hasattr(__pyx_result, '__dict__'):
  */
 
-static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQueue__set_state(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OMS__set_state(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -15101,11 +15101,11 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQu
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
-  __Pyx_RefNannySetupContext("__pyx_unpickle_QA_OrderQueue__set_state", 0);
+  __Pyx_RefNannySetupContext("__pyx_unpickle_QA_OMS__set_state", 0);
 
   /* "(tree fragment)":10
  *     return __pyx_result
- * cdef __pyx_unpickle_QA_OrderQueue__set_state(QA_OrderQueue __pyx_result, tuple __pyx_state):
+ * cdef __pyx_unpickle_QA_OMS__set_state(QA_OMS __pyx_result, tuple __pyx_state):
  *     __pyx_result.deal_list = __pyx_state[0]; __pyx_result.order_list = __pyx_state[1]             # <<<<<<<<<<<<<<
  *     if len(__pyx_state) > 2 and hasattr(__pyx_result, '__dict__'):
  *         __pyx_result.__dict__.update(__pyx_state[2])
@@ -15136,7 +15136,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQu
   __pyx_t_1 = 0;
 
   /* "(tree fragment)":11
- * cdef __pyx_unpickle_QA_OrderQueue__set_state(QA_OrderQueue __pyx_result, tuple __pyx_state):
+ * cdef __pyx_unpickle_QA_OMS__set_state(QA_OMS __pyx_result, tuple __pyx_state):
  *     __pyx_result.deal_list = __pyx_state[0]; __pyx_result.order_list = __pyx_state[1]
  *     if len(__pyx_state) > 2 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
  *         __pyx_result.__dict__.update(__pyx_state[2])
@@ -15223,7 +15223,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQu
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
     /* "(tree fragment)":11
- * cdef __pyx_unpickle_QA_OrderQueue__set_state(QA_OrderQueue __pyx_result, tuple __pyx_state):
+ * cdef __pyx_unpickle_QA_OMS__set_state(QA_OMS __pyx_result, tuple __pyx_state):
  *     __pyx_result.deal_list = __pyx_state[0]; __pyx_result.order_list = __pyx_state[1]
  *     if len(__pyx_state) > 2 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
  *         __pyx_result.__dict__.update(__pyx_state[2])
@@ -15231,9 +15231,9 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQu
   }
 
   /* "(tree fragment)":9
- *         __pyx_unpickle_QA_OrderQueue__set_state(<QA_OrderQueue> __pyx_result, __pyx_state)
+ *         __pyx_unpickle_QA_OMS__set_state(<QA_OMS> __pyx_result, __pyx_state)
  *     return __pyx_result
- * cdef __pyx_unpickle_QA_OrderQueue__set_state(QA_OrderQueue __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
+ * cdef __pyx_unpickle_QA_OMS__set_state(QA_OMS __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_result.deal_list = __pyx_state[0]; __pyx_result.order_list = __pyx_state[1]
  *     if len(__pyx_state) > 2 and hasattr(__pyx_result, '__dict__'):
  */
@@ -15247,7 +15247,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_OrderQu
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.__pyx_unpickle_QA_OrderQueue__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.__pyx_unpickle_QA_OMS__set_state", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -15898,8 +15898,8 @@ static PyTypeObject __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order = {
   #endif
 };
 
-static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *p;
+static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -15907,14 +15907,14 @@ static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyType
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)o);
+  p = ((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)o);
   p->order_list = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->deal_list = ((PyObject*)Py_None); Py_INCREF(Py_None);
   return o;
 }
 
-static void __pyx_tp_dealloc_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyObject *o) {
-  struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *p = (struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)o;
+static void __pyx_tp_dealloc_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS(PyObject *o) {
+  struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *p = (struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)o;
   #if CYTHON_USE_TP_FINALIZE
   if (unlikely(PyType_HasFeature(Py_TYPE(o), Py_TPFLAGS_HAVE_FINALIZE) && Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -15926,9 +15926,9 @@ static void __pyx_tp_dealloc_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyObjec
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static int __pyx_tp_traverse_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyObject *o, visitproc v, void *a) {
+static int __pyx_tp_traverse_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS(PyObject *o, visitproc v, void *a) {
   int e;
-  struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *p = (struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)o;
+  struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *p = (struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)o;
   if (p->order_list) {
     e = (*v)(p->order_list, a); if (e) return e;
   }
@@ -15938,9 +15938,9 @@ static int __pyx_tp_traverse_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyObjec
   return 0;
 }
 
-static int __pyx_tp_clear_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyObject *o) {
+static int __pyx_tp_clear_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS(PyObject *o) {
   PyObject* tmp;
-  struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *p = (struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue *)o;
+  struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *p = (struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS *)o;
   tmp = ((PyObject*)p->order_list);
   p->order_list = ((PyObject*)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
@@ -15950,85 +15950,85 @@ static int __pyx_tp_clear_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyObject *
   return 0;
 }
 
-static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_order_ids(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9order_ids_1__get__(o);
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_order_ids(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9order_ids_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_len(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3len_1__get__(o);
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_len(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3len_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_pending(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7pending_1__get__(o);
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_pending(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7pending_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_failed(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6failed_1__get__(o);
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_failed(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6failed_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_canceled(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_8canceled_1__get__(o);
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_canceled(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_8canceled_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_untrade(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7untrade_1__get__(o);
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_untrade(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7untrade_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_order_list(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_1__get__(o);
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_order_list(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_1__get__(o);
 }
 
-static int __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_order_list(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_order_list(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_3__set__(o, v);
+    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_3__set__(o, v);
   }
   else {
-    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10order_list_5__del__(o);
+    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10order_list_5__del__(o);
   }
 }
 
-static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_deal_list(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_1__get__(o);
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_deal_list(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_1__get__(o);
 }
 
-static int __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_deal_list(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_deal_list(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_3__set__(o, v);
+    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_3__set__(o, v);
   }
   else {
-    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9deal_list_5__del__(o);
+    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9deal_list_5__del__(o);
   }
 }
 
-static PyMethodDef __pyx_methods_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue[] = {
-  {"insert_order", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_7insert_order, METH_O, __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_6insert_order},
-  {"update_order", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_9update_order, METH_O, 0},
-  {"settle", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_11settle, METH_NOARGS, __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_10settle},
-  {"set_status", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_13set_status, METH_VARARGS|METH_KEYWORDS, 0},
-  {"to_df", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_15to_df, METH_NOARGS, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_17__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_19__setstate_cython__, METH_O, 0},
+static PyMethodDef __pyx_methods_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS[] = {
+  {"insert_order", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_7insert_order, METH_O, __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_6insert_order},
+  {"update_order", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_9update_order, METH_O, 0},
+  {"settle", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_11settle, METH_NOARGS, __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_10settle},
+  {"set_status", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_13set_status, METH_VARARGS|METH_KEYWORDS, 0},
+  {"to_df", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_15to_df, METH_NOARGS, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_17__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_19__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue[] = {
-  {(char *)"order_ids", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_order_ids, 0, (char *)0, 0},
-  {(char *)"len", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_len, 0, (char *)0, 0},
-  {(char *)"pending", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_pending, 0, (char *)"\n        600 \345\272\237\345\215\225 \346\234\252\345\247\224\346\211\230\346\210\220\345\212\237\n        200 \345\247\224\346\211\230\346\210\220\345\212\237,\345\256\214\345\205\250\344\272\244\346\230\223\n        203 \345\247\224\346\211\230\346\210\220\345\212\237,\346\234\252\345\256\214\345\205\250\346\210\220\345\212\237\n        300 \345\247\224\346\211\230\351\230\237\345\210\227 \345\276\205\346\210\220\344\272\244\n        400 \345\267\262\346\222\244\345\215\225\n        500 \346\234\215\345\212\241\345\231\250\346\222\244\345\215\225/\346\257\217\346\227\245\347\273\223\347\256\227\n\n\n        \350\256\242\345\215\225\347\224\237\346\210\220(100) -- \345\272\237\345\215\225(600)\n        \350\256\242\345\215\225\347\224\237\346\210\220(100) -- \350\277\233\345\205\245\345\276\205\346\210\220\344\272\244\351\230\237\345\210\227(300) -- \345\256\214\345\205\250\346\210\220\344\272\244(200) -- \346\257\217\346\227\245\347\273\223\347\256\227(500)-- \346\255\273\344\272\241\n        \350\256\242\345\215\225\347\224\237\346\210\220(100) -- \350\277\233\345\205\245\345\276\205\346\210\220\344\272\244\351\230\237\345\210\227(300) -- \351\203\250\345\210\206\346\210\220\344\272\244(203) -- \346\234\252\346\210\220\344\272\244(300) -- \346\257\217\346\227\245\347\273\223\347\256\227(500) -- \346\255\273\344\272\241\n        \350\256\242\345\215\225\347\224\237\346\210\220(100) -- \350\277\233\345\205\245\345\276\205\346\210\220\344\272\244\351\230\237\345\210\227(300) -- \344\270\273\345\212\250\346\222\244\345\215\225(400) -- \346\257\217\346\227\245\347\273\223\347\256\227(500) -- \346\255\273\344\272\241\n        \351\200\211\346\213\251\345\276\205\346\210\220\344\272\244\345\210\227\350\241\250\n        :return: dataframe\n        ", 0},
-  {(char *)"failed", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_failed, 0, (char *)0, 0},
-  {(char *)"canceled", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_canceled, 0, (char *)0, 0},
-  {(char *)"untrade", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_untrade, 0, (char *)0, 0},
-  {(char *)"order_list", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_order_list, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_order_list, (char *)0, 0},
-  {(char *)"deal_list", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_deal_list, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_deal_list, (char *)0, 0},
+static struct PyGetSetDef __pyx_getsets_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS[] = {
+  {(char *)"order_ids", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_order_ids, 0, (char *)0, 0},
+  {(char *)"len", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_len, 0, (char *)0, 0},
+  {(char *)"pending", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_pending, 0, (char *)"\n        600 \345\272\237\345\215\225 \346\234\252\345\247\224\346\211\230\346\210\220\345\212\237\n        200 \345\247\224\346\211\230\346\210\220\345\212\237,\345\256\214\345\205\250\344\272\244\346\230\223\n        203 \345\247\224\346\211\230\346\210\220\345\212\237,\346\234\252\345\256\214\345\205\250\346\210\220\345\212\237\n        300 \345\247\224\346\211\230\351\230\237\345\210\227 \345\276\205\346\210\220\344\272\244\n        400 \345\267\262\346\222\244\345\215\225\n        500 \346\234\215\345\212\241\345\231\250\346\222\244\345\215\225/\346\257\217\346\227\245\347\273\223\347\256\227\n\n\n        \350\256\242\345\215\225\347\224\237\346\210\220(100) -- \345\272\237\345\215\225(600)\n        \350\256\242\345\215\225\347\224\237\346\210\220(100) -- \350\277\233\345\205\245\345\276\205\346\210\220\344\272\244\351\230\237\345\210\227(300) -- \345\256\214\345\205\250\346\210\220\344\272\244(200) -- \346\257\217\346\227\245\347\273\223\347\256\227(500)-- \346\255\273\344\272\241\n        \350\256\242\345\215\225\347\224\237\346\210\220(100) -- \350\277\233\345\205\245\345\276\205\346\210\220\344\272\244\351\230\237\345\210\227(300) -- \351\203\250\345\210\206\346\210\220\344\272\244(203) -- \346\234\252\346\210\220\344\272\244(300) -- \346\257\217\346\227\245\347\273\223\347\256\227(500) -- \346\255\273\344\272\241\n        \350\256\242\345\215\225\347\224\237\346\210\220(100) -- \350\277\233\345\205\245\345\276\205\346\210\220\344\272\244\351\230\237\345\210\227(300) -- \344\270\273\345\212\250\346\222\244\345\215\225(400) -- \346\257\217\346\227\245\347\273\223\347\256\227(500) -- \346\255\273\344\272\241\n        \351\200\211\346\213\251\345\276\205\346\210\220\344\272\244\345\210\227\350\241\250\n        :return: dataframe\n        ", 0},
+  {(char *)"failed", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_failed, 0, (char *)0, 0},
+  {(char *)"canceled", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_canceled, 0, (char *)0, 0},
+  {(char *)"untrade", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_untrade, 0, (char *)0, 0},
+  {(char *)"order_list", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_order_list, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_order_list, (char *)0, 0},
+  {(char *)"deal_list", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_deal_list, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_deal_list, (char *)0, 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue = {
+static PyTypeObject __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS = {
   PyVarObject_HEAD_INIT(0, 0)
-  "QUANTAXIS.QAMARKET.QAOrder.QA_OrderQueue", /*tp_name*/
-  sizeof(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue), /*tp_basicsize*/
+  "QUANTAXIS.QAMARKET.QAOrder.QA_OMS", /*tp_name*/
+  sizeof(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue, /*tp_dealloc*/
+  __pyx_tp_dealloc_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -16038,35 +16038,35 @@ static PyTypeObject __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue = {
   #if PY_MAJOR_VERSION >= 3
   0, /*tp_as_async*/
   #endif
-  __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_3__repr__, /*tp_repr*/
+  __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_3__repr__, /*tp_repr*/
   0, /*tp_as_number*/
   0, /*tp_as_sequence*/
   0, /*tp_as_mapping*/
   0, /*tp_hash*/
-  __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_5__call__, /*tp_call*/
+  __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_5__call__, /*tp_call*/
   0, /*tp_str*/
   0, /*tp_getattro*/
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
   "\n    \344\270\200\344\270\252\345\276\205\346\210\220\344\272\244\351\230\237\345\210\227\n    queue\346\230\257\344\270\200\344\270\252dataframe\n    \350\277\231\351\207\214\351\235\242\351\203\275\346\230\257\345\257\271\344\272\216\346\226\271\346\263\225\347\232\204\345\260\201\350\243\205\n    queue_df \347\232\204\346\204\217\345\233\276\n    \345\257\271orderqueue\350\277\233\350\241\214\347\256\241\347\220\206 \350\277\231\346\230\257\344\270\200\344\270\252dataframe\n    \347\204\266\345\220\216\347\255\211\345\210\260\350\246\201\346\201\242\345\244\215\350\256\242\345\215\225\347\232\204\346\227\266\345\200\231 \345\206\215\345\216\273\347\224\250orderid\346\201\242\345\244\215\344\273\226\n    \345\260\261\345\245\275\346\257\224 \344\275\240\344\270\213\344\272\206\344\270\252\345\215\225\345\255\220\n    \344\275\240\345\260\261\345\234\250\345\260\217\346\234\254\346\234\254\344\270\212\350\256\260\344\270\200\347\254\224\n    \347\204\266\345\220\216\346\210\220\344\272\244\344\272\206\344\275\240\346\211\223\344\270\252\345\213\276\n    \346\222\244\345\215\225\344\272\206\344\275\240\346\211\223\344\270\252\345\217\211\n    \344\275\240\347\234\213\347\234\213\344\275\240\350\277\230\346\234\211\345\244\232\345\260\221\345\215\225\345\255\220\345\234\250\345\247\224\346\211\230\344\275\240\345\260\261\346\225\260\346\225\260\345\260\217\346\234\254\345\255\220\n    \350\277\231\344\270\252\345\260\217\346\234\254\345\255\220 \345\260\261\346\230\257orderqueue\347\232\204dataframe\n    ", /*tp_doc*/
-  __pyx_tp_traverse_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue, /*tp_traverse*/
-  __pyx_tp_clear_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue, /*tp_clear*/
+  __pyx_tp_traverse_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS, /*tp_traverse*/
+  __pyx_tp_clear_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS, /*tp_clear*/
   0, /*tp_richcompare*/
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue, /*tp_methods*/
+  __pyx_methods_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue, /*tp_getset*/
+  __pyx_getsets_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_1__init__, /*tp_init*/
+  __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS_1__init__, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue, /*tp_new*/
+  __pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -16143,7 +16143,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Order, __pyx_k_Order, sizeof(__pyx_k_Order), 0, 0, 1, 1},
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
   {&__pyx_kp_s_QAERROR_Wrong_for_get_None_type, __pyx_k_QAERROR_Wrong_for_get_None_type, sizeof(__pyx_k_QAERROR_Wrong_for_get_None_type), 0, 0, 1, 0},
-  {&__pyx_kp_s_QA_ORDERQueue, __pyx_k_QA_ORDERQueue, sizeof(__pyx_k_QA_ORDERQueue), 0, 0, 1, 0},
+  {&__pyx_kp_s_QA_OMS, __pyx_k_QA_OMS, sizeof(__pyx_k_QA_OMS), 0, 0, 1, 0},
   {&__pyx_kp_s_QA_Order_realorder_id_datetime, __pyx_k_QA_Order_realorder_id_datetime, sizeof(__pyx_k_QA_Order_realorder_id_datetime), 0, 0, 1, 0},
   {&__pyx_n_s_QA_util_log_info, __pyx_k_QA_util_log_info, sizeof(__pyx_k_QA_util_log_info), 0, 0, 1, 1},
   {&__pyx_n_s_QA_util_random_with_topic, __pyx_k_QA_util_random_with_topic, sizeof(__pyx_k_QA_util_random_with_topic), 0, 0, 1, 1},
@@ -16231,7 +16231,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pyx_state, __pyx_k_pyx_state, sizeof(__pyx_k_pyx_state), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_type, __pyx_k_pyx_type, sizeof(__pyx_k_pyx_type), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_unpickle_QA_Order, __pyx_k_pyx_unpickle_QA_Order, sizeof(__pyx_k_pyx_unpickle_QA_Order), 0, 0, 1, 1},
-  {&__pyx_n_s_pyx_unpickle_QA_OrderQueue, __pyx_k_pyx_unpickle_QA_OrderQueue, sizeof(__pyx_k_pyx_unpickle_QA_OrderQueue), 0, 0, 1, 1},
+  {&__pyx_n_s_pyx_unpickle_QA_OMS, __pyx_k_pyx_unpickle_QA_OMS, sizeof(__pyx_k_pyx_unpickle_QA_OMS), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_queued, __pyx_k_queued, sizeof(__pyx_k_queued), 0, 0, 1, 1},
   {&__pyx_n_s_realorder_id, __pyx_k_realorder_id, sizeof(__pyx_k_realorder_id), 0, 0, 1, 1},
@@ -16486,7 +16486,7 @@ static int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__25 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_QA_OrderQueue, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_QA_OMS, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -16578,24 +16578,24 @@ static int __Pyx_modinit_type_init_code(void) {
   if (PyObject_SetAttrString(__pyx_m, "QA_Order", (PyObject *)&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
   __pyx_ptype_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order = &__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order;
-  if (PyType_Ready(&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue) < 0) __PYX_ERR(0, 552, __pyx_L1_error)
-  __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue.tp_print = 0;
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue.tp_dictoffset && __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  if (PyType_Ready(&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS) < 0) __PYX_ERR(0, 552, __pyx_L1_error)
+  __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS.tp_print = 0;
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS.tp_dictoffset && __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 552, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 552, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
-      __pyx_wrapperbase_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
-      __pyx_wrapperbase_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__.doc = __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__;
-      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__;
+      __pyx_wrapperbase_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
+      __pyx_wrapperbase_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__.doc = __pyx_doc_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__;
+      ((PyWrapperDescrObject *)wrapper)->d_base = &__pyx_wrapperbase_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OMS___init__;
     }
   }
   #endif
-  if (PyObject_SetAttrString(__pyx_m, "QA_OrderQueue", (PyObject *)&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue) < 0) __PYX_ERR(0, 552, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue) < 0) __PYX_ERR(0, 552, __pyx_L1_error)
-  __pyx_ptype_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue = &__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue;
+  if (PyObject_SetAttrString(__pyx_m, "QA_OMS", (PyObject *)&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS) < 0) __PYX_ERR(0, 552, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS) < 0) __PYX_ERR(0, 552, __pyx_L1_error)
+  __pyx_ptype_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS = &__pyx_type_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OMS;
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -17069,9 +17069,9 @@ if (!__Pyx_RefNanny) {
  *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.price = __pyx_state[18]; __pyx_result.realorder_id = __pyx_state[19]; __pyx_result.reason = __pyx_state[20]; __pyx_result.sending_time = __pyx_state[21]; __pyx_result.strategy = __pyx_state[22]; __pyx_result.tax_coeff = __pyx_state[23]; __pyx_result.time_condition = __pyx_state[24]; __pyx_result.towards = __pyx_state[25]; __pyx_result.trade_amount = __pyx_state[26]; __pyx_result.trade_id = __pyx_state[27]; __pyx_result.trade_price = __pyx_state[28]; __pyx_result.trade_time = __pyx_state[29]; __pyx_result.user_cookie = __pyx_state[30]
  *     if len(__pyx_state) > 31 and hasattr(__pyx_result, '__dict__'):
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OrderQueue, NULL, __pyx_n_s_QUANTAXIS_QAMARKET_QAOrder); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OMS, NULL, __pyx_n_s_QUANTAXIS_QAMARKET_QAOrder); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_QA_OrderQueue, __pyx_t_1) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_QA_OMS, __pyx_t_1) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":1

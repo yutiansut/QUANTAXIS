@@ -549,7 +549,7 @@ cdef class QA_Order():
             QA_util_log_info('Failed to tran from dict {}'.format(e))
 
 
-cdef class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
+cdef class QA_OMS(): # also the order tree ？？ what's the tree means?
     """
     一个待成交队列
     queue是一个dataframe
@@ -579,8 +579,8 @@ cdef class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
         self.deal_list = {}
 
     def __repr__(self):
-        return '< QA_ORDERQueue >'
-        # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
+        return '< QA_OMS >'
+        # return '< QA_OMS AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
 
     def __call__(self):
         return self.order_list
