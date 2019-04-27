@@ -9,7 +9,7 @@ from pymongo import DESCENDING, ASCENDING
 from QUANTAXIS import __version__
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
-from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
+from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OMS
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
@@ -242,7 +242,7 @@ cdef class QA_Account:
         )
         ########################################################################
         # 资产类
-        self.orders = QA_OrderQueue()       # 历史委托单
+        self.orders = QA_OMS()       # 历史委托单
         self.init_cash = init_cash
         self.init_hold = pd.Series(
             init_hold,
@@ -1750,7 +1750,7 @@ cdef class QA_Account:
         '''
         返回当日委托/历史委托
         :param if_today: true 只返回今天的订单
-        :return: QA_OrderQueue
+        :return: QA_OMS
         '''
         # 🛠todo 筛选其它不是今天的订单返回
         return self.orders

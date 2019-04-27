@@ -97,6 +97,7 @@ class QA_Position():
             'commission_coeff_today_peramount': 0,
             'commission_coeff_today_pervol': 0.0}
         """
+        self.rule = 'FIFO'
         self.name = name
         self.market_type = market_type
         self.exchange_id = exchange_id
@@ -236,3 +237,11 @@ class QA_Position():
             # //持仓盈亏 = position_profit_long + position_profit_short
             "position_profit": self.position_profit
         }
+
+
+class QA_PMS():
+    def __init__(self, init_position=None):
+        self.pms = {}
+    
+    def receive_order(self):
+        pass
