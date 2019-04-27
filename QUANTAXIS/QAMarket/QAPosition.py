@@ -1,6 +1,6 @@
 #
 
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, EXCHANGE_ID
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, EXCHANGE_ID, ORDER_DIRECTION
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 
 
@@ -238,10 +238,63 @@ class QA_Position():
             "position_profit": self.position_profit
         }
 
+    def update_pos(self, price, amount, towards):
+        """支持股票/期货的更新仓位
+        
+        Arguments:
+            price {[type]} -- [description]
+            amount {[type]} -- [description]
+            towards {[type]} -- [description]
+        """
+        # if towards == ORDER_DIRECTION.SELL_CLOSE:
+        if towards in [ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN]:
+            # 股票模式/ 期货买入开仓
+            self.volume_long_today += amount
+        elif towards == ORDER_DIRECTION.SELL_OPEN:
+            self.volume_short_today += amount
+
+        elif towards == ORDER_DIRECTION.SELL:
+            # 股票卖出模式:
+            # 今日买入仓位不能卖出
+            if self.volume_long_his > amount:
+                self.volume_long_his -= amount
+        elif towards == ORDER_DIRECTION.BUY_CLOSETODAY:
+            if self.volume_short_today > amount:
+                self.volume_short_today -= amount
+        elif towards == ORDER_DIRECTION.SELL_CLOSETODAY:
+            if self.volume_long_today > amount:
+                self.volume_long_today -= amount
+        elif towards == ORDER_DIRECTION.BUY_CLOSE:
+            # 有昨仓先平昨仓
+            if self.volume_short_his >= amount:
+                self.volume_short_his -= amount
+            else:
+                self.volume_short_today -= (amount - self.volume_short_his)
+                self.volume_short_his = 0
+        elif towards == ORDER_DIRECTION.SELL_CLOSE:
+            # 有昨仓先平昨仓
+            if self.volume_long_his >= amount:
+                self.volume_long_his -= amount
+            else:
+                self.volume_long_today -= (amount - self.volume_long_his)
+                self.volume_long_his -= amount
+
+        if self.code
+
+    def settle(self):
+        """收盘后的结算事件
+        """
+        self.volume_long_his += self.volume_long_today
+        self.volume_long_today = 0
+        self.volume_long_frozen_today = 0
+        self.volume_short_his += self.volume_short_today
+        self.volume_short_today = 0
+        self.volume_short_frozen_today = 0
+
 
 class QA_PMS():
     def __init__(self, init_position=None):
         self.pms = {}
-    
+
     def receive_order(self):
         pass
