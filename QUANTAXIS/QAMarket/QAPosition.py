@@ -51,10 +51,7 @@ class QA_Position():
 
     def __init__(self,
                  code='000001',
-                 user_id='quantaxis',
                  account_cookie='quantaxis',
-                 portfolio_cookie='quantaxis',
-                 user_cookie='quantaxis',
                  volume_long_today=0,
                  volume_long_his=0,
                  volume_short_today=0,
@@ -86,8 +83,7 @@ class QA_Position():
                  ):
 
         self.code = code
-        self.user_id = user_id
-
+        self.account_cookie = account_cookie
         self.market_preset = MARKET_PRESET().get_code(self.code)
 
         """{'name': '原油',
@@ -101,6 +97,7 @@ class QA_Position():
             'commission_coeff_today_peramount': 0,
             'commission_coeff_today_pervol': 0.0}
         """
+        self.rule = 'FIFO'
         self.name = name
         self.market_type = market_type
         self.exchange_id = exchange_id
@@ -190,6 +187,7 @@ class QA_Position():
             # 基础字段
             'code': self.code,  # 品种名称
             'instrument_id': self.code,
+            'user_id': self.user_id,
             'name': self.name,
             'market_type': self.market_type,
             'exchange_id': self.exchange_id,  # 交易所ID
@@ -239,3 +237,11 @@ class QA_Position():
             # //持仓盈亏 = position_profit_long + position_profit_short
             "position_profit": self.position_profit
         }
+
+
+class QA_PMS():
+    def __init__(self, init_position=None):
+        self.pms = {}
+    
+    def receive_order(self):
+        pass
