@@ -187,7 +187,7 @@ class QA_Position():
             # 基础字段
             'code': self.code,  # 品种名称
             'instrument_id': self.code,
-            'user_id': self.user_id,
+            'user_id': self.account_cookie,
             'name': self.name,
             'market_type': self.market_type,
             'exchange_id': self.exchange_id,  # 交易所ID
