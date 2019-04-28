@@ -149,7 +149,7 @@ from QUANTAXIS.QASU.save_strategy import QA_SU_save_strategy
 # market
 from QUANTAXIS.QAMarket import (
     QA_Order,
-    QA_OMS,
+    QA_OrderQueue,
     QA_OrderHandler,
     QA_Position,
     QA_Market,

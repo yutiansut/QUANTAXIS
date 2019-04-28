@@ -279,7 +279,6 @@ class QA_Position():
                 self.volume_long_today -= (amount - self.volume_long_his)
                 self.volume_long_his -= amount
 
-        if self.code
 
     def settle(self):
         """收盘后的结算事件
