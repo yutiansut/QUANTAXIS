@@ -31,7 +31,7 @@ import pandas as pd
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAEngine.QATask import QA_Task
-from QUANTAXIS.QAMarket.QAOrder import QA_OMS
+from QUANTAXIS.QAMarket.QAOrder import QA_OrderQueue
 from QUANTAXIS.QASU.save_orderhandler import QA_SU_save_deal, QA_SU_save_order
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 from QUANTAXIS.QAUtil.QAParameter import (BROKER_EVENT, BROKER_TYPE,
@@ -47,7 +47,7 @@ class QA_OrderHandlerAsync(QA_Worker):
 
     def __init__(self, *args, **kwargs):
         super().__init__()
-        self.order_queue = QA_OMS()
+        self.order_queue = QA_OrderQueue()
         self.type = EVENT_TYPE.MARKET_EVENT
 
         self.event = QA_Event()

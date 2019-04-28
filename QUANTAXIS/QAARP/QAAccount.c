@@ -1842,7 +1842,7 @@ static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_trade_amount[] = "trade_amount";
 static const char __pyx_k_ACCOUNT_EVENT[] = "ACCOUNT_EVENT";
 static const char __pyx_k_MARKET_PRESET[] = "MARKET_PRESET";
-static const char __pyx_k_QA_OMS[] = "QA_OMS";
+static const char __pyx_k_QA_OrderQueue[] = "QA_OrderQueue";
 static const char __pyx_k_UPCOMING_DATA[] = "UPCOMING_DATA";
 static const char __pyx_k_history_table[] = "history_table";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
@@ -1954,7 +1954,7 @@ static PyObject *__pyx_n_s_QA_Account___get___locals_lambda;
 static PyObject *__pyx_kp_u_QA_Account___init___line_82;
 static PyObject *__pyx_kp_s_QA_Account_market;
 static PyObject *__pyx_n_s_QA_Order;
-static PyObject *__pyx_n_s_QA_OMS;
+static PyObject *__pyx_n_s_QA_OrderQueue;
 static PyObject *__pyx_n_s_QA_Worker;
 static PyObject *__pyx_n_s_QA_util_get_next_day;
 static PyObject *__pyx_n_s_QA_util_get_trade_range;
@@ -3465,11 +3465,11 @@ __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 /* "QUANTAXIS/QAARP/QAAccount.pyx":245
  *         ########################################################################
  *         #
- *         self.orders = QA_OMS()       #             # <<<<<<<<<<<<<<
+ *         self.orders = QA_OrderQueue()       #             # <<<<<<<<<<<<<<
  *         self.init_cash = init_cash
  *         self.init_hold = pd.Series(
  */
-__Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_QA_OMS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
+__Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_QA_OrderQueue); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
 __Pyx_GOTREF(__pyx_t_2);
 __pyx_t_9 = NULL;
 if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -3494,7 +3494,7 @@ __pyx_t_7 = 0;
 
 /* "QUANTAXIS/QAARP/QAAccount.pyx":246
  *         #
- *         self.orders = QA_OMS()       #
+ *         self.orders = QA_OrderQueue()       #
  *         self.init_cash = init_cash             # <<<<<<<<<<<<<<
  *         self.init_hold = pd.Series(
  *             init_hold,
@@ -3521,7 +3521,7 @@ __pyx_t_4 = PyDict_Check(__pyx_v_init_hold);
 if ((__pyx_t_4 != 0)) {
 
   /* "QUANTAXIS/QAARP/QAAccount.pyx":247
- *         self.orders = QA_OMS()       #
+ *         self.orders = QA_OrderQueue()       #
  *         self.init_cash = init_cash
  *         self.init_hold = pd.Series(             # <<<<<<<<<<<<<<
  *             init_hold,
@@ -3558,7 +3558,7 @@ if ((__pyx_t_4 != 0)) {
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_name, __pyx_n_s_amount) < 0) __PYX_ERR(0, 249, __pyx_L1_error)
 
   /* "QUANTAXIS/QAARP/QAAccount.pyx":247
- *         self.orders = QA_OMS()       #
+ *         self.orders = QA_OrderQueue()       #
  *         self.init_cash = init_cash
  *         self.init_hold = pd.Series(             # <<<<<<<<<<<<<<
  *             init_hold,
@@ -3585,7 +3585,7 @@ if ((__pyx_t_4 != 0)) {
 }
 
 /* "QUANTAXIS/QAARP/QAAccount.pyx":247
- *         self.orders = QA_OMS()       #
+ *         self.orders = QA_OrderQueue()       #
  *         self.init_cash = init_cash
  *         self.init_hold = pd.Series(             # <<<<<<<<<<<<<<
  *             init_hold,
@@ -23441,7 +23441,7 @@ return __pyx_r;
 
 /* Python wrapper */
 static PyObject *__pyx_pw_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_45get_orders(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_44get_orders[] = "\n        \350\277\224\345\233\236\345\275\223\346\227\245\345\247\224\346\211\230/\345\216\206\345\217\262\345\247\224\346\211\230\n        :param if_today: true \345\217\252\350\277\224\345\233\236\344\273\212\345\244\251\347\232\204\350\256\242\345\215\225\n        :return: QA_OMS\n        ";
+static char __pyx_doc_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_44get_orders[] = "\n        \350\277\224\345\233\236\345\275\223\346\227\245\345\247\224\346\211\230/\345\216\206\345\217\262\345\247\224\346\211\230\n        :param if_today: true \345\217\252\350\277\224\345\233\236\344\273\212\345\244\251\347\232\204\350\256\242\345\215\225\n        :return: QA_OrderQueue\n        ";
 static PyObject *__pyx_pw_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_45get_orders(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
 CYTHON_UNUSED PyObject *__pyx_v_if_today = 0;
 PyObject *__pyx_r = 0;
@@ -30616,7 +30616,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_QA_Account___init___line_82, __pyx_k_QA_Account___init___line_82, sizeof(__pyx_k_QA_Account___init___line_82), 0, 1, 0, 0},
   {&__pyx_kp_s_QA_Account_market, __pyx_k_QA_Account_market, sizeof(__pyx_k_QA_Account_market), 0, 0, 1, 0},
   {&__pyx_n_s_QA_Order, __pyx_k_QA_Order, sizeof(__pyx_k_QA_Order), 0, 0, 1, 1},
-  {&__pyx_n_s_QA_OMS, __pyx_k_QA_OMS, sizeof(__pyx_k_QA_OMS), 0, 0, 1, 1},
+  {&__pyx_n_s_QA_OrderQueue, __pyx_k_QA_OrderQueue, sizeof(__pyx_k_QA_OrderQueue), 0, 0, 1, 1},
   {&__pyx_n_s_QA_Worker, __pyx_k_QA_Worker, sizeof(__pyx_k_QA_Worker), 0, 0, 1, 1},
   {&__pyx_n_s_QA_util_get_next_day, __pyx_k_QA_util_get_next_day, sizeof(__pyx_k_QA_util_get_next_day), 0, 0, 1, 1},
   {&__pyx_n_s_QA_util_get_trade_range, __pyx_k_QA_util_get_trade_range, sizeof(__pyx_k_QA_util_get_trade_range), 0, 0, 1, 1},
@@ -31609,7 +31609,7 @@ if (!__Pyx_RefNanny) {
  * from QUANTAXIS import __version__
  * from QUANTAXIS.QAARP.market_preset import MARKET_PRESET             # <<<<<<<<<<<<<<
  * from QUANTAXIS.QAEngine.QAEvent import QA_Worker
- * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OMS
+ * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -31629,7 +31629,7 @@ if (!__Pyx_RefNanny) {
  * from QUANTAXIS import __version__
  * from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
  * from QUANTAXIS.QAEngine.QAEvent import QA_Worker             # <<<<<<<<<<<<<<
- * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OMS
+ * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
  * from QUANTAXIS.QASU.save_account import save_account, update_account
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
@@ -31649,7 +31649,7 @@ if (!__Pyx_RefNanny) {
   /* "QUANTAXIS/QAARP/QAAccount.pyx":12
  * from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
  * from QUANTAXIS.QAEngine.QAEvent import QA_Worker
- * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OMS             # <<<<<<<<<<<<<<
+ * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue             # <<<<<<<<<<<<<<
  * from QUANTAXIS.QASU.save_account import save_account, update_account
  * from QUANTAXIS.QAUtil.QASetting import DATABASE
  */
@@ -31658,9 +31658,9 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_QA_Order);
   __Pyx_GIVEREF(__pyx_n_s_QA_Order);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_QA_Order);
-  __Pyx_INCREF(__pyx_n_s_QA_OMS);
-  __Pyx_GIVEREF(__pyx_n_s_QA_OMS);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_QA_OMS);
+  __Pyx_INCREF(__pyx_n_s_QA_OrderQueue);
+  __Pyx_GIVEREF(__pyx_n_s_QA_OrderQueue);
+  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_QA_OrderQueue);
   __pyx_t_2 = __Pyx_Import(__pyx_n_s_QUANTAXIS_QAMarket_QAOrder, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -31668,15 +31668,15 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_QA_Order, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_QA_OMS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_QA_OrderQueue); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_QA_OMS, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_QA_OrderQueue, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "QUANTAXIS/QAARP/QAAccount.pyx":13
  * from QUANTAXIS.QAEngine.QAEvent import QA_Worker
- * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OMS
+ * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
  * from QUANTAXIS.QASU.save_account import save_account, update_account             # <<<<<<<<<<<<<<
  * from QUANTAXIS.QAUtil.QASetting import DATABASE
  * from QUANTAXIS.QAUtil.QADate_trade import (
@@ -31703,7 +31703,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "QUANTAXIS/QAARP/QAAccount.pyx":14
- * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OMS
+ * from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
  * from QUANTAXIS.QASU.save_account import save_account, update_account
  * from QUANTAXIS.QAUtil.QASetting import DATABASE             # <<<<<<<<<<<<<<
  * from QUANTAXIS.QAUtil.QADate_trade import (
