@@ -117,8 +117,10 @@ class QA_Position():
 
         self.open_price_long = open_price_long
         self.open_price_short = open_price_short
-        self.position_price_long = position_price_long
-        self.position_price_short = position_price_short
+
+        
+        self.position_price_long = open_price_long if position_price_long =0 else position_price_long
+        self.position_price_short = open_price_short if position_price_short=0 else position_price_short
 
         self.open_cost_long = open_cost_long
         self.open_cost_short = open_cost_short
@@ -247,23 +249,34 @@ class QA_Position():
             towards {[type]} -- [description]
         """
         # if towards == ORDER_DIRECTION.SELL_CLOSE:
-        if towards in [ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN]:
+        if towards == ORDER_DIRECTION.BUY:
             # 股票模式/ 期货买入开仓
             self.volume_long_today += amount
-        elif towards == ORDER_DIRECTION.SELL_OPEN:
-            self.volume_short_today += amount
-
         elif towards == ORDER_DIRECTION.SELL:
             # 股票卖出模式:
             # 今日买入仓位不能卖出
             if self.volume_long_his > amount:
                 self.volume_long_his -= amount
+
+        elif towards == ORDER_DIRECTION.BUY_OPEN:
+            self.volume_long_today += amount
+            # 增加保证金
+            self.margin_long += amount*price*self.market_preset['unit_table']*self.market_preset['buy_frozen_coeff']
+        elif towards == ORDER_DIRECTION.SELL_OPEN:
+            self.volume_short_today += amount
+            # 增加保证金
+            self.margin_short += amount*price*self.market_preset['unit_table']*self.market_preset['sell_frozen_coeff']
+
         elif towards == ORDER_DIRECTION.BUY_CLOSETODAY:
             if self.volume_short_today > amount:
                 self.volume_short_today -= amount
+                #释放保证金
+                # TODO
+
         elif towards == ORDER_DIRECTION.SELL_CLOSETODAY:
             if self.volume_long_today > amount:
                 self.volume_long_today -= amount
+
         elif towards == ORDER_DIRECTION.BUY_CLOSE:
             # 有昨仓先平昨仓
             if self.volume_short_his >= amount:
@@ -278,6 +291,13 @@ class QA_Position():
             else:
                 self.volume_long_today -= (amount - self.volume_long_his)
                 self.volume_long_his -= amount
+        
+
+        # 计算收益/成本
+
+
+
+
 
 
     def settle(self):
