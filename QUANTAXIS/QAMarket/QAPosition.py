@@ -119,8 +119,8 @@ class QA_Position():
         self.open_price_short = open_price_short
 
         
-        self.position_price_long = open_price_long if position_price_long =0 else position_price_long
-        self.position_price_short = open_price_short if position_price_short=0 else position_price_short
+        self.position_price_long = open_price_long if position_price_long ==0 else position_price_long
+        self.position_price_short = open_price_short if position_price_short==0 else position_price_short
 
         self.open_cost_long = open_cost_long
         self.open_cost_short = open_cost_short
@@ -272,6 +272,8 @@ class QA_Position():
                 self.volume_short_today -= amount
                 #释放保证金
                 # TODO
+                self.volume_short_frozen_today += amount
+
 
         elif towards == ORDER_DIRECTION.SELL_CLOSETODAY:
             if self.volume_long_today > amount:
