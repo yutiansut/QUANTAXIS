@@ -563,7 +563,7 @@ Account.orders
 
 
 
-    < QA_OMS AMOUNT 2 WAITING TRADE 2 >
+    < QA_OrderQueue AMOUNT 2 WAITING TRADE 2 >
 
 
 
