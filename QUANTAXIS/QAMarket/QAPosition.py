@@ -272,6 +272,7 @@ class QA_Position():
                 self.volume_short_today -= amount
                 #释放保证金
                 # TODO
+                self.volume_short_frozen_today += amount
 
 
         elif towards == ORDER_DIRECTION.SELL_CLOSETODAY:
