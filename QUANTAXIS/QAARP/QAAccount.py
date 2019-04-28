@@ -354,7 +354,7 @@ class QA_Account(QA_Worker):
         # 资产类
         self.orders = QA_OrderQueue()       # 历史委托单
         self.positions = QA_PMS()
-        self.risks = QA_RMS()
+        # self.risks = QA_RMS()
         self.init_cash = init_cash
 
         self.init_hold = pd.Series(
