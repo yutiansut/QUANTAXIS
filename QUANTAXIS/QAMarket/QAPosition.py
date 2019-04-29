@@ -1,5 +1,5 @@
 #
-
+import uuid
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, EXCHANGE_ID, ORDER_DIRECTION
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 
@@ -87,7 +87,7 @@ class QA_Position():
         self.code = code
         self.account_cookie = account_cookie
         self.market_preset = MARKET_PRESET().get_code(self.code)
-
+        self.position_id = uuid.uuid4()
         """{'name': '原油',
             'unit_table': 1000,
             'price_tick': 0.1,
