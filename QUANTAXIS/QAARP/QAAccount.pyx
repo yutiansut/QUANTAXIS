@@ -10,6 +10,7 @@ from QUANTAXIS import __version__
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
+from QUANTAXIS.QAMarket.QAPosition import QA_Position , QA_PMS
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
@@ -63,7 +64,7 @@ cdef class QA_Account:
     cdef public str start_
     cdef public str end_
     cdef public object orders
-
+    cdef public object PMS
     cdef public list cash
     cdef public float cash_available
     cdef public object sell_available
@@ -243,6 +244,7 @@ cdef class QA_Account:
         ########################################################################
         # 资产类
         self.orders = QA_OrderQueue()       # 历史委托单
+        self.PMS = QA_PMS()
         self.init_cash = init_cash
         self.init_hold = pd.Series(
             init_hold,
@@ -439,7 +441,7 @@ cdef class QA_Account:
             return None
 
     @property
-    def poisitions(QA_Account self):
+    def positions(QA_Account self):
         raise NotImplementedError
 
     @property
