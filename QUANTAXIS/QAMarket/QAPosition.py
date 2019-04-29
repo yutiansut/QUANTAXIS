@@ -1,5 +1,5 @@
 #
-
+import uuid
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, EXCHANGE_ID, ORDER_DIRECTION
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 
@@ -87,7 +87,7 @@ class QA_Position():
         self.code = code
         self.account_cookie = account_cookie
         self.market_preset = MARKET_PRESET().get_code(self.code)
-
+        self.position_id = uuid.uuid4()
         """{'name': '原油',
             'unit_table': 1000,
             'price_tick': 0.1,
@@ -211,7 +211,7 @@ class QA_Position():
             'volume_short_today': self.volume_short_today,
             'volume_short_his': self.volume_short_his,
             'volume_short': self.volume_short,
-            # 委托冻结(未成交)
+            # 平仓委托冻结(未成交)
             'volume_long_frozen_today': self.volume_long_frozen_today,
             'volume_long_frozen_his': self.volume_long_frozen_his,
             'volume_long_frozen': self.volume_long_frozen,
@@ -224,7 +224,7 @@ class QA_Position():
             'margin': self.margin,
             # 持仓字段
             'position_price_long': self.position_price_long,  # 多头成本价
-            'position_cost_long': self.position_cost_long,   # 多头成本
+            'position_cost_long': self.position_cost_long,   # 多头总成本(  总市值)
             'position_price_short': self.position_price_short,
             'position_cost_short': self.position_cost_short,
             # 平仓字段
@@ -386,3 +386,61 @@ class QA_PMS():
 
     def receive_order(self):
         pass
+
+
+if __name__ == "__main__":
+    """
+    
+    float_profit: 11636.923076923063
+    float_profit_long: 50066.92307692306
+    float_profit_short: -38430
+    instrument_id: "rb1905"
+    last_price: 4193
+    margin: 59727.99999999999
+    margin_long: 32850.399999999994
+    margin_short: 26877.6
+    open_cost_long: 411163.07692307694
+    open_cost_short: 338940
+    open_price_long: 3737.846153846154
+    open_price_short: 3766
+    position_cost_long: 411163.07692307694
+    position_cost_short: 338940
+    position_price_long: 3737.846153846154
+    position_price_short: 3766
+    position_profit: 11636.923076923063
+    position_profit_long: 50066.92307692306
+    position_profit_short: -38430
+    volume_long: 11
+    volume_long_frozen: 1
+    volume_long_frozen_his: 0
+    volume_long_frozen_today: 0
+    volume_long_his: 11
+    volume_long_today: 0
+    volume_short: 9
+    volume_short_frozen: 1
+    volume_short_frozen_his: 0
+    volume_short_frozen_today: 0
+    volume_short_his: 9
+    volume_short_today: 0
+    """
+    pos = QA_Position(
+        code= 'rb1905',
+        account_cookie='100002',
+        market_type=MARKET_TYPE.FUTURE_CN,
+        exchange_id= EXCHANGE_ID.SHFE,
+        volume_long_his=11,
+        volume_long_today=0,
+        volume_short_his=9,
+        open_price_long= 3737.846153846154,
+        open_price_short=3766,
+        open_cost_long= 411163.07692307694,
+        open_cost_short= 338940,
+        position_cost_long= 411163.07692307694,
+        position_cost_short= 338940,
+        name='螺纹1905'
+    )
+    print(pos.static_message)
+
+    pos.on_pirce_change(4193)
+    print(pos.realtime_message)
+    print(pos.static_message)
