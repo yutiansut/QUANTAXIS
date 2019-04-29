@@ -2,6 +2,8 @@
 import uuid
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, EXCHANGE_ID, ORDER_DIRECTION
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
+from QUANTAXIS.QAMarket.QAOrder import QA_Order
+from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 
 
 class QA_Position():
@@ -52,7 +54,7 @@ class QA_Position():
     def __init__(self,
                  code='000001',
                  account_cookie='quantaxis',
-                 moneypreset= 100000, # 初始分配资金
+                 moneypreset=100000,  # 初始分配资金
                  volume_long_today=0,
                  volume_long_his=0,
                  volume_short_today=0,
@@ -127,10 +129,14 @@ class QA_Position():
         self.position_price_long = open_price_long if position_price_long == 0 else position_price_long
         self.position_price_short = open_price_short if position_price_short == 0 else position_price_short
 
-        self.open_cost_long = open_cost_long if open_cost_long!=0 else open_price_long*self.volume_long*self.market_preset.get('unit_table',1)
-        self.open_cost_short = open_cost_short if open_cost_short!=0 else open_price_short*self.volume_short*self.market_preset.get('unit_table',1)
-        self.position_cost_long = position_cost_long if position_cost_long!=0 else self.position_price_long*self.volume_long*self.market_preset.get('unit_table',1)
-        self.position_cost_short = position_cost_short if position_cost_short!=0 else self.position_price_short*self.volume_short*self.market_preset.get('unit_table',1)
+        self.open_cost_long = open_cost_long if open_cost_long != 0 else open_price_long * \
+            self.volume_long*self.market_preset.get('unit_table', 1)
+        self.open_cost_short = open_cost_short if open_cost_short != 0 else open_price_short * \
+            self.volume_short*self.market_preset.get('unit_table', 1)
+        self.position_cost_long = position_cost_long if position_cost_long != 0 else self.position_price_long * \
+            self.volume_long*self.market_preset.get('unit_table', 1)
+        self.position_cost_short = position_cost_short if position_cost_short != 0 else self.position_price_short * \
+            self.volume_short*self.market_preset.get('unit_table', 1)
 
         self.last_price = 0
 
@@ -165,18 +171,15 @@ class QA_Position():
     def margin(self):
         return self.margin_long + self.margin_short
 
-    def on_pirce_change(self, price):
-        self.last_price = price
-
     @property
     def float_profit_long(self):
         if self.market_preset is not None:
-            return self.last_price * self.volume_long * self.market_preset.get('unit_table',1) - self.open_cost_long
+            return self.last_price * self.volume_long * self.market_preset.get('unit_table', 1) - self.open_cost_long
 
     @property
     def float_profit_short(self):
         if self.market_preset is not None:
-            return self.open_cost_short - self.last_price * self.volume_short * self.market_preset.get('unit_table',1)
+            return self.open_cost_short - self.last_price * self.volume_short * self.market_preset.get('unit_table', 1)
 
     @property
     def float_profit(self):
@@ -185,12 +188,12 @@ class QA_Position():
     @property
     def position_profit_long(self):
         if self.market_preset is not None:
-            return self.last_price * self.volume_long * self.market_preset.get('unit_table',1) - self.position_cost_long
+            return self.last_price * self.volume_long * self.market_preset.get('unit_table', 1) - self.position_cost_long
 
     @property
     def position_profit_short(self):
         if self.market_preset is not None:
-            return self.position_cost_short - self.last_price * self.volume_short * self.market_preset.get('unit_table',1)
+            return self.position_cost_short - self.last_price * self.volume_short * self.market_preset.get('unit_table', 1)
 
     @property
     def position_profit(self):
@@ -253,6 +256,10 @@ class QA_Position():
             "position_profit": self.position_profit
         }
 
+    def receive_order(self, order:QA_Order):
+        #self.update_pos(order.)
+        pass
+
     def update_pos(self, price, amount, towards):
         """支持股票/期货的更新仓位
 
@@ -277,7 +284,7 @@ class QA_Position():
             position_profit_short: -200
         """
         temp_cost = amount*price * \
-            self.market_preset.get('unit_table',1)
+            self.market_preset.get('unit_table', 1)
         # if towards == ORDER_DIRECTION.SELL_CLOSE:
         if towards == ORDER_DIRECTION.BUY:
             # 股票模式/ 期货买入开仓
@@ -381,11 +388,11 @@ class QA_Position():
             'volume_long': self.volume_long,
             'volume_short': self.volume_short
         }
-    
+
     @property
     def close_available(self):
         """可平仓数量
-        
+
         Returns:
             [type] -- [description]
         """
@@ -393,7 +400,7 @@ class QA_Position():
             'volume_long': self.volume_long - self.volume_long_frozen,
             'volume_short': self.volume_short - self.volume_short_frozen
         }
-    
+
     def change_moneypreset(self, money):
         self.moneypreset = money
 
@@ -403,22 +410,65 @@ class QA_Position():
     def reload(self):
         pass
 
+    def on_pirce_change(self, price):
+        self.last_price = price
+
+    def on_bar(self, bar):
+        """只订阅这个code的数据
+
+        Arguments:
+            bar {[type]} -- [description]
+        """
+        self.last_price = bar['close']
+        print(self.realtime_message)
+        pass
+
+    def on_tick(self, tick):
+        """只订阅当前code的tick
+
+        Arguments:
+            tick {[type]} -- [description]
+        """
+        self.last_price = tick['LastPrice']
+        print(self.realtime_message)
+        pass
+
+    def on_signal(self, signal):
+        raise NotImplementedError('此接口为内部接口 为CEP专用')
+
+    def callback_sub(self):
+        raise NotImplementedError('此接口为内部接口 为CEP专用')
+
+    def callback_pub(self):
+        raise NotImplementedError('此接口为内部接口 为CEP专用')
+
+
+class QA_PositionThread(QA_Thread):
+
+    def run(self, pos:QA_Position):
+        while True:
+            event = self.queue.get()
+
+
 
 class QA_PMS():
     def __init__(self, init_position=None):
         self.pms = {}
 
-    def add_pos(self, pos:QA_Position):
-        self.pms[pos.position_id] = pos
-    
-    def remove_pos(self, pos:QA_Position):
-        del self.pms[pos.position_id]
+    def add_pos(self, pos: QA_Position):
+        if pos.code in self.pms.keys():
+            self.pms[pos.code][pos.position_id] = pos
+        else:
+            self.pms[pos.code] = {pos.position_id: pos}
 
-    def orderAction(self):
+    def remove_pos(self, pos: QA_Position):
+        del self.pms[pos.code][pos.position_id]
+
+    def orderAction(self, order:QA_Order):
         """
         委托回报
         """
-        pass
+        return self.pms[order.code][order.order_id].receive_order(order)
 
     def dealAction(self):
         """
@@ -426,9 +476,10 @@ class QA_PMS():
         """
         pass
 
+
 if __name__ == "__main__":
     """
-    
+
     float_profit: 11636.923076923063
     float_profit_long: 50066.92307692306
     float_profit_short: -38430
@@ -462,14 +513,14 @@ if __name__ == "__main__":
     volume_short_today: 0
     """
     pos = QA_Position(
-        code= 'rb1905',
+        code='rb1905',
         account_cookie='100002',
         market_type=MARKET_TYPE.FUTURE_CN,
-        exchange_id= EXCHANGE_ID.SHFE,
+        exchange_id=EXCHANGE_ID.SHFE,
         volume_long_his=11,
         volume_long_today=0,
         volume_short_his=9,
-        open_price_long= 3737.846153846154,
+        open_price_long=3737.846153846154,
         open_price_short=3766,
         name='螺纹1905'
     )
@@ -479,17 +530,16 @@ if __name__ == "__main__":
     print(pos.realtime_message)
     print(pos.static_message)
 
-
     print('STOCK TEST')
 
     pos = QA_Position(
-        code= '000001',
+        code='000001',
         account_cookie='100002',
         market_type=MARKET_TYPE.STOCK_CN,
-        exchange_id= EXCHANGE_ID.SZSE,
+        exchange_id=EXCHANGE_ID.SZSE,
         volume_long_his=1100,
         volume_long_today=0,
-        open_price_long= 8,
+        open_price_long=8,
         name='中国平安'
     )
     print(pos.static_message)

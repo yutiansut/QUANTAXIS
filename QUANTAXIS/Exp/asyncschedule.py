@@ -81,8 +81,6 @@ class Scheduler(*bases):
 
         jobs = self._jobs
         if jobs:
-            # cleanup pending queue
-            # all job will be started on closing
             while not self._pending.empty():
                 self._pending.get_nowait()
             await asyncio.gather(
