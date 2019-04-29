@@ -408,9 +408,23 @@ class QA_PMS():
     def __init__(self, init_position=None):
         self.pms = {}
 
-    def receive_order(self):
+    def add_pos(self, pos:QA_Position):
+        self.pms[pos.position_id] = pos
+    
+    def remove_pos(self, pos:QA_Position):
+        del self.pms[pos.position_id]
+
+    def orderAction(self):
+        """
+        委托回报
+        """
         pass
 
+    def dealAction(self):
+        """
+        成交回报
+        """
+        pass
 
 if __name__ == "__main__":
     """
