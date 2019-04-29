@@ -1,9 +1,11 @@
 #
 import uuid
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, EXCHANGE_ID, ORDER_DIRECTION
+
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
-from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
+from QUANTAXIS.QAMarket.QAOrder import QA_Order
+from QUANTAXIS.QAUtil.QAParameter import (EXCHANGE_ID, MARKET_TYPE,
+                                          ORDER_DIRECTION)
 
 
 class QA_Position():
