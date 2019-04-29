@@ -125,10 +125,10 @@ class QA_Position():
         self.position_price_long = open_price_long if position_price_long == 0 else position_price_long
         self.position_price_short = open_price_short if position_price_short == 0 else position_price_short
 
-        self.open_cost_long = open_cost_long
-        self.open_cost_short = open_cost_short
-        self.position_cost_long = position_cost_long
-        self.position_cost_short = position_cost_short
+        self.open_cost_long = open_cost_long if open_cost_long!=0 else open_price_long*self.volume_long*self.market_preset.get('unit_table',1)
+        self.open_cost_short = open_cost_short if open_cost_short!=0 else open_price_short*self.volume_short*self.market_preset.get('unit_table',1)
+        self.position_cost_long = position_cost_long if position_cost_long!=0 else self.position_price_long*self.volume_long*self.market_preset.get('unit_table',1)
+        self.position_cost_short = position_cost_short if position_cost_short!=0 else self.position_price_short*self.volume_short*self.market_preset.get('unit_table',1)
 
         self.last_price = 0
 
@@ -169,12 +169,12 @@ class QA_Position():
     @property
     def float_profit_long(self):
         if self.market_preset is not None:
-            return self.last_price * self.volume_long * self.market_preset['unit_table'] - self.open_cost_long
+            return self.last_price * self.volume_long * self.market_preset.get('unit_table',1) - self.open_cost_long
 
     @property
     def float_profit_short(self):
         if self.market_preset is not None:
-            return self.open_cost_short - self.last_price * self.volume_short * self.market_preset['unit_table']
+            return self.open_cost_short - self.last_price * self.volume_short * self.market_preset.get('unit_table',1)
 
     @property
     def float_profit(self):
@@ -183,12 +183,12 @@ class QA_Position():
     @property
     def position_profit_long(self):
         if self.market_preset is not None:
-            return self.last_price * self.volume_long * self.market_preset['unit_table'] - self.position_cost_long
+            return self.last_price * self.volume_long * self.market_preset.get('unit_table',1) - self.position_cost_long
 
     @property
     def position_profit_short(self):
         if self.market_preset is not None:
-            return self.position_cost_short - self.last_price * self.volume_short * self.market_preset['unit_table']
+            return self.position_cost_short - self.last_price * self.volume_short * self.market_preset.get('unit_table',1)
 
     @property
     def position_profit(self):
@@ -275,7 +275,7 @@ class QA_Position():
             position_profit_short: -200
         """
         temp_cost = amount*price * \
-            self.market_preset['unit_table']
+            self.market_preset.get('unit_table',1)
         # if towards == ORDER_DIRECTION.SELL_CLOSE:
         if towards == ORDER_DIRECTION.BUY:
             # 股票模式/ 期货买入开仓
@@ -433,14 +433,29 @@ if __name__ == "__main__":
         volume_short_his=9,
         open_price_long= 3737.846153846154,
         open_price_short=3766,
-        open_cost_long= 411163.07692307694,
-        open_cost_short= 338940,
-        position_cost_long= 411163.07692307694,
-        position_cost_short= 338940,
         name='螺纹1905'
     )
     print(pos.static_message)
 
     pos.on_pirce_change(4193)
+    print(pos.realtime_message)
+    print(pos.static_message)
+
+
+    print('STOCK TEST')
+
+    pos = QA_Position(
+        code= '000001',
+        account_cookie='100002',
+        market_type=MARKET_TYPE.STOCK_CN,
+        exchange_id= EXCHANGE_ID.SZSE,
+        volume_long_his=1100,
+        volume_long_today=0,
+        open_price_long= 8,
+        name='中国平安'
+    )
+    print(pos.static_message)
+
+    pos.on_pirce_change(10)
     print(pos.realtime_message)
     print(pos.static_message)
