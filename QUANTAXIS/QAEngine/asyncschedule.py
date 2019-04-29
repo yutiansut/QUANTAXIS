@@ -1,7 +1,7 @@
 import asyncio
 from collections.abc import Collection
 
-from QUANTAXIS.Exp.asynctask import Job
+from QUANTAXIS.QAEngine.asynctask import Job
 
 bases = (Collection,)
 
