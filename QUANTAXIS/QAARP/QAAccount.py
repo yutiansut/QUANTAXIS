@@ -353,7 +353,7 @@ class QA_Account(QA_Worker):
         ########################################################################
         # 资产类
         self.orders = QA_OrderQueue()       # 历史委托单
-        self.positions = QA_PMS()
+        self.PMS = QA_PMS()
         # self.risks = QA_RMS()
         self.init_cash = init_cash
 
@@ -551,7 +551,7 @@ class QA_Account(QA_Worker):
             return None
 
     @property
-    def poisitions(self):
+    def positions(self):
         raise NotImplementedError
 
     @property
