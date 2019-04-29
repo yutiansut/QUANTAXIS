@@ -1,7 +1,8 @@
 import asyncio
+from collections.abc import Collection
 
 from QUANTAXIS.Exp.asynctask import Job
-from collections.abc import Collection
+
 bases = (Collection,)
 
 
@@ -81,8 +82,6 @@ class Scheduler(*bases):
 
         jobs = self._jobs
         if jobs:
-            # cleanup pending queue
-            # all job will be started on closing
             while not self._pending.empty():
                 self._pending.get_nowait()
             await asyncio.gather(
@@ -131,6 +130,7 @@ class Scheduler(*bases):
                 await task  # should raise exception
             except Exception:
                 pass
+
 
 async def create_scheduler(*, close_timeout=0.1, limit=100,
                            pending_limit=10000, exception_handler=None):

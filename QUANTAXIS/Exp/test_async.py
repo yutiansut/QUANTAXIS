@@ -1,25 +1,44 @@
 import asyncio
-from QUANTAXIS.Exp.asyncschedule import create_scheduler
+import random
 import time
 
-
-async def coro(timeout):
-    print(timeout)
-    # await asyncio.sleep(timeout)
-    time.sleep(timeout)
-    print('finish ', timeout)
+from QUANTAXIS.Exp.asyncschedule import create_scheduler
+from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 
 
-async def main():
-    scheduler = await create_scheduler()
-    for i in range(100):
-        # spawn jobs
-        await scheduler.spawn(coro(i/10))
+class X(QA_Thread):
+    async def coro(self,timeout):
+        z = timeout*random.randint(2, 10)
+        await asyncio.sleep(z)
+        print('wait X: {}'.format(z))
 
-    await asyncio.sleep(6.0)
-    # not all scheduled jobs are finished at the moment
+        self.do()
+        print('do X: {}'.format(timeout))
+        print('finish ', timeout)
+        await self.coro(timeout)
 
-    # gracefully close spawned jobs
-    await scheduler.close()
 
-asyncio.get_event_loop().run_until_complete(main())
+    async def main(self):
+        scheduler = await create_scheduler()
+        for i in range(2):
+            # spawn jobs
+            await scheduler.spawn(self.coro(i/100))
+        await asyncio.sleep(100000000.0)
+        await scheduler.close()
+    
+    
+    def do(self):
+        try:
+            event = self.queue.get()
+            print(event)
+        except:
+            pass
+
+    def run(self):
+        asyncio.new_event_loop().run_until_complete(self.main())
+
+x =X()
+x.start()
+for item in range(100):
+    x.put_nowait(item)
+    time.sleep(random.random())
