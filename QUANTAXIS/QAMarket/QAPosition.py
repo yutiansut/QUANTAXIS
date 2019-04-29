@@ -443,11 +443,6 @@ class QA_Position():
         raise NotImplementedError('此接口为内部接口 为CEP专用')
 
 
-class QA_PositionThread(QA_Thread):
-
-    def run(self, pos:QA_Position):
-        while True:
-            event = self.queue.get()
 
 
 
