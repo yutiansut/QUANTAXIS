@@ -623,7 +623,7 @@ class MARKET_PRESET:
                 code = code[0:-2]
             else:
                 code = code[0:2]
-        return self.table.get(str(code).upper(), None)
+        return self.table.get(str(code).upper(), {})
 
     # 合约所属交易所代码
 
@@ -657,24 +657,16 @@ class MARKET_PRESET:
 
     # 每跳毛利/元
     def get_unit(self, code):
-        try:
-            return self.get_code(code).get('unit_table')
-        except:
-            return 1
+        return self.get_code(code).get('unit_table',1)
 
     # 每跳价格(价差)
     def get_price_tick(self, code):
-        try:
-            return self.get_code(code).get('price_tick')
-        except:
-            return 0.01
+        return self.get_code(code).get('price_tick',0.01)
 
     # 买卖冻结保证金系数
     def get_frozen(self, code):
         """
         要结合unit_table才能计算出真实的冻结保证金数量
         """
-        try:
-            return self.get_code(code).get('buy_frozen_coeff')
-        except:
-            return 1
+        return self.get_code(code).get('buy_frozen_coeff',1)
+
