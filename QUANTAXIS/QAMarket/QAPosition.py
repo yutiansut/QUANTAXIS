@@ -52,6 +52,7 @@ class QA_Position():
     def __init__(self,
                  code='000001',
                  account_cookie='quantaxis',
+                 moneypreset= 100000, # 初始分配资金
                  volume_long_today=0,
                  volume_long_his=0,
                  volume_short_today=0,
@@ -88,6 +89,7 @@ class QA_Position():
         self.account_cookie = account_cookie
         self.market_preset = MARKET_PRESET().get_code(self.code)
         self.position_id = uuid.uuid4()
+        self.moneypreset = moneypreset
         """{'name': '原油',
             'unit_table': 1000,
             'price_tick': 0.1,
@@ -372,6 +374,28 @@ class QA_Position():
         self.volume_short_his += self.volume_short_today
         self.volume_short_today = 0
         self.volume_short_frozen_today = 0
+
+    @property
+    def curpos(self):
+        return {
+            'volume_long': self.volume_long,
+            'volume_short': self.volume_short
+        }
+    
+    @property
+    def close_available(self):
+        """可平仓数量
+        
+        Returns:
+            [type] -- [description]
+        """
+        return {
+            'volume_long': self.volume_long - self.volume_long_frozen,
+            'volume_short': self.volume_short - self.volume_short_frozen
+        }
+    
+    def change_moneypreset(self, money):
+        self.moneypreset = money
 
     def save(self):
         pass
