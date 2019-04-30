@@ -1,6 +1,5 @@
-from QUANTAXIS.QAEngine.asyncexec import QA_AsyncExec
-
-
+#from QUANTAXIS.QAEngine.asyncexec import QA_AsyncExec
+from QUANTAXIS.QAEngine.QAAsyncThread import QA_AsyncThread
 
 """这里展示了如何超级简便的使用QA异步执行线程
 
@@ -19,21 +18,23 @@ from QUANTAXIS.QAEngine.asyncexec import QA_AsyncExec
 CEP的基础
 
 """
-class job1(QA_AsyncExec):
-    def do(self):
+
+
+class job1(QA_AsyncThread):
+    def do(self, event):
         try:
-            x=self.queue.get()
-            print('job1 do {}'.format(x))
+            print('job1 do {}'.format(event))
         except:
             pass
 
-class job2(QA_AsyncExec):
-    def do(self):
+
+class job2(QA_AsyncThread):
+    def do(self, event):
         try:
-            x=self.queue.get()
-            print('job2 do {}'.format(x))
+            print('job2 do {}'.format(event))
         except:
             pass
+
 
 j1 = job1()
 j2 = job2()
@@ -43,6 +44,7 @@ j2.start()
 
 
 for i in range(100):
+
     j1.put(i)
     j2.put(i)
 
