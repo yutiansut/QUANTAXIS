@@ -1449,7 +1449,7 @@ static const char __pyx_k_stringsource[] = "stringsource";
 static const char __pyx_k_trade_amount[] = "trade_amount";
 static const char __pyx_k_volume_orign[] = "volume_orign";
 static const char __pyx_k_ORDER_MODEL_2[] = "ORDER_MODEL";
-static const char __pyx_k_QA_ORDERQueue[] = "< QA_ORDERQueue >";
+static const char __pyx_k_QA_OrderQueue[] = "< QA_OrderQueue >";
 static const char __pyx_k_cancel_amount[] = "cancel_amount";
 static const char __pyx_k_exchange_code[] = "exchange_code";
 static const char __pyx_k_instrument_id[] = "instrument_id";
@@ -1510,7 +1510,7 @@ static PyObject *__pyx_kp_s_ORDER_STATUS_CANNNOT_TRADE;
 static PyObject *__pyx_n_s_Order;
 static PyObject *__pyx_n_s_PickleError;
 static PyObject *__pyx_kp_s_QAERROR_Wrong_for_get_None_type;
-static PyObject *__pyx_kp_s_QA_ORDERQueue;
+static PyObject *__pyx_kp_s_QA_OrderQueue;
 static PyObject *__pyx_kp_s_QA_Order_realorder_id_datetime;
 static PyObject *__pyx_n_s_QA_util_log_info;
 static PyObject *__pyx_n_s_QA_util_random_with_topic;
@@ -11249,7 +11249,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue___init__(struc
  *         self.deal_list = {}
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
- *         return '< QA_ORDERQueue >'
+ *         return '< QA_OrderQueue >'
  *         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
  */
 
@@ -11274,20 +11274,20 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_13QA_OrderQueue_2__repr_
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":582
  * 
  *     def __repr__(self):
- *         return '< QA_ORDERQueue >'             # <<<<<<<<<<<<<<
+ *         return '< QA_OrderQueue >'             # <<<<<<<<<<<<<<
  *         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_kp_s_QA_ORDERQueue);
-  __pyx_r = __pyx_kp_s_QA_ORDERQueue;
+  __Pyx_INCREF(__pyx_kp_s_QA_OrderQueue);
+  __pyx_r = __pyx_kp_s_QA_OrderQueue;
   goto __pyx_L0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":581
  *         self.deal_list = {}
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
- *         return '< QA_ORDERQueue >'
+ *         return '< QA_OrderQueue >'
  *         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
  */
 
@@ -16143,7 +16143,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Order, __pyx_k_Order, sizeof(__pyx_k_Order), 0, 0, 1, 1},
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
   {&__pyx_kp_s_QAERROR_Wrong_for_get_None_type, __pyx_k_QAERROR_Wrong_for_get_None_type, sizeof(__pyx_k_QAERROR_Wrong_for_get_None_type), 0, 0, 1, 0},
-  {&__pyx_kp_s_QA_ORDERQueue, __pyx_k_QA_ORDERQueue, sizeof(__pyx_k_QA_ORDERQueue), 0, 0, 1, 0},
+  {&__pyx_kp_s_QA_OrderQueue, __pyx_k_QA_OrderQueue, sizeof(__pyx_k_QA_OrderQueue), 0, 0, 1, 0},
   {&__pyx_kp_s_QA_Order_realorder_id_datetime, __pyx_k_QA_Order_realorder_id_datetime, sizeof(__pyx_k_QA_Order_realorder_id_datetime), 0, 0, 1, 0},
   {&__pyx_n_s_QA_util_log_info, __pyx_k_QA_util_log_info, sizeof(__pyx_k_QA_util_log_info), 0, 0, 1, 1},
   {&__pyx_n_s_QA_util_random_with_topic, __pyx_k_QA_util_random_with_topic, sizeof(__pyx_k_QA_util_random_with_topic), 0, 0, 1, 1},
