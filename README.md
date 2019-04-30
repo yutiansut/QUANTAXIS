@@ -1,6 +1,8 @@
 
 # QUANTAXIS 量化金融策略框架
 
+> 2019-04-26 update: 重大更新即将上线/ OMS/RMS/多场景无缝切换/CEP即将上线
+
 -------------------------------------------------------------
 
 Quantitative Financial FrameWork

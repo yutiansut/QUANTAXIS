@@ -579,7 +579,7 @@ cdef class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
         self.deal_list = {}
 
     def __repr__(self):
-        return '< QA_ORDERQueue >'
+        return '< QA_OrderQueue >'
         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
 
     def __call__(self):
