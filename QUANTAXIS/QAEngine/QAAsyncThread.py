@@ -5,18 +5,22 @@ from functools import wraps
 from janus import Queue as QAAsyncQueue
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
 
 
 class QA_AsyncThread(threading.Thread):
     _loop = asyncio.new_event_loop()
     _queue: QAAsyncQueue = QAAsyncQueue(loop=_loop)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self._stopped = False
         self._main_loop = self.get_event_loop
+        self.name = QA_util_random_with_topic(
+            topic='QA_AsyncThread',
+            lens=3
+        ) if name is None else name
 
     def __repr__(self):
         return '<QA_AsyncThread: {}  id={} ident {}>'.format(
