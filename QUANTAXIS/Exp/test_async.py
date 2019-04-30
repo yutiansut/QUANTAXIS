@@ -38,7 +38,8 @@ class job2(QA_AsyncThread):
 
 j1 = job1()
 j2 = job2()
-
+print(j1)
+print(j2)
 j1.start()
 j2.start()
 
@@ -50,51 +51,41 @@ for i in range(100):
 
 """
 λ  python .\QUANTAXIS\Exp\test_async.py   
-job2 do 0                                 
-job1 do 0                                 
-job1 do 1                                 
-job1 do 2                                 
-job2 do 1                                 
-job2 do 2
-job1 do 3                                 
-job2 do 3                                 
-job1 do 4                                 
-job2 do 4                                 
-job1 do 5                                 
-job1 do 6                                 
-job2 do 5                                 
-job1 do 7                                 
-job1 do 8                                 
-job2 do 6                                 
-job1 do 9                                 
-job2 do 7                                 
-job1 do 10                                
-job2 do 8                                 
-job2 do 9                                 
-job1 do 11                                
-job1 do 12                                
-job2 do 10                                
-job1 do 13                                
-job2 do 11                                
-job1 do 14                                
-job1 do 15                                
-job2 do 12                                
-job1 do 16                                
-job2 do 13                                
-job1 do 17                                
-job2 do 14                                
-job1 do 18                                
-job2 do 15                                
-job1 do 19                                
-job1 do 20                                
-job2 do 16                                
-job1 do 21                                
-job2 do 17                                
-job1 do 22                                
-job2 do 18                                
-job2 do 19                                
-job1 do 23                                
-job2 do 20                                
-job2 do 21                                
+<QA_AsyncThread: QA_AsyncThread_SRq  id=1872684598216 ident None>           
+<QA_AsyncThread: QA_AsyncThread_2tf  id=1872684555904 ident None>           
+start                                                                       
+start                                                                       
+job1 do < QA_Event None None False , id = 1872759171784 >                   
+job2 do < QA_Event None None False , id = 1872759172848 >                   
+job1 do < QA_Event None None False , id = 1872759243216 >                   
+job2 do < QA_Event None None False , id = 1872759243944 >                   
+job1 do < QA_Event None None False , id = 1872759244896 >                   
+job2 do < QA_Event None None False , id = 1872759245512 >                   
+job1 do < QA_Event None None False , id = 1872759245176 >                   
+job2 do < QA_Event None None False , id = 1872759246240 >                   
+job1 do < QA_Event None None False , id = 1872759244056 >                   
+job2 do < QA_Event None None False , id = 1872759244952 >                   
+job1 do < QA_Event None None False , id = 1872759301736 >                   
+job2 do < QA_Event None None False , id = 1872759172904 >                   
+job1 do < QA_Event None None False , id = 1872759171784 >                   
+job2 do < QA_Event None None False , id = 1872759303696 >                   
+job1 do < QA_Event None None False , id = 1872759244224 >                   
+job2 do < QA_Event None None False , id = 1872759370528 >                   
+job1 do < QA_Event None None False , id = 1872759371032 >                   
+job2 do < QA_Event None None False , id = 1872759172848 >                   
+job1 do < QA_Event None None False , id = 1872759373496 >                   
+job2 do < QA_Event None None False , id = 1872759373048 >                   
+job1 do < QA_Event None None False , id = 1872759243944 >                   
+job2 do < QA_Event None None False , id = 1872759371592 >                   
+job1 do < QA_Event None None False , id = 1872759246240 >                   
+job2 do < QA_Event None None False , id = 1872759244056 >                   
+job1 do < QA_Event None None False , id = 1872759438360 >                   
+job2 do < QA_Event None None False , id = 1872759244952 >                   
+job1 do < QA_Event None None False , id = 1872760546640 >                   
+job2 do < QA_Event None None False , id = 1872759438976 >                   
+job1 do < QA_Event None None False , id = 1872759172904 >                   
+job2 do < QA_Event None None False , id = 1872759171784 >                   
+job1 do < QA_Event None None False , id = 1872759303696 >                   
+job2 do < QA_Event None None False , id = 1872759244224 >                   
 .........
 """
