@@ -92,7 +92,7 @@ class QA_Position():
         self.code = code
         self.account_cookie = account_cookie
         self.market_preset = MARKET_PRESET().get_code(self.code)
-        self.position_id = uuid.uuid4()
+        self.position_id = str(uuid.uuid4())
         self.moneypreset = moneypreset
         """{'name': '原油',
             'unit_table': 1000,
