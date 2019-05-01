@@ -258,11 +258,13 @@ class QA_Position():
             "position_profit": self.position_profit
         }
 
-    def on_order(self, order:QA_Order):
-        #self.update_pos(order.)
+    def on_order(self, order: QA_Order):
+        # self.update_pos(order.)
         pass
-    def on_transaction(self, transaction:dict):
-        self.update_pos(transaction['price'], transaction['amount'], transaction['towards'])
+
+    def on_transaction(self, transaction: dict):
+        self.update_pos(
+            transaction['price'], transaction['amount'], transaction['towards'])
 
     def update_pos(self, price, amount, towards):
         """支持股票/期货的更新仓位
@@ -447,9 +449,6 @@ class QA_Position():
         raise NotImplementedError('此接口为内部接口 为CEP专用')
 
 
-
-
-
 class QA_PMS():
     def __init__(self, init_position=None):
         self.pms = {}
@@ -463,7 +462,7 @@ class QA_PMS():
     def remove_pos(self, pos: QA_Position):
         del self.pms[pos.code][pos.position_id]
 
-    def orderAction(self, order:QA_Order):
+    def orderAction(self, order: QA_Order):
         """
         委托回报
         """
