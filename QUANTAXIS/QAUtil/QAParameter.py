@@ -279,6 +279,8 @@ class ENGINE_EVENT():
     BAR_SETTLE = 'bar_settle'
     DAILY_SETTLE = 'daily_settle'
     UPDATE = 'update'
+    TRANSACTION = 'transaction'
+    ORDER = 'order'
 
 
 class ACCOUNT_EVENT():
