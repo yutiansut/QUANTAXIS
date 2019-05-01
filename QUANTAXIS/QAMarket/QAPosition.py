@@ -261,6 +261,8 @@ class QA_Position():
     def receive_order(self, order:QA_Order):
         #self.update_pos(order.)
         pass
+    def receive_transaction(self, transaction:dict):
+        self.update_pos(transaction['price'], transaction['amount'], transaction['towards'])
 
     def update_pos(self, price, amount, towards):
         """支持股票/期货的更新仓位
