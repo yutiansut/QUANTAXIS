@@ -82,7 +82,6 @@ class QA_Position():
                  position_cost_long=0,
                  position_cost_short=0,
 
-
                  market_type=MARKET_TYPE.STOCK_CN,
                  exchange_id=EXCHANGE_ID.SZSE,
                  name=None,
@@ -258,13 +257,38 @@ class QA_Position():
             "position_profit": self.position_profit
         }
 
-    def on_order(self, order: QA_Order):
-        # self.update_pos(order.)
-        pass
+    def order_check(self, amount: float, price: float, towards: int) -> bool:
+        if towards == ORDER_DIRECTION.BUY_CLOSE and (self.volume_short - self.volume_short_frozen) > amount:
+            # check
+            return True
 
-    def on_transaction(self, transaction: dict):
-        self.update_pos(
-            transaction['price'], transaction['amount'], transaction['towards'])
+        elif towards == ORDER_DIRECTION.BUY_CLOSETODAY and (self.volume_short_today - self.volume_short_frozen_today) > amount:
+            return True
+
+        elif towards == ORDER_DIRECTION.SELL_CLOSE and (self.volume_long - self.volume_long_frozen) > amount:
+            return True
+
+        elif towards == ORDER_DIRECTION.SELL_CLOSETODAY and (self.volume_long_today - self.volume_short_frozen_today) > amount:
+            return True
+
+        else:
+            return False
+
+    def send_order(self, amount: float, price: float, towards: int):
+        if self.order_check(amount, price, towards):
+            return {
+                'position_id': self.position_id,
+                'account_cookie': self.account_cookie,
+                'instrument_id': self.code,
+                'towards': towards,
+                'exchange_id': self.exchange_id,
+                'order_time': str(datetime.datetime.now()),
+                'volume': amount,
+                'price': price,
+                'order_id': uuid.uuid4()
+            }
+        else:
+            return RuntimeError('ORDER CHECK FALSE: {}'.format(self.code))
 
     def update_pos(self, price, amount, towards):
         """支持股票/期货的更新仓位
@@ -415,6 +439,14 @@ class QA_Position():
 
     def reload(self):
         pass
+
+    def on_order(self, order: QA_Order):
+        # self.update_pos(order.)
+        pass
+
+    def on_transaction(self, transaction: dict):
+        self.update_pos(
+            transaction['price'], transaction['amount'], transaction['towards'])
 
     def on_pirce_change(self, price):
         self.last_price = price
