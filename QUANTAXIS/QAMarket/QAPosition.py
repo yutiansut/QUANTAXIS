@@ -1,6 +1,6 @@
 #
 import uuid
-
+import datetime
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
@@ -260,15 +260,19 @@ class QA_Position():
     def order_check(self, amount: float, price: float, towards: int) -> bool:
         if towards == ORDER_DIRECTION.BUY_CLOSE and (self.volume_short - self.volume_short_frozen) > amount:
             # check
+            self.volume_short_frozen_today += amount
             return True
 
         elif towards == ORDER_DIRECTION.BUY_CLOSETODAY and (self.volume_short_today - self.volume_short_frozen_today) > amount:
+            self.volume_short_frozen_today += amount
             return True
 
         elif towards == ORDER_DIRECTION.SELL_CLOSE and (self.volume_long - self.volume_long_frozen) > amount:
+            self.volume_long_frozen_today += amount
             return True
 
         elif towards == ORDER_DIRECTION.SELL_CLOSETODAY and (self.volume_long_today - self.volume_short_frozen_today) > amount:
+            self.volume_long_frozen_today += amount
             return True
 
         else:
@@ -276,16 +280,18 @@ class QA_Position():
 
     def send_order(self, amount: float, price: float, towards: int):
         if self.order_check(amount, price, towards):
+            print('order check success')
+
             return {
-                'position_id': self.position_id,
+                'position_id': str(self.position_id),
                 'account_cookie': self.account_cookie,
                 'instrument_id': self.code,
-                'towards': towards,
-                'exchange_id': self.exchange_id,
+                'towards': int(towards),
+                'exchange_id': str(self.exchange_id),
                 'order_time': str(datetime.datetime.now()),
-                'volume': amount,
-                'price': price,
-                'order_id': uuid.uuid4()
+                'volume': float(amount),
+                'price': float(price),
+                'order_id': str(uuid.uuid4())
             }
         else:
             return RuntimeError('ORDER CHECK FALSE: {}'.format(self.code))

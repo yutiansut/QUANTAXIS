@@ -2,7 +2,7 @@ import asyncio
 import threading
 from functools import wraps
 
-from janus import Queue as QAAsyncQueue
+from janus import Queue as QA_AsyncQueue
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
@@ -10,7 +10,7 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
 
 class QA_AsyncThread(threading.Thread):
     _loop = asyncio.new_event_loop()
-    _queue: QAAsyncQueue = QAAsyncQueue(loop=_loop)
+    _queue: QA_AsyncQueue = QA_AsyncQueue(loop=_loop)
 
     def __init__(self, name=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
