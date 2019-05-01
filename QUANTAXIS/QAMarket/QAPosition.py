@@ -258,10 +258,10 @@ class QA_Position():
             "position_profit": self.position_profit
         }
 
-    def receive_order(self, order:QA_Order):
+    def on_order(self, order:QA_Order):
         #self.update_pos(order.)
         pass
-    def receive_transaction(self, transaction:dict):
+    def on_transaction(self, transaction:dict):
         self.update_pos(transaction['price'], transaction['amount'], transaction['towards'])
 
     def update_pos(self, price, amount, towards):
