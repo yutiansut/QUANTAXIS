@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.4.8'
+__version__ = '1.4.9'
 __author__ = 'yutiansut'
 
 # fetch methods
@@ -176,7 +176,7 @@ from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAApplication.QAResult import backtest_result_analyzer
 
 # ENGINE
-from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engine
+from QUANTAXIS.QAEngine import QA_Thread, QA_Event, QA_Worker, QA_Task, QA_Engine, QA
 
 # Data
 from QUANTAXIS.QAData import (

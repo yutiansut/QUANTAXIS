@@ -6,7 +6,7 @@ import traceback
 import async_timeout
 
 
-class Job:
+class QA_AsyncTask:
     _source_traceback = None
     _closed = False
     _explicit = False
