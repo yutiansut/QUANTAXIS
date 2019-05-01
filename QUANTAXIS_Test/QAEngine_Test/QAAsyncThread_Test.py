@@ -3,9 +3,8 @@ from QUANTAXIS.QAEngine.QAAsyncThread import QA_AsyncThread
 
 """这里展示了如何超级简便的使用QA异步执行线程
 
-我们实例化两个 继承 QA_AsyncExec, 让他们监听
+我们实例化两个 继承 QA_AsyncThread 让他们监听事件
 
-然后你可以从外部传入 ==> 直接传入 QA_AsyncExec的任务队列即可
 
 
 你的典型场景:
