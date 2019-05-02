@@ -319,7 +319,8 @@ class ORDER_EVENT():
     CREATE = 'create'
     TRADE = 'trade'
     CANCEL = 'cancel'
-
+    FAIL = 'fail'
+    
 
 class FREQUENCE():
     """查询的级别
