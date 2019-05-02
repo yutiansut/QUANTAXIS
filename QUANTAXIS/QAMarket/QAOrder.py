@@ -88,6 +88,7 @@ class QA_Order():
             commission_coeff=0.00025,
             tax_coeff=0.001,
             exchange_id=None,
+            pms_id =None,
             *args,
             **kwargs
     ):
@@ -548,7 +549,7 @@ class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
         self.deal_list = {}
 
     def __repr__(self):
-        return '< QA_ORDERQueue >'
+        return '< QA_OrderQueue >'
         # return '< QA_OrderQueue AMOUNT {} WAITING TRADE {} >'.format(len(self.queue_df), len(self.pending))
 
     def __call__(self):

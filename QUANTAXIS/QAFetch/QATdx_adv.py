@@ -26,6 +26,7 @@
 import datetime
 import queue
 import time
+import click
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Timer
 
@@ -45,14 +46,14 @@ from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
 
 class QA_Tdx_Executor():
-    def __init__(self, thread_num=2, *args, **kwargs):
+    def __init__(self, thread_num=2, timeout=1, *args, **kwargs):
         self.thread_num = thread_num
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
             target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
-
+        self.timeout = timeout
         self.executor = ThreadPoolExecutor(self.thread_num)
 
     def __getattr__(self, item):
@@ -75,8 +76,12 @@ class QA_Tdx_Executor():
 
         api = TdxHq_API(raise_exception=True, auto_retry=False)
         _time = datetime.datetime.now()
+        # print(self.timeout)
         try:
-            with api.connect(ip, port, time_out=0.05):
+            with api.connect(ip, port, time_out=1):
+                res = api.get_security_list(0, 1)
+                # print(res)
+                # print(len(res))
                 if len(api.get_security_list(0, 1)) > 800:
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
@@ -134,11 +139,13 @@ class QA_Tdx_Executor():
         data = []
         if self._queue.qsize() < 80:
             for item in stock_ip_list:
+                if self._queue.full():
+                    break
                 _sec = self._test_speed(ip=item['ip'], port=item['port'])
-                if _sec < 0.1:
+                if _sec < self.timeout*3:
                     try:
                         self._queue.put(TdxHq_API(heartbeat=False).connect(
-                            ip=item['ip'], port=item['port'], time_out=0.05))
+                            ip=item['ip'], port=item['port'], time_out=self.timeout*2))
                     except:
                         pass
         else:
@@ -146,7 +153,7 @@ class QA_Tdx_Executor():
             Timer(0, self.api_worker).start()
         Timer(300, self.api_worker).start()
 
-    def _singal_job(self, context, id_, time_out=0.5):
+    def _singal_job(self, context, id_, time_out=0.7):
         try:
             _api = self.get_available()
 
@@ -225,13 +232,13 @@ class QA_Tdx_Executor():
         database.insert_many(QA_util_to_json_from_pandas(data))
 
 
-def get_bar():
-
+def get_bar(timeout=1, sleep=1):
+    sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor()
+    x = QA_Tdx_Executor(timeout=float(timeout))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -242,7 +249,7 @@ def get_bar():
 
             print('Time {}'.format(
                 (datetime.datetime.now() - _time).total_seconds()))
-            time.sleep(1)
+            time.sleep(sleep)
             print('Connection Pool NOW LEFT {} Available IP'.format(
                 x._queue.qsize()))
             print('Program Last Time {}'.format(
@@ -251,7 +258,7 @@ def get_bar():
             return data
         else:
             print('Not Trading time {}'.format(_time))
-            time.sleep(1)
+            time.sleep(sleep)
 
 
 def get_day_once():
@@ -263,13 +270,16 @@ def get_day_once():
     return x.get_security_bar_concurrent(code, 'day', 1)
 
 
-def bat():
-
+@click.command()
+@click.option('--timeout', default=0.2, help='timeout param')
+@click.option('--sleep', default=1, help='sleep step')
+def bat(timeout=0.2, sleep=1):
+    sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor()
+    x = QA_Tdx_Executor(timeout=float(timeout))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -277,10 +287,13 @@ def bat():
         'realtime_{}'.format(datetime.date.today()))
 
     print(database)
-    database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-                           ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
+    # mongodb在排序时，复合索引并不能像关系型数据库一样提升效率，反而会降低排序性能
+    # # 在测试的过程，发现datetime倒序索引在倒序查询时性能更高，但写入性能较低
+    # # 此表属于写多读少，所以索引继续采用正序
+    database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING)])
+    database.create_index([('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
-    for i in range(100000):
+    while True:
         _time = datetime.datetime.now()
         if QA_util_if_tradetime(_time):  # 如果在交易时间
             data = x.get_realtime_concurrent(code)
@@ -290,14 +303,14 @@ def bat():
 
             print('Time {}'.format(
                 (datetime.datetime.now() - _time).total_seconds()))
-            time.sleep(1)
+            time.sleep(sleep)
             print('Connection Pool NOW LEFT {} Available IP'.format(
                 x._queue.qsize()))
             print('Program Last Time {}'.format(
                 (datetime.datetime.now() - _time1).total_seconds()))
         else:
             print('Not Trading time {}'.format(_time))
-            time.sleep(1)
+            time.sleep(sleep)
 
 
 if __name__ == '__main__':
