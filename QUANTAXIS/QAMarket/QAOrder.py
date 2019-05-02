@@ -88,6 +88,7 @@ class QA_Order():
             commission_coeff=0.00025,
             tax_coeff=0.001,
             exchange_id=None,
+            pms_id =None,
             *args,
             **kwargs
     ):
