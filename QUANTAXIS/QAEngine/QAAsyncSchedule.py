@@ -1,12 +1,12 @@
 import asyncio
 from collections.abc import Collection
 
-from QUANTAXIS.QAEngine.asynctask import Job
+from QUANTAXIS.QAEngine.QAAsyncTask import QA_AsyncTask
 
 bases = (Collection,)
 
 
-class Scheduler(*bases):
+class QA_AsyncScheduler(*bases):
     def __init__(self, *, close_timeout, limit, pending_limit,
                  exception_handler, loop):
         self._loop = loop
@@ -64,7 +64,7 @@ class Scheduler(*bases):
     async def spawn(self, coro):
         if self._closed:
             raise RuntimeError("Scheduling a new job after closing")
-        job = Job(coro, self, self._loop)
+        job = QA_AsyncTask(coro, self, self._loop)
         should_start = (self._limit is None or
                         self.active_count < self._limit)
         self._jobs.add(job)
@@ -132,12 +132,12 @@ class Scheduler(*bases):
                 pass
 
 
-async def create_scheduler(*, close_timeout=0.1, limit=100,
+async def create_QAAsyncScheduler(*, close_timeout=0.1, limit=100,
                            pending_limit=10000, exception_handler=None):
     if exception_handler is not None and not callable(exception_handler):
         raise TypeError('A callable object or None is expected, '
                         'got {!r}'.format(exception_handler))
     loop = asyncio.get_event_loop()
-    return Scheduler(loop=loop, close_timeout=close_timeout,
+    return QA_AsyncScheduler(loop=loop, close_timeout=close_timeout,
                      limit=limit, pending_limit=pending_limit,
                      exception_handler=exception_handler)
