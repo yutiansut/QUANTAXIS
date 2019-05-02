@@ -6965,8 +6965,6 @@ trade_date_sse = [
     '2019-04-26',
     '2019-04-29',
     '2019-04-30',
-    '2019-05-02',
-    '2019-05-03',
     '2019-05-06',
     '2019-05-07',
     '2019-05-08',
@@ -7225,20 +7223,87 @@ def QA_util_if_tradetime(
                 return False
         else:
             return False
-    elif market is MARKET_TYPE.FUTURE_CN:
-                                      # 暂时用螺纹
-        if code[0:2] in ['rb', 'RB']:
-            if QA_util_if_trade(str(_time.date())[0:10]):
-                if _time.hour in [9, 10, 14, 21, 22]:
-                    return True
-                elif _time.hour in [13] and _time.minute >= 30:
-                    return True
-                elif _time.hour in [11] and _time.minute <= 30:
-                    return True
-                else:
-                    return False
-            else:
+    elif market is MARKET_TYPE.FUTURE_CN:                              
+        date_today=str(_time.date())    
+        date_yesterday=str((_time-datetime.timedelta(days=1)).date())                         
+        
+        is_today_open=QA_util_if_trade(date_today)
+        is_yesterday_open=QA_util_if_trade(date_yesterday)
+        
+        #考虑周六日的期货夜盘情况
+        if is_today_open==False: #可能是周六或者周日
+            if is_yesterday_open==False or (_time.hour > 2 or _time.hour == 2 and _time.minute > 30):
                 return False
+
+        shortName = ""                      # i , p
+        for i in range(len(code)):
+            ch = code[i]
+            if ch.isdigit():                # ch >= 48 and ch <= 57:
+                break
+            shortName += code[i].upper()
+
+        period = [
+            [9, 0, 10, 15],
+            [10, 30, 11, 30],
+            [13, 30, 15, 0]
+        ]
+        
+        if (shortName in ["IH", 'IF', 'IC']):
+            period = [
+                [9, 30, 11, 30],
+                [13, 0, 15, 0]
+            ]
+        elif (shortName in ["T", "TF"]):
+            period = [
+                [9, 15, 11, 30],
+                [13, 0, 15, 15]
+            ]
+        
+        if 0<=_time.weekday<=4:
+            for i in range(len(period)):
+                p = period[i]
+                if ((_time.hour > p[0] or (_time.hour == p[0] and _time.minute >= p[1])) and (_time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3]))):
+                    return True
+
+        #最新夜盘时间表_2019.03.29
+        nperiod = [
+            [
+                ['AU', 'AG', 'SC'],
+                [21, 0, 2, 30]  
+            ],
+            [
+                ['CU', 'AL', 'ZN', 'PB', 'SN', 'NI'],
+                [21, 0, 1, 0]   
+            ],
+            [
+                ['RU', 'RB', 'HC', 'BU','FU','SP'],
+                [21, 0, 23, 0]
+            ],
+            [
+                ['A', 'B', 'Y', 'M', 'JM', 'J', 'P', 'I', 'L', 'V', 'PP', 'EG', 'C', 'CS'],
+                [21, 0, 23, 0]
+            ],
+            [
+                ['SR', 'CF', 'RM', 'MA', 'TA', 'ZC', 'FG', 'IO', 'CY'],
+                [21, 0, 23, 30]
+            ],
+        ]
+
+        for i in range(len(nperiod)):
+            for j in range(len(nperiod[i][0])):
+                if nperiod[i][0][j] == shortName:
+                    p = nperiod[i][1]
+                    condA = _time.hour > p[0] or (_time.hour == p[0] and _time.minute >= p[1])
+                    condB = _time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3])
+                    # in one day
+                    if p[2] >= p[0]:
+                        if ((_time.weekday >= 0 and _time.weekday <= 4) and condA and condB):
+                            return True
+                    else:
+                        if (((_time.weekday >= 0 and _time.weekday <= 4) and condA) or ((_time.weekday >= 1 and _time.weekday <= 5) and condB)):
+                            return True
+                    return False
+        return False
 
 
 def QA_util_get_next_day(date, n=1):

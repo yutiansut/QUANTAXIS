@@ -36,6 +36,8 @@ Broker = QA.QA_BacktestBroker()
 
 QA.QA_SU_save_strategy('MACD_JCSC','Indicator',Account.account_cookie)
 # get data from mongodb
+QA.QA_SU_save_strategy('MACD_JCSC', 'Indicator',
+                       Account.account_cookie, if_save=True)
 data = QA.QA_fetch_stock_day_adv(
     ['000001', '000002', '000004', '600000'], '2017-09-01', '2018-05-20')
 data = data.to_qfq()
@@ -93,7 +95,7 @@ print(Account.daily_hold)
 # create Risk analysis
 Risk = QA.QA_Risk(Account)
 
-user.save()
+Account.save()
 Risk.save()
 
 

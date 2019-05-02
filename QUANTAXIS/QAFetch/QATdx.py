@@ -34,6 +34,7 @@ import numpy as np
 import pandas as pd
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
+from retrying import retry
 
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
@@ -46,7 +47,8 @@ from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               stock_ip_list, trade_date_sse)
 from QUANTAXIS.QAUtil.QASetting import QASETTING
 from QUANTAXIS.QASetting.QALocalize import log_path
-from QUANTAXIS.QAUtil import ParallelSim
+from QUANTAXIS.QAUtil import Parallelism
+from QUANTAXIS.QAUtil.QACache import QA_util_cache
 
 
 def init_fetcher():
@@ -99,8 +101,16 @@ def ping(ip, port=7709, type_='stock'):
         return datetime.timedelta(9, 9, 0)
 
 
-def select_best_ip():
-    QA_util_log_info('Selecting the Best Server IP of TDX')
+def select_best_ip(fetch_method='tick', reget=0):
+    """
+    可选择用哪种方法选择最优ip了,默认采用实际获取股票/期货的实际tick数据获取,
+    fetch_method=='code'代表获取服务器的code_list来计算耗时
+    在fetch_method==tick的时候,reget==1的话可以重新测试ip耗时
+    """
+    if fetch_method == 'tick':
+        QA_util_log_info('Selecting the Best Server IP by tick data fetch')
+    else:
+        QA_util_log_info('Selecting the Best Server IP by code list fetch')
 
     # 删除exclude ip
     import json
@@ -115,28 +125,35 @@ def select_best_ip():
     ipexclude = qasetting.get_config(
         section='IPLIST', option='exclude', default_value=alist)
 
-    exclude_from_stock_ip_list(json.loads(ipexclude.replace("'", "\"")))
+    exclude_from_stock_ip_list(ipexclude)
+    ipdefault = dict(stock=dict(ip=None, port=None),
+                     future=dict(ip=None, port=None))
+    if not reget:
+        ipdefault = qasetting.get_config(
+            section='IPLIST', option='default', default_value=default_ip)
 
-    ipdefault = qasetting.get_config(
-        section='IPLIST', option='default', default_value=default_ip)
-
-    ipdefault = eval(ipdefault) if isinstance(ipdefault, str) else ipdefault
+        ipdefault = eval(ipdefault) if isinstance(
+            ipdefault, str) else ipdefault
     assert isinstance(ipdefault, dict)
+    # best_stock_ip
     if ipdefault['stock']['ip'] == None:
-
-        best_stock_ip = get_ip_list_by_ping(
-            stock_ip_list, filename='stock_ip_list_MP')
+        if fetch_method == 'code':
+            best_stock_ip = get_ip_list_by_ping(stock_ip_list)
+        else:
+            best_stock_ip = get_best_ip_by_real_data_fetch('stock')
     else:
         if ping(ipdefault['stock']['ip'], ipdefault['stock']['port'], 'stock') < datetime.timedelta(0, 1):
             print('USING DEFAULT STOCK IP')
             best_stock_ip = ipdefault['stock']
         else:
             print('DEFAULT STOCK IP is BAD, RETESTING')
-            best_stock_ip = get_ip_list_by_ping(
-                stock_ip_list, filename='stock_ip_list_MP')
+            best_stock_ip = get_ip_list_by_ping(stock_ip_list)
     if ipdefault['future']['ip'] == None:
-        best_future_ip = get_ip_list_by_ping(
-            future_ip_list, filename='future_ip_list_MP', _type='future')
+        if fetch_method == 'code':
+            best_future_ip = get_ip_list_by_ping(
+                future_ip_list, _type='future')
+        elif fetch_method == 'tick':
+            best_future_ip = get_best_ip_by_real_data_fetch('future')
     else:
         if ping(ipdefault['future']['ip'], ipdefault['future']['port'], 'future') < datetime.timedelta(0, 1):
             print('USING DEFAULT FUTURE IP')
@@ -144,7 +161,7 @@ def select_best_ip():
         else:
             print('DEFAULT FUTURE IP {} is BAD, RETESTING'.format(ipdefault))
             best_future_ip = get_ip_list_by_ping(
-                future_ip_list, filename='future_ip_list_MP')
+                future_ip_list, _type='future')
     ipbest = {'stock': best_stock_ip, 'future': best_future_ip}
     qasetting.set_config(
         section='IPLIST', option='default', default_value=ipbest)
@@ -154,57 +171,107 @@ def select_best_ip():
     return ipbest
 
 
-def get_ip_list_by_ping(ip_list=[], filename=None, _type='stock'):
-    # data_stock = [ping(x['ip'], x['port'], 'stock') for x in ip_list]
-    # best_stock_ip = stock_ip_list[data_stock.index(min(data_stock))]
-    # return best_stock_ip
-    best_ip = get_ip_list_by_multi_process_ping(ip_list, 1, filename, _type)
+def get_ip_list_by_ping(ip_list=[], _type='stock'):
+    best_ip = get_ip_list_by_multi_process_ping(ip_list, 1, _type)
     return best_ip[0]
 
 
-def get_ip_list_by_multi_process_ping(ip_list=[], n=0, filename=None, _type='stock'):
+def get_best_ip_by_real_data_fetch(_type='stock'):
+    """
+    用特定的数据获取函数测试数据获得的时间,从而选择下载数据最快的服务器ip
+    默认使用特定品种1min的方式的获取
+    """
+    from QUANTAXIS.QAUtil.QADate import QA_util_today_str
+    import time
+
+    # 找到前两天的有效交易日期
+    pre_trade_date = QA_util_get_real_date(QA_util_today_str())
+    pre_trade_date = QA_util_get_real_date(pre_trade_date)
+
+    # 某个函数获取的耗时测试
+    def get_stock_data_by_ip(ips):
+        api = TdxHq_API()
+        start = time.time()
+        try:
+            with api.connect(ips['ip'], ips['port'], time_out=0.7):
+                # 加个可以timeout的方法(但是期货好像不适用)
+                res = QA_fetch_get_stock_transaction(
+                    '000001', pre_trade_date, pre_trade_date, 2, ips['ip'], ips['port'])
+                end = time.time()
+                return 9999 if res is None else end-start
+        except:
+            return 9999
+
+    def get_future_data_by_ip(ips):
+        apix = TdxExHaq_API()
+        start = time.time()
+        try:
+            res = QA_fetch_get_future_transaction(
+                'RBL8', pre_trade_date, pre_trade_date, 2, ips['ip'], ips['port'])
+            end = time.time()
+            return 9999 if res is None else end-start
+        except:
+            return 9999
+
+    func, ip_list = 0, 0
+    if _type == 'stock':
+        func, ip_list = get_stock_data_by_ip, stock_ip_list
+    else:
+        func, ip_list = get_future_data_by_ip, future_ip_list
+    from pathos.multiprocessing import Pool
+
+    def multiMap(func, sequence):
+        res = []
+        pool = Pool(4)
+        for i in sequence:
+            res.append(pool.apply_async(func, (i,)))
+        pool.close()
+        pool.join()
+        return list(map(lambda x: x.get(), res))
+
+    res = multiMap(func, ip_list)
+    index = res.index(min(res))
+    return ip_list[index]
+
+
+def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock'):
     ''' 根据ping排序返回可用的ip列表
+    2019 03 31 取消参数filename
 
     :param ip_list: ip列表
     :param n: 最多返回的ip数量， 当可用ip数量小于n，返回所有可用的ip；n=0时，返回所有可用ip
+    :param _type: ip类型
     :return: 可以ping通的ip列表
     '''
-
-    import pickle
-    import os
-    if filename:
-        filename = '{}{}{}.pickle'.format(QASETTING.get_config(
-            section='LOG', option='path', default_value=""), os.sep, filename)
-    if filename and os.path.isfile(filename):
-        with open(filename, 'rb') as filehandle:
-            # read the data as binary data stream
-            results = pickle.load(filehandle)
-            print('loading ip list from {}.'.format(filename))
+    cache = QA_util_cache()
+    results = cache.get(_type)
+    if results:
+        # read the data from cache
+        print('loading ip list from {} cache.'.format(_type))
     else:
         ips = [(x['ip'], x['port'], _type) for x in ip_list]
-        pl = ParallelSim()
-        pl.add(ping, ips)
-        pl.run()
-        data = pl.get_results()
-        data_stock = list(data)
+        ps = Parallelism()
+        ps.add(ping, ips)
+        ps.run()
+        data = list(ps.get_results())
         results = []
-        for i in range(len(data_stock)):
+        for i in range(len(data)):
             # 删除ping不通的数据
-            if data_stock[i] < datetime.timedelta(0, 9, 0):
-                results.append((data_stock[i], ip_list[i]))
+            if data[i] < datetime.timedelta(0, 9, 0):
+                results.append((data[i], ip_list[i]))
         # 按照ping值从小大大排序
         results = [x[1] for x in sorted(results, key=lambda x: x[0])]
-        if filename:
-            with open(filename, 'wb') as filehandle:
+        if _type:
                 # store the data as binary data stream
-                pickle.dump(results, filehandle)
-                print('saving ip list to {}.'.format(filename))
+            cache.set(_type, results, age=86400)
+            print('saving ip list to {} cache {}.'.format(_type, len(results)))
     if len(results) > 0:
         if n == 0 and len(results) > 0:
             return results
         else:
             return results[:n]
     else:
+        print('ALL IP PING TIMEOUT!')
         return [{'ip': None, 'port': None}]
 
 
@@ -225,7 +292,7 @@ best_ip = {
 def get_extensionmarket_ip(ip, port):
     global best_ip
     if ip is None and port is None and best_ip['future']['ip'] is None and best_ip['future']['port'] is None:
-        best_ip = select_best_ip()
+        best_ip = select_best_ip(reget=1)
         ip = best_ip['future']['ip']
         port = best_ip['future']['port']
     elif ip is None and port is None and best_ip['future']['ip'] is not None and best_ip['future']['port'] is not None:
@@ -249,7 +316,7 @@ def get_mainmarket_ip(ip, port):
 
     global best_ip
     if ip is None and port is None and best_ip['stock']['ip'] is None and best_ip['stock']['port'] is None:
-        best_ip = select_best_ip()
+        best_ip = select_best_ip(reget=1)
         ip = best_ip['stock']['ip']
         port = best_ip['stock']['port']
     elif ip is None and port is None and best_ip['stock']['ip'] is not None and best_ip['stock']['port'] is not None:
@@ -260,6 +327,7 @@ def get_mainmarket_ip(ip, port):
     return ip, port
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
     """按bar长度推算数据
 
@@ -296,6 +364,7 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
             return None
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='day', ip=None, port=None):
     """获取日线及以上级别的数据
 
@@ -372,6 +441,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='da
             print(e)
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -412,13 +482,36 @@ def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None, port=Non
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
-def QA_fetch_get_stock_latest(code, ip=None, port=None):
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_stock_latest(code, frequence='day', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     code = [code] if isinstance(code, str) else code
     api = TdxHq_API(multithread=True)
+
+    if frequence in ['w', 'W', 'Week', 'week']:
+        frequence = 5
+    elif frequence in ['month', 'M', 'm', 'Month']:
+        frequence = 6
+    elif frequence in ['Q', 'Quarter', 'q']:
+        frequence = 10
+    elif frequence in ['y', 'Y', 'year', 'Year']:
+        frequence = 11
+    elif frequence in ['5', '5m', '5min', 'five']:
+        frequence = 0
+    elif frequence in ['1', '1m', '1min', 'one']:
+        frequence = 8
+    elif frequence in ['15', '15m', '15min', 'fifteen']:
+        frequence = 1
+    elif frequence in ['30', '30m', '30min', 'half']:
+        frequence = 2
+    elif frequence in ['60', '60m', '60min', '1h']:
+        frequence = 3
+    else:
+        frequence = 9
+
     with api.connect(ip, port):
         data = pd.concat([api.to_df(api.get_security_bars(
-            9, _select_market_code(item), item, 0, 1)).assign(code=item) for item in code], axis=0)
+            frequence, _select_market_code(item), item, 0, 1)).assign(code=item) for item in code], axis=0)
         return data \
             .assign(date=pd.to_datetime(data['datetime']
                                         .apply(lambda x: x[0:10])), date_stamp=data['datetime']
@@ -427,6 +520,7 @@ def QA_fetch_get_stock_latest(code, ip=None, port=None):
             .drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     # reversed_bytes9 --> 涨速
@@ -454,6 +548,7 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
         return data.set_index(['datetime', 'code'])
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -573,6 +668,7 @@ def for_sh(code):
         return 'undefined'
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -610,6 +706,7 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
             #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_index_list(ip=None, port=None):
     """获取指数列表
 
@@ -638,6 +735,7 @@ def QA_fetch_get_index_list(ip=None, port=None):
             name=data['name'].apply(lambda x: str(x)[0:6]))
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_bond_list(ip=None, port=None):
     """bond
 
@@ -661,6 +759,7 @@ def QA_fetch_get_bond_list(ip=None, port=None):
             name=data['name'].apply(lambda x: str(x)[0:6]))
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
@@ -710,6 +809,7 @@ def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None, 
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None, port=None):
     """指数日线
     1- sh
@@ -764,6 +864,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None,
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None, port=None):
     '指数分钟线'
     ip, port = get_mainmarket_ip(ip, port)
@@ -813,6 +914,51 @@ def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None, port=Non
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_index_latest(code, frequence='day', ip=None, port=None):
+    ip, port = get_mainmarket_ip(ip, port)
+    code = [code] if isinstance(code, str) else code
+    api = TdxHq_API(multithread=True)
+
+    if frequence in ['w', 'W', 'Week', 'week']:
+        frequence = 5
+    elif frequence in ['month', 'M', 'm', 'Month']:
+        frequence = 6
+    elif frequence in ['Q', 'Quarter', 'q']:
+        frequence = 10
+    elif frequence in ['y', 'Y', 'year', 'Year']:
+        frequence = 11
+    elif frequence in ['5', '5m', '5min', 'five']:
+        frequence = 0
+    elif frequence in ['1', '1m', '1min', 'one']:
+        frequence = 8
+    elif frequence in ['15', '15m', '15min', 'fifteen']:
+        frequence = 1
+    elif frequence in ['30', '30m', '30min', 'half']:
+        frequence = 2
+    elif frequence in ['60', '60m', '60min', '1h']:
+        frequence = 3
+    else:
+        frequence = 9
+
+    with api.connect(ip, port):
+        data = []
+        for item in code:
+            if str(item)[0] in ['5', '1']:  # ETF
+                data.append(api.to_df(api.get_security_bars(frequence, 1 if str(item)[0] in [
+                            '0', '8', '9', '5'] else 0, item, 0, 1)).assign(code=item))
+            else:
+                data.append(api.to_df(api.get_index_bars(frequence, 1 if str(item)[0] in [
+                            '0', '8', '9', '5'] else 0, item, 0, 1)).assign(code=item))
+        data = pd.concat(data, axis=0)
+        return data \
+            .assign(date=pd.to_datetime(data['datetime']
+                                        .apply(lambda x: x[0:10])), date_stamp=data['datetime']
+                    .apply(lambda x: QA_util_date_stamp(str(x[0:10])))) \
+            .set_index('date', drop=False) \
+            .drop(['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)
+
+
 def __QA_fetch_get_stock_transaction(code, day, retry, api):
     batch_size = 2000  # 800 or 2000 ? 2000 maybe also works
     data_arr = []
@@ -837,6 +983,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
                                                                                         inplace=False)
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None):
     '''
 
@@ -879,6 +1026,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None
             return None
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
     '实时分笔成交 包含集合竞价 buyorsell 1--sell 0--buy 2--盘前'
     ip, port = get_mainmarket_ip(ip, port)
@@ -900,6 +1048,7 @@ def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
         return None
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
     '除权除息'
     ip, port = get_mainmarket_ip(ip, port)
@@ -926,6 +1075,7 @@ def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
             return None
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_info(code, ip=None, port=None):
     '股票基本信息'
     ip, port = get_mainmarket_ip(ip, port)
@@ -935,6 +1085,7 @@ def QA_fetch_get_stock_info(code, ip=None, port=None):
         return api.to_df(api.get_finance_info(market_code, code))
 
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_block(ip=None, port=None):
     '板块数据'
     ip, port = get_mainmarket_ip(ip, port)

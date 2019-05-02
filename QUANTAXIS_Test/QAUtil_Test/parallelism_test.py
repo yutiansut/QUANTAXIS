@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
-from QUANTAXIS.QAUtil import ParallelSim
+from QUANTAXIS.QAUtil import Parallelism
 
 
 def add(x, y):
@@ -11,7 +11,7 @@ def add(x, y):
 class TestParallelSim(TestCase):
     def test_get_results(self):
         # 多进程加法计算测试
-        pl = ParallelSim()
+        pl = Parallelism()
         counts = 5000
         aiter = [(x, x + 1) for x in range(counts)]
         pl.add(add, aiter)
