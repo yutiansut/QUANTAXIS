@@ -71,6 +71,8 @@ cdef class QA_Order():
     cdef public str market_type
     cdef public str frequence
     cdef public int towards
+    cdef public str direction
+    cdef public str offset
     cdef public str code
     cdef public str user_cookie
     cdef public float trade_amount
@@ -217,6 +219,10 @@ cdef class QA_Order():
         self._status = _status
         self.exchange_code = exchange_code
         self.pms_id = pms_id
+        self.direction = 'BUY' if self.towards in [
+            ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+        self.offset = 'OPEN' if self.towards in [
+            ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
                                                                    # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         # ) else kwargs['mainacc_id']
@@ -267,7 +273,7 @@ cdef class QA_Order():
             return self._status
 
     def get_exchange(self, code):
-        return self.exchange_code[code.lower()]
+        return self.exchange_code.get(code.lower(), 'Unknown')
 
     def create(self):
         """创建订单
@@ -432,13 +438,11 @@ cdef class QA_Order():
         }
 
     def to_qatradegatway(self):
-
-        direction = 'BUY' if self.direction > 0 else 'SELL'
         return {
             'topic': 'sendorder',
             'account_cookie': self.account_cookie,
             'strategy_id': self.strategy,
-            'order_direction': direction,
+            'order_direction': self.direction,
             'code': self.code.lower(),
             'price': self.price,
             'order_time': self.sending_time,

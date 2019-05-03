@@ -274,7 +274,8 @@ class QA_Position():
         elif towards == ORDER_DIRECTION.SELL_CLOSETODAY and (self.volume_long_today - self.volume_short_frozen_today) > amount:
             self.volume_long_frozen_today += amount
             return True
-
+        elif towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN, ORDER_DIRECTION.BUY]:
+            return True
         else:
             return False
 
