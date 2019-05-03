@@ -179,7 +179,7 @@ class QA_Order():
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.trade_id = trade_id if trade_id else []
-        self.market_preset = MARKET_PRESET().get_code(self.code,{})
+        self.market_preset = MARKET_PRESET().get_code(self.code)
 
         self.trade_price = 0                                       # 成交均价
         self.broker = broker
