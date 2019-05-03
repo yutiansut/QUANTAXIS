@@ -41,8 +41,8 @@ class ORDER_DIRECTION():
     ASK  申购
     """
 
-    BUY = 1
-    SELL = -1
+    cdef public int BUY = 1
+    cdef public int SELL = -1
     BUY_OPEN = 2
     BUY_CLOSE = 3
     BUY_CLOSE = 3
@@ -54,14 +54,6 @@ class ORDER_DIRECTION():
     XDXR = 5
     OTHER = 6
 
-
-class EXCHANGE_ID():
-    SSE = 'sse' #上交所
-    SZSE = 'szse' #深交所
-    SHFE = 'shfe' # 上期所
-    DCE = 'dce' #大商所
-    CZCE = 'czce' #郑商所
-    CFFEX = 'cffex' #中金所
 
 class OFFSET():
     """订单的开平仓属性
@@ -279,8 +271,6 @@ class ENGINE_EVENT():
     BAR_SETTLE = 'bar_settle'
     DAILY_SETTLE = 'daily_settle'
     UPDATE = 'update'
-    TRANSACTION = 'transaction'
-    ORDER = 'order'
 
 
 class ACCOUNT_EVENT():
@@ -319,8 +309,7 @@ class ORDER_EVENT():
     CREATE = 'create'
     TRADE = 'trade'
     CANCEL = 'cancel'
-    FAIL = 'fail'
-    
+
 
 class FREQUENCE():
     """查询的级别

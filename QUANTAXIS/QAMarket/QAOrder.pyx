@@ -23,19 +23,16 @@
 # SOFTWARE.
 
 import threading
-
 import pandas as pd
-
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAMarket.common import exchange_code
-from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
-                              QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil import (
+    QA_util_log_info,
+    QA_util_random_with_topic,
+    QA_util_to_json_from_pandas
+)
+from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL, MARKET_TYPE
 from QUANTAXIS.QAUtil.QADate import QA_util_stamp2datetime
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
-                                          ORDER_DIRECTION, ORDER_MODEL,
-                                          ORDER_STATUS)
-
-
 """
 重新定义Order模式
 
@@ -60,11 +57,47 @@ order_frame 是一个管理性面板  但是还是需要一个缓存dict？
 """
 
 
-class QA_Order():
+cdef class QA_Order():
     '''
         记录order
     '''
 
+    cdef public float price
+    cdef public str date
+    cdef public str datetime
+    cdef public str sending_time
+    cdef public list trade_time
+    cdef public float amount
+    cdef public str market_type
+    cdef public str frequence
+    cdef public int towards
+    cdef public str direction
+    cdef public str offset
+    cdef public str code
+    cdef public str user_cookie
+    cdef public dict market_preset
+    cdef public float trade_amount
+    cdef public float cancel_amount
+    cdef public str account_cookie
+    cdef public str strategy
+    cdef public str order_model
+    cdef public float money
+    cdef public str amount_model
+    cdef public str broker
+    cdef public str order_id
+    cdef public str realorder_id
+    cdef public list trade_id
+    cdef public str _status
+    cdef public object callback
+    cdef public float commission_coeff
+    cdef public float tax_coeff
+    cdef public str exchange_id
+    cdef public str pms_id
+    cdef public float trade_price
+    cdef public str reason
+    cdef public str time_condition
+    cdef public dict exchange_code
+    
     def __init__(
             self,
             price=None,
@@ -91,9 +124,7 @@ class QA_Order():
             commission_coeff=0.00025,
             tax_coeff=0.001,
             exchange_id=None,
-            pms_id=None,
-            *args,
-            **kwargs
+            pms_id=None
     ):
         '''
 
@@ -124,7 +155,7 @@ class QA_Order():
         - tax_coeff  印花税系数(股票)
         - exchange_id  交易所id (一般用于实盘期货)
 
-
+        
         :param args: type tuple
         :param kwargs: type dict
 
@@ -156,9 +187,9 @@ class QA_Order():
             self.datetime = datetime
         else:
             pass
-        self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
+        self.sending_time = self.datetime if sending_time is None else sending_time # 下单时间
 
-        self.trade_time = trade_time if trade_time else []  # 成交时间
+        self.trade_time = [trade_time] if trade_time else [] # 成交时间
         self.amount = amount                               # 委托数量
         self.trade_amount = 0                              # 成交数量
         self.cancel_amount = 0                             # 撤销数量
@@ -168,8 +199,7 @@ class QA_Order():
         self.market_type = market_type                     # 委托市场类别
         self.frequence = frequence                         # 委托所在的频率(回测用)
         self.account_cookie = account_cookie
-        self.strategy = strategy
-        self.type = market_type                            # see below
+        self.strategy = strategy                            # see below
         self.order_model = order_model
         self.amount_model = amount_model
         self.order_id = QA_util_random_with_topic(
@@ -178,9 +208,8 @@ class QA_Order():
         self.realorder_id = self.order_id
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
-        self.trade_id = trade_id if trade_id else []
+        self.trade_id = [trade_id] if trade_id else []
         self.market_preset = MARKET_PRESET().get_code(self.code)
-
         self.trade_price = 0                                       # 成交均价
         self.broker = broker
         self.callback = callback                                   # 委托成功的callback
@@ -190,54 +219,51 @@ class QA_Order():
         self.time_condition = 'GFD'                                # 当日有效
         self._status = _status
         self.exchange_code = exchange_code
-        # 增加订单对于多账户以及多级别账户的支持 2018/11/12
-        self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
-        ) else kwargs['mainacc_id']
-        self.subacc_id = None if 'subacc_id' not in kwargs.keys(
-        ) else kwargs['subacc_id']
+        self.pms_id = pms_id
         self.direction = 'BUY' if self.towards in [
             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
         self.offset = 'OPEN' if self.towards in [
             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
-
-    @property
-    def pending_amount(self):
-        return self.amount - self.cancel_amount - self.trade_amount
+                                                                   # 增加订单对于多账户以及多级别账户的支持 2018/11/12
+        # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+        # ) else kwargs['mainacc_id']
+        # self.subacc_id = None if 'subacc_id' not in kwargs.keys(
+        # ) else kwargs['subacc_id']
 
     @property
     def __dict__(self):
         return {
-            'price': self.price,
-            'datetime': self.datetime,
-            'date': self.date,
-            'sending_time': self.sending_time,
-            'trade_time': self.trade_time,
-            'amount': self.amount,
-            'trade_amount': self.trade_amount,
-            'cancel_amount': self.cancel_amount,
-            'towards': self.towards,
-            'code': self.code,
-            'user_cookie': self.user_cookie,
-            'market_type': self.market_type,
-            'frequence': self.frequence,
-            'account_cookie': self.account_cookie,
-            'strategy': self.strategy,
-            'type': self.market_type,
-            'order_model': self.order_model,
-            'amount_model': self.amount_model,
-            'order_id': self.order_id,
-            'realorder_id': self.realorder_id,
-            'commission_coeff': self.commission_coeff,
-            'tax_coeff': self.tax_coeff,
-            'trade_id': self.trade_id,
-            'trade_price': self.trade_price,
-            'broker': self.broker,
-            'callback': self.callback,
-            'money': self.money,
-            'reason': self.reason,
-            'exchange_id': self.exchange_id,
-            'time_condition': self.time_condition,
-            '_status': self.status,
+            'price': self.price,                                          
+            'datetime': self.datetime,                    
+            'date': self.date,                                 
+            'sending_time': self.sending_time,                
+            'trade_time': self.trade_time,                                     
+            'amount': self.amount,                                        
+            'trade_amount': self.trade_amount,                                    
+            'cancel_amount': self.cancel_amount,                                   
+            'towards': self.towards,                                         
+            'code': self.code,                                     
+            'user_cookie': self.user_cookie,                                         
+            'market_type': self.market_type,                            
+            'frequence': self.frequence,                                   
+            'account_cookie': self.account_cookie,                             
+            'strategy': self.strategy,                                     
+            'type': self.market_type,                                   
+            'order_model': self.order_model,                              
+            'amount_model': self.amount_model,                          
+            'order_id': self.order_id,                         
+            'realorder_id': self.realorder_id,                     
+            'commission_coeff': self.commission_coeff,            
+            'tax_coeff': self.tax_coeff,                   
+            'trade_id': self.trade_id,                                       
+            'trade_price': self.trade_price,                                     
+            'broker': self.broker,                                 
+            'callback': self.callback,       
+            'money': self.money,                          
+            'reason': self.reason,                                       
+            'exchange_id': self.exchange_id,                                  
+            'time_condition': self.time_condition,                              
+            '_status': self.status,                               
             'direction': self.direction,
             'offset': self.offset}
 
@@ -253,11 +279,15 @@ class QA_Order():
             self.amount,
             self.price,
             self.towards,
-            self.type,
+            self.market_type,
             self.order_id,
             self.account_cookie,
             self.status
         )
+
+    @property
+    def pending_amount(self):
+        return self.amount - self.cancel_amount - self.trade_amount
 
     @property
     def status(self):
@@ -279,6 +309,9 @@ class QA_Order():
         elif self.trade_amount == 0:
             self._status = ORDER_STATUS.QUEUED
             return self._status
+
+    def get_exchange(self, code):
+        return self.exchange_code.get(code.lower(), 'Unknown')
 
     def calc_commission(self, trade_price, trade_amount):
 
@@ -302,8 +335,22 @@ class QA_Order():
 
             return max(commission_fee, 5)
 
-    def get_exchange(self, code):
-        return self.exchange_code.get(code.lower(), 'Unknown')
+    def trade_message(self, trade_id, trade_price, trade_amount, trade_time):
+        return {
+            "user_id": self.account_cookie,  # //用户ID
+            "order_id": self.order_id,  # //交易所单号
+            "trade_id": trade_id,  # //委托单ID, 对于一个USER, trade_id 是永远不重复的
+            "exchange_id": self.exchange_id,  # //交易所
+            "instrument_id": self.code,  # //在交易所中的合约代码
+            "exchange_trade_id": trade_id,  # //交易所单号
+            "direction": self.direction,  # //下单方向
+            "offset": self.offset,  # //开平标志
+            "volume": trade_amount,  # //成交手数
+            "price": trade_price,  # //成交价格
+            "trade_date_time":  trade_time,  # //成交时间, epoch nano
+            # //成交手续费
+            "commission": self.calc_commission(trade_price, trade_amount),
+            "seqno": ''}
 
     def create(self):
         """创建订单
@@ -382,28 +429,11 @@ class QA_Order():
                 'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
             )
 
-    def trade_message(self, trade_id, trade_price, trade_amount, trade_time):
-        return {
-            "user_id": self.account_cookie,  # //用户ID
-            "order_id": self.order_id,  # //交易所单号
-            "trade_id": trade_id,  # //委托单ID, 对于一个USER, trade_id 是永远不重复的
-            "exchange_id": self.exchange_id,  # //交易所
-            "instrument_id": self.code,  # //在交易所中的合约代码
-            "exchange_trade_id": trade_id,  # //交易所单号
-            "direction": self.direction,  # //下单方向
-            "offset": self.offset,  # //开平标志
-            "volume": trade_amount,  # //成交手数
-            "price": trade_price,  # //成交价格
-            "trade_date_time":  trade_time,  # //成交时间, epoch nano
-            # //成交手续费
-            "commission": self.calc_commission(trade_price, trade_amount),
-            "seqno": ''}
-
-    def queued(self, realorder_id):
+    cpdef queued(QA_Order self, str realorder_id='1'):
         self.realorder_id = realorder_id
         self._status = ORDER_STATUS.QUEUED
 
-    def settle(self):
+    cpdef settle(QA_Order self):
         self._status = ORDER_STATUS.SETTLED
 
     def get(self, key, exception=None):
@@ -491,11 +521,11 @@ class QA_Order():
             'account_cookie': self.account_cookie,
             'strategy_id': self.strategy,
             'order_direction': self.direction,
-            'order_offset': self.offset,
             'code': self.code.lower(),
             'price': self.price,
             'order_time': self.sending_time,
             'exchange_id': self.get_exchange(self.code),
+            'order_offset': self.offset,
             'volume': self.amount,
             'order_id': self.order_id
         }
@@ -571,7 +601,7 @@ class QA_Order():
             self.price = order_dict['price']
             self.date = order_dict['date']
             self.datetime = order_dict['datetime']
-            self.sending_time = order_dict['sending_time']  # 下单时间
+            self.sending_time = order_dict['sending_time'] # 下单时间
             self.trade_time = order_dict['trade_time']
             self.amount = order_dict['amount']
             self.frequence = order_dict['frequence']
@@ -581,7 +611,6 @@ class QA_Order():
             self.user_cookie = order_dict['user_cookie']
             self.account_cookie = order_dict['account_cookie']
             self.strategy = order_dict['strategy']
-            self.type = order_dict['type']
             self.order_model = order_dict['order_model']
             self.amount_model = order_dict['amount_model']
             self.order_id = order_dict['order_id']
@@ -604,7 +633,7 @@ class QA_Order():
             QA_util_log_info('Failed to tran from dict {}'.format(e))
 
 
-class QA_OrderQueue():  # also the order tree ？？ what's the tree means?
+cdef class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
     """
     一个待成交队列
     queue是一个dataframe
@@ -619,6 +648,8 @@ class QA_OrderQueue():  # also the order tree ？？ what's the tree means?
     你看看你还有多少单子在委托你就数数小本子
     这个小本子 就是orderqueue的dataframe
     """
+    cdef public dict order_list
+    cdef public dict deal_list
 
     def __init__(self):
         """重新修改 优化性能
