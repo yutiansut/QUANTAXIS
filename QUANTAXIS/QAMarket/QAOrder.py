@@ -240,7 +240,7 @@ class QA_Order():
             return self._status
 
     def get_exchange(self, code):
-        return self.exchange_code[code.lower()]
+        return self.exchange_code.get(code.lower(), 'Unknown')
 
     def create(self):
         """创建订单
