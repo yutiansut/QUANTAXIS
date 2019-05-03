@@ -448,12 +448,16 @@ class QA_Position():
         pass
 
     def on_order(self, order: QA_Order):
-        # self.update_pos(order.)
         pass
 
     def on_transaction(self, transaction: dict):
+        towards = transaction.get('towards',eval('ORDER_DIRECTION.{}_{}'.format(
+            transaction.get('direction'),
+            transaction.get('offset')
+        )))
         self.update_pos(
-            transaction['price'], transaction['amount'], transaction['towards'])
+            transaction['price'], transaction['amount'], towards)
+        print(self.static_message)
 
     def on_pirce_change(self, price):
         self.last_price = price

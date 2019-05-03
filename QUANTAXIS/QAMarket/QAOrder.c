@@ -1490,7 +1490,6 @@ static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_self[] = "self.{}";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_type[] = "type";
-static const char __pyx_k_unit[] = "unit";
 static const char __pyx_k_vars[] = "vars";
 static const char __pyx_k_CLOSE[] = "CLOSE";
 static const char __pyx_k_Order[] = "Order";
@@ -1566,6 +1565,7 @@ static const char __pyx_k_price_type[] = "price_type";
 static const char __pyx_k_pyx_result[] = "__pyx_result";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_trade_time[] = "trade_time";
+static const char __pyx_k_unit_table[] = "unit_table";
 static const char __pyx_k_CANCEL_PART[] = "CANCEL_PART";
 static const char __pyx_k_MARKET_TYPE[] = "MARKET_TYPE";
 static const char __pyx_k_ORDER_MODEL[] = "ORDER_MODEL.{}";
@@ -1817,7 +1817,7 @@ static PyObject *__pyx_n_s_trade_message;
 static PyObject *__pyx_n_s_trade_price;
 static PyObject *__pyx_n_s_trade_time;
 static PyObject *__pyx_n_s_type;
-static PyObject *__pyx_n_s_unit;
+static PyObject *__pyx_n_s_unit_table;
 static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_upper;
 static PyObject *__pyx_n_s_user_cookie;
@@ -4758,7 +4758,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
  *     def calc_commission(self, trade_price, trade_amount):
  * 
  *         if self.market_type == MARKET_TYPE.FUTURE_CN:             # <<<<<<<<<<<<<<
- *             value = trade_price * trade_amount * self.market_preset['unit']
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,
  */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_MARKET_TYPE); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
@@ -4773,17 +4773,17 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":319
  * 
  *         if self.market_type == MARKET_TYPE.FUTURE_CN:
- *             value = trade_price * trade_amount * self.market_preset['unit']             # <<<<<<<<<<<<<<
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)             # <<<<<<<<<<<<<<
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,
  *                                 ORDER_DIRECTION.BUY_CLOSE,
  */
     __pyx_t_2 = PyNumber_Multiply(__pyx_v_trade_price, __pyx_v_trade_amount); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 319, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     if (unlikely(__pyx_v_self->market_preset == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "get");
       __PYX_ERR(0, 319, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_self->market_preset, __pyx_n_s_unit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_GetItemDefault(__pyx_v_self->market_preset, __pyx_n_s_unit_table, __pyx_int_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_4 = PyNumber_Multiply(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 319, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -4794,7 +4794,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":320
  *         if self.market_type == MARKET_TYPE.FUTURE_CN:
- *             value = trade_price * trade_amount * self.market_preset['unit']
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,             # <<<<<<<<<<<<<<
  *                                 ORDER_DIRECTION.BUY_CLOSE,
  *                                 ORDER_DIRECTION.SELL_CLOSE,
@@ -4821,7 +4821,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
     __Pyx_GOTREF(__pyx_t_1);
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":321
- *             value = trade_price * trade_amount * self.market_preset['unit']
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,
  *                                 ORDER_DIRECTION.BUY_CLOSE,             # <<<<<<<<<<<<<<
  *                                 ORDER_DIRECTION.SELL_CLOSE,
@@ -4838,7 +4838,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":320
  *         if self.market_type == MARKET_TYPE.FUTURE_CN:
- *             value = trade_price * trade_amount * self.market_preset['unit']
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,             # <<<<<<<<<<<<<<
  *                                 ORDER_DIRECTION.BUY_CLOSE,
  *                                 ORDER_DIRECTION.SELL_CLOSE,
@@ -4871,7 +4871,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":320
  *         if self.market_type == MARKET_TYPE.FUTURE_CN:
- *             value = trade_price * trade_amount * self.market_preset['unit']
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,             # <<<<<<<<<<<<<<
  *                                 ORDER_DIRECTION.BUY_CLOSE,
  *                                 ORDER_DIRECTION.SELL_CLOSE,
@@ -4904,7 +4904,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":320
  *         if self.market_type == MARKET_TYPE.FUTURE_CN:
- *             value = trade_price * trade_amount * self.market_preset['unit']
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,             # <<<<<<<<<<<<<<
  *                                 ORDER_DIRECTION.BUY_CLOSE,
  *                                 ORDER_DIRECTION.SELL_CLOSE,
@@ -4985,7 +4985,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
 
       /* "QUANTAXIS/QAMARKET/QAOrder.pyx":320
  *         if self.market_type == MARKET_TYPE.FUTURE_CN:
- *             value = trade_price * trade_amount * self.market_preset['unit']
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,             # <<<<<<<<<<<<<<
  *                                 ORDER_DIRECTION.BUY_CLOSE,
  *                                 ORDER_DIRECTION.SELL_CLOSE,
@@ -5145,7 +5145,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6calc_commissi
  *     def calc_commission(self, trade_price, trade_amount):
  * 
  *         if self.market_type == MARKET_TYPE.FUTURE_CN:             # <<<<<<<<<<<<<<
- *             value = trade_price * trade_amount * self.market_preset['unit']
+ *             value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
  *             if self.towards in [ORDER_DIRECTION.BUY_OPEN,
  */
   }
@@ -18348,7 +18348,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_trade_price, __pyx_k_trade_price, sizeof(__pyx_k_trade_price), 0, 0, 1, 1},
   {&__pyx_n_s_trade_time, __pyx_k_trade_time, sizeof(__pyx_k_trade_time), 0, 0, 1, 1},
   {&__pyx_n_s_type, __pyx_k_type, sizeof(__pyx_k_type), 0, 0, 1, 1},
-  {&__pyx_n_s_unit, __pyx_k_unit, sizeof(__pyx_k_unit), 0, 0, 1, 1},
+  {&__pyx_n_s_unit_table, __pyx_k_unit_table, sizeof(__pyx_k_unit_table), 0, 0, 1, 1},
   {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
   {&__pyx_n_s_upper, __pyx_k_upper, sizeof(__pyx_k_upper), 0, 0, 1, 1},
   {&__pyx_n_s_user_cookie, __pyx_k_user_cookie, sizeof(__pyx_k_user_cookie), 0, 0, 1, 1},
