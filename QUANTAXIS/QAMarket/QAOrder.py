@@ -23,16 +23,19 @@
 # SOFTWARE.
 
 import threading
+
 import pandas as pd
 
+from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAMarket.common import exchange_code
-from QUANTAXIS.QAUtil import (
-    QA_util_log_info,
-    QA_util_random_with_topic,
-    QA_util_to_json_from_pandas
-)
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL
+from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
+                              QA_util_to_json_from_pandas)
 from QUANTAXIS.QAUtil.QADate import QA_util_stamp2datetime
+from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
+                                          ORDER_DIRECTION, ORDER_MODEL,
+                                          ORDER_STATUS)
+
+
 """
 重新定义Order模式
 
@@ -176,6 +179,7 @@ class QA_Order():
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.trade_id = trade_id if trade_id else []
+        self.market_preset = MARKET_PRESET().get_code(self.code,{})
 
         self.trade_price = 0                                       # 成交均价
         self.broker = broker
@@ -200,43 +204,42 @@ class QA_Order():
     def pending_amount(self):
         return self.amount - self.cancel_amount - self.trade_amount
 
-    @property    
+    @property
     def __dict__(self):
         return {
-            'price': self.price,                                          
-            'datetime': self.datetime,                    
-            'date': self.date,                                 
-            'sending_time': self.sending_time,                
-            'trade_time': self.trade_time,                                     
-            'amount': self.amount,                                        
-            'trade_amount': self.trade_amount,                                    
-            'cancel_amount': self.cancel_amount,                                   
-            'towards': self.towards,                                         
-            'code': self.code,                                     
-            'user_cookie': self.user_cookie,                                         
-            'market_type': self.market_type,                            
-            'frequence': self.frequence,                                   
-            'account_cookie': self.account_cookie,                             
-            'strategy': self.strategy,                                     
-            'type': self.market_type,                                   
-            'order_model': self.order_model,                              
-            'amount_model': self.amount_model,                          
-            'order_id': self.order_id,                         
-            'realorder_id': self.realorder_id,                     
-            'commission_coeff': self.commission_coeff,            
-            'tax_coeff': self.tax_coeff,                   
-            'trade_id': self.trade_id,                                       
-            'trade_price': self.trade_price,                                     
-            'broker': self.broker,                                 
-            'callback': self.callback,       
-            'money': self.money,                          
-            'reason': self.reason,                                       
-            'exchange_id': self.exchange_id,                                  
-            'time_condition': self.time_condition,                              
-            '_status': self.status,                               
+            'price': self.price,
+            'datetime': self.datetime,
+            'date': self.date,
+            'sending_time': self.sending_time,
+            'trade_time': self.trade_time,
+            'amount': self.amount,
+            'trade_amount': self.trade_amount,
+            'cancel_amount': self.cancel_amount,
+            'towards': self.towards,
+            'code': self.code,
+            'user_cookie': self.user_cookie,
+            'market_type': self.market_type,
+            'frequence': self.frequence,
+            'account_cookie': self.account_cookie,
+            'strategy': self.strategy,
+            'type': self.market_type,
+            'order_model': self.order_model,
+            'amount_model': self.amount_model,
+            'order_id': self.order_id,
+            'realorder_id': self.realorder_id,
+            'commission_coeff': self.commission_coeff,
+            'tax_coeff': self.tax_coeff,
+            'trade_id': self.trade_id,
+            'trade_price': self.trade_price,
+            'broker': self.broker,
+            'callback': self.callback,
+            'money': self.money,
+            'reason': self.reason,
+            'exchange_id': self.exchange_id,
+            'time_condition': self.time_condition,
+            '_status': self.status,
             'direction': self.direction,
             'offset': self.offset}
-
 
     def __repr__(self):
         '''
@@ -276,6 +279,28 @@ class QA_Order():
         elif self.trade_amount == 0:
             self._status = ORDER_STATUS.QUEUED
             return self._status
+
+    def calc_commission(self, trade_price, trade_amount):
+
+        if self.market_type == MARKET_TYPE.FUTURE_CN:
+            value = trade_price * trade_amount * self.market_preset['unit']
+            if self.towards in [ORDER_DIRECTION.BUY_OPEN,
+                                ORDER_DIRECTION.BUY_CLOSE,
+                                ORDER_DIRECTION.SELL_CLOSE,
+                                ORDER_DIRECTION.SELL_OPEN]:
+                commission_fee = self.market_preset['commission_coeff_pervol'] * trade_amount + \
+                    self.market_preset['commission_coeff_peramount'] * \
+                    abs(value)
+            elif self.towards in [ORDER_DIRECTION.BUY_CLOSETODAY,
+                                   ORDER_DIRECTION.SELL_CLOSETODAY]:
+                commission_fee = self.market_preset['commission_coeff_today_pervol'] * trade_amount + \
+                    self.market_preset['commission_coeff_today_peramount'] * \
+                    abs(value)
+            return commission_fee
+        elif self.market_type == MARKET_TYPE.STOCK_CN:
+            commission_fee = trade_price * trade_amount * self.commission_coeff
+
+            return max(commission_fee, 5)
 
     def get_exchange(self, code):
         return self.exchange_code.get(code.lower(), 'Unknown')
@@ -349,12 +374,30 @@ class QA_Order():
                         self.towards,
                         trade_time
                     )
+                    return self.trade_message(trade_id, trade_price, trade_amount, trade_time)
                 else:
                     pass
         else:
             raise RuntimeError(
                 'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
             )
+
+    def trade_message(self, trade_id, trade_price, trade_amount, trade_time):
+        return {
+            "user_id": self.account_cookie,  # //用户ID
+            "order_id": self.order_id,  # //交易所单号
+            "trade_id": trade_id,  # //委托单ID, 对于一个USER, trade_id 是永远不重复的
+            "exchange_id": self.exchange_id,  # //交易所
+            "instrument_id": self.code,  # //在交易所中的合约代码
+            "exchange_trade_id": trade_id,  # //交易所单号
+            "direction": self.direction,  # //下单方向
+            "offset": self.offset,  # //开平标志
+            "volume": trade_amount,  # //成交手数
+            "price": trade_price,  # //成交价格
+            "trade_date_time":  trade_time,  # //成交时间, epoch nano
+            # //成交手续费
+            "commission": self.calc_commission(trade_price, trade_amount),
+            "seqno": ''}
 
     def queued(self, realorder_id):
         self.realorder_id = realorder_id
