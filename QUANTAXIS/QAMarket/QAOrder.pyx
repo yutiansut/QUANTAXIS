@@ -71,6 +71,8 @@ cdef class QA_Order():
     cdef public str market_type
     cdef public str frequence
     cdef public int towards
+    cdef public str direction
+    cdef public str offset
     cdef public str code
     cdef public str user_cookie
     cdef public float trade_amount
@@ -271,7 +273,7 @@ cdef class QA_Order():
             return self._status
 
     def get_exchange(self, code):
-        return self.exchange_code[code.lower()]
+        return self.exchange_code.get(code.lower(), 'Unknown')
 
     def create(self):
         """创建订单
@@ -436,13 +438,11 @@ cdef class QA_Order():
         }
 
     def to_qatradegatway(self):
-
-        direction = 'BUY' if self.direction > 0 else 'SELL'
         return {
             'topic': 'sendorder',
             'account_cookie': self.account_cookie,
             'strategy_id': self.strategy,
-            'order_direction': direction,
+            'order_direction': self.direction,
             'code': self.code.lower(),
             'price': self.price,
             'order_time': self.sending_time,

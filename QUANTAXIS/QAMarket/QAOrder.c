@@ -805,7 +805,7 @@ struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order;
 struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue;
 struct __pyx_opt_args_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_queued;
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":352
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":354
  *             )
  * 
  *     cpdef queued(QA_Order self, str realorder_id='1'):             # <<<<<<<<<<<<<<
@@ -836,6 +836,8 @@ struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order {
   PyObject *market_type;
   PyObject *frequence;
   int towards;
+  PyObject *direction;
+  PyObject *offset;
   PyObject *code;
   PyObject *user_cookie;
   float trade_amount;
@@ -1078,15 +1080,6 @@ static PyObject *__Pyx__GetModuleGlobalName(PyObject *name, PY_UINT64_T *dict_ve
 static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name);
 #endif
 
-/* PyObjectSetAttrStr.proto */
-#if CYTHON_USE_TYPE_SLOTS
-#define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o, n, NULL)
-static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value);
-#else
-#define __Pyx_PyObject_DelAttrStr(o,n)   PyObject_DelAttr(o,n)
-#define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
-#endif
-
 /* IncludeStringH.proto */
 #include <string.h>
 
@@ -1103,22 +1096,39 @@ static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int 
 #define __Pyx_PyString_Equals __Pyx_PyBytes_Equals
 #endif
 
+/* dict_getitem_default.proto */
+static PyObject* __Pyx_PyDict_GetItemDefault(PyObject* d, PyObject* key, PyObject* default_value);
+
+/* UnpackUnboundCMethod.proto */
+typedef struct {
+    PyObject *type;
+    PyObject **method_name;
+    PyCFunction func;
+    PyObject *method;
+    int flag;
+} __Pyx_CachedCFunction;
+
+/* CallUnboundCMethod1.proto */
+static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
+#else
+#define __Pyx_CallUnboundCMethod1(cfunc, self, arg)  __Pyx__CallUnboundCMethod1(cfunc, self, arg)
+#endif
+
+/* CallUnboundCMethod2.proto */
+static PyObject* __Pyx__CallUnboundCMethod2(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg1, PyObject* arg2);
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030600B1
+static CYTHON_INLINE PyObject *__Pyx_CallUnboundCMethod2(__Pyx_CachedCFunction *cfunc, PyObject *self, PyObject *arg1, PyObject *arg2);
+#else
+#define __Pyx_CallUnboundCMethod2(cfunc, self, arg1, arg2)  __Pyx__CallUnboundCMethod2(cfunc, self, arg1, arg2)
+#endif
+
 /* PyObjectCallNoArg.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
 #else
 #define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
-#endif
-
-/* DictGetItem.proto */
-#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
-static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
-#define __Pyx_PyObject_Dict_GetItem(obj, name)\
-    (likely(PyDict_CheckExact(obj)) ?\
-     __Pyx_PyDict_GetItem(obj, name) : PyObject_GetItem(obj, name))
-#else
-#define __Pyx_PyDict_GetItem(d, key) PyObject_GetItem(d, key)
-#define __Pyx_PyObject_Dict_GetItem(obj, name)  PyObject_GetItem(obj, name)
 #endif
 
 /* PySequenceContains.proto */
@@ -1224,6 +1234,26 @@ static int __Pyx_GetException(PyObject **type, PyObject **value, PyObject **tb);
 /* PyIntCompare.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, long intval, long inplace);
 
+/* PyObjectSetAttrStr.proto */
+#if CYTHON_USE_TYPE_SLOTS
+#define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o, n, NULL)
+static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value);
+#else
+#define __Pyx_PyObject_DelAttrStr(o,n)   PyObject_DelAttr(o,n)
+#define __Pyx_PyObject_SetAttrStr(o,n,v) PyObject_SetAttr(o,n,v)
+#endif
+
+/* DictGetItem.proto */
+#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
+static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
+#define __Pyx_PyObject_Dict_GetItem(obj, name)\
+    (likely(PyDict_CheckExact(obj)) ?\
+     __Pyx_PyDict_GetItem(obj, name) : PyObject_GetItem(obj, name))
+#else
+#define __Pyx_PyDict_GetItem(d, key) PyObject_GetItem(d, key)
+#define __Pyx_PyObject_Dict_GetItem(obj, name)  PyObject_GetItem(obj, name)
+#endif
+
 /* GetAttr.proto */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
 
@@ -1235,15 +1265,6 @@ static int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name
 
 /* py_dict_keys.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyDict_Keys(PyObject* d);
-
-/* UnpackUnboundCMethod.proto */
-typedef struct {
-    PyObject *type;
-    PyObject **method_name;
-    PyCFunction func;
-    PyObject *method;
-    int flag;
-} __Pyx_CachedCFunction;
 
 /* CallUnboundCMethod0.proto */
 static PyObject* __Pyx__CallUnboundCMethod0(__Pyx_CachedCFunction* cfunc, PyObject* self);
@@ -1483,6 +1504,7 @@ static const char __pyx_k_update[] = "update";
 static const char __pyx_k_values[] = "values";
 static const char __pyx_k_volume[] = "volume";
 static const char __pyx_k_SETTLED[] = "SETTLED";
+static const char __pyx_k_Unknown[] = "Unknown";
 static const char __pyx_k_message[] = "message";
 static const char __pyx_k_towards[] = "towards";
 static const char __pyx_k_user_id[] = "user_id";
@@ -1582,7 +1604,7 @@ static const char __pyx_k_QA_util_to_json_from_pandas[] = "QA_util_to_json_from_
 static const char __pyx_k_QUANTAXIS_QAUtil_QAParameter[] = "QUANTAXIS.QAUtil.QAParameter";
 static const char __pyx_k_QA_Order_realorder_id_datetime[] = "< QA_Order realorder_id {} datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >";
 static const char __pyx_k_QAERROR_Wrong_for_get_None_type[] = "QAERROR Wrong for get None type while insert order to Queue";
-static const char __pyx_k_Incompatible_checksums_s_vs_0xcf[] = "Incompatible checksums (%s vs 0xcf026ad = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, exchange_code, exchange_id, frequence, market_type, money, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))";
+static const char __pyx_k_Incompatible_checksums_s_vs_0x33[] = "Incompatible checksums (%s vs 0x3325f86 = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, direction, exchange_code, exchange_id, frequence, market_type, money, offset, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))";
 static const char __pyx_k_Incompatible_checksums_s_vs_0xec[] = "Incompatible checksums (%s vs 0xec10c9d = (deal_list, order_list))";
 static PyObject *__pyx_kp_s_09_31_00;
 static PyObject *__pyx_kp_s_1;
@@ -1599,7 +1621,7 @@ static PyObject *__pyx_n_s_DataFrame;
 static PyObject *__pyx_n_s_FAILED;
 static PyObject *__pyx_kp_s_Failed_to_tran_from_dict;
 static PyObject *__pyx_n_s_GFD;
-static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0xcf;
+static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x33;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0xec;
 static PyObject *__pyx_n_s_NEW;
 static PyObject *__pyx_n_s_NEXT;
@@ -1633,6 +1655,7 @@ static PyObject *__pyx_n_s_SELL_OPEN;
 static PyObject *__pyx_n_s_SETTLED;
 static PyObject *__pyx_n_s_SUCCESS_ALL;
 static PyObject *__pyx_n_s_SUCCESS_PART;
+static PyObject *__pyx_n_s_Unknown;
 static PyObject *__pyx_kp_s__4;
 static PyObject *__pyx_kp_s__5;
 static PyObject *__pyx_kp_s__6;
@@ -1790,6 +1813,12 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9frequence_2__set__(
 static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9frequence_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_7towards___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
 static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_7towards_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_4code___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
 static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_4code_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
 static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_4code_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self); /* proto */
@@ -1881,6 +1910,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(
 static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_2__pyx_unpickle_QA_OrderQueue(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_OrderQueue(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_get = {0, &__pyx_n_s_get, 0, 0, 0};
 static __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_keys = {0, &__pyx_n_s_keys, 0, 0, 0};
 static __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_values = {0, &__pyx_n_s_values, 0, 0, 0};
 static PyObject *__pyx_float_0_001;
@@ -1888,7 +1918,7 @@ static PyObject *__pyx_float_0_00025;
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_10;
-static PyObject *__pyx_int_217065133;
+static PyObject *__pyx_int_53632902;
 static PyObject *__pyx_int_247532701;
 static PyObject *__pyx_k_;
 static PyObject *__pyx_k__2;
@@ -1899,7 +1929,7 @@ static PyObject *__pyx_codeobj__8;
 static PyObject *__pyx_codeobj__10;
 /* Late includes */
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":98
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":100
  *     cdef public dict exchange_code
  * 
  *     def __init__(             # <<<<<<<<<<<<<<
@@ -1946,7 +1976,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_price,&__pyx_n_s_date,&__pyx_n_s_datetime,&__pyx_n_s_sending_time,&__pyx_n_s_trade_time,&__pyx_n_s_amount,&__pyx_n_s_market_type,&__pyx_n_s_frequence,&__pyx_n_s_towards,&__pyx_n_s_code,&__pyx_n_s_user_cookie,&__pyx_n_s_account_cookie,&__pyx_n_s_strategy,&__pyx_n_s_order_model,&__pyx_n_s_money,&__pyx_n_s_amount_model,&__pyx_n_s_broker,&__pyx_n_s_order_id,&__pyx_n_s_trade_id,&__pyx_n_s_status,&__pyx_n_s_callback,&__pyx_n_s_commission_coeff,&__pyx_n_s_tax_coeff,&__pyx_n_s_exchange_id,&__pyx_n_s_pms_id,0};
     PyObject* values[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":100
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":102
  *     def __init__(
  *             self,
  *             price=None,             # <<<<<<<<<<<<<<
@@ -1955,7 +1985,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[0] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":101
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":103
  *             self,
  *             price=None,
  *             date=None,             # <<<<<<<<<<<<<<
@@ -1964,7 +1994,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[1] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":102
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":104
  *             price=None,
  *             date=None,
  *             datetime=None,             # <<<<<<<<<<<<<<
@@ -1973,7 +2003,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[2] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":103
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":105
  *             date=None,
  *             datetime=None,
  *             sending_time=None,             # <<<<<<<<<<<<<<
@@ -1982,7 +2012,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[3] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":104
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":106
  *             datetime=None,
  *             sending_time=None,
  *             trade_time=False,             # <<<<<<<<<<<<<<
@@ -1992,7 +2022,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
     values[4] = ((PyObject *)Py_False);
     values[5] = ((PyObject *)__pyx_int_0);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":106
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":108
  *             trade_time=False,
  *             amount=0,
  *             market_type=None,             # <<<<<<<<<<<<<<
@@ -2001,7 +2031,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[6] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":107
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":109
  *             amount=0,
  *             market_type=None,
  *             frequence=None,             # <<<<<<<<<<<<<<
@@ -2010,7 +2040,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[7] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":108
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":110
  *             market_type=None,
  *             frequence=None,
  *             towards=None,             # <<<<<<<<<<<<<<
@@ -2019,7 +2049,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[8] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":109
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":111
  *             frequence=None,
  *             towards=None,
  *             code=None,             # <<<<<<<<<<<<<<
@@ -2028,7 +2058,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[9] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":110
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":112
  *             towards=None,
  *             code=None,
  *             user_cookie=None,             # <<<<<<<<<<<<<<
@@ -2037,7 +2067,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[10] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":111
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":113
  *             code=None,
  *             user_cookie=None,
  *             account_cookie=None,             # <<<<<<<<<<<<<<
@@ -2046,7 +2076,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[11] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":112
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":114
  *             user_cookie=None,
  *             account_cookie=None,
  *             strategy=None,             # <<<<<<<<<<<<<<
@@ -2055,7 +2085,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[12] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":113
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":115
  *             account_cookie=None,
  *             strategy=None,
  *             order_model=None,             # <<<<<<<<<<<<<<
@@ -2064,7 +2094,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[13] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":114
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":116
  *             strategy=None,
  *             order_model=None,
  *             money=None,             # <<<<<<<<<<<<<<
@@ -2074,7 +2104,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
     values[14] = ((PyObject *)Py_None);
     values[15] = __pyx_k_;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":116
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":118
  *             money=None,
  *             amount_model=AMOUNT_MODEL.BY_AMOUNT,
  *             broker=None,             # <<<<<<<<<<<<<<
@@ -2083,7 +2113,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[16] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":117
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":119
  *             amount_model=AMOUNT_MODEL.BY_AMOUNT,
  *             broker=None,
  *             order_id=None,             # <<<<<<<<<<<<<<
@@ -2092,7 +2122,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[17] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":118
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":120
  *             broker=None,
  *             order_id=None,
  *             trade_id=False,             # <<<<<<<<<<<<<<
@@ -2102,7 +2132,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
     values[18] = ((PyObject *)Py_False);
     values[19] = __pyx_k__2;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":120
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":122
  *             trade_id=False,
  *             _status=ORDER_STATUS.NEW,
  *             callback=False,             # <<<<<<<<<<<<<<
@@ -2113,7 +2143,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
     values[21] = ((PyObject *)__pyx_float_0_00025);
     values[22] = ((PyObject *)__pyx_float_0_001);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":123
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":125
  *             commission_coeff=0.00025,
  *             tax_coeff=0.001,
  *             exchange_id=None,             # <<<<<<<<<<<<<<
@@ -2122,7 +2152,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
  */
     values[23] = ((PyObject *)Py_None);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":124
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":126
  *             tax_coeff=0.001,
  *             exchange_id=None,
  *             pms_id=None             # <<<<<<<<<<<<<<
@@ -2340,7 +2370,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 98, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 100, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2426,7 +2456,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 25, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 98, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 25, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 100, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2434,7 +2464,7 @@ static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_1__init__(PyObject *
   __pyx_L4_argument_unpacking_done:;
   __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *)__pyx_v_self), __pyx_v_price, __pyx_v_date, __pyx_v_datetime, __pyx_v_sending_time, __pyx_v_trade_time, __pyx_v_amount, __pyx_v_market_type, __pyx_v_frequence, __pyx_v_towards, __pyx_v_code, __pyx_v_user_cookie, __pyx_v_account_cookie, __pyx_v_strategy, __pyx_v_order_model, __pyx_v_money, __pyx_v_amount_model, __pyx_v_broker, __pyx_v_order_id, __pyx_v_trade_id, __pyx_v__status, __pyx_v_callback, __pyx_v_commission_coeff, __pyx_v_tax_coeff, __pyx_v_exchange_id, __pyx_v_pms_id);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":98
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":100
  *     cdef public dict exchange_code
  * 
  *     def __init__(             # <<<<<<<<<<<<<<
@@ -2461,17 +2491,17 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   PyObject *__pyx_t_9 = NULL;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":172
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":174
  *         '''
  * 
  *         self.price = price             # <<<<<<<<<<<<<<
  *         self.datetime = None
  * 
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_price); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_price); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 174, __pyx_L1_error)
   __pyx_v_self->price = __pyx_t_1;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":173
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":175
  * 
  *         self.price = price
  *         self.datetime = None             # <<<<<<<<<<<<<<
@@ -2484,7 +2514,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __Pyx_DECREF(__pyx_v_self->datetime);
   __pyx_v_self->datetime = ((PyObject*)Py_None);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":176
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":178
  * 
  *         # todo  Util
  *         if datetime is None and date is not None:             # <<<<<<<<<<<<<<
@@ -2504,14 +2534,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":177
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":179
  *         # todo  Util
  *         if datetime is None and date is not None:
  *             self.date = date             # <<<<<<<<<<<<<<
  *             self.datetime = '{} 09:31:00'.format(self.date)
  *         elif date is None and datetime is not None:
  */
-    if (!(likely(PyString_CheckExact(__pyx_v_date))||((__pyx_v_date) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_date)->tp_name), 0))) __PYX_ERR(0, 177, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_v_date))||((__pyx_v_date) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_date)->tp_name), 0))) __PYX_ERR(0, 179, __pyx_L1_error)
     __pyx_t_5 = __pyx_v_date;
     __Pyx_INCREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
@@ -2520,14 +2550,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     __pyx_v_self->date = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":178
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":180
  *         if datetime is None and date is not None:
  *             self.date = date
  *             self.datetime = '{} 09:31:00'.format(self.date)             # <<<<<<<<<<<<<<
  *         elif date is None and datetime is not None:
  *             self.date = datetime[0:10]
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_09_31_00, __pyx_n_s_format); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_09_31_00, __pyx_n_s_format); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 180, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -2541,17 +2571,17 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     }
     __pyx_t_5 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_7, __pyx_v_self->date) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_self->date);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 178, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 180, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (!(likely(PyString_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 178, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 180, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_5);
     __Pyx_GOTREF(__pyx_v_self->datetime);
     __Pyx_DECREF(__pyx_v_self->datetime);
     __pyx_v_self->datetime = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":176
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":178
  * 
  *         # todo  Util
  *         if datetime is None and date is not None:             # <<<<<<<<<<<<<<
@@ -2561,7 +2591,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     goto __pyx_L3;
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":179
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":181
  *             self.date = date
  *             self.datetime = '{} 09:31:00'.format(self.date)
  *         elif date is None and datetime is not None:             # <<<<<<<<<<<<<<
@@ -2581,30 +2611,30 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_L6_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":180
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":182
  *             self.datetime = '{} 09:31:00'.format(self.date)
  *         elif date is None and datetime is not None:
  *             self.date = datetime[0:10]             # <<<<<<<<<<<<<<
  *             self.datetime = datetime
  *         elif date is not None and datetime is not None:
  */
-    __pyx_t_5 = __Pyx_PyObject_GetSlice(__pyx_v_datetime, 0, 10, NULL, NULL, &__pyx_slice__3, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 180, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetSlice(__pyx_v_datetime, 0, 10, NULL, NULL, &__pyx_slice__3, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (!(likely(PyString_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 180, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 182, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_5);
     __Pyx_GOTREF(__pyx_v_self->date);
     __Pyx_DECREF(__pyx_v_self->date);
     __pyx_v_self->date = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":181
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":183
  *         elif date is None and datetime is not None:
  *             self.date = datetime[0:10]
  *             self.datetime = datetime             # <<<<<<<<<<<<<<
  *         elif date is not None and datetime is not None:
  *             self.date = date
  */
-    if (!(likely(PyString_CheckExact(__pyx_v_datetime))||((__pyx_v_datetime) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_datetime)->tp_name), 0))) __PYX_ERR(0, 181, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_v_datetime))||((__pyx_v_datetime) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_datetime)->tp_name), 0))) __PYX_ERR(0, 183, __pyx_L1_error)
     __pyx_t_5 = __pyx_v_datetime;
     __Pyx_INCREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
@@ -2613,7 +2643,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     __pyx_v_self->datetime = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":179
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":181
  *             self.date = date
  *             self.datetime = '{} 09:31:00'.format(self.date)
  *         elif date is None and datetime is not None:             # <<<<<<<<<<<<<<
@@ -2623,7 +2653,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     goto __pyx_L3;
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":182
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":184
  *             self.date = datetime[0:10]
  *             self.datetime = datetime
  *         elif date is not None and datetime is not None:             # <<<<<<<<<<<<<<
@@ -2643,14 +2673,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_L8_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":183
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":185
  *             self.datetime = datetime
  *         elif date is not None and datetime is not None:
  *             self.date = date             # <<<<<<<<<<<<<<
  *             self.datetime = datetime
  *         else:
  */
-    if (!(likely(PyString_CheckExact(__pyx_v_date))||((__pyx_v_date) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_date)->tp_name), 0))) __PYX_ERR(0, 183, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_v_date))||((__pyx_v_date) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_date)->tp_name), 0))) __PYX_ERR(0, 185, __pyx_L1_error)
     __pyx_t_5 = __pyx_v_date;
     __Pyx_INCREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
@@ -2659,14 +2689,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     __pyx_v_self->date = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":184
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":186
  *         elif date is not None and datetime is not None:
  *             self.date = date
  *             self.datetime = datetime             # <<<<<<<<<<<<<<
  *         else:
  *             pass
  */
-    if (!(likely(PyString_CheckExact(__pyx_v_datetime))||((__pyx_v_datetime) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_datetime)->tp_name), 0))) __PYX_ERR(0, 184, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_v_datetime))||((__pyx_v_datetime) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_datetime)->tp_name), 0))) __PYX_ERR(0, 186, __pyx_L1_error)
     __pyx_t_5 = __pyx_v_datetime;
     __Pyx_INCREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_5);
@@ -2675,7 +2705,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     __pyx_v_self->datetime = ((PyObject*)__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":182
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":184
  *             self.date = datetime[0:10]
  *             self.datetime = datetime
  *         elif date is not None and datetime is not None:             # <<<<<<<<<<<<<<
@@ -2685,7 +2715,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     goto __pyx_L3;
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":186
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":188
  *             self.datetime = datetime
  *         else:
  *             pass             # <<<<<<<<<<<<<<
@@ -2696,7 +2726,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   }
   __pyx_L3:;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":187
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":189
  *         else:
  *             pass
  *         self.sending_time = self.datetime if sending_time is None else sending_time #             # <<<<<<<<<<<<<<
@@ -2708,7 +2738,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     __Pyx_INCREF(__pyx_v_self->datetime);
     __pyx_t_5 = __pyx_v_self->datetime;
   } else {
-    if (!(likely(PyString_CheckExact(__pyx_v_sending_time))||((__pyx_v_sending_time) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_sending_time)->tp_name), 0))) __PYX_ERR(0, 187, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_v_sending_time))||((__pyx_v_sending_time) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_sending_time)->tp_name), 0))) __PYX_ERR(0, 189, __pyx_L1_error)
     __Pyx_INCREF(__pyx_v_sending_time);
     __pyx_t_5 = __pyx_v_sending_time;
   }
@@ -2718,16 +2748,16 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->sending_time = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":189
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":191
  *         self.sending_time = self.datetime if sending_time is None else sending_time #
  * 
  *         self.trade_time = [trade_time] if trade_time else [] #             # <<<<<<<<<<<<<<
  *         self.amount = amount                               #
  *         self.trade_amount = 0                              #
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_trade_time); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_trade_time); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 191, __pyx_L1_error)
   if (__pyx_t_2) {
-    __pyx_t_6 = PyList_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_6 = PyList_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 191, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_trade_time);
     __Pyx_GIVEREF(__pyx_v_trade_time);
@@ -2735,7 +2765,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     __pyx_t_5 = __pyx_t_6;
     __pyx_t_6 = 0;
   } else {
-    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 191, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_5 = __pyx_t_6;
     __pyx_t_6 = 0;
@@ -2746,17 +2776,17 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->trade_time = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":190
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":192
  * 
  *         self.trade_time = [trade_time] if trade_time else [] #
  *         self.amount = amount                               #             # <<<<<<<<<<<<<<
  *         self.trade_amount = 0                              #
  *         self.cancel_amount = 0                             #
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_amount); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_amount); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
   __pyx_v_self->amount = __pyx_t_1;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":191
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":193
  *         self.trade_time = [trade_time] if trade_time else [] #
  *         self.amount = amount                               #
  *         self.trade_amount = 0                              #             # <<<<<<<<<<<<<<
@@ -2765,7 +2795,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
  */
   __pyx_v_self->trade_amount = 0.0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":192
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":194
  *         self.amount = amount                               #
  *         self.trade_amount = 0                              #
  *         self.cancel_amount = 0                             #             # <<<<<<<<<<<<<<
@@ -2774,24 +2804,24 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
  */
   __pyx_v_self->cancel_amount = 0.0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":193
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":195
  *         self.trade_amount = 0                              #
  *         self.cancel_amount = 0                             #
  *         self.towards = towards                             # side             # <<<<<<<<<<<<<<
  *         self.code = code                                   #
  *         self.user_cookie = user_cookie                                   #
  */
-  __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_towards); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_v_towards); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 195, __pyx_L1_error)
   __pyx_v_self->towards = __pyx_t_8;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":194
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":196
  *         self.cancel_amount = 0                             #
  *         self.towards = towards                             # side
  *         self.code = code                                   #             # <<<<<<<<<<<<<<
  *         self.user_cookie = user_cookie                                   #
  *         self.market_type = market_type                     #
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_code))||((__pyx_v_code) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_code)->tp_name), 0))) __PYX_ERR(0, 194, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_code))||((__pyx_v_code) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_code)->tp_name), 0))) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_code;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -2800,14 +2830,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->code = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":195
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":197
  *         self.towards = towards                             # side
  *         self.code = code                                   #
  *         self.user_cookie = user_cookie                                   #             # <<<<<<<<<<<<<<
  *         self.market_type = market_type                     #
  *         self.frequence = frequence                         # ()
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_user_cookie))||((__pyx_v_user_cookie) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_user_cookie)->tp_name), 0))) __PYX_ERR(0, 195, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_user_cookie))||((__pyx_v_user_cookie) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_user_cookie)->tp_name), 0))) __PYX_ERR(0, 197, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_user_cookie;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -2816,14 +2846,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->user_cookie = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":196
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":198
  *         self.code = code                                   #
  *         self.user_cookie = user_cookie                                   #
  *         self.market_type = market_type                     #             # <<<<<<<<<<<<<<
  *         self.frequence = frequence                         # ()
  *         self.account_cookie = account_cookie
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_market_type))||((__pyx_v_market_type) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_market_type)->tp_name), 0))) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_market_type))||((__pyx_v_market_type) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_market_type)->tp_name), 0))) __PYX_ERR(0, 198, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_market_type;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -2832,14 +2862,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->market_type = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":197
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":199
  *         self.user_cookie = user_cookie                                   #
  *         self.market_type = market_type                     #
  *         self.frequence = frequence                         # ()             # <<<<<<<<<<<<<<
  *         self.account_cookie = account_cookie
  *         self.strategy = strategy                            # see below
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_frequence))||((__pyx_v_frequence) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_frequence)->tp_name), 0))) __PYX_ERR(0, 197, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_frequence))||((__pyx_v_frequence) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_frequence)->tp_name), 0))) __PYX_ERR(0, 199, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_frequence;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -2848,14 +2878,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->frequence = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":198
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":200
  *         self.market_type = market_type                     #
  *         self.frequence = frequence                         # ()
  *         self.account_cookie = account_cookie             # <<<<<<<<<<<<<<
  *         self.strategy = strategy                            # see below
  *         self.order_model = order_model
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_account_cookie))||((__pyx_v_account_cookie) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_account_cookie)->tp_name), 0))) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_account_cookie))||((__pyx_v_account_cookie) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_account_cookie)->tp_name), 0))) __PYX_ERR(0, 200, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_account_cookie;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -2864,14 +2894,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->account_cookie = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":199
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":201
  *         self.frequence = frequence                         # ()
  *         self.account_cookie = account_cookie
  *         self.strategy = strategy                            # see below             # <<<<<<<<<<<<<<
  *         self.order_model = order_model
  *         self.amount_model = amount_model
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_strategy))||((__pyx_v_strategy) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_strategy)->tp_name), 0))) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_strategy))||((__pyx_v_strategy) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_strategy)->tp_name), 0))) __PYX_ERR(0, 201, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_strategy;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -2880,14 +2910,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->strategy = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":200
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":202
  *         self.account_cookie = account_cookie
  *         self.strategy = strategy                            # see below
  *         self.order_model = order_model             # <<<<<<<<<<<<<<
  *         self.amount_model = amount_model
  *         self.order_id = QA_util_random_with_topic(
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_order_model))||((__pyx_v_order_model) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_order_model)->tp_name), 0))) __PYX_ERR(0, 200, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_order_model))||((__pyx_v_order_model) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_order_model)->tp_name), 0))) __PYX_ERR(0, 202, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_order_model;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -2896,14 +2926,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->order_model = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":201
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":203
  *         self.strategy = strategy                            # see below
  *         self.order_model = order_model
  *         self.amount_model = amount_model             # <<<<<<<<<<<<<<
  *         self.order_id = QA_util_random_with_topic(
  *             topic='Order'
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_amount_model))||((__pyx_v_amount_model) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_amount_model)->tp_name), 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_amount_model))||((__pyx_v_amount_model) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_amount_model)->tp_name), 0))) __PYX_ERR(0, 203, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_amount_model;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -2912,7 +2942,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->amount_model = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":204
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":206
  *         self.order_id = QA_util_random_with_topic(
  *             topic='Order'
  *         ) if order_id is None else order_id             # <<<<<<<<<<<<<<
@@ -2922,56 +2952,56 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_t_2 = (__pyx_v_order_id == Py_None);
   if ((__pyx_t_2 != 0)) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":202
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":204
  *         self.order_model = order_model
  *         self.amount_model = amount_model
  *         self.order_id = QA_util_random_with_topic(             # <<<<<<<<<<<<<<
  *             topic='Order'
  *         ) if order_id is None else order_id
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_QA_util_random_with_topic); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_QA_util_random_with_topic); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 204, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":203
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":205
  *         self.amount_model = amount_model
  *         self.order_id = QA_util_random_with_topic(
  *             topic='Order'             # <<<<<<<<<<<<<<
  *         ) if order_id is None else order_id
  *         self.realorder_id = self.order_id
  */
-    __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 203, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_topic, __pyx_n_s_Order) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_topic, __pyx_n_s_Order) < 0) __PYX_ERR(0, 205, __pyx_L1_error)
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":202
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":204
  *         self.order_model = order_model
  *         self.amount_model = amount_model
  *         self.order_id = QA_util_random_with_topic(             # <<<<<<<<<<<<<<
  *             topic='Order'
  *         ) if order_id is None else order_id
  */
-    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_empty_tuple, __pyx_t_7); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 202, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_empty_tuple, __pyx_t_7); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 204, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (!(likely(PyString_CheckExact(__pyx_t_9))||((__pyx_t_9) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_9)->tp_name), 0))) __PYX_ERR(0, 202, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_t_9))||((__pyx_t_9) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_9)->tp_name), 0))) __PYX_ERR(0, 204, __pyx_L1_error)
     __pyx_t_5 = __pyx_t_9;
     __pyx_t_9 = 0;
   } else {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":204
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":206
  *         self.order_id = QA_util_random_with_topic(
  *             topic='Order'
  *         ) if order_id is None else order_id             # <<<<<<<<<<<<<<
  *         self.realorder_id = self.order_id
  *         self.commission_coeff = commission_coeff
  */
-    if (!(likely(PyString_CheckExact(__pyx_v_order_id))||((__pyx_v_order_id) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_order_id)->tp_name), 0))) __PYX_ERR(0, 204, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_v_order_id))||((__pyx_v_order_id) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_order_id)->tp_name), 0))) __PYX_ERR(0, 206, __pyx_L1_error)
     __Pyx_INCREF(__pyx_v_order_id);
     __pyx_t_5 = __pyx_v_order_id;
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":202
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":204
  *         self.order_model = order_model
  *         self.amount_model = amount_model
  *         self.order_id = QA_util_random_with_topic(             # <<<<<<<<<<<<<<
@@ -2984,7 +3014,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->order_id = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":205
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":207
  *             topic='Order'
  *         ) if order_id is None else order_id
  *         self.realorder_id = self.order_id             # <<<<<<<<<<<<<<
@@ -2999,36 +3029,36 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->realorder_id = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":206
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":208
  *         ) if order_id is None else order_id
  *         self.realorder_id = self.order_id
  *         self.commission_coeff = commission_coeff             # <<<<<<<<<<<<<<
  *         self.tax_coeff = tax_coeff
  *         self.trade_id = [trade_id] if trade_id else []
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_commission_coeff); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_commission_coeff); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L1_error)
   __pyx_v_self->commission_coeff = __pyx_t_1;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":207
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":209
  *         self.realorder_id = self.order_id
  *         self.commission_coeff = commission_coeff
  *         self.tax_coeff = tax_coeff             # <<<<<<<<<<<<<<
  *         self.trade_id = [trade_id] if trade_id else []
  * 
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_tax_coeff); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_tax_coeff); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L1_error)
   __pyx_v_self->tax_coeff = __pyx_t_1;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":208
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":210
  *         self.commission_coeff = commission_coeff
  *         self.tax_coeff = tax_coeff
  *         self.trade_id = [trade_id] if trade_id else []             # <<<<<<<<<<<<<<
  * 
  *         self.trade_price = 0                                       #
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_trade_id); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_trade_id); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 210, __pyx_L1_error)
   if (__pyx_t_2) {
-    __pyx_t_9 = PyList_New(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 208, __pyx_L1_error)
+    __pyx_t_9 = PyList_New(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_INCREF(__pyx_v_trade_id);
     __Pyx_GIVEREF(__pyx_v_trade_id);
@@ -3036,7 +3066,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     __pyx_t_5 = __pyx_t_9;
     __pyx_t_9 = 0;
   } else {
-    __pyx_t_9 = PyList_New(0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 208, __pyx_L1_error)
+    __pyx_t_9 = PyList_New(0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __pyx_t_5 = __pyx_t_9;
     __pyx_t_9 = 0;
@@ -3047,7 +3077,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->trade_id = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":210
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":212
  *         self.trade_id = [trade_id] if trade_id else []
  * 
  *         self.trade_price = 0                                       #             # <<<<<<<<<<<<<<
@@ -3056,14 +3086,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
  */
   __pyx_v_self->trade_price = 0.0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":211
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":213
  * 
  *         self.trade_price = 0                                       #
  *         self.broker = broker             # <<<<<<<<<<<<<<
  *         self.callback = callback                                   # callback
  *         self.money = money                                         #
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_broker))||((__pyx_v_broker) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_broker)->tp_name), 0))) __PYX_ERR(0, 211, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_broker))||((__pyx_v_broker) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_broker)->tp_name), 0))) __PYX_ERR(0, 213, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_broker;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -3072,7 +3102,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->broker = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":212
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":214
  *         self.trade_price = 0                                       #
  *         self.broker = broker
  *         self.callback = callback                                   # callback             # <<<<<<<<<<<<<<
@@ -3085,17 +3115,17 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __Pyx_DECREF(__pyx_v_self->callback);
   __pyx_v_self->callback = __pyx_v_callback;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":213
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":215
  *         self.broker = broker
  *         self.callback = callback                                   # callback
  *         self.money = money                                         #             # <<<<<<<<<<<<<<
  *         self.reason = None                                         #
  *         self.exchange_id = exchange_id
  */
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_money); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_money); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 215, __pyx_L1_error)
   __pyx_v_self->money = __pyx_t_1;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":214
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":216
  *         self.callback = callback                                   # callback
  *         self.money = money                                         #
  *         self.reason = None                                         #             # <<<<<<<<<<<<<<
@@ -3108,14 +3138,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __Pyx_DECREF(__pyx_v_self->reason);
   __pyx_v_self->reason = ((PyObject*)Py_None);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":215
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":217
  *         self.money = money                                         #
  *         self.reason = None                                         #
  *         self.exchange_id = exchange_id             # <<<<<<<<<<<<<<
  *         self.time_condition = 'GFD'                                #
  *         self._status = _status
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_exchange_id))||((__pyx_v_exchange_id) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_exchange_id)->tp_name), 0))) __PYX_ERR(0, 215, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_exchange_id))||((__pyx_v_exchange_id) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_exchange_id)->tp_name), 0))) __PYX_ERR(0, 217, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_exchange_id;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -3124,7 +3154,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->exchange_id = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":216
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":218
  *         self.reason = None                                         #
  *         self.exchange_id = exchange_id
  *         self.time_condition = 'GFD'                                #             # <<<<<<<<<<<<<<
@@ -3137,14 +3167,14 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __Pyx_DECREF(__pyx_v_self->time_condition);
   __pyx_v_self->time_condition = __pyx_n_s_GFD;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":217
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":219
  *         self.exchange_id = exchange_id
  *         self.time_condition = 'GFD'                                #
  *         self._status = _status             # <<<<<<<<<<<<<<
  *         self.exchange_code = exchange_code
  *         self.pms_id = pms_id
  */
-  if (!(likely(PyString_CheckExact(__pyx_v__status))||((__pyx_v__status) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v__status)->tp_name), 0))) __PYX_ERR(0, 217, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v__status))||((__pyx_v__status) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v__status)->tp_name), 0))) __PYX_ERR(0, 219, __pyx_L1_error)
   __pyx_t_5 = __pyx_v__status;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -3153,30 +3183,30 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->_status = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":218
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":220
  *         self.time_condition = 'GFD'                                #
  *         self._status = _status
  *         self.exchange_code = exchange_code             # <<<<<<<<<<<<<<
  *         self.pms_id = pms_id
  *         self.direction = 'BUY' if self.towards in [
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_exchange_code); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_exchange_code); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (!(likely(PyDict_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 218, __pyx_L1_error)
+  if (!(likely(PyDict_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_5);
   __Pyx_GOTREF(__pyx_v_self->exchange_code);
   __Pyx_DECREF(__pyx_v_self->exchange_code);
   __pyx_v_self->exchange_code = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":219
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":221
  *         self._status = _status
  *         self.exchange_code = exchange_code
  *         self.pms_id = pms_id             # <<<<<<<<<<<<<<
  *         self.direction = 'BUY' if self.towards in [
  *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
  */
-  if (!(likely(PyString_CheckExact(__pyx_v_pms_id))||((__pyx_v_pms_id) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_pms_id)->tp_name), 0))) __PYX_ERR(0, 219, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_pms_id))||((__pyx_v_pms_id) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_pms_id)->tp_name), 0))) __PYX_ERR(0, 221, __pyx_L1_error)
   __pyx_t_5 = __pyx_v_pms_id;
   __Pyx_INCREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_5);
@@ -3185,137 +3215,23 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __pyx_v_self->pms_id = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":220
- *         self.exchange_code = exchange_code
- *         self.pms_id = pms_id
- *         self.direction = 'BUY' if self.towards in [             # <<<<<<<<<<<<<<
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
- *         self.offset = 'OPEN' if self.towards in [
- */
-  __pyx_t_8 = __pyx_v_self->towards;
-  __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":221
- *         self.pms_id = pms_id
- *         self.direction = 'BUY' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'             # <<<<<<<<<<<<<<
- *         self.offset = 'OPEN' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 221, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_BUY); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 221, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyObject_RichCompare(__pyx_t_9, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":220
- *         self.exchange_code = exchange_code
- *         self.pms_id = pms_id
- *         self.direction = 'BUY' if self.towards in [             # <<<<<<<<<<<<<<
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
- *         self.offset = 'OPEN' if self.towards in [
- */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (!__pyx_t_3) {
-  } else {
-    __pyx_t_2 = __pyx_t_3;
-    goto __pyx_L10_bool_binop_done;
-  }
-  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":221
- *         self.pms_id = pms_id
- *         self.direction = 'BUY' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'             # <<<<<<<<<<<<<<
- *         self.offset = 'OPEN' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 221, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_BUY_OPEN); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 221, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = PyObject_RichCompare(__pyx_t_7, __pyx_t_9, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":220
- *         self.exchange_code = exchange_code
- *         self.pms_id = pms_id
- *         self.direction = 'BUY' if self.towards in [             # <<<<<<<<<<<<<<
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
- *         self.offset = 'OPEN' if self.towards in [
- */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!__pyx_t_3) {
-  } else {
-    __pyx_t_2 = __pyx_t_3;
-    goto __pyx_L10_bool_binop_done;
-  }
-  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":221
- *         self.pms_id = pms_id
- *         self.direction = 'BUY' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'             # <<<<<<<<<<<<<<
- *         self.offset = 'OPEN' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 221, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_BUY_CLOSE); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 221, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = PyObject_RichCompare(__pyx_t_6, __pyx_t_7, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":220
- *         self.exchange_code = exchange_code
- *         self.pms_id = pms_id
- *         self.direction = 'BUY' if self.towards in [             # <<<<<<<<<<<<<<
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
- *         self.offset = 'OPEN' if self.towards in [
- */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_2 = __pyx_t_3;
-  __pyx_L10_bool_binop_done:;
-  if ((__pyx_t_2 != 0)) {
-    __Pyx_INCREF(__pyx_n_s_BUY);
-    __pyx_t_5 = __pyx_n_s_BUY;
-  } else {
-    __Pyx_INCREF(__pyx_n_s_SELL);
-    __pyx_t_5 = __pyx_n_s_SELL;
-  }
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_direction, __pyx_t_5) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":222
- *         self.direction = 'BUY' if self.towards in [
+ *         self.exchange_code = exchange_code
+ *         self.pms_id = pms_id
+ *         self.direction = 'BUY' if self.towards in [             # <<<<<<<<<<<<<<
  *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
- *         self.offset = 'OPEN' if self.towards in [             # <<<<<<<<<<<<<<
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
- *                                                                    #  2018/11/12
+ *         self.offset = 'OPEN' if self.towards in [
  */
   __pyx_t_8 = __pyx_v_self->towards;
   __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":223
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.pms_id = pms_id
+ *         self.direction = 'BUY' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'             # <<<<<<<<<<<<<<
  *         self.offset = 'OPEN' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'             # <<<<<<<<<<<<<<
- *                                                                    #  2018/11/12
- *         # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
  */
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -3327,28 +3243,28 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":222
- *         self.direction = 'BUY' if self.towards in [
+ *         self.exchange_code = exchange_code
+ *         self.pms_id = pms_id
+ *         self.direction = 'BUY' if self.towards in [             # <<<<<<<<<<<<<<
  *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
- *         self.offset = 'OPEN' if self.towards in [             # <<<<<<<<<<<<<<
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
- *                                                                    #  2018/11/12
+ *         self.offset = 'OPEN' if self.towards in [
  */
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   if (!__pyx_t_3) {
   } else {
     __pyx_t_2 = __pyx_t_3;
-    goto __pyx_L13_bool_binop_done;
+    goto __pyx_L10_bool_binop_done;
   }
   __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":223
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.pms_id = pms_id
+ *         self.direction = 'BUY' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'             # <<<<<<<<<<<<<<
  *         self.offset = 'OPEN' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'             # <<<<<<<<<<<<<<
- *                                                                    #  2018/11/12
- *         # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
  */
   __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
@@ -3360,32 +3276,32 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":222
- *         self.direction = 'BUY' if self.towards in [
+ *         self.exchange_code = exchange_code
+ *         self.pms_id = pms_id
+ *         self.direction = 'BUY' if self.towards in [             # <<<<<<<<<<<<<<
  *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
- *         self.offset = 'OPEN' if self.towards in [             # <<<<<<<<<<<<<<
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
- *                                                                    #  2018/11/12
+ *         self.offset = 'OPEN' if self.towards in [
  */
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (!__pyx_t_3) {
   } else {
     __pyx_t_2 = __pyx_t_3;
-    goto __pyx_L13_bool_binop_done;
+    goto __pyx_L10_bool_binop_done;
   }
   __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":223
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.pms_id = pms_id
+ *         self.direction = 'BUY' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'             # <<<<<<<<<<<<<<
  *         self.offset = 'OPEN' if self.towards in [
- *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'             # <<<<<<<<<<<<<<
- *                                                                    #  2018/11/12
- *         # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
  */
   __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_SELL_OPEN); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_BUY_CLOSE); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __pyx_t_9 = PyObject_RichCompare(__pyx_t_6, __pyx_t_7, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 222, __pyx_L1_error)
@@ -3393,13 +3309,130 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":222
+ *         self.exchange_code = exchange_code
+ *         self.pms_id = pms_id
+ *         self.direction = 'BUY' if self.towards in [             # <<<<<<<<<<<<<<
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.offset = 'OPEN' if self.towards in [
+ */
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  __pyx_t_2 = __pyx_t_3;
+  __pyx_L10_bool_binop_done:;
+  if ((__pyx_t_2 != 0)) {
+    __Pyx_INCREF(__pyx_n_s_BUY);
+    __pyx_t_5 = __pyx_n_s_BUY;
+  } else {
+    __Pyx_INCREF(__pyx_n_s_SELL);
+    __pyx_t_5 = __pyx_n_s_SELL;
+  }
+  __Pyx_GIVEREF(__pyx_t_5);
+  __Pyx_GOTREF(__pyx_v_self->direction);
+  __Pyx_DECREF(__pyx_v_self->direction);
+  __pyx_v_self->direction = ((PyObject*)__pyx_t_5);
+  __pyx_t_5 = 0;
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":224
  *         self.direction = 'BUY' if self.towards in [
  *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
  *         self.offset = 'OPEN' if self.towards in [             # <<<<<<<<<<<<<<
  *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
  *                                                                    #  2018/11/12
  */
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_8 = __pyx_v_self->towards;
+  __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":225
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.offset = 'OPEN' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'             # <<<<<<<<<<<<<<
+ *                                                                    #  2018/11/12
+ *         # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_BUY); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_7 = PyObject_RichCompare(__pyx_t_9, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":224
+ *         self.direction = 'BUY' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.offset = 'OPEN' if self.towards in [             # <<<<<<<<<<<<<<
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
+ *                                                                    #  2018/11/12
+ */
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L13_bool_binop_done;
+  }
+  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":225
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.offset = 'OPEN' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'             # <<<<<<<<<<<<<<
+ *                                                                    #  2018/11/12
+ *         # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_BUY_OPEN); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = PyObject_RichCompare(__pyx_t_7, __pyx_t_9, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":224
+ *         self.direction = 'BUY' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.offset = 'OPEN' if self.towards in [             # <<<<<<<<<<<<<<
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
+ *                                                                    #  2018/11/12
+ */
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (!__pyx_t_3) {
+  } else {
+    __pyx_t_2 = __pyx_t_3;
+    goto __pyx_L13_bool_binop_done;
+  }
+  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":225
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.offset = 'OPEN' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'             # <<<<<<<<<<<<<<
+ *                                                                    #  2018/11/12
+ *         # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_ORDER_DIRECTION); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_9);
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_SELL_OPEN); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  __pyx_t_9 = PyObject_RichCompare(__pyx_t_6, __pyx_t_7, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":224
+ *         self.direction = 'BUY' if self.towards in [
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+ *         self.offset = 'OPEN' if self.towards in [             # <<<<<<<<<<<<<<
+ *             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
+ *                                                                    #  2018/11/12
+ */
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __pyx_t_2 = __pyx_t_3;
   __pyx_L13_bool_binop_done:;
@@ -3410,10 +3443,13 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
     __Pyx_INCREF(__pyx_n_s_CLOSE);
     __pyx_t_5 = __pyx_n_s_CLOSE;
   }
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_offset, __pyx_t_5) < 0) __PYX_ERR(0, 222, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  __Pyx_GIVEREF(__pyx_t_5);
+  __Pyx_GOTREF(__pyx_v_self->offset);
+  __Pyx_DECREF(__pyx_v_self->offset);
+  __pyx_v_self->offset = ((PyObject*)__pyx_t_5);
+  __pyx_t_5 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":98
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":100
  *     cdef public dict exchange_code
  * 
  *     def __init__(             # <<<<<<<<<<<<<<
@@ -3436,7 +3472,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order___init__(struct __py
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":231
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":233
  * 
  *     @property
  *     def pending_amount(self):             # <<<<<<<<<<<<<<
@@ -3463,7 +3499,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14pending_amou
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":232
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":234
  *     @property
  *     def pending_amount(self):
  *         return self.amount - self.cancel_amount - self.trade_amount             # <<<<<<<<<<<<<<
@@ -3471,13 +3507,13 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14pending_amou
  *     def __repr__(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(((__pyx_v_self->amount - __pyx_v_self->cancel_amount) - __pyx_v_self->trade_amount)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(((__pyx_v_self->amount - __pyx_v_self->cancel_amount) - __pyx_v_self->trade_amount)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":231
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":233
  * 
  *     @property
  *     def pending_amount(self):             # <<<<<<<<<<<<<<
@@ -3496,7 +3532,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14pending_amou
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":234
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":236
  *         return self.amount - self.cancel_amount - self.trade_amount
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -3535,7 +3571,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_2__repr__(stru
   PyObject *__pyx_t_9 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":239
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":241
  *         :return:
  *         '''
  *         return '< QA_Order realorder_id {} datetime:{} code:{} amount:{} price:{} towards:{} btype:{} order_id:{} account:{} status:{} >'.format(             # <<<<<<<<<<<<<<
@@ -3543,47 +3579,47 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_2__repr__(stru
  *             self.datetime,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_QA_Order_realorder_id_datetime, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_QA_Order_realorder_id_datetime, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":243
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":245
  *             self.datetime,
  *             self.code,
  *             self.amount,             # <<<<<<<<<<<<<<
  *             self.price,
  *             self.towards,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->amount); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->amount); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 245, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":244
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":246
  *             self.code,
  *             self.amount,
  *             self.price,             # <<<<<<<<<<<<<<
  *             self.towards,
  *             self.market_type,
  */
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->price); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->price); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":245
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":247
  *             self.amount,
  *             self.price,
  *             self.towards,             # <<<<<<<<<<<<<<
  *             self.market_type,
  *             self.order_id,
  */
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_self->towards); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_self->towards); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":249
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":251
  *             self.order_id,
  *             self.account_cookie,
  *             self.status             # <<<<<<<<<<<<<<
  *         )
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_status_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_status_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_7 = NULL;
   __pyx_t_8 = 0;
@@ -3600,7 +3636,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_2__repr__(stru
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[11] = {__pyx_t_7, __pyx_v_self->realorder_id, __pyx_v_self->datetime, __pyx_v_self->code, __pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_self->market_type, __pyx_v_self->order_id, __pyx_v_self->account_cookie, __pyx_t_6};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_8, 10+__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_8, 10+__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3612,7 +3648,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_2__repr__(stru
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[11] = {__pyx_t_7, __pyx_v_self->realorder_id, __pyx_v_self->datetime, __pyx_v_self->code, __pyx_t_3, __pyx_t_4, __pyx_t_5, __pyx_v_self->market_type, __pyx_v_self->order_id, __pyx_v_self->account_cookie, __pyx_t_6};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_8, 10+__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_8, 10+__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -3622,7 +3658,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_2__repr__(stru
   } else
   #endif
   {
-    __pyx_t_9 = PyTuple_New(10+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_9 = PyTuple_New(10+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 241, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     if (__pyx_t_7) {
       __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
@@ -3657,7 +3693,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_2__repr__(stru
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
     __pyx_t_6 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_9, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_9, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   }
@@ -3666,7 +3702,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_2__repr__(stru
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":234
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":236
  *         return self.amount - self.cancel_amount - self.trade_amount
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -3692,7 +3728,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_2__repr__(stru
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":253
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":255
  * 
  *     @property
  *     def status(self):             # <<<<<<<<<<<<<<
@@ -3723,7 +3759,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":256
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":258
  * 
  *         #
  *         if self._status in [ORDER_STATUS.FAILED,             # <<<<<<<<<<<<<<
@@ -3732,52 +3768,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
  */
   __Pyx_INCREF(__pyx_v_self->_status);
   __pyx_t_1 = __pyx_v_self->_status;
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 256, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_FAILED); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 256, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 256, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (!__pyx_t_5) {
-  } else {
-    __pyx_t_2 = __pyx_t_5;
-    goto __pyx_L4_bool_binop_done;
-  }
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":257
- *         #
- *         if self._status in [ORDER_STATUS.FAILED,
- *                             ORDER_STATUS.NEXT,             # <<<<<<<<<<<<<<
- *                             ORDER_STATUS.SETTLED,
- *                             ORDER_STATUS.CANCEL_ALL,
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 257, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NEXT); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 257, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 256, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (!__pyx_t_5) {
-  } else {
-    __pyx_t_2 = __pyx_t_5;
-    goto __pyx_L4_bool_binop_done;
-  }
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":258
- *         if self._status in [ORDER_STATUS.FAILED,
- *                             ORDER_STATUS.NEXT,
- *                             ORDER_STATUS.SETTLED,             # <<<<<<<<<<<<<<
- *                             ORDER_STATUS.CANCEL_ALL,
- *                             ORDER_STATUS.CANCEL_PART]:
- */
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_SETTLED); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_FAILED); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -3786,18 +3782,18 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
   }
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":259
- *                             ORDER_STATUS.NEXT,
+ *         #
+ *         if self._status in [ORDER_STATUS.FAILED,
+ *                             ORDER_STATUS.NEXT,             # <<<<<<<<<<<<<<
  *                             ORDER_STATUS.SETTLED,
- *                             ORDER_STATUS.CANCEL_ALL,             # <<<<<<<<<<<<<<
- *                             ORDER_STATUS.CANCEL_PART]:
- *             return self._status
+ *                             ORDER_STATUS.CANCEL_ALL,
  */
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_CANCEL_ALL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NEXT); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -3806,24 +3802,64 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
   }
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":260
+ *         if self._status in [ORDER_STATUS.FAILED,
+ *                             ORDER_STATUS.NEXT,
+ *                             ORDER_STATUS.SETTLED,             # <<<<<<<<<<<<<<
+ *                             ORDER_STATUS.CANCEL_ALL,
+ *                             ORDER_STATUS.CANCEL_PART]:
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_SETTLED); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (!__pyx_t_5) {
+  } else {
+    __pyx_t_2 = __pyx_t_5;
+    goto __pyx_L4_bool_binop_done;
+  }
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":261
+ *                             ORDER_STATUS.NEXT,
+ *                             ORDER_STATUS.SETTLED,
+ *                             ORDER_STATUS.CANCEL_ALL,             # <<<<<<<<<<<<<<
+ *                             ORDER_STATUS.CANCEL_PART]:
+ *             return self._status
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_CANCEL_ALL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (!__pyx_t_5) {
+  } else {
+    __pyx_t_2 = __pyx_t_5;
+    goto __pyx_L4_bool_binop_done;
+  }
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":262
  *                             ORDER_STATUS.SETTLED,
  *                             ORDER_STATUS.CANCEL_ALL,
  *                             ORDER_STATUS.CANCEL_PART]:             # <<<<<<<<<<<<<<
  *             return self._status
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CANCEL_PART); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CANCEL_PART); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_2 = __pyx_t_5;
   __pyx_L4_bool_binop_done:;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":256
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":258
  * 
  *         #
  *         if self._status in [ORDER_STATUS.FAILED,             # <<<<<<<<<<<<<<
@@ -3833,7 +3869,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
   __pyx_t_5 = (__pyx_t_2 != 0);
   if (__pyx_t_5) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":261
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":263
  *                             ORDER_STATUS.CANCEL_ALL,
  *                             ORDER_STATUS.CANCEL_PART]:
  *             return self._status             # <<<<<<<<<<<<<<
@@ -3845,7 +3881,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
     __pyx_r = __pyx_v_self->_status;
     goto __pyx_L0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":256
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":258
  * 
  *         #
  *         if self._status in [ORDER_STATUS.FAILED,             # <<<<<<<<<<<<<<
@@ -3854,41 +3890,41 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
  */
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":263
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":265
  *             return self._status
  * 
  *         if self.pending_amount <= 0:             # <<<<<<<<<<<<<<
  *             self._status = ORDER_STATUS.SUCCESS_ALL
  *             return self._status
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_pending_amount); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_pending_amount); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_4, __pyx_int_0, Py_LE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_4, __pyx_int_0, Py_LE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_5) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":264
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":266
  * 
  *         if self.pending_amount <= 0:
  *             self._status = ORDER_STATUS.SUCCESS_ALL             # <<<<<<<<<<<<<<
  *             return self._status
  *         elif self.pending_amount > 0 and self.trade_amount > 0:
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 264, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 266, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_SUCCESS_ALL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 264, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_SUCCESS_ALL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 266, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(PyString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 264, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 266, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_4);
     __Pyx_GOTREF(__pyx_v_self->_status);
     __Pyx_DECREF(__pyx_v_self->_status);
     __pyx_v_self->_status = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":265
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":267
  *         if self.pending_amount <= 0:
  *             self._status = ORDER_STATUS.SUCCESS_ALL
  *             return self._status             # <<<<<<<<<<<<<<
@@ -3900,7 +3936,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
     __pyx_r = __pyx_v_self->_status;
     goto __pyx_L0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":263
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":265
  *             return self._status
  * 
  *         if self.pending_amount <= 0:             # <<<<<<<<<<<<<<
@@ -3909,18 +3945,18 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
  */
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":266
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":268
  *             self._status = ORDER_STATUS.SUCCESS_ALL
  *             return self._status
  *         elif self.pending_amount > 0 and self.trade_amount > 0:             # <<<<<<<<<<<<<<
  *             self._status = ORDER_STATUS.SUCCESS_PART
  *             return self._status
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_pending_amount); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_pending_amount); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 268, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_4, __pyx_int_0, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_4, __pyx_int_0, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 268, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 268, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_2) {
   } else {
@@ -3932,26 +3968,26 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
   __pyx_L10_bool_binop_done:;
   if (__pyx_t_5) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":267
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":269
  *             return self._status
  *         elif self.pending_amount > 0 and self.trade_amount > 0:
  *             self._status = ORDER_STATUS.SUCCESS_PART             # <<<<<<<<<<<<<<
  *             return self._status
  *         elif self.trade_amount == 0:
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 267, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 269, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_SUCCESS_PART); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 267, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_SUCCESS_PART); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 269, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(PyString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 267, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 269, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_4);
     __Pyx_GOTREF(__pyx_v_self->_status);
     __Pyx_DECREF(__pyx_v_self->_status);
     __pyx_v_self->_status = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":268
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":270
  *         elif self.pending_amount > 0 and self.trade_amount > 0:
  *             self._status = ORDER_STATUS.SUCCESS_PART
  *             return self._status             # <<<<<<<<<<<<<<
@@ -3963,7 +3999,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
     __pyx_r = __pyx_v_self->_status;
     goto __pyx_L0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":266
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":268
  *             self._status = ORDER_STATUS.SUCCESS_ALL
  *             return self._status
  *         elif self.pending_amount > 0 and self.trade_amount > 0:             # <<<<<<<<<<<<<<
@@ -3972,7 +4008,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
  */
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":269
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":271
  *             self._status = ORDER_STATUS.SUCCESS_PART
  *             return self._status
  *         elif self.trade_amount == 0:             # <<<<<<<<<<<<<<
@@ -3982,26 +4018,26 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
   __pyx_t_5 = ((__pyx_v_self->trade_amount == 0.0) != 0);
   if (__pyx_t_5) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":270
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":272
  *             return self._status
  *         elif self.trade_amount == 0:
  *             self._status = ORDER_STATUS.QUEUED             # <<<<<<<<<<<<<<
  *             return self._status
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_QUEUED); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_QUEUED); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (!(likely(PyString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 270, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 272, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_3);
     __Pyx_GOTREF(__pyx_v_self->_status);
     __Pyx_DECREF(__pyx_v_self->_status);
     __pyx_v_self->_status = ((PyObject*)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":271
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":273
  *         elif self.trade_amount == 0:
  *             self._status = ORDER_STATUS.QUEUED
  *             return self._status             # <<<<<<<<<<<<<<
@@ -4013,7 +4049,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
     __pyx_r = __pyx_v_self->_status;
     goto __pyx_L0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":269
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":271
  *             self._status = ORDER_STATUS.SUCCESS_PART
  *             return self._status
  *         elif self.trade_amount == 0:             # <<<<<<<<<<<<<<
@@ -4022,7 +4058,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
  */
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":253
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":255
  * 
  *     @property
  *     def status(self):             # <<<<<<<<<<<<<<
@@ -4045,11 +4081,11 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6status___get_
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":273
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":275
  *             return self._status
  * 
  *     def get_exchange(self, code):             # <<<<<<<<<<<<<<
- *         return self.exchange_code[code.lower()]
+ *         return self.exchange_code.get(code.lower(), 'Unknown')
  * 
  */
 
@@ -4074,19 +4110,19 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_4get_exchange(
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("get_exchange", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":274
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":276
  * 
  *     def get_exchange(self, code):
- *         return self.exchange_code[code.lower()]             # <<<<<<<<<<<<<<
+ *         return self.exchange_code.get(code.lower(), 'Unknown')             # <<<<<<<<<<<<<<
  * 
  *     def create(self):
  */
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(__pyx_v_self->exchange_code == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 274, __pyx_L1_error)
+    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "get");
+    __PYX_ERR(0, 276, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_code, __pyx_n_s_lower); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_code, __pyx_n_s_lower); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -4100,21 +4136,21 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_4get_exchange(
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_self->exchange_code, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_GetItemDefault(__pyx_v_self->exchange_code, __pyx_t_1, __pyx_n_s_Unknown); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":273
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":275
  *             return self._status
  * 
  *     def get_exchange(self, code):             # <<<<<<<<<<<<<<
- *         return self.exchange_code[code.lower()]
+ *         return self.exchange_code.get(code.lower(), 'Unknown')
  * 
  */
 
@@ -4131,8 +4167,8 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_4get_exchange(
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":276
- *         return self.exchange_code[code.lower()]
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":278
+ *         return self.exchange_code.get(code.lower(), 'Unknown')
  * 
  *     def create(self):             # <<<<<<<<<<<<<<
  *         """
@@ -4160,27 +4196,27 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6create(struct
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":280
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":282
  *         """
  *         # (-- )
  *         self._status = ORDER_STATUS.NEW             # <<<<<<<<<<<<<<
  * 
  *     def cancel(self):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 280, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NEW); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 280, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NEW); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 280, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 282, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->_status);
   __Pyx_DECREF(__pyx_v_self->_status);
   __pyx_v_self->_status = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":276
- *         return self.exchange_code[code.lower()]
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":278
+ *         return self.exchange_code.get(code.lower(), 'Unknown')
  * 
  *     def create(self):             # <<<<<<<<<<<<<<
  *         """
@@ -4201,7 +4237,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6create(struct
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":282
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":284
  *         self._status = ORDER_STATUS.NEW
  * 
  *     def cancel(self):             # <<<<<<<<<<<<<<
@@ -4231,7 +4267,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8cancel(struct
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("cancel", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":289
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":291
  *         """
  * 
  *         self.cancel_amount = self.amount - self.trade_amount             # <<<<<<<<<<<<<<
@@ -4240,7 +4276,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8cancel(struct
  */
   __pyx_v_self->cancel_amount = (__pyx_v_self->amount - __pyx_v_self->trade_amount);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":290
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":292
  * 
  *         self.cancel_amount = self.amount - self.trade_amount
  *         if self.trade_amount == 0:             # <<<<<<<<<<<<<<
@@ -4250,26 +4286,26 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8cancel(struct
   __pyx_t_1 = ((__pyx_v_self->trade_amount == 0.0) != 0);
   if (__pyx_t_1) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":292
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":294
  *         if self.trade_amount == 0:
  *             #
  *             self._status = ORDER_STATUS.CANCEL_ALL             # <<<<<<<<<<<<<<
  *         else:
  *             #
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 292, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 294, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_CANCEL_ALL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 292, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_CANCEL_ALL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 294, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (!(likely(PyString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 292, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 294, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_3);
     __Pyx_GOTREF(__pyx_v_self->_status);
     __Pyx_DECREF(__pyx_v_self->_status);
     __pyx_v_self->_status = ((PyObject*)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":290
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":292
  * 
  *         self.cancel_amount = self.amount - self.trade_amount
  *         if self.trade_amount == 0:             # <<<<<<<<<<<<<<
@@ -4279,7 +4315,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8cancel(struct
     goto __pyx_L3;
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":295
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":297
  *         else:
  *             #
  *             self._status = ORDER_STATUS.CANCEL_PART             # <<<<<<<<<<<<<<
@@ -4287,12 +4323,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8cancel(struct
  *     def failed(self, reason=None):
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 297, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CANCEL_PART); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CANCEL_PART); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 297, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 295, __pyx_L1_error)
+    if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 297, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_2);
     __Pyx_GOTREF(__pyx_v_self->_status);
     __Pyx_DECREF(__pyx_v_self->_status);
@@ -4301,7 +4337,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8cancel(struct
   }
   __pyx_L3:;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":282
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":284
  *         self._status = ORDER_STATUS.NEW
  * 
  *     def cancel(self):             # <<<<<<<<<<<<<<
@@ -4323,7 +4359,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8cancel(struct
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":297
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":299
  *             self._status = ORDER_STATUS.CANCEL_PART
  * 
  *     def failed(self, reason=None):             # <<<<<<<<<<<<<<
@@ -4361,7 +4397,7 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11failed(PyObj
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "failed") < 0)) __PYX_ERR(0, 297, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "failed") < 0)) __PYX_ERR(0, 299, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4375,7 +4411,7 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11failed(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("failed", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 297, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("failed", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 299, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.failed", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4395,42 +4431,42 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_10failed(struc
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("failed", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":304
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":306
  *         """
  *         # (////)
  *         self._status = ORDER_STATUS.FAILED             # <<<<<<<<<<<<<<
  *         self.reason = str(reason)
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_FAILED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 304, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_FAILED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 304, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->_status);
   __Pyx_DECREF(__pyx_v_self->_status);
   __pyx_v_self->_status = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":305
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":307
  *         # (////)
  *         self._status = ORDER_STATUS.FAILED
  *         self.reason = str(reason)             # <<<<<<<<<<<<<<
  * 
  *     def trade(self, trade_id, trade_price, trade_amount, trade_time):
  */
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_reason); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 305, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_reason); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->reason);
   __Pyx_DECREF(__pyx_v_self->reason);
   __pyx_v_self->reason = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":297
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":299
  *             self._status = ORDER_STATUS.CANCEL_PART
  * 
  *     def failed(self, reason=None):             # <<<<<<<<<<<<<<
@@ -4452,7 +4488,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_10failed(struc
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":307
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":309
  *         self.reason = str(reason)
  * 
  *     def trade(self, trade_id, trade_price, trade_amount, trade_time):             # <<<<<<<<<<<<<<
@@ -4498,23 +4534,23 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_13trade(PyObje
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_trade_price)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("trade", 1, 4, 4, 1); __PYX_ERR(0, 307, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("trade", 1, 4, 4, 1); __PYX_ERR(0, 309, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_trade_amount)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("trade", 1, 4, 4, 2); __PYX_ERR(0, 307, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("trade", 1, 4, 4, 2); __PYX_ERR(0, 309, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_trade_time)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("trade", 1, 4, 4, 3); __PYX_ERR(0, 307, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("trade", 1, 4, 4, 3); __PYX_ERR(0, 309, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "trade") < 0)) __PYX_ERR(0, 307, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "trade") < 0)) __PYX_ERR(0, 309, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -4531,7 +4567,7 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_13trade(PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("trade", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 307, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("trade", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 309, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.trade", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4563,37 +4599,37 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
   __Pyx_INCREF(__pyx_v_trade_amount);
   __Pyx_INCREF(__pyx_v_trade_time);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":313
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":315
  *             amount {[type]} -- [description]
  *         """
  *         if self.status in [ORDER_STATUS.SUCCESS_PART, ORDER_STATUS.QUEUED]:             # <<<<<<<<<<<<<<
  *             trade_amount = int(trade_amount)
  *             trade_id = str(trade_id)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_status_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_status_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_SUCCESS_PART); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_SUCCESS_PART); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
     __pyx_t_2 = __pyx_t_5;
     goto __pyx_L4_bool_binop_done;
   }
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_QUEUED); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_QUEUED); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 313, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_2 = __pyx_t_5;
   __pyx_L4_bool_binop_done:;
@@ -4601,62 +4637,62 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
   __pyx_t_5 = (__pyx_t_2 != 0);
   if (likely(__pyx_t_5)) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":314
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":316
  *         """
  *         if self.status in [ORDER_STATUS.SUCCESS_PART, ORDER_STATUS.QUEUED]:
  *             trade_amount = int(trade_amount)             # <<<<<<<<<<<<<<
  *             trade_id = str(trade_id)
  * 
  */
-    __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_v_trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 314, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_v_trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_trade_amount, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":315
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":317
  *         if self.status in [ORDER_STATUS.SUCCESS_PART, ORDER_STATUS.QUEUED]:
  *             trade_amount = int(trade_amount)
  *             trade_id = str(trade_id)             # <<<<<<<<<<<<<<
  * 
  *             if trade_amount < 1:
  */
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_trade_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 315, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_trade_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 317, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_trade_id, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":317
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":319
  *             trade_id = str(trade_id)
  * 
  *             if trade_amount < 1:             # <<<<<<<<<<<<<<
  * 
  *                 self._status = ORDER_STATUS.NEXT
  */
-    __pyx_t_1 = PyObject_RichCompare(__pyx_v_trade_amount, __pyx_int_1, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 317, __pyx_L1_error)
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 317, __pyx_L1_error)
+    __pyx_t_1 = PyObject_RichCompare(__pyx_v_trade_amount, __pyx_int_1, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 319, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_5) {
 
-      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":319
+      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":321
  *             if trade_amount < 1:
  * 
  *                 self._status = ORDER_STATUS.NEXT             # <<<<<<<<<<<<<<
  *             else:
  *                 if trade_id not in self.trade_id:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 321, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NEXT); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 319, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NEXT); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 321, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      if (!(likely(PyString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 319, __pyx_L1_error)
+      if (!(likely(PyString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 321, __pyx_L1_error)
       __Pyx_GIVEREF(__pyx_t_3);
       __Pyx_GOTREF(__pyx_v_self->_status);
       __Pyx_DECREF(__pyx_v_self->_status);
       __pyx_v_self->_status = ((PyObject*)__pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":317
+      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":319
  *             trade_id = str(trade_id)
  * 
  *             if trade_amount < 1:             # <<<<<<<<<<<<<<
@@ -4666,7 +4702,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
       goto __pyx_L6;
     }
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":321
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":323
  *                 self._status = ORDER_STATUS.NEXT
  *             else:
  *                 if trade_id not in self.trade_id:             # <<<<<<<<<<<<<<
@@ -4674,35 +4710,35 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
  * 
  */
     /*else*/ {
-      __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_v_trade_id, __pyx_v_self->trade_id, Py_NE)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 321, __pyx_L1_error)
+      __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_v_trade_id, __pyx_v_self->trade_id, Py_NE)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 323, __pyx_L1_error)
       __pyx_t_2 = (__pyx_t_5 != 0);
       if (__pyx_t_2) {
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":322
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":324
  *             else:
  *                 if trade_id not in self.trade_id:
  *                     trade_price = float(trade_price)             # <<<<<<<<<<<<<<
  * 
  *                     trade_time = str(trade_time)
  */
-        __pyx_t_3 = __Pyx_PyNumber_Float(__pyx_v_trade_price); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 322, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyNumber_Float(__pyx_v_trade_price); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 324, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF_SET(__pyx_v_trade_price, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":324
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":326
  *                     trade_price = float(trade_price)
  * 
  *                     trade_time = str(trade_time)             # <<<<<<<<<<<<<<
  * 
  *                     self.trade_id.append(trade_id)
  */
-        __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_trade_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 324, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_trade_time); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 326, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF_SET(__pyx_v_trade_time, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":326
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":328
  *                     trade_time = str(trade_time)
  * 
  *                     self.trade_id.append(trade_id)             # <<<<<<<<<<<<<<
@@ -4711,70 +4747,70 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
  */
         if (unlikely(__pyx_v_self->trade_id == Py_None)) {
           PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-          __PYX_ERR(0, 326, __pyx_L1_error)
+          __PYX_ERR(0, 328, __pyx_L1_error)
         }
-        __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_self->trade_id, __pyx_v_trade_id); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 326, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_self->trade_id, __pyx_v_trade_id); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 328, __pyx_L1_error)
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":328
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":330
  *                     self.trade_id.append(trade_id)
  *                     self.trade_price = (
  *                         self.trade_price * self.trade_amount +             # <<<<<<<<<<<<<<
  *                         trade_price * trade_amount
  *                     ) / (
  */
-        __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->trade_price * __pyx_v_self->trade_amount)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 328, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble((__pyx_v_self->trade_price * __pyx_v_self->trade_amount)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 330, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":329
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":331
  *                     self.trade_price = (
  *                         self.trade_price * self.trade_amount +
  *                         trade_price * trade_amount             # <<<<<<<<<<<<<<
  *                     ) / (
  *                         self.trade_amount + trade_amount
  */
-        __pyx_t_1 = PyNumber_Multiply(__pyx_v_trade_price, __pyx_v_trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 329, __pyx_L1_error)
+        __pyx_t_1 = PyNumber_Multiply(__pyx_v_trade_price, __pyx_v_trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":328
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":330
  *                     self.trade_id.append(trade_id)
  *                     self.trade_price = (
  *                         self.trade_price * self.trade_amount +             # <<<<<<<<<<<<<<
  *                         trade_price * trade_amount
  *                     ) / (
  */
-        __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 328, __pyx_L1_error)
+        __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 330, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":331
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":333
  *                         trade_price * trade_amount
  *                     ) / (
  *                         self.trade_amount + trade_amount             # <<<<<<<<<<<<<<
  *                     )
  *                     self.trade_amount += trade_amount
  */
-        __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
+        __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 333, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_v_trade_amount); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 331, __pyx_L1_error)
+        __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_v_trade_amount); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 333, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":330
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":332
  *                         self.trade_price * self.trade_amount +
  *                         trade_price * trade_amount
  *                     ) / (             # <<<<<<<<<<<<<<
  *                         self.trade_amount + trade_amount
  *                     )
  */
-        __pyx_t_1 = __Pyx_PyNumber_Divide(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyNumber_Divide(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_7 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_7 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 330, __pyx_L1_error)
+        __pyx_t_7 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_7 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 332, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":327
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":329
  * 
  *                     self.trade_id.append(trade_id)
  *                     self.trade_price = (             # <<<<<<<<<<<<<<
@@ -4783,23 +4819,23 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
  */
         __pyx_v_self->trade_price = __pyx_t_7;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":333
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":335
  *                         self.trade_amount + trade_amount
  *                     )
  *                     self.trade_amount += trade_amount             # <<<<<<<<<<<<<<
  *                     self.trade_time.append(trade_time)
  *                     self.callback(
  */
-        __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 333, __pyx_L1_error)
+        __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 335, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_3 = PyNumber_InPlaceAdd(__pyx_t_1, __pyx_v_trade_amount); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 333, __pyx_L1_error)
+        __pyx_t_3 = PyNumber_InPlaceAdd(__pyx_t_1, __pyx_v_trade_amount); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 335, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_7 = __pyx_PyFloat_AsFloat(__pyx_t_3); if (unlikely((__pyx_t_7 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 333, __pyx_L1_error)
+        __pyx_t_7 = __pyx_PyFloat_AsFloat(__pyx_t_3); if (unlikely((__pyx_t_7 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 335, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_v_self->trade_amount = __pyx_t_7;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":334
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":336
  *                     )
  *                     self.trade_amount += trade_amount
  *                     self.trade_time.append(trade_time)             # <<<<<<<<<<<<<<
@@ -4808,21 +4844,21 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
  */
         if (unlikely(__pyx_v_self->trade_time == Py_None)) {
           PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-          __PYX_ERR(0, 334, __pyx_L1_error)
+          __PYX_ERR(0, 336, __pyx_L1_error)
         }
-        __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_self->trade_time, __pyx_v_trade_time); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 334, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_self->trade_time, __pyx_v_trade_time); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 336, __pyx_L1_error)
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":342
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":344
  *                         trade_price,
  *                         trade_amount,
  *                         self.towards,             # <<<<<<<<<<<<<<
  *                         trade_time
  *                     )
  */
-        __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->towards); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 342, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->towards); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 344, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":343
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":345
  *                         trade_amount,
  *                         self.towards,
  *                         trade_time             # <<<<<<<<<<<<<<
@@ -4845,7 +4881,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_4)) {
           PyObject *__pyx_temp[9] = {__pyx_t_8, __pyx_v_self->code, __pyx_v_trade_id, __pyx_v_self->order_id, __pyx_v_self->realorder_id, __pyx_v_trade_price, __pyx_v_trade_amount, __pyx_t_1, __pyx_v_trade_time};
-          __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_9, 8+__pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 335, __pyx_L1_error)
+          __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_9, 8+__pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 337, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -4854,14 +4890,14 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
           PyObject *__pyx_temp[9] = {__pyx_t_8, __pyx_v_self->code, __pyx_v_trade_id, __pyx_v_self->order_id, __pyx_v_self->realorder_id, __pyx_v_trade_price, __pyx_v_trade_amount, __pyx_t_1, __pyx_v_trade_time};
-          __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_9, 8+__pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 335, __pyx_L1_error)
+          __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_9, 8+__pyx_t_9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 337, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         } else
         #endif
         {
-          __pyx_t_10 = PyTuple_New(8+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 335, __pyx_L1_error)
+          __pyx_t_10 = PyTuple_New(8+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 337, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_10);
           if (__pyx_t_8) {
             __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -4890,14 +4926,14 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
           __Pyx_GIVEREF(__pyx_v_trade_time);
           PyTuple_SET_ITEM(__pyx_t_10, 7+__pyx_t_9, __pyx_v_trade_time);
           __pyx_t_1 = 0;
-          __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_10, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 335, __pyx_L1_error)
+          __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_10, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 337, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         }
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":321
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":323
  *                 self._status = ORDER_STATUS.NEXT
  *             else:
  *                 if trade_id not in self.trade_id:             # <<<<<<<<<<<<<<
@@ -4907,7 +4943,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
         goto __pyx_L7;
       }
 
-      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":346
+      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":348
  *                     )
  *                 else:
  *                     pass             # <<<<<<<<<<<<<<
@@ -4920,7 +4956,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
     }
     __pyx_L6:;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":313
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":315
  *             amount {[type]} -- [description]
  *         """
  *         if self.status in [ORDER_STATUS.SUCCESS_PART, ORDER_STATUS.QUEUED]:             # <<<<<<<<<<<<<<
@@ -4930,7 +4966,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
     goto __pyx_L3;
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":348
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":350
  *                     pass
  *         else:
  *             raise RuntimeError(             # <<<<<<<<<<<<<<
@@ -4939,16 +4975,16 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
  */
   /*else*/ {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":349
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":351
  *         else:
  *             raise RuntimeError(
  *                 'ORDER STATUS {} CANNNOT TRADE'.format(self.status)             # <<<<<<<<<<<<<<
  *             )
  * 
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_ORDER_STATUS_CANNNOT_TRADE, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 349, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_ORDER_STATUS_CANNNOT_TRADE, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 351, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_status_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 349, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_status_2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 351, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_1 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -4963,27 +4999,27 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
     __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_1, __pyx_t_10) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_10);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 349, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":348
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":350
  *                     pass
  *         else:
  *             raise RuntimeError(             # <<<<<<<<<<<<<<
  *                 'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
  *             )
  */
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_RuntimeError, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 348, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_RuntimeError, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 350, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 348, __pyx_L1_error)
+    __PYX_ERR(0, 350, __pyx_L1_error)
   }
   __pyx_L3:;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":307
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":309
  *         self.reason = str(reason)
  * 
  *     def trade(self, trade_id, trade_price, trade_amount, trade_time):             # <<<<<<<<<<<<<<
@@ -5012,7 +5048,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade(struct
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":352
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":354
  *             )
  * 
  *     cpdef queued(QA_Order self, str realorder_id='1'):             # <<<<<<<<<<<<<<
@@ -5044,7 +5080,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_queued(struct _
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_queued); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_queued); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_15queued)) {
         __Pyx_XDECREF(__pyx_r);
@@ -5061,7 +5097,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_queued(struct _
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_realorder_id) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_realorder_id);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 352, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 354, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -5082,7 +5118,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_queued(struct _
     #endif
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":353
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":355
  * 
  *     cpdef queued(QA_Order self, str realorder_id='1'):
  *         self.realorder_id = realorder_id             # <<<<<<<<<<<<<<
@@ -5095,26 +5131,26 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_queued(struct _
   __Pyx_DECREF(__pyx_v_self->realorder_id);
   __pyx_v_self->realorder_id = __pyx_v_realorder_id;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":354
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":356
  *     cpdef queued(QA_Order self, str realorder_id='1'):
  *         self.realorder_id = realorder_id
  *         self._status = ORDER_STATUS.QUEUED             # <<<<<<<<<<<<<<
  * 
  *     cpdef settle(QA_Order self):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 356, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_QUEUED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_QUEUED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 356, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 354, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 356, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->_status);
   __Pyx_DECREF(__pyx_v_self->_status);
   __pyx_v_self->_status = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":352
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":354
  *             )
  * 
  *     cpdef queued(QA_Order self, str realorder_id='1'):             # <<<<<<<<<<<<<<
@@ -5167,7 +5203,7 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_15queued(PyObj
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "queued") < 0)) __PYX_ERR(0, 352, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "queued") < 0)) __PYX_ERR(0, 354, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5181,13 +5217,13 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_15queued(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("queued", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 352, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("queued", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 354, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.queued", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_realorder_id), (&PyString_Type), 1, "realorder_id", 1))) __PYX_ERR(0, 352, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_realorder_id), (&PyString_Type), 1, "realorder_id", 1))) __PYX_ERR(0, 354, __pyx_L1_error)
   __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14queued(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *)__pyx_v_self), __pyx_v_realorder_id);
 
   /* function exit code */
@@ -5208,7 +5244,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14queued(struc
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.realorder_id = __pyx_v_realorder_id;
-  __pyx_t_1 = __pyx_vtabptr_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order->queued(__pyx_v_self, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 352, __pyx_L1_error)
+  __pyx_t_1 = __pyx_vtabptr_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order->queued(__pyx_v_self, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5225,7 +5261,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14queued(struc
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":356
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":358
  *         self._status = ORDER_STATUS.QUEUED
  * 
  *     cpdef settle(QA_Order self):             # <<<<<<<<<<<<<<
@@ -5251,7 +5287,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_settle(struct _
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_type_dict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_settle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 356, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_settle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 358, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)(void*)__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_17settle)) {
         __Pyx_XDECREF(__pyx_r);
@@ -5268,7 +5304,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_settle(struct _
         }
         __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 356, __pyx_L1_error)
+        if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 358, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_r = __pyx_t_2;
@@ -5289,26 +5325,26 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_settle(struct _
     #endif
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":357
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":359
  * 
  *     cpdef settle(QA_Order self):
  *         self._status = ORDER_STATUS.SETTLED             # <<<<<<<<<<<<<<
  * 
  *     def get(self, key, exception=None):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 359, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_SETTLED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 357, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_SETTLED); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 359, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 357, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 359, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_2);
   __Pyx_GOTREF(__pyx_v_self->_status);
   __Pyx_DECREF(__pyx_v_self->_status);
   __pyx_v_self->_status = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":356
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":358
  *         self._status = ORDER_STATUS.QUEUED
  * 
  *     cpdef settle(QA_Order self):             # <<<<<<<<<<<<<<
@@ -5351,7 +5387,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_16settle(struc
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("settle", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_settle(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_settle(__pyx_v_self, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 358, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5368,7 +5404,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_16settle(struc
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":359
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":361
  *         self._status = ORDER_STATUS.SETTLED
  * 
  *     def get(self, key, exception=None):             # <<<<<<<<<<<<<<
@@ -5412,7 +5448,7 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_19get(PyObject
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get") < 0)) __PYX_ERR(0, 359, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get") < 0)) __PYX_ERR(0, 361, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5428,7 +5464,7 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_19get(PyObject
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 359, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 361, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.get", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5457,7 +5493,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
   int __pyx_t_10;
   __Pyx_RefNannySetupContext("get", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":360
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":362
  * 
  *     def get(self, key, exception=None):
  *         try:             # <<<<<<<<<<<<<<
@@ -5473,7 +5509,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":361
+      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":363
  *     def get(self, key, exception=None):
  *         try:
  *             if key is None:             # <<<<<<<<<<<<<<
@@ -5484,16 +5520,16 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
       __pyx_t_5 = (__pyx_t_4 != 0);
       if (__pyx_t_5) {
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":362
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":364
  *         try:
  *             if key is None:
  *                 print("key is none , return none!")             # <<<<<<<<<<<<<<
  *                 return None
  *             return eval('self.{}'.format(key))
  */
-        if (__Pyx_PrintOne(0, __pyx_kp_s_key_is_none_return_none) < 0) __PYX_ERR(0, 362, __pyx_L3_error)
+        if (__Pyx_PrintOne(0, __pyx_kp_s_key_is_none_return_none) < 0) __PYX_ERR(0, 364, __pyx_L3_error)
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":363
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":365
  *             if key is None:
  *                 print("key is none , return none!")
  *                 return None             # <<<<<<<<<<<<<<
@@ -5504,7 +5540,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
         __pyx_r = Py_None; __Pyx_INCREF(Py_None);
         goto __pyx_L7_try_return;
 
-        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":361
+        /* "QUANTAXIS/QAMARKET/QAOrder.pyx":363
  *     def get(self, key, exception=None):
  *         try:
  *             if key is None:             # <<<<<<<<<<<<<<
@@ -5513,7 +5549,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
  */
       }
 
-      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":364
+      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":366
  *                 print("key is none , return none!")
  *                 return None
  *             return eval('self.{}'.format(key))             # <<<<<<<<<<<<<<
@@ -5521,7 +5557,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
  *             return exception
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_self, __pyx_n_s_format); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 364, __pyx_L3_error)
+      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_self, __pyx_n_s_format); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 366, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_7);
       __pyx_t_8 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
@@ -5535,26 +5571,26 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
       }
       __pyx_t_6 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_8, __pyx_v_key) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_key);
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 364, __pyx_L3_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 366, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_Globals(); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 364, __pyx_L3_error)
+      __pyx_t_7 = __Pyx_Globals(); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 366, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_8 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 364, __pyx_L3_error)
+      __pyx_t_8 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 366, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_8);
       if (__pyx_v_e) {
-        if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_e, __pyx_v_e) < 0) __PYX_ERR(0, 364, __pyx_L3_error)
+        if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_e, __pyx_v_e) < 0) __PYX_ERR(0, 366, __pyx_L3_error)
       }
       if (__pyx_v_exception) {
-        if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_exception, __pyx_v_exception) < 0) __PYX_ERR(0, 364, __pyx_L3_error)
+        if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_exception, __pyx_v_exception) < 0) __PYX_ERR(0, 366, __pyx_L3_error)
       }
       if (__pyx_v_key) {
-        if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_key, __pyx_v_key) < 0) __PYX_ERR(0, 364, __pyx_L3_error)
+        if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_key, __pyx_v_key) < 0) __PYX_ERR(0, 366, __pyx_L3_error)
       }
       if (((PyObject *)__pyx_v_self)) {
-        if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_self_2, ((PyObject *)__pyx_v_self)) < 0) __PYX_ERR(0, 364, __pyx_L3_error)
+        if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_self_2, ((PyObject *)__pyx_v_self)) < 0) __PYX_ERR(0, 366, __pyx_L3_error)
       }
-      __pyx_t_9 = PyTuple_New(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 364, __pyx_L3_error)
+      __pyx_t_9 = PyTuple_New(3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 366, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_GIVEREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_6);
@@ -5565,14 +5601,14 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
       __pyx_t_6 = 0;
       __pyx_t_7 = 0;
       __pyx_t_8 = 0;
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_eval, __pyx_t_9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 364, __pyx_L3_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_eval, __pyx_t_9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 366, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_r = __pyx_t_8;
       __pyx_t_8 = 0;
       goto __pyx_L7_try_return;
 
-      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":360
+      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":362
  * 
  *     def get(self, key, exception=None):
  *         try:             # <<<<<<<<<<<<<<
@@ -5586,7 +5622,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":365
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":367
  *                 return None
  *             return eval('self.{}'.format(key))
  *         except Exception as e:             # <<<<<<<<<<<<<<
@@ -5596,14 +5632,14 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
     __pyx_t_10 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_10) {
       __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.get", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_8, &__pyx_t_9, &__pyx_t_7) < 0) __PYX_ERR(0, 365, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_8, &__pyx_t_9, &__pyx_t_7) < 0) __PYX_ERR(0, 367, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_INCREF(__pyx_t_9);
       __pyx_v_e = __pyx_t_9;
 
-      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":366
+      /* "QUANTAXIS/QAMARKET/QAOrder.pyx":368
  *             return eval('self.{}'.format(key))
  *         except Exception as e:
  *             return exception             # <<<<<<<<<<<<<<
@@ -5621,7 +5657,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":360
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":362
  * 
  *     def get(self, key, exception=None):
  *         try:             # <<<<<<<<<<<<<<
@@ -5647,7 +5683,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
     goto __pyx_L0;
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":359
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":361
  *         self._status = ORDER_STATUS.SETTLED
  * 
  *     def get(self, key, exception=None):             # <<<<<<<<<<<<<<
@@ -5670,7 +5706,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_18get(struct _
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":370
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":372
  *     # todo var
  * 
  *     def callingback(self):             # <<<<<<<<<<<<<<
@@ -5698,17 +5734,17 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_20callingback(
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("callingback", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":377
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":379
  *         """
  * 
  *         if self.callback:             # <<<<<<<<<<<<<<
  *             return self.callback
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_self->callback); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 377, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_self->callback); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 379, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":378
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":380
  * 
  *         if self.callback:
  *             return self.callback             # <<<<<<<<<<<<<<
@@ -5720,7 +5756,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_20callingback(
     __pyx_r = __pyx_v_self->callback;
     goto __pyx_L0;
 
-    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":377
+    /* "QUANTAXIS/QAMARKET/QAOrder.pyx":379
  *         """
  * 
  *         if self.callback:             # <<<<<<<<<<<<<<
@@ -5729,7 +5765,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_20callingback(
  */
   }
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":370
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":372
  *     # todo var
  * 
  *     def callingback(self):             # <<<<<<<<<<<<<<
@@ -5749,7 +5785,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_20callingback(
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":380
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":382
  *             return self.callback
  * 
  *     def info(self):             # <<<<<<<<<<<<<<
@@ -5777,7 +5813,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_22info(struct 
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("info", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":384
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":386
  *         :return:
  *         '''
  *         return vars(self)             # <<<<<<<<<<<<<<
@@ -5785,13 +5821,13 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_22info(struct 
  *     #  dfs
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_vars, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 384, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_vars, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":380
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":382
  *             return self.callback
  * 
  *     def info(self):             # <<<<<<<<<<<<<<
@@ -5810,7 +5846,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_22info(struct 
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":387
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":389
  * 
  *     #  dfs
  *     def to_df(self):             # <<<<<<<<<<<<<<
@@ -5840,7 +5876,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_24to_df(struct
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("to_df", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":388
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":390
  *     #  dfs
  *     def to_df(self):
  *         return pd.DataFrame([             # <<<<<<<<<<<<<<
@@ -5848,30 +5884,30 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_24to_df(struct
  *         ])
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_pd); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_pd); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 390, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DataFrame); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DataFrame); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 390, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":389
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":391
  *     def to_df(self):
  *         return pd.DataFrame([
  *             vars(self),             # <<<<<<<<<<<<<<
  *         ])
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_vars, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 389, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_vars, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 391, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":388
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":390
  *     #  dfs
  *     def to_df(self):
  *         return pd.DataFrame([             # <<<<<<<<<<<<<<
  *             vars(self),
  *         ])
  */
-  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 390, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
@@ -5889,14 +5925,14 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_24to_df(struct
   __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 388, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 390, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":387
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":389
  * 
  *     #  dfs
  *     def to_df(self):             # <<<<<<<<<<<<<<
@@ -5918,7 +5954,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_24to_df(struct
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":394
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":396
  *     # todo var
  * 
  *     def to_dict(self):             # <<<<<<<<<<<<<<
@@ -5946,7 +5982,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_26to_dict(stru
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("to_dict", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":399
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":401
  *         :return: dict
  *         '''
  *         return vars(self)             # <<<<<<<<<<<<<<
@@ -5954,13 +5990,13 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_26to_dict(stru
  *     def to_otgdict(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_vars, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_vars, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 401, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":394
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":396
  *     # todo var
  * 
  *     def to_dict(self):             # <<<<<<<<<<<<<<
@@ -5979,7 +6015,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_26to_dict(stru
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":401
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":403
  *         return vars(self)
  * 
  *     def to_otgdict(self):             # <<<<<<<<<<<<<<
@@ -6008,7 +6044,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_28to_otgdict(s
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("to_otgdict", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":420
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":422
  *             }
  *         """
  *         return {             # <<<<<<<<<<<<<<
@@ -6017,116 +6053,110 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_28to_otgdict(s
  */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":421
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":423
  *         """
  *         return {
  *             "aid": "insert_order",                  # //,             # <<<<<<<<<<<<<<
  *             # //, , (user1,  user_id  user1  user1.some_unit)
  *             "user_id": self.account_cookie,
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 421, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 423, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_aid, __pyx_n_s_insert_order) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_aid, __pyx_n_s_insert_order) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":423
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":425
  *             "aid": "insert_order",                  # //,
  *             # //, , (user1,  user_id  user1  user1.some_unit)
  *             "user_id": self.account_cookie,             # <<<<<<<<<<<<<<
  *             # //, , , 512
  *             "order_id": self.order_id,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_user_id, __pyx_v_self->account_cookie) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_user_id, __pyx_v_self->account_cookie) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":425
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":427
  *             "user_id": self.account_cookie,
  *             # //, , , 512
  *             "order_id": self.order_id,             # <<<<<<<<<<<<<<
  *             "exchange_id": self.exchange_id,  # //,
  *             "instrument_id": self.code,               # //,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_order_id, __pyx_v_self->order_id) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_order_id, __pyx_v_self->order_id) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":426
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":428
  *             # //, , , 512
  *             "order_id": self.order_id,
  *             "exchange_id": self.exchange_id,  # //,             # <<<<<<<<<<<<<<
  *             "instrument_id": self.code,               # //,
  *             "direction": self.direction,                      # //,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_exchange_id, __pyx_v_self->exchange_id) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_exchange_id, __pyx_v_self->exchange_id) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":427
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":429
  *             "order_id": self.order_id,
  *             "exchange_id": self.exchange_id,  # //,
  *             "instrument_id": self.code,               # //,             # <<<<<<<<<<<<<<
  *             "direction": self.direction,                      # //,
  *             # //, , ()
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_instrument_id, __pyx_v_self->code) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_instrument_id, __pyx_v_self->code) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":428
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":430
  *             "exchange_id": self.exchange_id,  # //,
  *             "instrument_id": self.code,               # //,
  *             "direction": self.direction,                      # //,             # <<<<<<<<<<<<<<
  *             # //, , ()
  *             "offset":  self.offset,
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_direction); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 428, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_direction, __pyx_t_2) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_direction, __pyx_v_self->direction) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":430
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":432
  *             "direction": self.direction,                      # //,
  *             # //, , ()
  *             "offset":  self.offset,             # <<<<<<<<<<<<<<
  *             "volume":  self.amount,                             # //,
  *             "price_type": self.order_model,  # //,
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_offset); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 430, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_offset, __pyx_t_2) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_offset, __pyx_v_self->offset) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":431
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":433
  *             # //, , ()
  *             "offset":  self.offset,
  *             "volume":  self.amount,                             # //,             # <<<<<<<<<<<<<<
  *             "price_type": self.order_model,  # //,
  *             "limit_price": self.price,  # // price_type == LIMIT ,
  */
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->amount); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 431, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->amount); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 433, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_volume, __pyx_t_2) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_volume, __pyx_t_2) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":432
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":434
  *             "offset":  self.offset,
  *             "volume":  self.amount,                             # //,
  *             "price_type": self.order_model,  # //,             # <<<<<<<<<<<<<<
  *             "limit_price": self.price,  # // price_type == LIMIT ,
  *             "volume_condition": "ANY",
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_price_type, __pyx_v_self->order_model) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_price_type, __pyx_v_self->order_model) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":433
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":435
  *             "volume":  self.amount,                             # //,
  *             "price_type": self.order_model,  # //,
  *             "limit_price": self.price,  # // price_type == LIMIT ,             # <<<<<<<<<<<<<<
  *             "volume_condition": "ANY",
  *             "time_condition": "GFD",
  */
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->price); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->price); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 435, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_limit_price, __pyx_t_2) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_limit_price, __pyx_t_2) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_volume_condition, __pyx_n_s_ANY) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_time_condition, __pyx_n_s_GFD) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_volume_condition, __pyx_n_s_ANY) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_time_condition, __pyx_n_s_GFD) < 0) __PYX_ERR(0, 423, __pyx_L1_error)
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":401
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":403
  *         return vars(self)
  * 
  *     def to_otgdict(self):             # <<<<<<<<<<<<<<
@@ -6146,12 +6176,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_28to_otgdict(s
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":438
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":440
  *         }
  * 
  *     def to_qatradegatway(self):             # <<<<<<<<<<<<<<
- * 
- *         direction = 'BUY' if self.direction > 0 else 'SELL'
+ *         return {
+ *             'topic': 'sendorder',
  */
 
 /* Python wrapper */
@@ -6168,42 +6198,17 @@ static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_31to_qatradega
 }
 
 static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradegatway(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self) {
-  PyObject *__pyx_v_direction = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
-  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("to_qatradegatway", 0);
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":440
- *     def to_qatradegatway(self):
- * 
- *         direction = 'BUY' if self.direction > 0 else 'SELL'             # <<<<<<<<<<<<<<
- *         return {
- *             'topic': 'sendorder',
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_direction); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 440, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_int_0, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 440, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 440, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__pyx_t_4) {
-    __Pyx_INCREF(__pyx_n_s_BUY);
-    __pyx_t_1 = __pyx_n_s_BUY;
-  } else {
-    __Pyx_INCREF(__pyx_n_s_SELL);
-    __pyx_t_1 = __pyx_n_s_SELL;
-  }
-  __pyx_v_direction = __pyx_t_1;
-  __pyx_t_1 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":441
  * 
- *         direction = 'BUY' if self.direction > 0 else 'SELL'
+ *     def to_qatradegatway(self):
  *         return {             # <<<<<<<<<<<<<<
  *             'topic': 'sendorder',
  *             'account_cookie': self.account_cookie,
@@ -6211,7 +6216,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
   __Pyx_XDECREF(__pyx_r);
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":442
- *         direction = 'BUY' if self.direction > 0 else 'SELL'
+ *     def to_qatradegatway(self):
  *         return {
  *             'topic': 'sendorder',             # <<<<<<<<<<<<<<
  *             'account_cookie': self.account_cookie,
@@ -6226,7 +6231,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
  *             'topic': 'sendorder',
  *             'account_cookie': self.account_cookie,             # <<<<<<<<<<<<<<
  *             'strategy_id': self.strategy,
- *             'order_direction': direction,
+ *             'order_direction': self.direction,
  */
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_account_cookie, __pyx_v_self->account_cookie) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
 
@@ -6234,7 +6239,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
  *             'topic': 'sendorder',
  *             'account_cookie': self.account_cookie,
  *             'strategy_id': self.strategy,             # <<<<<<<<<<<<<<
- *             'order_direction': direction,
+ *             'order_direction': self.direction,
  *             'code': self.code.lower(),
  */
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_strategy_id, __pyx_v_self->strategy) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
@@ -6242,50 +6247,50 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":445
  *             'account_cookie': self.account_cookie,
  *             'strategy_id': self.strategy,
- *             'order_direction': direction,             # <<<<<<<<<<<<<<
+ *             'order_direction': self.direction,             # <<<<<<<<<<<<<<
  *             'code': self.code.lower(),
  *             'price': self.price,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_order_direction, __pyx_v_direction) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_order_direction, __pyx_v_self->direction) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":446
  *             'strategy_id': self.strategy,
- *             'order_direction': direction,
+ *             'order_direction': self.direction,
  *             'code': self.code.lower(),             # <<<<<<<<<<<<<<
  *             'price': self.price,
  *             'order_time': self.sending_time,
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->code, __pyx_n_s_lower); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_5)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_5);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->code, __pyx_n_s_lower); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_code, __pyx_t_3) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_code, __pyx_t_2) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":447
- *             'order_direction': direction,
+ *             'order_direction': self.direction,
  *             'code': self.code.lower(),
  *             'price': self.price,             # <<<<<<<<<<<<<<
  *             'order_time': self.sending_time,
  *             'exchange_id': self.get_exchange(self.code),
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->price); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 447, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_price, __pyx_t_3) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->price); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 447, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_price, __pyx_t_2) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":448
  *             'code': self.code.lower(),
@@ -6303,25 +6308,25 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
  *             'order_offset': self.offset,
  *             'volume': self.amount,
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_exchange); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 449, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_5)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_5);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_get_exchange); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_5, __pyx_v_self->code) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_self->code);
-  __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 449, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_exchange_id, __pyx_t_3) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
+  __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_self->code) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_self->code);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_exchange_id, __pyx_t_2) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":450
  *             'order_time': self.sending_time,
@@ -6330,10 +6335,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
  *             'volume': self.amount,
  *             'order_id': self.order_id
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_offset); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 450, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_order_offset, __pyx_t_3) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_order_offset, __pyx_v_self->offset) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":451
  *             'exchange_id': self.get_exchange(self.code),
@@ -6342,10 +6344,10 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
  *             'order_id': self.order_id
  *         }
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->amount); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 451, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_volume, __pyx_t_3) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->amount); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 451, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_volume, __pyx_t_2) < 0) __PYX_ERR(0, 442, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":452
  *             'order_offset': self.offset,
@@ -6359,12 +6361,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":438
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":440
  *         }
  * 
  *     def to_qatradegatway(self):             # <<<<<<<<<<<<<<
- * 
- *         direction = 'BUY' if self.direction > 0 else 'SELL'
+ *         return {
+ *             'topic': 'sendorder',
  */
 
   /* function exit code */
@@ -6372,11 +6374,10 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_30to_qatradega
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.to_qatradegatway", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_direction);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -6411,13 +6412,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
+  int __pyx_t_5;
+  float __pyx_t_6;
   PyObject *__pyx_t_7 = NULL;
-  float __pyx_t_8;
+  int __pyx_t_8;
   int __pyx_t_9;
   int __pyx_t_10;
-  int __pyx_t_11;
   __Pyx_RefNannySetupContext("from_otgformat", 0);
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":480
@@ -6589,8 +6589,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_offset, __pyx_t_1) < 0) __PYX_ERR(0, 484, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 484, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->offset);
+  __Pyx_DECREF(__pyx_v_self->offset);
+  __pyx_v_self->offset = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":485
  *         self.code = str(otgOrder.get('instrument_id')).upper()
@@ -6616,8 +6620,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 485, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_direction, __pyx_t_1) < 0) __PYX_ERR(0, 485, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 485, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->direction);
+  __Pyx_DECREF(__pyx_v_self->direction);
+  __pyx_v_self->direction = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":486
  *         self.offset = otgOrder.get('offset')
@@ -6629,16 +6637,6 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_ORDER_DIRECTION_2, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 486, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":487
- *         self.direction = otgOrder.get('direction')
- *         self.towards = eval('ORDER_DIRECTION.{}_{}'.format(
- *             self.direction,             # <<<<<<<<<<<<<<
- *             self.offset
- *         ))
- */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_direction); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 487, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":488
  *         self.towards = eval('ORDER_DIRECTION.{}_{}'.format(
  *             self.direction,
@@ -6646,55 +6644,49 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *         ))
  *         self.amount = otgOrder.get('volume_orign')
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_offset); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 488, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = NULL;
-  __pyx_t_6 = 0;
+  __pyx_t_3 = NULL;
+  __pyx_t_5 = 0;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_5)) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_2, function);
-      __pyx_t_6 = 1;
+      __pyx_t_5 = 1;
     }
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_self->direction, __pyx_v_self->offset};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_t_3, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_self->direction, __pyx_v_self->offset};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 486, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    if (__pyx_t_5) {
-      __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
+    __pyx_t_4 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 486, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    if (__pyx_t_3) {
+      __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
     }
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_7, 0+__pyx_t_6, __pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_t_4);
-    __pyx_t_3 = 0;
-    __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
+    __Pyx_INCREF(__pyx_v_self->direction);
+    __Pyx_GIVEREF(__pyx_v_self->direction);
+    PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_5, __pyx_v_self->direction);
+    __Pyx_INCREF(__pyx_v_self->offset);
+    __Pyx_GIVEREF(__pyx_v_self->offset);
+    PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_5, __pyx_v_self->offset);
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
@@ -6707,31 +6699,31 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  */
   __pyx_t_2 = __Pyx_Globals(); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 486, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 486, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 486, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   if (__pyx_v_otgOrder) {
-    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_otgOrder, __pyx_v_otgOrder) < 0) __PYX_ERR(0, 486, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_otgOrder, __pyx_v_otgOrder) < 0) __PYX_ERR(0, 486, __pyx_L1_error)
   }
   if (((PyObject *)__pyx_v_self)) {
-    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_self_2, ((PyObject *)__pyx_v_self)) < 0) __PYX_ERR(0, 486, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_self_2, ((PyObject *)__pyx_v_self)) < 0) __PYX_ERR(0, 486, __pyx_L1_error)
   }
-  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 486, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 486, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_7);
-  PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_t_4);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_eval, __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 486, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_eval, __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 486, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 486, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_7); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 486, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_v_self->towards = __pyx_t_6;
+  __pyx_v_self->towards = __pyx_t_5;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":490
  *             self.offset
@@ -6740,26 +6732,26 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *         self.trade_amount = self.amount - otgOrder.get('volume_left')
  *         self.price = otgOrder.get('limit_price')
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 490, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 490, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
     if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
       __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_7 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_2, __pyx_n_s_volume_orign) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_s_volume_orign);
+  __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_n_s_volume_orign) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_n_s_volume_orign);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 490, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 490, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_4); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 490, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = __pyx_PyFloat_AsFloat(__pyx_t_7); if (unlikely((__pyx_t_8 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 490, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_v_self->amount = __pyx_t_8;
+  __pyx_v_self->amount = __pyx_t_6;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":491
  *         ))
@@ -6768,8 +6760,8 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *         self.price = otgOrder.get('limit_price')
  *         self.order_model = eval(
  */
-  __pyx_t_7 = PyFloat_FromDouble(__pyx_v_self->amount); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 491, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->amount); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 491, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 491, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_1 = NULL;
@@ -6782,18 +6774,18 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
       __Pyx_DECREF_SET(__pyx_t_2, function);
     }
   }
-  __pyx_t_4 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_1, __pyx_n_s_volume_left) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_s_volume_left);
+  __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_1, __pyx_n_s_volume_left) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_s_volume_left);
   __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 491, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 491, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Subtract(__pyx_t_7, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 491, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Subtract(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 491, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_8 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 491, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 491, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_self->trade_amount = __pyx_t_8;
+  __pyx_v_self->trade_amount = __pyx_t_6;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":492
  *         self.amount = otgOrder.get('volume_orign')
@@ -6802,26 +6794,26 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *         self.order_model = eval(
  *             'ORDER_MODEL.{}'.format(otgOrder.get('price_type'))
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 492, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_7)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_7);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_2 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_7, __pyx_n_s_limit_price) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_s_limit_price);
-  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_n_s_limit_price) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_n_s_limit_price);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 492, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_8 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_8 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 492, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_2); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 492, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_self->price = __pyx_t_8;
+  __pyx_v_self->price = __pyx_t_6;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":494
  *         self.price = otgOrder.get('limit_price')
@@ -6830,9 +6822,88 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *         )
  *         self.time_condition = otgOrder.get('time_condition')
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_ORDER_MODEL, __pyx_n_s_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 494, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_ORDER_MODEL, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_7 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_7, __pyx_n_s_price_type) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_n_s_price_type);
+  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_1)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_1);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_1, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":493
+ *         self.trade_amount = self.amount - otgOrder.get('volume_left')
+ *         self.price = otgOrder.get('limit_price')
+ *         self.order_model = eval(             # <<<<<<<<<<<<<<
+ *             'ORDER_MODEL.{}'.format(otgOrder.get('price_type'))
+ *         )
+ */
+  __pyx_t_3 = __Pyx_Globals(); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 493, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 493, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__pyx_v_otgOrder) {
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_otgOrder, __pyx_v_otgOrder) < 0) __PYX_ERR(0, 493, __pyx_L1_error)
+  }
+  if (((PyObject *)__pyx_v_self)) {
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_self_2, ((PyObject *)__pyx_v_self)) < 0) __PYX_ERR(0, 493, __pyx_L1_error)
+  }
+  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 493, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_4);
+  __pyx_t_2 = 0;
+  __pyx_t_3 = 0;
+  __pyx_t_4 = 0;
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_eval, __pyx_t_1, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 493, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!(likely(PyString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 493, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_4);
+  __Pyx_GOTREF(__pyx_v_self->order_model);
+  __Pyx_DECREF(__pyx_v_self->order_model);
+  __pyx_v_self->order_model = ((PyObject*)__pyx_t_4);
+  __pyx_t_4 = 0;
+
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":496
+ *             'ORDER_MODEL.{}'.format(otgOrder.get('price_type'))
+ *         )
+ *         self.time_condition = otgOrder.get('time_condition')             # <<<<<<<<<<<<<<
+ *         if otgOrder.get('insert_date_time') == 0:
+ *             self.datetime = 0
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 496, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -6844,96 +6915,17 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
       __Pyx_DECREF_SET(__pyx_t_1, function);
     }
   }
-  __pyx_t_7 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_3, __pyx_n_s_price_type) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_n_s_price_type);
+  __pyx_t_4 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_3, __pyx_n_s_time_condition) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_n_s_time_condition);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 494, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_1)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-    }
-  }
-  __pyx_t_2 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_1, __pyx_t_7) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 494, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":493
- *         self.trade_amount = self.amount - otgOrder.get('volume_left')
- *         self.price = otgOrder.get('limit_price')
- *         self.order_model = eval(             # <<<<<<<<<<<<<<
- *             'ORDER_MODEL.{}'.format(otgOrder.get('price_type'))
- *         )
- */
-  __pyx_t_4 = __Pyx_Globals(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 493, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 496, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_7 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 493, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  if (__pyx_v_otgOrder) {
-    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_otgOrder, __pyx_v_otgOrder) < 0) __PYX_ERR(0, 493, __pyx_L1_error)
-  }
-  if (((PyObject *)__pyx_v_self)) {
-    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_self_2, ((PyObject *)__pyx_v_self)) < 0) __PYX_ERR(0, 493, __pyx_L1_error)
-  }
-  __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 493, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!(likely(PyString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 496, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_7);
-  PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_t_7);
-  __pyx_t_2 = 0;
-  __pyx_t_4 = 0;
-  __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_eval, __pyx_t_1, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 493, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(PyString_CheckExact(__pyx_t_7))||((__pyx_t_7) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_7)->tp_name), 0))) __PYX_ERR(0, 493, __pyx_L1_error)
-  __Pyx_GIVEREF(__pyx_t_7);
-  __Pyx_GOTREF(__pyx_v_self->order_model);
-  __Pyx_DECREF(__pyx_v_self->order_model);
-  __pyx_v_self->order_model = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
-
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":496
- *             'ORDER_MODEL.{}'.format(otgOrder.get('price_type'))
- *         )
- *         self.time_condition = otgOrder.get('time_condition')             # <<<<<<<<<<<<<<
- *         if otgOrder.get('insert_date_time') == 0:
- *             self.datetime = 0
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 496, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_1, function);
-    }
-  }
-  __pyx_t_7 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_4, __pyx_n_s_time_condition) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_n_s_time_condition);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 496, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(PyString_CheckExact(__pyx_t_7))||((__pyx_t_7) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_7)->tp_name), 0))) __PYX_ERR(0, 496, __pyx_L1_error)
-  __Pyx_GIVEREF(__pyx_t_7);
   __Pyx_GOTREF(__pyx_v_self->time_condition);
   __Pyx_DECREF(__pyx_v_self->time_condition);
-  __pyx_v_self->time_condition = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_self->time_condition = ((PyObject*)__pyx_t_4);
+  __pyx_t_4 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":497
  *         )
@@ -6944,27 +6936,27 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  */
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 497, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = NULL;
+  __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
-    if (likely(__pyx_t_4)) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_3)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_1, function);
     }
   }
-  __pyx_t_7 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_4, __pyx_n_s_insert_date_time) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_n_s_insert_date_time);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 497, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_3, __pyx_n_s_insert_date_time) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_n_s_insert_date_time);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_t_7, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_t_4, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 497, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 497, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__pyx_t_9) {
+  if (__pyx_t_8) {
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":498
  *         self.time_condition = otgOrder.get('time_condition')
@@ -7000,8 +6992,8 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *             )
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_QA_util_stamp2datetime); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 500, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_QA_util_stamp2datetime); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 500, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":501
  *         else:
@@ -7012,40 +7004,40 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  */
     __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = NULL;
+    __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-      if (likely(__pyx_t_3)) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_2);
+      if (likely(__pyx_t_7)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_7);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_2, function);
       }
     }
-    __pyx_t_4 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_n_s_insert_date_time) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_s_insert_date_time);
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 501, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_3 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_7, __pyx_n_s_insert_date_time) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_s_insert_date_time);
+    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyNumber_Int(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyNumber_Int(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_7))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_7);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-        __Pyx_INCREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = NULL;
+    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_3)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_3);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_7, function);
+        __Pyx_DECREF_SET(__pyx_t_4, function);
       }
     }
-    __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_2);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2);
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 500, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":500
  *             self.datetime = 0
@@ -7085,23 +7077,23 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *         self.message = otgOrder.get('last_msg')
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 504, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 504, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
     if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
       __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_4, function);
     }
   }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_2, __pyx_n_s_volume_condition) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_n_s_volume_condition);
+  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_2, __pyx_n_s_volume_condition) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_s_volume_condition);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 504, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_volume_condition, __pyx_t_1) < 0) __PYX_ERR(0, 504, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -7112,23 +7104,23 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  * 
  *         self._status = ORDER_STATUS.NEW
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 505, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 505, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
     if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
       __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_4, function);
     }
   }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_2, __pyx_n_s_last_msg) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_n_s_last_msg);
+  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_2, __pyx_n_s_last_msg) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_s_last_msg);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 505, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_message, __pyx_t_1) < 0) __PYX_ERR(0, 505, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -7141,15 +7133,15 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 507, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NEW); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 507, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NEW); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 507, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (!(likely(PyString_CheckExact(__pyx_t_7))||((__pyx_t_7) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_7)->tp_name), 0))) __PYX_ERR(0, 507, __pyx_L1_error)
-  __Pyx_GIVEREF(__pyx_t_7);
+  if (!(likely(PyString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 507, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_4);
   __Pyx_GOTREF(__pyx_v_self->_status);
   __Pyx_DECREF(__pyx_v_self->_status);
-  __pyx_v_self->_status = ((PyObject*)__pyx_t_7);
-  __pyx_t_7 = 0;
+  __pyx_v_self->_status = ((PyObject*)__pyx_t_4);
+  __pyx_t_4 = 0;
 
   /* "QUANTAXIS/QAMARKET/QAOrder.pyx":508
  * 
@@ -7158,34 +7150,34 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *             # :  /
  *             self._status = ORDER_STATUS.FAILED
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_message); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 508, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_kp_s__4, __pyx_t_7, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 508, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_11 = (__pyx_t_10 != 0);
-  if (!__pyx_t_11) {
-  } else {
-    __pyx_t_9 = __pyx_t_11;
-    goto __pyx_L5_bool_binop_done;
-  }
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_message); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 508, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_11 = (__Pyx_PySequence_ContainsTF(__pyx_kp_s__5, __pyx_t_7, Py_EQ)); if (unlikely(__pyx_t_11 < 0)) __PYX_ERR(0, 508, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_10 = (__pyx_t_11 != 0);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_message); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 508, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_kp_s__4, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 508, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_10 = (__pyx_t_9 != 0);
   if (!__pyx_t_10) {
   } else {
-    __pyx_t_9 = __pyx_t_10;
+    __pyx_t_8 = __pyx_t_10;
     goto __pyx_L5_bool_binop_done;
   }
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_message); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 508, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_kp_s__6, __pyx_t_7, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 508, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_11 = (__pyx_t_10 != 0);
-  __pyx_t_9 = __pyx_t_11;
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_message); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 508, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_10 = (__Pyx_PySequence_ContainsTF(__pyx_kp_s__5, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 508, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_9 = (__pyx_t_10 != 0);
+  if (!__pyx_t_9) {
+  } else {
+    __pyx_t_8 = __pyx_t_9;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_message); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 508, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_9 = (__Pyx_PySequence_ContainsTF(__pyx_kp_s__6, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 508, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_10 = (__pyx_t_9 != 0);
+  __pyx_t_8 = __pyx_t_10;
   __pyx_L5_bool_binop_done:;
-  if (__pyx_t_9) {
+  if (__pyx_t_8) {
 
     /* "QUANTAXIS/QAMARKET/QAOrder.pyx":510
  *         if '' in self.message or '' in self.message or '' in self.message:
@@ -7194,11 +7186,11 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *         self.realorder_id = otgOrder.get('exchange_order_id')
  *         return self
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 510, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_FAILED); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 510, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 510, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_FAILED); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 510, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 510, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_1);
     __Pyx_GOTREF(__pyx_v_self->_status);
@@ -7222,23 +7214,23 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
  *         return self
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 511, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_otgOrder, __pyx_n_s_get); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 511, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_7);
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
     if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
       __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_7, function);
+      __Pyx_DECREF_SET(__pyx_t_4, function);
     }
   }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_2, __pyx_n_s_exchange_order_id) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_n_s_exchange_order_id);
+  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_2, __pyx_n_s_exchange_order_id) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_s_exchange_order_id);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 511, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 511, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->realorder_id);
@@ -7272,7 +7264,6 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_32from_otgform
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.from_otgformat", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
@@ -8570,7 +8561,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11market_type_4__del
  *     cdef public str market_type
  *     cdef public str frequence             # <<<<<<<<<<<<<<
  *     cdef public int towards
- *     cdef public str code
+ *     cdef public str direction
  */
 
 /* Python wrapper */
@@ -8674,8 +8665,8 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9frequence_4__del__(
  *     cdef public str market_type
  *     cdef public str frequence
  *     cdef public int towards             # <<<<<<<<<<<<<<
- *     cdef public str code
- *     cdef public str user_cookie
+ *     cdef public str direction
+ *     cdef public str offset
  */
 
 /* Python wrapper */
@@ -8749,6 +8740,216 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_7towards_2__set__(st
 /* "QUANTAXIS/QAMARKET/QAOrder.pyx":74
  *     cdef public str frequence
  *     cdef public int towards
+ *     cdef public str direction             # <<<<<<<<<<<<<<
+ *     cdef public str offset
+ *     cdef public str code
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_self->direction);
+  __pyx_r = __pyx_v_self->direction;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_2__set__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("__set__", 0);
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 74, __pyx_L1_error)
+  __pyx_t_1 = __pyx_v_value;
+  __Pyx_INCREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->direction);
+  __Pyx_DECREF(__pyx_v_self->direction);
+  __pyx_v_self->direction = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.direction.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_5__del__(PyObject *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_4__del__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__del__", 0);
+  __Pyx_INCREF(Py_None);
+  __Pyx_GIVEREF(Py_None);
+  __Pyx_GOTREF(__pyx_v_self->direction);
+  __Pyx_DECREF(__pyx_v_self->direction);
+  __pyx_v_self->direction = ((PyObject*)Py_None);
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":75
+ *     cdef public int towards
+ *     cdef public str direction
+ *     cdef public str offset             # <<<<<<<<<<<<<<
+ *     cdef public str code
+ *     cdef public str user_cookie
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_1__get__(PyObject *__pyx_v_self) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset___get__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset___get__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__get__", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_self->offset);
+  __pyx_r = __pyx_v_self->offset;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_2__set__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_2__set__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self, PyObject *__pyx_v_value) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("__set__", 0);
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = __pyx_v_value;
+  __Pyx_INCREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->offset);
+  __Pyx_DECREF(__pyx_v_self->offset);
+  __pyx_v_self->offset = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* function exit code */
+  __pyx_r = 0;
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("QUANTAXIS.QAMARKET.QAOrder.QA_Order.offset.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_5__del__(PyObject *__pyx_v_self); /*proto*/
+static int __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_5__del__(PyObject *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__del__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_4__del__(((struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_4__del__(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__del__", 0);
+  __Pyx_INCREF(Py_None);
+  __Pyx_GIVEREF(Py_None);
+  __Pyx_GOTREF(__pyx_v_self->offset);
+  __Pyx_DECREF(__pyx_v_self->offset);
+  __pyx_v_self->offset = ((PyObject*)Py_None);
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":76
+ *     cdef public str direction
+ *     cdef public str offset
  *     cdef public str code             # <<<<<<<<<<<<<<
  *     cdef public str user_cookie
  *     cdef public float trade_amount
@@ -8801,7 +9002,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_4code_2__set__(struc
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 74, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 76, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -8851,8 +9052,8 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_4code_4__del__(struc
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":75
- *     cdef public int towards
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":77
+ *     cdef public str offset
  *     cdef public str code
  *     cdef public str user_cookie             # <<<<<<<<<<<<<<
  *     cdef public float trade_amount
@@ -8906,7 +9107,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11user_cookie_2__set
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 77, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -8956,7 +9157,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11user_cookie_4__del
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":76
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":78
  *     cdef public str code
  *     cdef public str user_cookie
  *     cdef public float trade_amount             # <<<<<<<<<<<<<<
@@ -8983,7 +9184,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade_amount
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->trade_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9018,7 +9219,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade_amount_2__se
   __Pyx_RefNannyDeclarations
   float __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 78, __pyx_L1_error)
   __pyx_v_self->trade_amount = __pyx_t_1;
 
   /* function exit code */
@@ -9032,7 +9233,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12trade_amount_2__se
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":77
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":79
  *     cdef public str user_cookie
  *     cdef public float trade_amount
  *     cdef public float cancel_amount             # <<<<<<<<<<<<<<
@@ -9059,7 +9260,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_13cancel_amoun
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->cancel_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->cancel_amount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9094,7 +9295,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_13cancel_amount_2__s
   __Pyx_RefNannyDeclarations
   float __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 79, __pyx_L1_error)
   __pyx_v_self->cancel_amount = __pyx_t_1;
 
   /* function exit code */
@@ -9108,7 +9309,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_13cancel_amount_2__s
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":78
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":80
  *     cdef public float trade_amount
  *     cdef public float cancel_amount
  *     cdef public str account_cookie             # <<<<<<<<<<<<<<
@@ -9163,7 +9364,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14account_cookie_2__
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 80, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -9213,7 +9414,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14account_cookie_4__
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":79
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":81
  *     cdef public float cancel_amount
  *     cdef public str account_cookie
  *     cdef public str strategy             # <<<<<<<<<<<<<<
@@ -9268,7 +9469,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8strategy_2__set__(s
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 81, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -9318,7 +9519,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8strategy_4__del__(s
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":80
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":82
  *     cdef public str account_cookie
  *     cdef public str strategy
  *     cdef public str order_model             # <<<<<<<<<<<<<<
@@ -9373,7 +9574,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11order_model_2__set
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 80, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 82, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -9423,7 +9624,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11order_model_4__del
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":81
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":83
  *     cdef public str strategy
  *     cdef public str order_model
  *     cdef public float money             # <<<<<<<<<<<<<<
@@ -9450,7 +9651,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_5money___get__
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->money); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->money); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -9485,7 +9686,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_5money_2__set__(stru
   __Pyx_RefNannyDeclarations
   float __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L1_error)
   __pyx_v_self->money = __pyx_t_1;
 
   /* function exit code */
@@ -9499,7 +9700,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_5money_2__set__(stru
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":82
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":84
  *     cdef public str order_model
  *     cdef public float money
  *     cdef public str amount_model             # <<<<<<<<<<<<<<
@@ -9554,7 +9755,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12amount_model_2__se
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 84, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -9604,7 +9805,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12amount_model_4__de
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":83
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":85
  *     cdef public float money
  *     cdef public str amount_model
  *     cdef public str broker             # <<<<<<<<<<<<<<
@@ -9659,7 +9860,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6broker_2__set__(str
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 85, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -9709,7 +9910,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6broker_4__del__(str
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":84
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":86
  *     cdef public str amount_model
  *     cdef public str broker
  *     cdef public str order_id             # <<<<<<<<<<<<<<
@@ -9764,7 +9965,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8order_id_2__set__(s
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 86, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -9814,7 +10015,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8order_id_4__del__(s
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":85
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":87
  *     cdef public str broker
  *     cdef public str order_id
  *     cdef public str realorder_id             # <<<<<<<<<<<<<<
@@ -9869,7 +10070,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12realorder_id_2__se
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 85, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -9919,7 +10120,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_12realorder_id_4__de
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":86
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":88
  *     cdef public str order_id
  *     cdef public str realorder_id
  *     cdef public list trade_id             # <<<<<<<<<<<<<<
@@ -9974,7 +10175,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8trade_id_2__set__(s
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyList_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -10024,7 +10225,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8trade_id_4__del__(s
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":87
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":89
  *     cdef public str realorder_id
  *     cdef public list trade_id
  *     cdef public str _status             # <<<<<<<<<<<<<<
@@ -10079,7 +10280,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_7_status_2__set__(st
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 87, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 89, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -10129,7 +10330,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_7_status_4__del__(st
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":88
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":90
  *     cdef public list trade_id
  *     cdef public str _status
  *     cdef public object callback             # <<<<<<<<<<<<<<
@@ -10224,7 +10425,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_8callback_4__del__(s
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":89
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":91
  *     cdef public str _status
  *     cdef public object callback
  *     cdef public float commission_coeff             # <<<<<<<<<<<<<<
@@ -10251,7 +10452,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_16commission_c
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->commission_coeff); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->commission_coeff); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10286,7 +10487,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_16commission_coeff_2
   __Pyx_RefNannyDeclarations
   float __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 91, __pyx_L1_error)
   __pyx_v_self->commission_coeff = __pyx_t_1;
 
   /* function exit code */
@@ -10300,7 +10501,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_16commission_coeff_2
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":90
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":92
  *     cdef public object callback
  *     cdef public float commission_coeff
  *     cdef public float tax_coeff             # <<<<<<<<<<<<<<
@@ -10327,7 +10528,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9tax_coeff___g
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->tax_coeff); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->tax_coeff); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10362,7 +10563,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9tax_coeff_2__set__(
   __Pyx_RefNannyDeclarations
   float __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 90, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 92, __pyx_L1_error)
   __pyx_v_self->tax_coeff = __pyx_t_1;
 
   /* function exit code */
@@ -10376,7 +10577,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9tax_coeff_2__set__(
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":91
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":93
  *     cdef public float commission_coeff
  *     cdef public float tax_coeff
  *     cdef public str exchange_id             # <<<<<<<<<<<<<<
@@ -10431,7 +10632,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11exchange_id_2__set
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 93, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -10481,7 +10682,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11exchange_id_4__del
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":92
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":94
  *     cdef public float tax_coeff
  *     cdef public str exchange_id
  *     cdef public str pms_id             # <<<<<<<<<<<<<<
@@ -10536,7 +10737,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6pms_id_2__set__(str
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 94, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -10586,7 +10787,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6pms_id_4__del__(str
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":93
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":95
  *     cdef public str exchange_id
  *     cdef public str pms_id
  *     cdef public float trade_price             # <<<<<<<<<<<<<<
@@ -10613,7 +10814,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11trade_price_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->trade_price); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->trade_price); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -10648,7 +10849,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11trade_price_2__set
   __Pyx_RefNannyDeclarations
   float __pyx_t_1;
   __Pyx_RefNannySetupContext("__set__", 0);
-  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_1 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_v_self->trade_price = __pyx_t_1;
 
   /* function exit code */
@@ -10662,7 +10863,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_11trade_price_2__set
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":94
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":96
  *     cdef public str pms_id
  *     cdef public float trade_price
  *     cdef public str reason             # <<<<<<<<<<<<<<
@@ -10717,7 +10918,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6reason_2__set__(str
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -10767,7 +10968,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6reason_4__del__(str
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":95
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":97
  *     cdef public float trade_price
  *     cdef public str reason
  *     cdef public str time_condition             # <<<<<<<<<<<<<<
@@ -10822,7 +11023,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14time_condition_2__
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 95, __pyx_L1_error)
+  if (!(likely(PyString_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 97, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -10872,7 +11073,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_14time_condition_4__
   return __pyx_r;
 }
 
-/* "QUANTAXIS/QAMARKET/QAOrder.pyx":96
+/* "QUANTAXIS/QAMARKET/QAOrder.pyx":98
  *     cdef public str reason
  *     cdef public str time_condition
  *     cdef public dict exchange_code             # <<<<<<<<<<<<<<
@@ -10927,7 +11128,7 @@ static int __pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_13exchange_code_2__s
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__set__", 0);
-  if (!(likely(PyDict_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 96, __pyx_L1_error)
+  if (!(likely(PyDict_CheckExact(__pyx_v_value))||((__pyx_v_value) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_v_value)->tp_name), 0))) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_value;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -11020,7 +11221,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
   /* "(tree fragment)":5
  *     cdef object _dict
  *     cdef bint use_setstate
- *     state = (self._status, self.account_cookie, self.amount, self.amount_model, self.broker, self.callback, self.cancel_amount, self.code, self.commission_coeff, self.date, self.datetime, self.exchange_code, self.exchange_id, self.frequence, self.market_type, self.money, self.order_id, self.order_model, self.pms_id, self.price, self.realorder_id, self.reason, self.sending_time, self.strategy, self.tax_coeff, self.time_condition, self.towards, self.trade_amount, self.trade_id, self.trade_price, self.trade_time, self.user_cookie)             # <<<<<<<<<<<<<<
+ *     state = (self._status, self.account_cookie, self.amount, self.amount_model, self.broker, self.callback, self.cancel_amount, self.code, self.commission_coeff, self.date, self.datetime, self.direction, self.exchange_code, self.exchange_id, self.frequence, self.market_type, self.money, self.offset, self.order_id, self.order_model, self.pms_id, self.price, self.realorder_id, self.reason, self.sending_time, self.strategy, self.tax_coeff, self.time_condition, self.towards, self.trade_amount, self.trade_id, self.trade_price, self.trade_time, self.user_cookie)             # <<<<<<<<<<<<<<
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:
  */
@@ -11042,7 +11243,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_9 = PyFloat_FromDouble(__pyx_v_self->trade_price); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_10 = PyTuple_New(32); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_10 = PyTuple_New(34); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __Pyx_INCREF(__pyx_v_self->_status);
   __Pyx_GIVEREF(__pyx_v_self->_status);
@@ -11074,63 +11275,69 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
   __Pyx_INCREF(__pyx_v_self->datetime);
   __Pyx_GIVEREF(__pyx_v_self->datetime);
   PyTuple_SET_ITEM(__pyx_t_10, 10, __pyx_v_self->datetime);
+  __Pyx_INCREF(__pyx_v_self->direction);
+  __Pyx_GIVEREF(__pyx_v_self->direction);
+  PyTuple_SET_ITEM(__pyx_t_10, 11, __pyx_v_self->direction);
   __Pyx_INCREF(__pyx_v_self->exchange_code);
   __Pyx_GIVEREF(__pyx_v_self->exchange_code);
-  PyTuple_SET_ITEM(__pyx_t_10, 11, __pyx_v_self->exchange_code);
+  PyTuple_SET_ITEM(__pyx_t_10, 12, __pyx_v_self->exchange_code);
   __Pyx_INCREF(__pyx_v_self->exchange_id);
   __Pyx_GIVEREF(__pyx_v_self->exchange_id);
-  PyTuple_SET_ITEM(__pyx_t_10, 12, __pyx_v_self->exchange_id);
+  PyTuple_SET_ITEM(__pyx_t_10, 13, __pyx_v_self->exchange_id);
   __Pyx_INCREF(__pyx_v_self->frequence);
   __Pyx_GIVEREF(__pyx_v_self->frequence);
-  PyTuple_SET_ITEM(__pyx_t_10, 13, __pyx_v_self->frequence);
+  PyTuple_SET_ITEM(__pyx_t_10, 14, __pyx_v_self->frequence);
   __Pyx_INCREF(__pyx_v_self->market_type);
   __Pyx_GIVEREF(__pyx_v_self->market_type);
-  PyTuple_SET_ITEM(__pyx_t_10, 14, __pyx_v_self->market_type);
+  PyTuple_SET_ITEM(__pyx_t_10, 15, __pyx_v_self->market_type);
   __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_10, 15, __pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_10, 16, __pyx_t_4);
+  __Pyx_INCREF(__pyx_v_self->offset);
+  __Pyx_GIVEREF(__pyx_v_self->offset);
+  PyTuple_SET_ITEM(__pyx_t_10, 17, __pyx_v_self->offset);
   __Pyx_INCREF(__pyx_v_self->order_id);
   __Pyx_GIVEREF(__pyx_v_self->order_id);
-  PyTuple_SET_ITEM(__pyx_t_10, 16, __pyx_v_self->order_id);
+  PyTuple_SET_ITEM(__pyx_t_10, 18, __pyx_v_self->order_id);
   __Pyx_INCREF(__pyx_v_self->order_model);
   __Pyx_GIVEREF(__pyx_v_self->order_model);
-  PyTuple_SET_ITEM(__pyx_t_10, 17, __pyx_v_self->order_model);
+  PyTuple_SET_ITEM(__pyx_t_10, 19, __pyx_v_self->order_model);
   __Pyx_INCREF(__pyx_v_self->pms_id);
   __Pyx_GIVEREF(__pyx_v_self->pms_id);
-  PyTuple_SET_ITEM(__pyx_t_10, 18, __pyx_v_self->pms_id);
+  PyTuple_SET_ITEM(__pyx_t_10, 20, __pyx_v_self->pms_id);
   __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_10, 19, __pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_10, 21, __pyx_t_5);
   __Pyx_INCREF(__pyx_v_self->realorder_id);
   __Pyx_GIVEREF(__pyx_v_self->realorder_id);
-  PyTuple_SET_ITEM(__pyx_t_10, 20, __pyx_v_self->realorder_id);
+  PyTuple_SET_ITEM(__pyx_t_10, 22, __pyx_v_self->realorder_id);
   __Pyx_INCREF(__pyx_v_self->reason);
   __Pyx_GIVEREF(__pyx_v_self->reason);
-  PyTuple_SET_ITEM(__pyx_t_10, 21, __pyx_v_self->reason);
+  PyTuple_SET_ITEM(__pyx_t_10, 23, __pyx_v_self->reason);
   __Pyx_INCREF(__pyx_v_self->sending_time);
   __Pyx_GIVEREF(__pyx_v_self->sending_time);
-  PyTuple_SET_ITEM(__pyx_t_10, 22, __pyx_v_self->sending_time);
+  PyTuple_SET_ITEM(__pyx_t_10, 24, __pyx_v_self->sending_time);
   __Pyx_INCREF(__pyx_v_self->strategy);
   __Pyx_GIVEREF(__pyx_v_self->strategy);
-  PyTuple_SET_ITEM(__pyx_t_10, 23, __pyx_v_self->strategy);
+  PyTuple_SET_ITEM(__pyx_t_10, 25, __pyx_v_self->strategy);
   __Pyx_GIVEREF(__pyx_t_6);
-  PyTuple_SET_ITEM(__pyx_t_10, 24, __pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_10, 26, __pyx_t_6);
   __Pyx_INCREF(__pyx_v_self->time_condition);
   __Pyx_GIVEREF(__pyx_v_self->time_condition);
-  PyTuple_SET_ITEM(__pyx_t_10, 25, __pyx_v_self->time_condition);
+  PyTuple_SET_ITEM(__pyx_t_10, 27, __pyx_v_self->time_condition);
   __Pyx_GIVEREF(__pyx_t_7);
-  PyTuple_SET_ITEM(__pyx_t_10, 26, __pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_10, 28, __pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_8);
-  PyTuple_SET_ITEM(__pyx_t_10, 27, __pyx_t_8);
+  PyTuple_SET_ITEM(__pyx_t_10, 29, __pyx_t_8);
   __Pyx_INCREF(__pyx_v_self->trade_id);
   __Pyx_GIVEREF(__pyx_v_self->trade_id);
-  PyTuple_SET_ITEM(__pyx_t_10, 28, __pyx_v_self->trade_id);
+  PyTuple_SET_ITEM(__pyx_t_10, 30, __pyx_v_self->trade_id);
   __Pyx_GIVEREF(__pyx_t_9);
-  PyTuple_SET_ITEM(__pyx_t_10, 29, __pyx_t_9);
+  PyTuple_SET_ITEM(__pyx_t_10, 31, __pyx_t_9);
   __Pyx_INCREF(__pyx_v_self->trade_time);
   __Pyx_GIVEREF(__pyx_v_self->trade_time);
-  PyTuple_SET_ITEM(__pyx_t_10, 30, __pyx_v_self->trade_time);
+  PyTuple_SET_ITEM(__pyx_t_10, 32, __pyx_v_self->trade_time);
   __Pyx_INCREF(__pyx_v_self->user_cookie);
   __Pyx_GIVEREF(__pyx_v_self->user_cookie);
-  PyTuple_SET_ITEM(__pyx_t_10, 31, __pyx_v_self->user_cookie);
+  PyTuple_SET_ITEM(__pyx_t_10, 33, __pyx_v_self->user_cookie);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
@@ -11145,7 +11352,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
 
   /* "(tree fragment)":6
  *     cdef bint use_setstate
- *     state = (self._status, self.account_cookie, self.amount, self.amount_model, self.broker, self.callback, self.cancel_amount, self.code, self.commission_coeff, self.date, self.datetime, self.exchange_code, self.exchange_id, self.frequence, self.market_type, self.money, self.order_id, self.order_model, self.pms_id, self.price, self.realorder_id, self.reason, self.sending_time, self.strategy, self.tax_coeff, self.time_condition, self.towards, self.trade_amount, self.trade_id, self.trade_price, self.trade_time, self.user_cookie)
+ *     state = (self._status, self.account_cookie, self.amount, self.amount_model, self.broker, self.callback, self.cancel_amount, self.code, self.commission_coeff, self.date, self.datetime, self.direction, self.exchange_code, self.exchange_id, self.frequence, self.market_type, self.money, self.offset, self.order_id, self.order_model, self.pms_id, self.price, self.realorder_id, self.reason, self.sending_time, self.strategy, self.tax_coeff, self.time_condition, self.towards, self.trade_amount, self.trade_id, self.trade_price, self.trade_time, self.user_cookie)
  *     _dict = getattr(self, '__dict__', None)             # <<<<<<<<<<<<<<
  *     if _dict is not None:
  *         state += (_dict,)
@@ -11156,7 +11363,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
   __pyx_t_10 = 0;
 
   /* "(tree fragment)":7
- *     state = (self._status, self.account_cookie, self.amount, self.amount_model, self.broker, self.callback, self.cancel_amount, self.code, self.commission_coeff, self.date, self.datetime, self.exchange_code, self.exchange_id, self.frequence, self.market_type, self.money, self.order_id, self.order_model, self.pms_id, self.price, self.realorder_id, self.reason, self.sending_time, self.strategy, self.tax_coeff, self.time_condition, self.towards, self.trade_amount, self.trade_id, self.trade_price, self.trade_time, self.user_cookie)
+ *     state = (self._status, self.account_cookie, self.amount, self.amount_model, self.broker, self.callback, self.cancel_amount, self.code, self.commission_coeff, self.date, self.datetime, self.direction, self.exchange_code, self.exchange_id, self.frequence, self.market_type, self.money, self.offset, self.order_id, self.order_model, self.pms_id, self.price, self.realorder_id, self.reason, self.sending_time, self.strategy, self.tax_coeff, self.time_condition, self.towards, self.trade_amount, self.trade_id, self.trade_price, self.trade_time, self.user_cookie)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
@@ -11189,12 +11396,12 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
  *         state += (_dict,)
  *         use_setstate = True             # <<<<<<<<<<<<<<
  *     else:
- *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None
+ *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.direction is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.offset is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None
  */
     __pyx_v_use_setstate = 1;
 
     /* "(tree fragment)":7
- *     state = (self._status, self.account_cookie, self.amount, self.amount_model, self.broker, self.callback, self.cancel_amount, self.code, self.commission_coeff, self.date, self.datetime, self.exchange_code, self.exchange_id, self.frequence, self.market_type, self.money, self.order_id, self.order_model, self.pms_id, self.price, self.realorder_id, self.reason, self.sending_time, self.strategy, self.tax_coeff, self.time_condition, self.towards, self.trade_amount, self.trade_id, self.trade_price, self.trade_time, self.user_cookie)
+ *     state = (self._status, self.account_cookie, self.amount, self.amount_model, self.broker, self.callback, self.cancel_amount, self.code, self.commission_coeff, self.date, self.datetime, self.direction, self.exchange_code, self.exchange_id, self.frequence, self.market_type, self.money, self.offset, self.order_id, self.order_model, self.pms_id, self.price, self.realorder_id, self.reason, self.sending_time, self.strategy, self.tax_coeff, self.time_condition, self.towards, self.trade_amount, self.trade_id, self.trade_price, self.trade_time, self.user_cookie)
  *     _dict = getattr(self, '__dict__', None)
  *     if _dict is not None:             # <<<<<<<<<<<<<<
  *         state += (_dict,)
@@ -11206,9 +11413,9 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
   /* "(tree fragment)":11
  *         use_setstate = True
  *     else:
- *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None             # <<<<<<<<<<<<<<
+ *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.direction is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.offset is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None             # <<<<<<<<<<<<<<
  *     if use_setstate:
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, None), state
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, None), state
  */
   /*else*/ {
     __pyx_t_11 = (__pyx_v_self->_status != ((PyObject*)Py_None));
@@ -11267,28 +11474,42 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
       __pyx_t_12 = __pyx_t_11;
       goto __pyx_L4_bool_binop_done;
     }
-    __pyx_t_11 = (__pyx_v_self->exchange_code != ((PyObject*)Py_None));
+    __pyx_t_11 = (__pyx_v_self->direction != ((PyObject*)Py_None));
     __pyx_t_13 = (__pyx_t_11 != 0);
     if (!__pyx_t_13) {
     } else {
       __pyx_t_12 = __pyx_t_13;
       goto __pyx_L4_bool_binop_done;
     }
-    __pyx_t_13 = (__pyx_v_self->exchange_id != ((PyObject*)Py_None));
+    __pyx_t_13 = (__pyx_v_self->exchange_code != ((PyObject*)Py_None));
     __pyx_t_11 = (__pyx_t_13 != 0);
     if (!__pyx_t_11) {
     } else {
       __pyx_t_12 = __pyx_t_11;
       goto __pyx_L4_bool_binop_done;
     }
-    __pyx_t_11 = (__pyx_v_self->frequence != ((PyObject*)Py_None));
+    __pyx_t_11 = (__pyx_v_self->exchange_id != ((PyObject*)Py_None));
     __pyx_t_13 = (__pyx_t_11 != 0);
     if (!__pyx_t_13) {
     } else {
       __pyx_t_12 = __pyx_t_13;
       goto __pyx_L4_bool_binop_done;
     }
-    __pyx_t_13 = (__pyx_v_self->market_type != ((PyObject*)Py_None));
+    __pyx_t_13 = (__pyx_v_self->frequence != ((PyObject*)Py_None));
+    __pyx_t_11 = (__pyx_t_13 != 0);
+    if (!__pyx_t_11) {
+    } else {
+      __pyx_t_12 = __pyx_t_11;
+      goto __pyx_L4_bool_binop_done;
+    }
+    __pyx_t_11 = (__pyx_v_self->market_type != ((PyObject*)Py_None));
+    __pyx_t_13 = (__pyx_t_11 != 0);
+    if (!__pyx_t_13) {
+    } else {
+      __pyx_t_12 = __pyx_t_13;
+      goto __pyx_L4_bool_binop_done;
+    }
+    __pyx_t_13 = (__pyx_v_self->offset != ((PyObject*)Py_None));
     __pyx_t_11 = (__pyx_t_13 != 0);
     if (!__pyx_t_11) {
     } else {
@@ -11375,20 +11596,20 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
 
   /* "(tree fragment)":12
  *     else:
- *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None
+ *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.direction is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.offset is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, None), state
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, None), state
  *     else:
  */
   __pyx_t_12 = (__pyx_v_use_setstate != 0);
   if (__pyx_t_12) {
 
     /* "(tree fragment)":13
- *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None
+ *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.direction is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.offset is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None
  *     if use_setstate:
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, None), state             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, None), state             # <<<<<<<<<<<<<<
  *     else:
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, state)
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, state)
  */
     __Pyx_XDECREF(__pyx_r);
     __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_pyx_unpickle_QA_Order); if (unlikely(!__pyx_t_9)) __PYX_ERR(1, 13, __pyx_L1_error)
@@ -11398,9 +11619,9 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     PyTuple_SET_ITEM(__pyx_t_10, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    __Pyx_INCREF(__pyx_int_217065133);
-    __Pyx_GIVEREF(__pyx_int_217065133);
-    PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_int_217065133);
+    __Pyx_INCREF(__pyx_int_53632902);
+    __Pyx_GIVEREF(__pyx_int_53632902);
+    PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_int_53632902);
     __Pyx_INCREF(Py_None);
     __Pyx_GIVEREF(Py_None);
     PyTuple_SET_ITEM(__pyx_t_10, 2, Py_None);
@@ -11421,17 +11642,17 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
 
     /* "(tree fragment)":12
  *     else:
- *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None
+ *         use_setstate = self._status is not None or self.account_cookie is not None or self.amount_model is not None or self.broker is not None or self.callback is not None or self.code is not None or self.date is not None or self.datetime is not None or self.direction is not None or self.exchange_code is not None or self.exchange_id is not None or self.frequence is not None or self.market_type is not None or self.offset is not None or self.order_id is not None or self.order_model is not None or self.pms_id is not None or self.realorder_id is not None or self.reason is not None or self.sending_time is not None or self.strategy is not None or self.time_condition is not None or self.trade_id is not None or self.trade_time is not None or self.user_cookie is not None
  *     if use_setstate:             # <<<<<<<<<<<<<<
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, None), state
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, None), state
  *     else:
  */
   }
 
   /* "(tree fragment)":15
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, None), state
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, None), state
  *     else:
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, state)             # <<<<<<<<<<<<<<
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, state)             # <<<<<<<<<<<<<<
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_QA_Order__set_state(self, __pyx_state)
  */
@@ -11444,9 +11665,9 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
     __Pyx_INCREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     __Pyx_GIVEREF(((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
     PyTuple_SET_ITEM(__pyx_t_10, 0, ((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))));
-    __Pyx_INCREF(__pyx_int_217065133);
-    __Pyx_GIVEREF(__pyx_int_217065133);
-    PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_int_217065133);
+    __Pyx_INCREF(__pyx_int_53632902);
+    __Pyx_GIVEREF(__pyx_int_53632902);
+    PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_int_53632902);
     __Pyx_INCREF(__pyx_v_state);
     __Pyx_GIVEREF(__pyx_v_state);
     PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_v_state);
@@ -11493,7 +11714,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_36__reduce_cyt
 
 /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, state)
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_QA_Order__set_state(self, __pyx_state)
  */
@@ -11518,7 +11739,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_38__setstate_c
   __Pyx_RefNannySetupContext("__setstate_cython__", 0);
 
   /* "(tree fragment)":17
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, state)
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, state)
  * def __setstate_cython__(self, __pyx_state):
  *     __pyx_unpickle_QA_Order__set_state(self, __pyx_state)             # <<<<<<<<<<<<<<
  */
@@ -11529,7 +11750,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_38__setstate_c
 
   /* "(tree fragment)":16
  *     else:
- *         return __pyx_unpickle_QA_Order, (type(self), 0xcf026ad, state)
+ *         return __pyx_unpickle_QA_Order, (type(self), 0x3325f86, state)
  * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
  *     __pyx_unpickle_QA_Order__set_state(self, __pyx_state)
  */
@@ -14369,18 +14590,18 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(
   /* "(tree fragment)":4
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0xcf026ad:             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x3325f86:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xcf026ad = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, exchange_code, exchange_id, frequence, market_type, money, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x3325f86 = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, direction, exchange_code, exchange_id, frequence, market_type, money, offset, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
  */
-  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0xcf026ad) != 0);
+  __pyx_t_1 = ((__pyx_v___pyx_checksum != 0x3325f86) != 0);
   if (__pyx_t_1) {
 
     /* "(tree fragment)":5
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0xcf026ad:
+ *     if __pyx_checksum != 0x3325f86:
  *         from pickle import PickleError as __pyx_PickleError             # <<<<<<<<<<<<<<
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xcf026ad = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, exchange_code, exchange_id, frequence, market_type, money, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x3325f86 = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, direction, exchange_code, exchange_id, frequence, market_type, money, offset, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
  *     __pyx_result = QA_Order.__new__(__pyx_type)
  */
     __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 5, __pyx_L1_error)
@@ -14399,15 +14620,15 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":6
- *     if __pyx_checksum != 0xcf026ad:
+ *     if __pyx_checksum != 0x3325f86:
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xcf026ad = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, exchange_code, exchange_id, frequence, market_type, money, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)             # <<<<<<<<<<<<<<
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x3325f86 = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, direction, exchange_code, exchange_id, frequence, market_type, money, offset, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)             # <<<<<<<<<<<<<<
  *     __pyx_result = QA_Order.__new__(__pyx_type)
  *     if __pyx_state is not None:
  */
     __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 6, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0xcf, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 6, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0x33, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 6, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_INCREF(__pyx_v___pyx_PickleError);
@@ -14434,15 +14655,15 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(
     /* "(tree fragment)":4
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
- *     if __pyx_checksum != 0xcf026ad:             # <<<<<<<<<<<<<<
+ *     if __pyx_checksum != 0x3325f86:             # <<<<<<<<<<<<<<
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xcf026ad = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, exchange_code, exchange_id, frequence, market_type, money, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x3325f86 = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, direction, exchange_code, exchange_id, frequence, market_type, money, offset, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
  */
   }
 
   /* "(tree fragment)":7
  *         from pickle import PickleError as __pyx_PickleError
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xcf026ad = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, exchange_code, exchange_id, frequence, market_type, money, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x3325f86 = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, direction, exchange_code, exchange_id, frequence, market_type, money, offset, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
  *     __pyx_result = QA_Order.__new__(__pyx_type)             # <<<<<<<<<<<<<<
  *     if __pyx_state is not None:
  *         __pyx_unpickle_QA_Order__set_state(<QA_Order> __pyx_result, __pyx_state)
@@ -14468,7 +14689,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(
   __pyx_t_3 = 0;
 
   /* "(tree fragment)":8
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xcf026ad = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, exchange_code, exchange_id, frequence, market_type, money, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x3325f86 = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, direction, exchange_code, exchange_id, frequence, market_type, money, offset, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
  *     __pyx_result = QA_Order.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_QA_Order__set_state(<QA_Order> __pyx_result, __pyx_state)
@@ -14491,7 +14712,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
     /* "(tree fragment)":8
- *         raise __pyx_PickleError("Incompatible checksums (%s vs 0xcf026ad = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, exchange_code, exchange_id, frequence, market_type, money, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
+ *         raise __pyx_PickleError("Incompatible checksums (%s vs 0x3325f86 = (_status, account_cookie, amount, amount_model, broker, callback, cancel_amount, code, commission_coeff, date, datetime, direction, exchange_code, exchange_id, frequence, market_type, money, offset, order_id, order_model, pms_id, price, realorder_id, reason, sending_time, strategy, tax_coeff, time_condition, towards, trade_amount, trade_id, trade_price, trade_time, user_cookie))" % __pyx_checksum)
  *     __pyx_result = QA_Order.__new__(__pyx_type)
  *     if __pyx_state is not None:             # <<<<<<<<<<<<<<
  *         __pyx_unpickle_QA_Order__set_state(<QA_Order> __pyx_result, __pyx_state)
@@ -14504,7 +14725,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(
  *         __pyx_unpickle_QA_Order__set_state(<QA_Order> __pyx_result, __pyx_state)
  *     return __pyx_result             # <<<<<<<<<<<<<<
  * cdef __pyx_unpickle_QA_Order__set_state(QA_Order __pyx_result, tuple __pyx_state):
- *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.pms_id = __pyx_state[18]; __pyx_result.price = __pyx_state[19]; __pyx_result.realorder_id = __pyx_state[20]; __pyx_result.reason = __pyx_state[21]; __pyx_result.sending_time = __pyx_state[22]; __pyx_result.strategy = __pyx_state[23]; __pyx_result.tax_coeff = __pyx_state[24]; __pyx_result.time_condition = __pyx_state[25]; __pyx_result.towards = __pyx_state[26]; __pyx_result.trade_amount = __pyx_state[27]; __pyx_result.trade_id = __pyx_state[28]; __pyx_result.trade_price = __pyx_state[29]; __pyx_result.trade_time = __pyx_state[30]; __pyx_result.user_cookie = __pyx_state[31]
+ *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.direction = __pyx_state[11]; __pyx_result.exchange_code = __pyx_state[12]; __pyx_result.exchange_id = __pyx_state[13]; __pyx_result.frequence = __pyx_state[14]; __pyx_result.market_type = __pyx_state[15]; __pyx_result.money = __pyx_state[16]; __pyx_result.offset = __pyx_state[17]; __pyx_result.order_id = __pyx_state[18]; __pyx_result.order_model = __pyx_state[19]; __pyx_result.pms_id = __pyx_state[20]; __pyx_result.price = __pyx_state[21]; __pyx_result.realorder_id = __pyx_state[22]; __pyx_result.reason = __pyx_state[23]; __pyx_result.sending_time = __pyx_state[24]; __pyx_result.strategy = __pyx_state[25]; __pyx_result.tax_coeff = __pyx_state[26]; __pyx_result.time_condition = __pyx_state[27]; __pyx_result.towards = __pyx_state[28]; __pyx_result.trade_amount = __pyx_state[29]; __pyx_result.trade_id = __pyx_state[30]; __pyx_result.trade_price = __pyx_state[31]; __pyx_result.trade_time = __pyx_state[32]; __pyx_result.user_cookie = __pyx_state[33]
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v___pyx_result);
@@ -14537,8 +14758,8 @@ static PyObject *__pyx_pf_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order(
  *         __pyx_unpickle_QA_Order__set_state(<QA_Order> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_QA_Order__set_state(QA_Order __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.pms_id = __pyx_state[18]; __pyx_result.price = __pyx_state[19]; __pyx_result.realorder_id = __pyx_state[20]; __pyx_result.reason = __pyx_state[21]; __pyx_result.sending_time = __pyx_state[22]; __pyx_result.strategy = __pyx_state[23]; __pyx_result.tax_coeff = __pyx_state[24]; __pyx_result.time_condition = __pyx_state[25]; __pyx_result.towards = __pyx_state[26]; __pyx_result.trade_amount = __pyx_state[27]; __pyx_result.trade_id = __pyx_state[28]; __pyx_result.trade_price = __pyx_state[29]; __pyx_result.trade_time = __pyx_state[30]; __pyx_result.user_cookie = __pyx_state[31]
- *     if len(__pyx_state) > 32 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.direction = __pyx_state[11]; __pyx_result.exchange_code = __pyx_state[12]; __pyx_result.exchange_id = __pyx_state[13]; __pyx_result.frequence = __pyx_state[14]; __pyx_result.market_type = __pyx_state[15]; __pyx_result.money = __pyx_state[16]; __pyx_result.offset = __pyx_state[17]; __pyx_result.order_id = __pyx_state[18]; __pyx_result.order_model = __pyx_state[19]; __pyx_result.pms_id = __pyx_state[20]; __pyx_result.price = __pyx_state[21]; __pyx_result.realorder_id = __pyx_state[22]; __pyx_result.reason = __pyx_state[23]; __pyx_result.sending_time = __pyx_state[24]; __pyx_result.strategy = __pyx_state[25]; __pyx_result.tax_coeff = __pyx_state[26]; __pyx_result.time_condition = __pyx_state[27]; __pyx_result.towards = __pyx_state[28]; __pyx_result.trade_amount = __pyx_state[29]; __pyx_result.trade_id = __pyx_state[30]; __pyx_result.trade_price = __pyx_state[31]; __pyx_result.trade_time = __pyx_state[32]; __pyx_result.user_cookie = __pyx_state[33]
+ *     if len(__pyx_state) > 34 and hasattr(__pyx_result, '__dict__'):
  */
 
 static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__set_state(struct __pyx_obj_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
@@ -14559,9 +14780,9 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
   /* "(tree fragment)":12
  *     return __pyx_result
  * cdef __pyx_unpickle_QA_Order__set_state(QA_Order __pyx_result, tuple __pyx_state):
- *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.pms_id = __pyx_state[18]; __pyx_result.price = __pyx_state[19]; __pyx_result.realorder_id = __pyx_state[20]; __pyx_result.reason = __pyx_state[21]; __pyx_result.sending_time = __pyx_state[22]; __pyx_result.strategy = __pyx_state[23]; __pyx_result.tax_coeff = __pyx_state[24]; __pyx_result.time_condition = __pyx_state[25]; __pyx_result.towards = __pyx_state[26]; __pyx_result.trade_amount = __pyx_state[27]; __pyx_result.trade_id = __pyx_state[28]; __pyx_result.trade_price = __pyx_state[29]; __pyx_result.trade_time = __pyx_state[30]; __pyx_result.user_cookie = __pyx_state[31]             # <<<<<<<<<<<<<<
- *     if len(__pyx_state) > 32 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[32])
+ *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.direction = __pyx_state[11]; __pyx_result.exchange_code = __pyx_state[12]; __pyx_result.exchange_id = __pyx_state[13]; __pyx_result.frequence = __pyx_state[14]; __pyx_result.market_type = __pyx_state[15]; __pyx_result.money = __pyx_state[16]; __pyx_result.offset = __pyx_state[17]; __pyx_result.order_id = __pyx_state[18]; __pyx_result.order_model = __pyx_state[19]; __pyx_result.pms_id = __pyx_state[20]; __pyx_result.price = __pyx_state[21]; __pyx_result.realorder_id = __pyx_state[22]; __pyx_result.reason = __pyx_state[23]; __pyx_result.sending_time = __pyx_state[24]; __pyx_result.strategy = __pyx_state[25]; __pyx_result.tax_coeff = __pyx_state[26]; __pyx_result.time_condition = __pyx_state[27]; __pyx_result.towards = __pyx_state[28]; __pyx_result.trade_amount = __pyx_state[29]; __pyx_result.trade_id = __pyx_state[30]; __pyx_result.trade_price = __pyx_state[31]; __pyx_result.trade_time = __pyx_state[32]; __pyx_result.user_cookie = __pyx_state[33]             # <<<<<<<<<<<<<<
+ *     if len(__pyx_state) > 34 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[34])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -14691,6 +14912,18 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
   }
   __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 11, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v___pyx_result->direction);
+  __Pyx_DECREF(__pyx_v___pyx_result->direction);
+  __pyx_v___pyx_result->direction = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+  if (unlikely(__pyx_v___pyx_state == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(1, 12, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 12, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyDict_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v___pyx_result->exchange_code);
@@ -14701,7 +14934,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 12, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 13, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14713,7 +14946,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 13, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 14, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14725,7 +14958,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 14, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 15, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14737,7 +14970,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 15, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 16, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_2 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14746,7 +14979,19 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 16, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 17, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v___pyx_result->offset);
+  __Pyx_DECREF(__pyx_v___pyx_result->offset);
+  __pyx_v___pyx_result->offset = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+  if (unlikely(__pyx_v___pyx_state == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(1, 12, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 18, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14758,7 +15003,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 17, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 19, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14770,7 +15015,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 18, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 20, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14782,7 +15027,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 19, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_2 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14791,7 +15036,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 20, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 22, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14803,7 +15048,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 23, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14815,7 +15060,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 22, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 24, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14827,7 +15072,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 23, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 25, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14839,7 +15084,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 24, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 26, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_2 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14848,7 +15093,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 25, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 27, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14860,7 +15105,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 26, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 28, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14869,7 +15114,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 27, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 29, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_2 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14878,7 +15123,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 28, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 30, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14890,7 +15135,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 29, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 31, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_2 == (float)-1) && PyErr_Occurred())) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14899,7 +15144,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 30, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 32, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14911,7 +15156,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(1, 12, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 31, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 33, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(PyString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "str", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(1, 12, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
@@ -14922,16 +15167,16 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
 
   /* "(tree fragment)":13
  * cdef __pyx_unpickle_QA_Order__set_state(QA_Order __pyx_result, tuple __pyx_state):
- *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.pms_id = __pyx_state[18]; __pyx_result.price = __pyx_state[19]; __pyx_result.realorder_id = __pyx_state[20]; __pyx_result.reason = __pyx_state[21]; __pyx_result.sending_time = __pyx_state[22]; __pyx_result.strategy = __pyx_state[23]; __pyx_result.tax_coeff = __pyx_state[24]; __pyx_result.time_condition = __pyx_state[25]; __pyx_result.towards = __pyx_state[26]; __pyx_result.trade_amount = __pyx_state[27]; __pyx_result.trade_id = __pyx_state[28]; __pyx_result.trade_price = __pyx_state[29]; __pyx_result.trade_time = __pyx_state[30]; __pyx_result.user_cookie = __pyx_state[31]
- *     if len(__pyx_state) > 32 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[32])
+ *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.direction = __pyx_state[11]; __pyx_result.exchange_code = __pyx_state[12]; __pyx_result.exchange_id = __pyx_state[13]; __pyx_result.frequence = __pyx_state[14]; __pyx_result.market_type = __pyx_state[15]; __pyx_result.money = __pyx_state[16]; __pyx_result.offset = __pyx_state[17]; __pyx_result.order_id = __pyx_state[18]; __pyx_result.order_model = __pyx_state[19]; __pyx_result.pms_id = __pyx_state[20]; __pyx_result.price = __pyx_state[21]; __pyx_result.realorder_id = __pyx_state[22]; __pyx_result.reason = __pyx_state[23]; __pyx_result.sending_time = __pyx_state[24]; __pyx_result.strategy = __pyx_state[25]; __pyx_result.tax_coeff = __pyx_state[26]; __pyx_result.time_condition = __pyx_state[27]; __pyx_result.towards = __pyx_state[28]; __pyx_result.trade_amount = __pyx_state[29]; __pyx_result.trade_id = __pyx_state[30]; __pyx_result.trade_price = __pyx_state[31]; __pyx_result.trade_time = __pyx_state[32]; __pyx_result.user_cookie = __pyx_state[33]
+ *     if len(__pyx_state) > 34 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[34])
  */
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(1, 13, __pyx_L1_error)
   }
   __pyx_t_5 = PyTuple_GET_SIZE(__pyx_v___pyx_state); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(1, 13, __pyx_L1_error)
-  __pyx_t_6 = ((__pyx_t_5 > 32) != 0);
+  __pyx_t_6 = ((__pyx_t_5 > 34) != 0);
   if (__pyx_t_6) {
   } else {
     __pyx_t_4 = __pyx_t_6;
@@ -14944,9 +15189,9 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
   if (__pyx_t_4) {
 
     /* "(tree fragment)":14
- *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.pms_id = __pyx_state[18]; __pyx_result.price = __pyx_state[19]; __pyx_result.realorder_id = __pyx_state[20]; __pyx_result.reason = __pyx_state[21]; __pyx_result.sending_time = __pyx_state[22]; __pyx_result.strategy = __pyx_state[23]; __pyx_result.tax_coeff = __pyx_state[24]; __pyx_result.time_condition = __pyx_state[25]; __pyx_result.towards = __pyx_state[26]; __pyx_result.trade_amount = __pyx_state[27]; __pyx_result.trade_id = __pyx_state[28]; __pyx_result.trade_price = __pyx_state[29]; __pyx_result.trade_time = __pyx_state[30]; __pyx_result.user_cookie = __pyx_state[31]
- *     if len(__pyx_state) > 32 and hasattr(__pyx_result, '__dict__'):
- *         __pyx_result.__dict__.update(__pyx_state[32])             # <<<<<<<<<<<<<<
+ *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.direction = __pyx_state[11]; __pyx_result.exchange_code = __pyx_state[12]; __pyx_result.exchange_id = __pyx_state[13]; __pyx_result.frequence = __pyx_state[14]; __pyx_result.market_type = __pyx_state[15]; __pyx_result.money = __pyx_state[16]; __pyx_result.offset = __pyx_state[17]; __pyx_result.order_id = __pyx_state[18]; __pyx_result.order_model = __pyx_state[19]; __pyx_result.pms_id = __pyx_state[20]; __pyx_result.price = __pyx_state[21]; __pyx_result.realorder_id = __pyx_state[22]; __pyx_result.reason = __pyx_state[23]; __pyx_result.sending_time = __pyx_state[24]; __pyx_result.strategy = __pyx_state[25]; __pyx_result.tax_coeff = __pyx_state[26]; __pyx_result.time_condition = __pyx_state[27]; __pyx_result.towards = __pyx_state[28]; __pyx_result.trade_amount = __pyx_state[29]; __pyx_result.trade_id = __pyx_state[30]; __pyx_result.trade_price = __pyx_state[31]; __pyx_result.trade_time = __pyx_state[32]; __pyx_result.user_cookie = __pyx_state[33]
+ *     if len(__pyx_state) > 34 and hasattr(__pyx_result, '__dict__'):
+ *         __pyx_result.__dict__.update(__pyx_state[34])             # <<<<<<<<<<<<<<
  */
     __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v___pyx_result), __pyx_n_s_dict); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
@@ -14957,7 +15202,7 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(1, 14, __pyx_L1_error)
     }
-    __pyx_t_8 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 32, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 14, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_GetItemInt_Tuple(__pyx_v___pyx_state, 34, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 14, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_10 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
@@ -14979,9 +15224,9 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
 
     /* "(tree fragment)":13
  * cdef __pyx_unpickle_QA_Order__set_state(QA_Order __pyx_result, tuple __pyx_state):
- *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.pms_id = __pyx_state[18]; __pyx_result.price = __pyx_state[19]; __pyx_result.realorder_id = __pyx_state[20]; __pyx_result.reason = __pyx_state[21]; __pyx_result.sending_time = __pyx_state[22]; __pyx_result.strategy = __pyx_state[23]; __pyx_result.tax_coeff = __pyx_state[24]; __pyx_result.time_condition = __pyx_state[25]; __pyx_result.towards = __pyx_state[26]; __pyx_result.trade_amount = __pyx_state[27]; __pyx_result.trade_id = __pyx_state[28]; __pyx_result.trade_price = __pyx_state[29]; __pyx_result.trade_time = __pyx_state[30]; __pyx_result.user_cookie = __pyx_state[31]
- *     if len(__pyx_state) > 32 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
- *         __pyx_result.__dict__.update(__pyx_state[32])
+ *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.direction = __pyx_state[11]; __pyx_result.exchange_code = __pyx_state[12]; __pyx_result.exchange_id = __pyx_state[13]; __pyx_result.frequence = __pyx_state[14]; __pyx_result.market_type = __pyx_state[15]; __pyx_result.money = __pyx_state[16]; __pyx_result.offset = __pyx_state[17]; __pyx_result.order_id = __pyx_state[18]; __pyx_result.order_model = __pyx_state[19]; __pyx_result.pms_id = __pyx_state[20]; __pyx_result.price = __pyx_state[21]; __pyx_result.realorder_id = __pyx_state[22]; __pyx_result.reason = __pyx_state[23]; __pyx_result.sending_time = __pyx_state[24]; __pyx_result.strategy = __pyx_state[25]; __pyx_result.tax_coeff = __pyx_state[26]; __pyx_result.time_condition = __pyx_state[27]; __pyx_result.towards = __pyx_state[28]; __pyx_result.trade_amount = __pyx_state[29]; __pyx_result.trade_id = __pyx_state[30]; __pyx_result.trade_price = __pyx_state[31]; __pyx_result.trade_time = __pyx_state[32]; __pyx_result.user_cookie = __pyx_state[33]
+ *     if len(__pyx_state) > 34 and hasattr(__pyx_result, '__dict__'):             # <<<<<<<<<<<<<<
+ *         __pyx_result.__dict__.update(__pyx_state[34])
  */
   }
 
@@ -14989,8 +15234,8 @@ static PyObject *__pyx_f_9QUANTAXIS_8QAMARKET_7QAOrder___pyx_unpickle_QA_Order__
  *         __pyx_unpickle_QA_Order__set_state(<QA_Order> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_QA_Order__set_state(QA_Order __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.pms_id = __pyx_state[18]; __pyx_result.price = __pyx_state[19]; __pyx_result.realorder_id = __pyx_state[20]; __pyx_result.reason = __pyx_state[21]; __pyx_result.sending_time = __pyx_state[22]; __pyx_result.strategy = __pyx_state[23]; __pyx_result.tax_coeff = __pyx_state[24]; __pyx_result.time_condition = __pyx_state[25]; __pyx_result.towards = __pyx_state[26]; __pyx_result.trade_amount = __pyx_state[27]; __pyx_result.trade_id = __pyx_state[28]; __pyx_result.trade_price = __pyx_state[29]; __pyx_result.trade_time = __pyx_state[30]; __pyx_result.user_cookie = __pyx_state[31]
- *     if len(__pyx_state) > 32 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.direction = __pyx_state[11]; __pyx_result.exchange_code = __pyx_state[12]; __pyx_result.exchange_id = __pyx_state[13]; __pyx_result.frequence = __pyx_state[14]; __pyx_result.market_type = __pyx_state[15]; __pyx_result.money = __pyx_state[16]; __pyx_result.offset = __pyx_state[17]; __pyx_result.order_id = __pyx_state[18]; __pyx_result.order_model = __pyx_state[19]; __pyx_result.pms_id = __pyx_state[20]; __pyx_result.price = __pyx_state[21]; __pyx_result.realorder_id = __pyx_state[22]; __pyx_result.reason = __pyx_state[23]; __pyx_result.sending_time = __pyx_state[24]; __pyx_result.strategy = __pyx_state[25]; __pyx_result.tax_coeff = __pyx_state[26]; __pyx_result.time_condition = __pyx_state[27]; __pyx_result.towards = __pyx_state[28]; __pyx_result.trade_amount = __pyx_state[29]; __pyx_result.trade_id = __pyx_state[30]; __pyx_result.trade_price = __pyx_state[31]; __pyx_result.trade_time = __pyx_state[32]; __pyx_result.user_cookie = __pyx_state[33]
+ *     if len(__pyx_state) > 34 and hasattr(__pyx_result, '__dict__'):
  */
 
   /* function exit code */
@@ -15428,6 +15673,8 @@ static PyObject *__pyx_tp_new_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order(PyTypeObjec
   p->trade_time = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->market_type = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->frequence = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->direction = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->offset = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->code = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->user_cookie = ((PyObject*)Py_None); Py_INCREF(Py_None);
   p->account_cookie = ((PyObject*)Py_None); Py_INCREF(Py_None);
@@ -15462,6 +15709,8 @@ static void __pyx_tp_dealloc_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order(PyObject *o)
   Py_CLEAR(p->trade_time);
   Py_CLEAR(p->market_type);
   Py_CLEAR(p->frequence);
+  Py_CLEAR(p->direction);
+  Py_CLEAR(p->offset);
   Py_CLEAR(p->code);
   Py_CLEAR(p->user_cookie);
   Py_CLEAR(p->account_cookie);
@@ -15643,6 +15892,32 @@ static int __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_towards(PyObjec
   else {
     PyErr_SetString(PyExc_NotImplementedError, "__del__");
     return -1;
+  }
+}
+
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_direction(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_1__get__(o);
+}
+
+static int __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_direction(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_3__set__(o, v);
+  }
+  else {
+    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_9direction_5__del__(o);
+  }
+}
+
+static PyObject *__pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_offset(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_1__get__(o);
+}
+
+static int __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_offset(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+  if (v) {
+    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_3__set__(o, v);
+  }
+  else {
+    return __pyx_pw_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_6offset_5__del__(o);
   }
 }
 
@@ -15985,6 +16260,8 @@ static struct PyGetSetDef __pyx_getsets_9QUANTAXIS_8QAMARKET_7QAOrder_QA_Order[]
   {(char *)"market_type", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_market_type, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_market_type, (char *)0, 0},
   {(char *)"frequence", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_frequence, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_frequence, (char *)0, 0},
   {(char *)"towards", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_towards, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_towards, (char *)0, 0},
+  {(char *)"direction", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_direction, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_direction, (char *)0, 0},
+  {(char *)"offset", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_offset, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_offset, (char *)0, 0},
   {(char *)"code", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_code, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_code, (char *)0, 0},
   {(char *)"user_cookie", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_user_cookie, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_user_cookie, (char *)0, 0},
   {(char *)"trade_amount", __pyx_getprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_trade_amount, __pyx_setprop_9QUANTAXIS_8QAMARKET_7QAOrder_8QA_Order_trade_amount, (char *)0, 0},
@@ -16313,7 +16590,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_FAILED, __pyx_k_FAILED, sizeof(__pyx_k_FAILED), 0, 0, 1, 1},
   {&__pyx_kp_s_Failed_to_tran_from_dict, __pyx_k_Failed_to_tran_from_dict, sizeof(__pyx_k_Failed_to_tran_from_dict), 0, 0, 1, 0},
   {&__pyx_n_s_GFD, __pyx_k_GFD, sizeof(__pyx_k_GFD), 0, 0, 1, 1},
-  {&__pyx_kp_s_Incompatible_checksums_s_vs_0xcf, __pyx_k_Incompatible_checksums_s_vs_0xcf, sizeof(__pyx_k_Incompatible_checksums_s_vs_0xcf), 0, 0, 1, 0},
+  {&__pyx_kp_s_Incompatible_checksums_s_vs_0x33, __pyx_k_Incompatible_checksums_s_vs_0x33, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x33), 0, 0, 1, 0},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0xec, __pyx_k_Incompatible_checksums_s_vs_0xec, sizeof(__pyx_k_Incompatible_checksums_s_vs_0xec), 0, 0, 1, 0},
   {&__pyx_n_s_NEW, __pyx_k_NEW, sizeof(__pyx_k_NEW), 0, 0, 1, 1},
   {&__pyx_n_s_NEXT, __pyx_k_NEXT, sizeof(__pyx_k_NEXT), 0, 0, 1, 1},
@@ -16347,6 +16624,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_SETTLED, __pyx_k_SETTLED, sizeof(__pyx_k_SETTLED), 0, 0, 1, 1},
   {&__pyx_n_s_SUCCESS_ALL, __pyx_k_SUCCESS_ALL, sizeof(__pyx_k_SUCCESS_ALL), 0, 0, 1, 1},
   {&__pyx_n_s_SUCCESS_PART, __pyx_k_SUCCESS_PART, sizeof(__pyx_k_SUCCESS_PART), 0, 0, 1, 1},
+  {&__pyx_n_s_Unknown, __pyx_k_Unknown, sizeof(__pyx_k_Unknown), 0, 0, 1, 1},
   {&__pyx_kp_s__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 0, 1, 0},
   {&__pyx_kp_s__5, __pyx_k__5, sizeof(__pyx_k__5), 0, 0, 1, 0},
   {&__pyx_kp_s__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 0, 1, 0},
@@ -16463,9 +16741,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(0, 348, __pyx_L1_error)
-  __pyx_builtin_eval = __Pyx_GetBuiltinName(__pyx_n_s_eval); if (!__pyx_builtin_eval) __PYX_ERR(0, 364, __pyx_L1_error)
-  __pyx_builtin_vars = __Pyx_GetBuiltinName(__pyx_n_s_vars); if (!__pyx_builtin_vars) __PYX_ERR(0, 384, __pyx_L1_error)
+  __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(0, 350, __pyx_L1_error)
+  __pyx_builtin_eval = __Pyx_GetBuiltinName(__pyx_n_s_eval); if (!__pyx_builtin_eval) __PYX_ERR(0, 366, __pyx_L1_error)
+  __pyx_builtin_vars = __Pyx_GetBuiltinName(__pyx_n_s_vars); if (!__pyx_builtin_vars) __PYX_ERR(0, 386, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -16475,14 +16753,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":180
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":182
  *             self.datetime = '{} 09:31:00'.format(self.date)
  *         elif date is None and datetime is not None:
  *             self.date = datetime[0:10]             # <<<<<<<<<<<<<<
  *             self.datetime = datetime
  *         elif date is not None and datetime is not None:
  */
-  __pyx_slice__3 = PySlice_New(__pyx_int_0, __pyx_int_10, Py_None); if (unlikely(!__pyx_slice__3)) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_slice__3 = PySlice_New(__pyx_int_0, __pyx_int_10, Py_None); if (unlikely(!__pyx_slice__3)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__3);
   __Pyx_GIVEREF(__pyx_slice__3);
 
@@ -16507,6 +16785,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 }
 
 static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
+  __pyx_umethod_PyDict_Type_get.type = (PyObject*)&PyDict_Type;
   __pyx_umethod_PyDict_Type_keys.type = (PyObject*)&PyDict_Type;
   __pyx_umethod_PyDict_Type_values.type = (PyObject*)&PyDict_Type;
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
@@ -16515,7 +16794,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_10 = PyInt_FromLong(10); if (unlikely(!__pyx_int_10)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_217065133 = PyInt_FromLong(217065133L); if (unlikely(!__pyx_int_217065133)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_53632902 = PyInt_FromLong(53632902L); if (unlikely(!__pyx_int_53632902)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_247532701 = PyInt_FromLong(247532701L); if (unlikely(!__pyx_int_247532701)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -16989,32 +17268,32 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":115
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":117
  *             order_model=None,
  *             money=None,
  *             amount_model=AMOUNT_MODEL.BY_AMOUNT,             # <<<<<<<<<<<<<<
  *             broker=None,
  *             order_id=None,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AMOUNT_MODEL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AMOUNT_MODEL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_BY_AMOUNT); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_BY_AMOUNT); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_k_ = __pyx_t_2;
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":119
+  /* "QUANTAXIS/QAMARKET/QAOrder.pyx":121
  *             order_id=None,
  *             trade_id=False,
  *             _status=ORDER_STATUS.NEW,             # <<<<<<<<<<<<<<
  *             callback=False,
  *             commission_coeff=0.00025,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_ORDER_STATUS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_NEW); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_NEW); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_k__2 = __pyx_t_1;
@@ -17102,8 +17381,8 @@ if (!__Pyx_RefNanny) {
  *         __pyx_unpickle_QA_Order__set_state(<QA_Order> __pyx_result, __pyx_state)
  *     return __pyx_result
  * cdef __pyx_unpickle_QA_Order__set_state(QA_Order __pyx_result, tuple __pyx_state):             # <<<<<<<<<<<<<<
- *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.exchange_code = __pyx_state[11]; __pyx_result.exchange_id = __pyx_state[12]; __pyx_result.frequence = __pyx_state[13]; __pyx_result.market_type = __pyx_state[14]; __pyx_result.money = __pyx_state[15]; __pyx_result.order_id = __pyx_state[16]; __pyx_result.order_model = __pyx_state[17]; __pyx_result.pms_id = __pyx_state[18]; __pyx_result.price = __pyx_state[19]; __pyx_result.realorder_id = __pyx_state[20]; __pyx_result.reason = __pyx_state[21]; __pyx_result.sending_time = __pyx_state[22]; __pyx_result.strategy = __pyx_state[23]; __pyx_result.tax_coeff = __pyx_state[24]; __pyx_result.time_condition = __pyx_state[25]; __pyx_result.towards = __pyx_state[26]; __pyx_result.trade_amount = __pyx_state[27]; __pyx_result.trade_id = __pyx_state[28]; __pyx_result.trade_price = __pyx_state[29]; __pyx_result.trade_time = __pyx_state[30]; __pyx_result.user_cookie = __pyx_state[31]
- *     if len(__pyx_state) > 32 and hasattr(__pyx_result, '__dict__'):
+ *     __pyx_result._status = __pyx_state[0]; __pyx_result.account_cookie = __pyx_state[1]; __pyx_result.amount = __pyx_state[2]; __pyx_result.amount_model = __pyx_state[3]; __pyx_result.broker = __pyx_state[4]; __pyx_result.callback = __pyx_state[5]; __pyx_result.cancel_amount = __pyx_state[6]; __pyx_result.code = __pyx_state[7]; __pyx_result.commission_coeff = __pyx_state[8]; __pyx_result.date = __pyx_state[9]; __pyx_result.datetime = __pyx_state[10]; __pyx_result.direction = __pyx_state[11]; __pyx_result.exchange_code = __pyx_state[12]; __pyx_result.exchange_id = __pyx_state[13]; __pyx_result.frequence = __pyx_state[14]; __pyx_result.market_type = __pyx_state[15]; __pyx_result.money = __pyx_state[16]; __pyx_result.offset = __pyx_state[17]; __pyx_result.order_id = __pyx_state[18]; __pyx_result.order_model = __pyx_state[19]; __pyx_result.pms_id = __pyx_state[20]; __pyx_result.price = __pyx_state[21]; __pyx_result.realorder_id = __pyx_state[22]; __pyx_result.reason = __pyx_state[23]; __pyx_result.sending_time = __pyx_state[24]; __pyx_result.strategy = __pyx_state[25]; __pyx_result.tax_coeff = __pyx_state[26]; __pyx_result.time_condition = __pyx_state[27]; __pyx_result.towards = __pyx_state[28]; __pyx_result.trade_amount = __pyx_state[29]; __pyx_result.trade_id = __pyx_state[30]; __pyx_result.trade_price = __pyx_state[31]; __pyx_result.trade_time = __pyx_state[32]; __pyx_result.user_cookie = __pyx_state[33]
+ *     if len(__pyx_state) > 34 and hasattr(__pyx_result, '__dict__'):
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_9QUANTAXIS_8QAMARKET_7QAOrder_3__pyx_unpickle_QA_OrderQueue, NULL, __pyx_n_s_QUANTAXIS_QAMARKET_QAOrder); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -17742,20 +18021,6 @@ static CYTHON_INLINE PyObject *__Pyx__GetModuleGlobalName(PyObject *name)
     return __Pyx_GetBuiltinName(name);
 }
 
-/* PyObjectSetAttrStr */
-#if CYTHON_USE_TYPE_SLOTS
-static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
-    PyTypeObject* tp = Py_TYPE(obj);
-    if (likely(tp->tp_setattro))
-        return tp->tp_setattro(obj, attr_name, value);
-#if PY_MAJOR_VERSION < 3
-    if (likely(tp->tp_setattr))
-        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
-#endif
-    return PyObject_SetAttr(obj, attr_name, value);
-}
-#endif
-
 /* BytesEquals */
 static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
 #if CYTHON_COMPILING_IN_PYPY
@@ -17905,6 +18170,164 @@ return_ne:
 #endif
 }
 
+/* UnpackUnboundCMethod */
+static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
+    PyObject *method;
+    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
+    if (unlikely(!method))
+        return -1;
+    target->method = method;
+#if CYTHON_COMPILING_IN_CPYTHON
+    #if PY_MAJOR_VERSION >= 3
+    if (likely(__Pyx_TypeCheck(method, &PyMethodDescr_Type)))
+    #endif
+    {
+        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
+        target->func = descr->d_method->ml_meth;
+        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_STACKLESS);
+    }
+#endif
+    return 0;
+}
+
+/* CallUnboundCMethod1 */
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg) {
+    if (likely(cfunc->func)) {
+        int flag = cfunc->flag;
+        if (flag == METH_O) {
+            return (*(cfunc->func))(self, arg);
+        } else if (PY_VERSION_HEX >= 0x030600B1 && flag == METH_FASTCALL) {
+            if (PY_VERSION_HEX >= 0x030700A0) {
+                return (*(__Pyx_PyCFunctionFast)(void*)(PyCFunction)cfunc->func)(self, &arg, 1);
+            } else {
+                return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
+            }
+        } else if (PY_VERSION_HEX >= 0x030700A0 && flag == (METH_FASTCALL | METH_KEYWORDS)) {
+            return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
+        }
+    }
+    return __Pyx__CallUnboundCMethod1(cfunc, self, arg);
+}
+#endif
+static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg){
+    PyObject *args, *result = NULL;
+    if (unlikely(!cfunc->func && !cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (cfunc->func && (cfunc->flag & METH_VARARGS)) {
+        args = PyTuple_New(1);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(arg);
+        PyTuple_SET_ITEM(args, 0, arg);
+        if (cfunc->flag & METH_KEYWORDS)
+            result = (*(PyCFunctionWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, NULL);
+        else
+            result = (*cfunc->func)(self, args);
+    } else {
+        args = PyTuple_New(2);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(self);
+        PyTuple_SET_ITEM(args, 0, self);
+        Py_INCREF(arg);
+        PyTuple_SET_ITEM(args, 1, arg);
+        result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+    }
+#else
+    args = PyTuple_Pack(2, self, arg);
+    if (unlikely(!args)) goto bad;
+    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+#endif
+bad:
+    Py_XDECREF(args);
+    return result;
+}
+
+/* CallUnboundCMethod2 */
+#if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030600B1
+static CYTHON_INLINE PyObject *__Pyx_CallUnboundCMethod2(__Pyx_CachedCFunction *cfunc, PyObject *self, PyObject *arg1, PyObject *arg2) {
+    if (likely(cfunc->func)) {
+        PyObject *args[2] = {arg1, arg2};
+        if (cfunc->flag == METH_FASTCALL) {
+            #if PY_VERSION_HEX >= 0x030700A0
+            return (*(__Pyx_PyCFunctionFast)(void*)(PyCFunction)cfunc->func)(self, args, 2);
+            #else
+            return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, 2, NULL);
+            #endif
+        }
+        #if PY_VERSION_HEX >= 0x030700A0
+        if (cfunc->flag == (METH_FASTCALL | METH_KEYWORDS))
+            return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, 2, NULL);
+        #endif
+    }
+    return __Pyx__CallUnboundCMethod2(cfunc, self, arg1, arg2);
+}
+#endif
+static PyObject* __Pyx__CallUnboundCMethod2(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg1, PyObject* arg2){
+    PyObject *args, *result = NULL;
+    if (unlikely(!cfunc->func && !cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (cfunc->func && (cfunc->flag & METH_VARARGS)) {
+        args = PyTuple_New(2);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(arg1);
+        PyTuple_SET_ITEM(args, 0, arg1);
+        Py_INCREF(arg2);
+        PyTuple_SET_ITEM(args, 1, arg2);
+        if (cfunc->flag & METH_KEYWORDS)
+            result = (*(PyCFunctionWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, NULL);
+        else
+            result = (*cfunc->func)(self, args);
+    } else {
+        args = PyTuple_New(3);
+        if (unlikely(!args)) goto bad;
+        Py_INCREF(self);
+        PyTuple_SET_ITEM(args, 0, self);
+        Py_INCREF(arg1);
+        PyTuple_SET_ITEM(args, 1, arg1);
+        Py_INCREF(arg2);
+        PyTuple_SET_ITEM(args, 2, arg2);
+        result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+    }
+#else
+    args = PyTuple_Pack(3, self, arg1, arg2);
+    if (unlikely(!args)) goto bad;
+    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
+#endif
+bad:
+    Py_XDECREF(args);
+    return result;
+}
+
+/* dict_getitem_default */
+static PyObject* __Pyx_PyDict_GetItemDefault(PyObject* d, PyObject* key, PyObject* default_value) {
+    PyObject* value;
+#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
+    value = PyDict_GetItemWithError(d, key);
+    if (unlikely(!value)) {
+        if (unlikely(PyErr_Occurred()))
+            return NULL;
+        value = default_value;
+    }
+    Py_INCREF(value);
+    if ((1));
+#else
+    if (PyString_CheckExact(key) || PyUnicode_CheckExact(key) || PyInt_CheckExact(key)) {
+        value = PyDict_GetItem(d, key);
+        if (unlikely(!value)) {
+            value = default_value;
+        }
+        Py_INCREF(value);
+    }
+#endif
+    else {
+        if (default_value == Py_None)
+            value = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PyDict_Type_get, d, key);
+        else
+            value = __Pyx_CallUnboundCMethod2(&__pyx_umethod_PyDict_Type_get, d, key, default_value);
+    }
+    return value;
+}
+
 /* PyObjectCallNoArg */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
@@ -17924,30 +18347,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
         }
     }
     return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
-}
-#endif
-
-/* DictGetItem */
-#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
-static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
-    PyObject *value;
-    value = PyDict_GetItemWithError(d, key);
-    if (unlikely(!value)) {
-        if (!PyErr_Occurred()) {
-            if (unlikely(PyTuple_Check(key))) {
-                PyObject* args = PyTuple_Pack(1, key);
-                if (likely(args)) {
-                    PyErr_SetObject(PyExc_KeyError, args);
-                    Py_DECREF(args);
-                }
-            } else {
-                PyErr_SetObject(PyExc_KeyError, key);
-            }
-        }
-        return NULL;
-    }
-    Py_INCREF(value);
-    return value;
 }
 #endif
 
@@ -18377,6 +18776,44 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, 
         PyObject_RichCompare(op1, op2, Py_EQ));
 }
 
+/* PyObjectSetAttrStr */
+#if CYTHON_USE_TYPE_SLOTS
+static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr_name, PyObject* value) {
+    PyTypeObject* tp = Py_TYPE(obj);
+    if (likely(tp->tp_setattro))
+        return tp->tp_setattro(obj, attr_name, value);
+#if PY_MAJOR_VERSION < 3
+    if (likely(tp->tp_setattr))
+        return tp->tp_setattr(obj, PyString_AS_STRING(attr_name), value);
+#endif
+    return PyObject_SetAttr(obj, attr_name, value);
+}
+#endif
+
+/* DictGetItem */
+#if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
+static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
+    PyObject *value;
+    value = PyDict_GetItemWithError(d, key);
+    if (unlikely(!value)) {
+        if (!PyErr_Occurred()) {
+            if (unlikely(PyTuple_Check(key))) {
+                PyObject* args = PyTuple_Pack(1, key);
+                if (likely(args)) {
+                    PyErr_SetObject(PyExc_KeyError, args);
+                    Py_DECREF(args);
+                }
+            } else {
+                PyErr_SetObject(PyExc_KeyError, key);
+            }
+        }
+        return NULL;
+    }
+    Py_INCREF(value);
+    return value;
+}
+#endif
+
 /* GetAttr */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
 #if CYTHON_USE_TYPE_SLOTS
@@ -18442,26 +18879,6 @@ invalid_keyword:
         "%s() got an unexpected keyword argument '%U'",
         function_name, key);
     #endif
-    return 0;
-}
-
-/* UnpackUnboundCMethod */
-static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
-    PyObject *method;
-    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
-    if (unlikely(!method))
-        return -1;
-    target->method = method;
-#if CYTHON_COMPILING_IN_CPYTHON
-    #if PY_MAJOR_VERSION >= 3
-    if (likely(__Pyx_TypeCheck(method, &PyMethodDescr_Type)))
-    #endif
-    {
-        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
-        target->func = descr->d_method->ml_meth;
-        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_STACKLESS);
-    }
-#endif
     return 0;
 }
 
