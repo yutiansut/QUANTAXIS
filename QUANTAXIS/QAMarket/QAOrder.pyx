@@ -217,6 +217,10 @@ cdef class QA_Order():
         self._status = _status
         self.exchange_code = exchange_code
         self.pms_id = pms_id
+        self.direction = 'BUY' if self.towards in [
+            ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+        self.offset = 'OPEN' if self.towards in [
+            ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
                                                                    # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         # self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         # ) else kwargs['mainacc_id']
