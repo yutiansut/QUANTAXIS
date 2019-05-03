@@ -24,14 +24,14 @@
 
 import threading
 import pandas as pd
-
+from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAMarket.common import exchange_code
 from QUANTAXIS.QAUtil import (
     QA_util_log_info,
     QA_util_random_with_topic,
     QA_util_to_json_from_pandas
 )
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL
+from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL, MARKET_TYPE
 from QUANTAXIS.QAUtil.QADate import QA_util_stamp2datetime
 """
 重新定义Order模式
@@ -75,6 +75,7 @@ cdef class QA_Order():
     cdef public str offset
     cdef public str code
     cdef public str user_cookie
+    cdef public dict market_preset
     cdef public float trade_amount
     cdef public float cancel_amount
     cdef public str account_cookie
@@ -208,7 +209,7 @@ cdef class QA_Order():
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.trade_id = [trade_id] if trade_id else []
-
+        self.market_preset = MARKET_PRESET().get_code(self.code,{})
         self.trade_price = 0                                       # 成交均价
         self.broker = broker
         self.callback = callback                                   # 委托成功的callback
@@ -312,6 +313,45 @@ cdef class QA_Order():
     def get_exchange(self, code):
         return self.exchange_code.get(code.lower(), 'Unknown')
 
+    def calc_commission(self, trade_price, trade_amount):
+
+        if self.market_type == MARKET_TYPE.FUTURE_CN:
+            value = trade_price * trade_amount * self.market_preset['unit']
+            if self.towards in [ORDER_DIRECTION.BUY_OPEN,
+                                ORDER_DIRECTION.BUY_CLOSE,
+                                ORDER_DIRECTION.SELL_CLOSE,
+                                ORDER_DIRECTION.SELL_OPEN]:
+                commission_fee = self.market_preset['commission_coeff_pervol'] * trade_amount + \
+                    self.market_preset['commission_coeff_peramount'] * \
+                    abs(value)
+            elif self.towards in [ORDER_DIRECTION.BUY_CLOSETODAY,
+                                   ORDER_DIRECTION.SELL_CLOSETODAY]:
+                commission_fee = self.market_preset['commission_coeff_today_pervol'] * trade_amount + \
+                    self.market_preset['commission_coeff_today_peramount'] * \
+                    abs(value)
+            return commission_fee
+        elif self.market_type == MARKET_TYPE.STOCK_CN:
+            commission_fee = trade_price * trade_amount * self.commission_coeff
+
+            return max(commission_fee, 5)
+
+    def trade_message(self, trade_id, trade_price, trade_amount, trade_time):
+        return {
+            "user_id": self.account_cookie,  # //用户ID
+            "order_id": self.order_id,  # //交易所单号
+            "trade_id": trade_id,  # //委托单ID, 对于一个USER, trade_id 是永远不重复的
+            "exchange_id": self.exchange_id,  # //交易所
+            "instrument_id": self.code,  # //在交易所中的合约代码
+            "exchange_trade_id": trade_id,  # //交易所单号
+            "direction": self.direction,  # //下单方向
+            "offset": self.offset,  # //开平标志
+            "volume": trade_amount,  # //成交手数
+            "price": trade_price,  # //成交价格
+            "trade_date_time":  trade_time,  # //成交时间, epoch nano
+            # //成交手续费
+            "commission": self.calc_commission(trade_price, trade_amount),
+            "seqno": ''}
+
     def create(self):
         """创建订单
         """
@@ -381,6 +421,7 @@ cdef class QA_Order():
                         self.towards,
                         trade_time
                     )
+                    return self.trade_message(trade_id, trade_price, trade_amount, trade_time)
                 else:
                     pass
         else:
