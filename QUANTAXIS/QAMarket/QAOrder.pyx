@@ -230,8 +230,41 @@ cdef class QA_Order():
         # ) else kwargs['subacc_id']
 
     @property
-    def pending_amount(self):
-        return self.amount - self.cancel_amount - self.trade_amount
+    def __dict__(self):
+        return {
+            'price': self.price,                                          
+            'datetime': self.datetime,                    
+            'date': self.date,                                 
+            'sending_time': self.sending_time,                
+            'trade_time': self.trade_time,                                     
+            'amount': self.amount,                                        
+            'trade_amount': self.trade_amount,                                    
+            'cancel_amount': self.cancel_amount,                                   
+            'towards': self.towards,                                         
+            'code': self.code,                                     
+            'user_cookie': self.user_cookie,                                         
+            'market_type': self.market_type,                            
+            'frequence': self.frequence,                                   
+            'account_cookie': self.account_cookie,                             
+            'strategy': self.strategy,                                     
+            'type': self.market_type,                                   
+            'order_model': self.order_model,                              
+            'amount_model': self.amount_model,                          
+            'order_id': self.order_id,                         
+            'realorder_id': self.realorder_id,                     
+            'commission_coeff': self.commission_coeff,            
+            'tax_coeff': self.tax_coeff,                   
+            'trade_id': self.trade_id,                                       
+            'trade_price': self.trade_price,                                     
+            'broker': self.broker,                                 
+            'callback': self.callback,       
+            'money': self.money,                          
+            'reason': self.reason,                                       
+            'exchange_id': self.exchange_id,                                  
+            'time_condition': self.time_condition,                              
+            '_status': self.status,                               
+            'direction': self.direction,
+            'offset': self.offset}
 
     def __repr__(self):
         '''
@@ -250,6 +283,10 @@ cdef class QA_Order():
             self.account_cookie,
             self.status
         )
+
+    @property
+    def pending_amount(self):
+        return self.amount - self.cancel_amount - self.trade_amount
 
     @property
     def status(self):
