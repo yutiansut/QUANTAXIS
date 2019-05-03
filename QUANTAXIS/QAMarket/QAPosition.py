@@ -320,8 +320,9 @@ class QA_Position():
             position_profit_long: 0
             position_profit_short: -200
         """
-        temp_cost = amount*price * \
-            self.market_preset.get('unit_table', 1)
+
+        temp_cost = float(amount)*float(price) * \
+            float(self.market_preset.get('unit_table', 1))
         # if towards == ORDER_DIRECTION.SELL_CLOSE:
         if towards == ORDER_DIRECTION.BUY:
             # 股票模式/ 期货买入开仓
@@ -335,7 +336,7 @@ class QA_Position():
         elif towards == ORDER_DIRECTION.BUY_OPEN:
 
             # 增加保证金
-            self.margin_long += temp_cost * \
+            self.margin_long_today += temp_cost * \
                 self.market_preset['buy_frozen_coeff']
             # 重算开仓均价
             self.open_price_long = (
@@ -351,7 +352,7 @@ class QA_Position():
         elif towards == ORDER_DIRECTION.SELL_OPEN:
             # 增加保证金
 
-            self.margin_short += temp_cost * \
+            self.margin_short_today += temp_cost * \
                 self.market_preset['sell_frozen_coeff']
             # 重新计算开仓/持仓成本
             self.open_price_short = (
@@ -448,12 +449,21 @@ class QA_Position():
         pass
 
     def on_order(self, order: QA_Order):
-        # self.update_pos(order.)
         pass
 
     def on_transaction(self, transaction: dict):
-        self.update_pos(
-            transaction['price'], transaction['amount'], transaction['towards'])
+        towards = transaction.get('towards',eval('ORDER_DIRECTION.{}_{}'.format(
+            transaction.get('direction'),
+            transaction.get('offset')
+        )))
+
+        try:
+            self.update_pos(
+                transaction['price'], transaction.get('amount', transaction.get('volume')), towards)
+        except Exception as e:
+            raise e
+
+        print(self.static_message)
 
     def on_pirce_change(self, price):
         self.last_price = price
@@ -566,6 +576,12 @@ if __name__ == "__main__":
     pos.on_pirce_change(4193)
     print(pos.realtime_message)
     print(pos.static_message)
+    pos.on_transaction({
+        'direction': 'SELL',
+        'offset': 'OPEN',
+        'price': 3678,
+        'volume': 1
+    })
 
     print('STOCK TEST')
 
