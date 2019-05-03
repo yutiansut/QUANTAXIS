@@ -88,7 +88,7 @@ class QA_Order():
             commission_coeff=0.00025,
             tax_coeff=0.001,
             exchange_id=None,
-            pms_id =None,
+            pms_id=None,
             *args,
             **kwargs
     ):
@@ -121,7 +121,7 @@ class QA_Order():
         - tax_coeff  印花税系数(股票)
         - exchange_id  交易所id (一般用于实盘期货)
 
-        
+
         :param args: type tuple
         :param kwargs: type dict
 
@@ -153,9 +153,9 @@ class QA_Order():
             self.datetime = datetime
         else:
             pass
-        self.sending_time = self.datetime if sending_time is None else sending_time # 下单时间
+        self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
 
-        self.trade_time = trade_time if trade_time else [] # 成交时间
+        self.trade_time = trade_time if trade_time else []  # 成交时间
         self.amount = amount                               # 委托数量
         self.trade_amount = 0                              # 成交数量
         self.cancel_amount = 0                             # 撤销数量
@@ -186,11 +186,15 @@ class QA_Order():
         self.time_condition = 'GFD'                                # 当日有效
         self._status = _status
         self.exchange_code = exchange_code
-                                                                   # 增加订单对于多账户以及多级别账户的支持 2018/11/12
+        # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         ) else kwargs['mainacc_id']
         self.subacc_id = None if 'subacc_id' not in kwargs.keys(
         ) else kwargs['subacc_id']
+        self.direction = 'BUY' if self.towards in [
+            ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+        self.offset = 'OPEN' if self.towards in [
+            ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
 
     @property
     def pending_amount(self):
@@ -236,7 +240,7 @@ class QA_Order():
             return self._status
 
     def get_exchange(self, code):
-        return self.exchange_code[code.lower()]
+        return self.exchange_code.get(code.lower(), 'Unknown')
 
     def create(self):
         """创建订单
@@ -401,18 +405,16 @@ class QA_Order():
         }
 
     def to_qatradegatway(self):
-
-        direction = 'BUY' if self.direction > 0 else 'SELL'
         return {
             'topic': 'sendorder',
             'account_cookie': self.account_cookie,
             'strategy_id': self.strategy,
-            'order_direction': direction,
+            'order_direction': self.direction,
+            'order_offset': self.offset,
             'code': self.code.lower(),
             'price': self.price,
             'order_time': self.sending_time,
             'exchange_id': self.get_exchange(self.code),
-            'order_offset': self.offset,
             'volume': self.amount,
             'order_id': self.order_id
         }
@@ -488,7 +490,7 @@ class QA_Order():
             self.price = order_dict['price']
             self.date = order_dict['date']
             self.datetime = order_dict['datetime']
-            self.sending_time = order_dict['sending_time'] # 下单时间
+            self.sending_time = order_dict['sending_time']  # 下单时间
             self.trade_time = order_dict['trade_time']
             self.amount = order_dict['amount']
             self.frequence = order_dict['frequence']
@@ -521,7 +523,7 @@ class QA_Order():
             QA_util_log_info('Failed to tran from dict {}'.format(e))
 
 
-class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
+class QA_OrderQueue():  # also the order tree ？？ what's the tree means?
     """
     一个待成交队列
     queue是一个dataframe
