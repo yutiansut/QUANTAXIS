@@ -283,7 +283,8 @@ class QA_Order():
     def calc_commission(self, trade_price, trade_amount):
 
         if self.market_type == MARKET_TYPE.FUTURE_CN:
-            value = trade_price * trade_amount * self.market_preset.get('unit_table',1)
+            value = trade_price * trade_amount * \
+                self.market_preset.get('unit_table', 1)
             if self.towards in [ORDER_DIRECTION.BUY_OPEN,
                                 ORDER_DIRECTION.BUY_CLOSE,
                                 ORDER_DIRECTION.SELL_CLOSE,
@@ -292,7 +293,7 @@ class QA_Order():
                     self.market_preset['commission_coeff_peramount'] * \
                     abs(value)
             elif self.towards in [ORDER_DIRECTION.BUY_CLOSETODAY,
-                                   ORDER_DIRECTION.SELL_CLOSETODAY]:
+                                  ORDER_DIRECTION.SELL_CLOSETODAY]:
                 commission_fee = self.market_preset['commission_coeff_today_pervol'] * trade_amount + \
                     self.market_preset['commission_coeff_today_peramount'] * \
                     abs(value)
