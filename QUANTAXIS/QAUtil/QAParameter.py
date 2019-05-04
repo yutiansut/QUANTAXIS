@@ -276,6 +276,8 @@ class ENGINE_EVENT():
     """引擎事件"""
     MARKET_INIT = 'market_init'
     UPCOMING_DATA = 'upcoming_data'
+    UPCOMING_TICK = 'upcoming_tick'
+    UPCOMING_BAR = 'upcoming_bar'
     BAR_SETTLE = 'bar_settle'
     DAILY_SETTLE = 'daily_settle'
     UPDATE = 'update'
