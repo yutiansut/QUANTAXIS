@@ -93,6 +93,7 @@ class QA_Position():
         self.market_preset = MARKET_PRESET().get_code(self.code)
         self.position_id = str(uuid.uuid4())
         self.moneypreset = moneypreset
+        self.moneypresetLeft = self.moneypreset
         """{'name': '原油',
             'unit_table': 1000,
             'price_tick': 0.1,
@@ -349,8 +350,9 @@ class QA_Position():
         elif towards == ORDER_DIRECTION.BUY_OPEN:
 
             # 增加保证金
-            self.margin_long_today += temp_cost * \
+            temp_margin = temp_cost * \
                 self.market_preset['buy_frozen_coeff']
+            self.margin_long_today += temp_margin
             # 重算开仓均价
             self.open_price_long = (
                 self.open_price_long * self.volume_long + amount*price) / (amount + self.volume_long)
@@ -362,6 +364,8 @@ class QA_Position():
             #
             self.open_cost_long += temp_cost
             self.position_cost_long += temp_cost
+            self.moneypresetLeft -= temp_margin
+
 
         elif towards == ORDER_DIRECTION.SELL_OPEN:
             # 增加保证金
@@ -414,7 +418,7 @@ class QA_Position():
             else:
                 self.volume_short_today -= (amount - self.volume_short_his)
                 self.volume_short_his = 0
-            self.volume_short_frozen_today += amount
+            self.volume_short_frozen_today -= amount
         elif towards == ORDER_DIRECTION.SELL_CLOSE:
             # 有昨仓先平昨仓
             self.position_cost_long = self.position_cost_long * \
@@ -425,8 +429,8 @@ class QA_Position():
                 self.volume_long_his -= amount
             else:
                 self.volume_long_today -= (amount - self.volume_long_his)
-                self.volume_long_his -= amount
-            self.volume_long_frozen_today += amount
+                self.volume_long_his = 0
+            self.volume_long_frozen_today -= amount
         # 计算收益/成本
 
     def settle(self):
