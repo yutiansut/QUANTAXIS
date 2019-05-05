@@ -90,6 +90,7 @@ class QA_Position():
 
         self.code = code
         self.account_cookie = account_cookie
+        self.time = ''
         self.market_preset = MARKET_PRESET().get_code(self.code)
         self.position_id = str(uuid.uuid4())
         self.moneypreset = moneypreset
@@ -303,7 +304,7 @@ class QA_Position():
                 'instrument_id': self.code,
                 'towards': int(towards),
                 'exchange_id': str(self.exchange_id),
-                'order_time': str(datetime.datetime.now()),
+                'order_time': str(self.time),
                 'volume': float(amount),
                 'price': float(price),
                 'order_id': str(uuid.uuid4())
