@@ -361,6 +361,7 @@ class QA_Position():
             self.volume_long_today += amount
             #
             self.open_cost_long += temp_cost
+            self.position_cost_long += temp_cost
 
         elif towards == ORDER_DIRECTION.SELL_OPEN:
             # 增加保证金
@@ -373,6 +374,7 @@ class QA_Position():
             self.position_price_short = (
                 self.position_price_short * self.volume_short + amount * price) / (amount + self.volume_short)
             self.open_cost_short += temp_cost
+            self.position_cost_short += temp_cost
             self.volume_short_today += amount
 
 
