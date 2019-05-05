@@ -258,20 +258,20 @@ class QA_Position():
         }
 
     def order_check(self, amount: float, price: float, towards: int) -> bool:
-        if towards == ORDER_DIRECTION.BUY_CLOSE and (self.volume_short - self.volume_short_frozen) > amount:
+        if towards == ORDER_DIRECTION.BUY_CLOSE and (self.volume_short - self.volume_short_frozen) >= amount:
             # check
             self.volume_short_frozen_today += amount
             return True
 
-        elif towards == ORDER_DIRECTION.BUY_CLOSETODAY and (self.volume_short_today - self.volume_short_frozen_today) > amount:
+        elif towards == ORDER_DIRECTION.BUY_CLOSETODAY and (self.volume_short_today - self.volume_short_frozen_today) >= amount:
             self.volume_short_frozen_today += amount
             return True
 
-        elif towards == ORDER_DIRECTION.SELL_CLOSE and (self.volume_long - self.volume_long_frozen) > amount:
+        elif towards == ORDER_DIRECTION.SELL_CLOSE and (self.volume_long - self.volume_long_frozen) >= amount:
             self.volume_long_frozen_today += amount
             return True
 
-        elif towards == ORDER_DIRECTION.SELL_CLOSETODAY and (self.volume_long_today - self.volume_short_frozen_today) > amount:
+        elif towards == ORDER_DIRECTION.SELL_CLOSETODAY and (self.volume_long_today - self.volume_short_frozen_today) >= amount:
             self.volume_long_frozen_today += amount
             return True
         elif towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN, ORDER_DIRECTION.BUY]:
@@ -362,6 +362,7 @@ class QA_Position():
             self.open_cost_short += temp_cost
             self.volume_short_today += amount
 
+
         elif towards == ORDER_DIRECTION.BUY_CLOSETODAY:
             if self.volume_short_today > amount:
                 self.position_cost_short = self.position_cost_short * \
@@ -369,6 +370,7 @@ class QA_Position():
                 self.open_cost_short = self.open_cost_short * \
                     (self.volume_short-amount)/self.volume_short
                 self.volume_short_today -= amount
+                self.volume_short_frozen_today += amount
                 # close_profit = (self.position_price_short - price) * volume * position->ins->volume_multiple;
 
                 #self.volume_short_frozen_today += amount
@@ -384,6 +386,7 @@ class QA_Position():
                 self.open_cost_long = self.open_cost_long * \
                     (self.volume_long-amount)/self.volume_long
                 self.volume_long_today -= amount
+                self.volume_long_frozen_today += amount
 
         elif towards == ORDER_DIRECTION.BUY_CLOSE:
             # 有昨仓先平昨仓
@@ -396,6 +399,7 @@ class QA_Position():
             else:
                 self.volume_short_today -= (amount - self.volume_short_his)
                 self.volume_short_his = 0
+            self.volume_short_frozen_today += amount
         elif towards == ORDER_DIRECTION.SELL_CLOSE:
             # 有昨仓先平昨仓
             self.position_cost_long = self.position_cost_long * \
@@ -407,7 +411,7 @@ class QA_Position():
             else:
                 self.volume_long_today -= (amount - self.volume_long_his)
                 self.volume_long_his -= amount
-
+            self.volume_long_frozen_today += amount
         # 计算收益/成本
 
     def settle(self):
