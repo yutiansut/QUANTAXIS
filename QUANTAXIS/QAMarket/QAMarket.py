@@ -28,7 +28,7 @@ import numpy as np
 import sched
 import threading
 
-from QUANTAXIS.QAARP.QAAccount import QA_Account
+# from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
@@ -208,10 +208,11 @@ class QA_Market(QA_Trade):
         res = False
         if account is None:
             if account_cookie not in self.session.keys():
-                self.session[account_cookie] = QA_Account(
-                    account_cookie=account_cookie,
-                    broker=broker_name
-                )
+
+                # self.session[account_cookie] = QA_Account(
+                #     account_cookie=account_cookie,
+                #     broker=broker_name
+                # )
                 if self.sync_account(broker_name, account_cookie):
                     res = True
 
