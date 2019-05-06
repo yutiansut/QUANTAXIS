@@ -338,7 +338,7 @@ class QA_Position():
 
         temp_cost = float(amount)*float(price) * \
             float(self.market_preset.get('unit_table', 1))
-        # if towards == ORDER_DIRECTION.SELL_CLOSE:
+
         if towards == ORDER_DIRECTION.BUY:
             # 股票模式/ 期货买入开仓
             self.volume_long_today += amount
