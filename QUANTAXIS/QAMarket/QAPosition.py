@@ -50,6 +50,9 @@ class QA_Position():
     1/ 支持当价格变化后的 持仓的自行计算更新
     2/ 支持调仓模型(未加入)
     3/ 支持仓位风控(未加入)
+    4/ 支持资金分配和PMS内部资金结算(moneypreset)
+
+    PMS 内部可以预分配一个资金限额, 方便pms实时计算属于PMS的收益
 
     """
 
@@ -142,6 +145,7 @@ class QA_Position():
             self.volume_short*self.market_preset.get('unit_table', 1)
 
         self.last_price = 0
+        self.trades = {}
 
     def __repr__(self):
         return '< QAPOSITION {} amount {}/{} >'.format(self.code, self.volume_long, self.volume_short)
@@ -480,7 +484,8 @@ class QA_Position():
             transaction.get('direction'),
             transaction.get('offset')
         )))
-
+        #TODO:
+        #在这里可以加入更多关于PMS交易的代码
         try:
             self.update_pos(
                 transaction['price'], transaction.get('amount', transaction.get('volume')), towards)
