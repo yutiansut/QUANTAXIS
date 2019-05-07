@@ -1089,7 +1089,17 @@ class QA_Account(QA_Worker):
                     # money 冻结的资金
                     # amount  冻结的数量
 
-                    2018-12-31                    
+                    2018-12-31
+
+                    多单冻结[money] 成本
+
+                    成交额
+                    raw_trade_money =  trade_price * trade_amount * market_towards
+                    成交金额(基于市值*杠杆系数*冻结系数)
+                    trade_money =  trade_price * trade_amount * market_towards* unit * frozen
+
+                    money = (money*amount + trade_money)/(amount+新的成交量)
+                    avg_price= (avgprice*amount+ raw_trade_money)/(amount+新的成交量)
 
                     """
 
@@ -1132,7 +1142,34 @@ class QA_Account(QA_Worker):
 
                         frozen_part = self.frozen[code][
                             str(ORDER_DIRECTION.SELL_OPEN)]['money'] * trade_amount
-                        # 账户的现金+ 冻结的的释放 + 买卖价差* 杠杆
+                        # 账户的现金+ 冻结的的释放 + 买卖价差* 杠杆 - 交易费用
+                        """
+                        + 释放的保证金 frozen_part 平仓手数* 对应的冻结保证金的均价
+                        + 释放的保证金和交易成本的价差对应的真实价值 (frozen_part - trade_money)/frozen
+                        - 手续费
+                        - 税费
+
+                        如:
+
+                        行情 3800
+                        买入冻结  3700
+
+                        平仓时行情: 3838
+
+                        + 释放: 3700
+                        + 价差: (-3700 + 3737)*手数/冻结系数 ==> 真实利润 [注意买卖关系: 买入开仓 -3700 卖出平仓 + 3737]
+                        - 手续费
+
+
+                        行情 3800
+                        卖出开仓 冻结 3700
+                        平仓时行情: 3838
+
+                        + 释放: 3700
+                        + 价差: (-3737 + 3700)*手数/冻结系数 ==> 真实利润 [注意这里的买卖关系: 卖出开仓=> 3700 买入平仓 -3737]
+                        - 手续费
+
+                        """
                         self.cash.append(
                             self.cash[-1] + frozen_part +
                             (frozen_part - trade_money) / frozen -

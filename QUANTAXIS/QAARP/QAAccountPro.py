@@ -62,83 +62,8 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 # pylint: disable=old-style-class, too-few-public-methods
 class QA_Account(QA_Worker):
     """QA_Account
-    User-->Portfolio-->Account/Strategy
 
-    :::::::::::::::::::::::::::::::::::::::::::::::::
-    ::        :: Portfolio 1 -- Account/Strategy 1 ::
-    ::  USER  ::             -- Account/Strategy 2 ::
-    ::        :: Portfolio 2 -- Account/Strategy 3 ::
-    :::::::::::::::::::::::::::::::::::::::::::::::::
-
-    2018/1/5 再次修改 改版本去掉了多余的计算 精简账户更新
-    ======================
-
-    - 不再计算总资产/不再计算当前持仓/不再计算交易对照明细表
-    - 不再动态计算账户股票/期货市值
-    - 只维护 cash/history两个字段 剩下的全部惰性计算
-
-
-    QA_Account 是QUANTAXIS的最小不可分割单元之一
-
-    QA_Account是账户类 需要兼容股票/期货/指数
-    QA_Account继承自QA_Worker 可以被事件驱动
-    QA_Account可以直接被QA_Strategy继承
-
-    有三类输入:
-    信息类: 账户绑定的策略名/账户的用户名/账户类别/账户识别码/账户的broker
-    资产类: 现金/可用现金/交易历史/交易对照表
-    规则类: 是否允许卖空/是否允许t0结算
-
-    方法:
-    惰性计算:最新持仓/最新总资产/最新现金/持仓面板
-    生成订单/接受交易结果数据
-    接收新的数据/on_bar/on_tick方法/缓存新数据的market_data
-
-    @royburns  1.添加注释
-    2018/05/18
-
-    T0交易的sell_available和正常的sell_available不一样:
-
-    T0交易中, 当买入一笔/卖出一笔, 当天操作额度都会下降
-
-    T0的订单-账户对应系统
-
-
-    @2018/06/11
-    QA_Account不会基于行情计算市值,因此都只会对应记录证券数量和现金资产
-
-
-    @2018/12/23
-    当我们继承/复用 QA_Account 的时候, 我们需要实现什么
-
-    - init_cash
-    - init_hold
-    - broker
-
-    @2018/12/24
-    账户需要追踪
-
-    @2018/12/31
-    账户需要截面数据 
-    需要在任意截面的基础上往下做
-
-    基础的信息截面 ==>  init_cash/init_hold |  history的初始值
-
-    任意时间点的信息截面
-
-
-    @2019/05/07
-    # 关于PMS/close_available
-    在期货中, 我们需要account具有多空同时开仓对锁的功能, 而目前基于交易结算的并不满足
-
-    引入 close_available 和 POSITION的概念
-
-
-    重
-
-
-
-
+    QAAccount
 
     """
 
