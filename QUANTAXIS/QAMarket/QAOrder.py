@@ -488,6 +488,31 @@ class QA_Order():
         }
 
     def to_qatradegatway(self):
+        """[summary]
+        {'topic': 'sendorder', 
+        'account_cookie': '100004', 
+        'strategy_id': None, 
+        'order_direction': 'SELL', 
+        'order_offset': 'OPEN', 
+        'code': 'rb1910', 
+        'price': 3745.0, 
+        'order_time': '2019-05-08 13:55:38.000000', 
+        'exchange_id': 'SHFE', 
+        'volume': 1.0, 
+        'order_id': '5ab55219-adf6-432f-90db-f1bc5f29f4e5'}
+
+        
+        'topic': 'sendorder',
+        'account_cookie': acc,
+        'strategy_id': 'test',
+        'code': code,
+        'price': price[code],
+        'order_direction': 'SELL',
+        'order_offset': 'CLOSE',
+        'volume': 1,
+        'order_time': str(datetime.datetime.now()),
+        'exchange_id': 'SHFE'
+        """
         return {
             'topic': 'sendorder',
             'account_cookie': self.account_cookie,
@@ -498,7 +523,7 @@ class QA_Order():
             'price': self.price,
             'order_time': self.sending_time,
             'exchange_id': self.get_exchange(self.code),
-            'volume': self.amount,
+            'volume': int(self.amount),
             'order_id': self.order_id
         }
 
