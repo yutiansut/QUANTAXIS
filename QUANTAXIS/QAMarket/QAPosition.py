@@ -88,6 +88,8 @@ class QA_Position():
                  market_type=MARKET_TYPE.STOCK_CN,
                  exchange_id=EXCHANGE_ID.SZSE,
                  name=None,
+                 *args,
+                 **kwargs
 
                  ):
 
@@ -149,6 +151,74 @@ class QA_Position():
 
     def __repr__(self):
         return '< QAPOSITION {} amount {}/{} >'.format(self.code, self.volume_long, self.volume_short)
+
+
+    def read_diff(self, diff_slice):
+        """[summary]
+        
+        Arguments:
+            diff_slice {dict} -- [description]
+
+            {'user_id': '100002',
+            'exchange_id': 'SHFE',
+            'instrument_id': 'rb1905',
+            'volume_long_today': 0,
+            'volume_long_his': 0,
+            'volume_long': 0,
+            'volume_long_frozen_today': 0,
+            'volume_long_frozen_his': 0,
+            'volume_long_frozen': 0,
+            'volume_short_today': 0,
+            'volume_short_his': 0,
+            'volume_short': 0,
+            'volume_short_frozen_today': 0,
+            'volume_short_frozen_his': 0,
+            'volume_short_frozen': 0,
+            'open_price_long': 4193.0,
+            'open_price_short': 4192.0,
+            'open_cost_long': 0.0,
+            'open_cost_short': 0.0,
+            'position_price_long': 4193.0,
+            'position_price_short': 4192.0,
+            'position_cost_long': 0.0,
+            'position_cost_short': 0.0,
+            'last_price': 4137.0,
+            'float_profit_long': 0.0,
+            'float_profit_short': 0.0,
+            'float_profit': 0.0,
+            'position_profit_long': 0.0,
+            'position_profit_short': 0.0,
+            'position_profit': 0.0,
+            'margin_long': 0.0,
+            'margin_short': 0.0,
+            'margin': 0.0}
+
+        Returns:
+            QA_Position -- [description]
+        """
+        self.account_cookie = diff_slice['user_id']
+        self.code = diff_slice['instrument_id']
+        self.volume_long_today = diff_slice['volume_long_today']
+        self.volume_long_his = diff_slice['volume_long_his']
+        self.volume_long_frozen_today = diff_slice['volume_long_frozen_today']
+        self.volume_long_frozen_his = diff_slice['volume_long_frozen_his']
+        self.volume_short_today = diff_slice['volume_short_today']
+        self.volume_short_his = diff_slice['volume_short_his']
+        self.volume_short_frozen_today = diff_slice['volume_short_frozen_today']
+        self.volume_short_frozen_his = diff_slice['volume_short_frozen_his']
+        self.open_price_long = diff_slice['open_price_long']
+        self.open_price_short = diff_slice['open_price_short']
+        self.open_cost_long = diff_slice['open_cost_long']
+        self.open_cost_short = diff_slice['open_cost_short']
+        self.position_price_long = diff_slice['position_price_long']
+        self.position_price_short = diff_slice['position_price_short']
+        self.position_cost_long = diff_slice['position_cost_long']
+        self.position_cost_short = diff_slice['position_cost_short']
+        self.margin_long_his = diff_slice['margin_long']
+        self.margin_short_his = diff_slice['margin_short']
+        self.exchange_id = diff_slice['exchange_id']
+        self.market_type = MARKET_TYPE.FUTURE_CN
+        return self
 
     @property
     def volume_long(self):
