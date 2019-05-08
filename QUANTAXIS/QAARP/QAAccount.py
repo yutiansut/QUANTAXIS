@@ -1488,7 +1488,7 @@ class QA_Account(QA_Worker):
                 if self.allow_sellopen and towards == -2:
 
                     if self.cash_available >= money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
-                                                     # self.cash_available -= money
+                         # self.cash_available -= money
                         flag = True
                     else:
                         print('sellavailable', _hold)
