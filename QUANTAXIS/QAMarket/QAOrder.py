@@ -351,6 +351,7 @@ class QA_Order():
             if trade_amount < 1:
 
                 self._status = ORDER_STATUS.NEXT
+                return False
             else:
                 if trade_id not in self.trade_id:
                     trade_price = float(trade_price)
@@ -378,11 +379,12 @@ class QA_Order():
                     )
                     return self.trade_message(trade_id, trade_price, trade_amount, trade_time)
                 else:
-                    pass
+                    return False
         else:
-            raise RuntimeError(
+            print(RuntimeError(
                 'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
-            )
+            ))
+            return False
 
     def trade_message(self, trade_id, trade_price, trade_amount, trade_time):
         return {
@@ -501,7 +503,7 @@ class QA_Order():
         'volume': 1.0, 
         'order_id': '5ab55219-adf6-432f-90db-f1bc5f29f4e5'}
 
-        
+
         'topic': 'sendorder',
         'account_cookie': acc,
         'strategy_id': 'test',
@@ -683,7 +685,15 @@ class QA_OrderQueue():  # also the order tree ？？ what's the tree means?
             print('QAERROR Wrong for get None type while insert order to Queue')
 
     def update_order(self, order):
-        self.order_list[order.order_id] = order
+        if self.order_list[order.order_id].status != order.status:
+            self.order_list[order.order_id] = order
+            return True
+        else:
+            if self.order_list[order.order_id].trade_amount != order.trade_amount:
+                slef.order_list[order.order_id] = order
+                return True
+            else:
+                return False
 
     @property
     def order_ids(self):
