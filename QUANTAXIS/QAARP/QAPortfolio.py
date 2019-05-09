@@ -219,7 +219,8 @@ class QA_Portfolio(QA_Account):
         if account_cookie in self.account_list:
             res = self.account_list.remove(account_cookie)
             self.cash.append(
-                self.cash[-1] + self.get_account_by_cookie(res).init_cash)
+                self.cash[-1] + self.get_account_by_cookie(res).init_cash
+            )
             return True
         else:
             raise RuntimeError(
@@ -509,8 +510,15 @@ class QA_Portfolio(QA_Account):
             self.init_cash = message['init_cash']
             self.cash = message['cash']
 
-            self.account_list = [item['account_cookie'] for item in DATABASE.account.find(
-                {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie}, {'account_cookie':1})]
+            self.account_list = [
+                item['account_cookie'] for item in DATABASE.account.find(
+                    {
+                        'user_cookie': self.user_cookie,
+                        'portfolio_cookie': self.portfolio_cookie
+                    },
+                    {'account_cookie': 1}
+                )
+            ]
             #self.history = (message['history'], message['history_header'])
             #account_list = message['account_list']
 
@@ -660,12 +668,12 @@ class QA_PortfolioView():
     @property
     def history_table(self):
         return pd.concat([item.history_table for item in self.accounts]
-                         ).sort_index()
+                        ).sort_index()
 
     @property
     def trade_day(self):
         return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
-                         ).drop_duplicates().sort_values().tolist()
+                        ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):
