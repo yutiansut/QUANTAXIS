@@ -408,7 +408,7 @@ def QA_data_min_resample(min_data, type_='5min'):
     return resx.dropna().reset_index().set_index(['datetime', 'code'])
 
 
-def QA_stock_data_min_resample(min_data, period=5):
+def QA_data_min_resample_stock(min_data, period=5):
     """
     1min 分钟线采样成 period 级别的分钟线
     :param min_data:
@@ -551,10 +551,10 @@ if __name__ == '__main__':
     print(QA_data_tick_resample(tick, '15min'))
     print(QA_data_tick_resample(tick, '35min'))
 
-    print("test QA_stock_data_min_resample, level: 120")
+    print("test QA_data_min_resample_stock, level: 120")
     start, end, level = "2019-05-01", "2019-05-08", 120
     data = QA.QA_fetch_stock_min_adv("000001", start, end)
-    res = QA_stock_data_min_resample(data.data, level)
+    res = QA_data_min_resample_stock(data.data, level)
     print(res)
-    res2 = QA.QA_fetch_stock_min_adv(["000001", '000002'], start, end).add_func(QA_stock_data_min_resample, level)
+    res2 = QA.QA_fetch_stock_min_adv(["000001", '000002'], start, end).add_func(QA_data_min_resample_stock, level)
     print(res2)
