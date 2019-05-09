@@ -70,10 +70,8 @@ class QA_Position():
                  volume_short_frozen_his=0,
                  volume_short_frozen_today=0,
 
-                 margin_long_his=0,
-                 margin_short_his=0,
-                 margin_long_today=0,
-                 margin_short_today=0,
+                 margin_long=0,
+                 margin_short=0,
 
                  open_price_long=0,
                  open_price_short=0,
@@ -126,10 +124,8 @@ class QA_Position():
         self.volume_short_frozen_his = volume_short_frozen_his
         self.volume_short_frozen_today = volume_short_frozen_today
 
-        self.margin_long_his = margin_long_his
-        self.margin_short_his = margin_short_his
-        self.margin_long_today = margin_long_today
-        self.margin_short_today = margin_short_today
+        self.margin_long = margin_long
+        self.margin_short = margin_short
 
         self.open_price_long = open_price_long
         self.open_price_short = open_price_short
@@ -214,8 +210,8 @@ class QA_Position():
         self.position_price_short = diff_slice['position_price_short']
         self.position_cost_long = diff_slice['position_cost_long']
         self.position_cost_short = diff_slice['position_cost_short']
-        self.margin_long_his = diff_slice['margin_long']
-        self.margin_short_his = diff_slice['margin_short']
+        self.margin_long = diff_slice['margin_long']
+        self.margin_short = diff_slice['margin_short']
         self.exchange_id = diff_slice['exchange_id']
         self.market_type = MARKET_TYPE.FUTURE_CN
         return self
@@ -236,13 +232,7 @@ class QA_Position():
     def volume_short_frozen(self):
         return self.volume_short_frozen_his + self.volume_short_frozen_today
 
-    @property
-    def margin_long(self):
-        return self.margin_long_his + self.margin_long_today
 
-    @property
-    def margin_short(self):
-        return self.margin_short_his + self.margin_short_today
 
     @property
     def margin(self):
@@ -364,7 +354,13 @@ class QA_Position():
             self.volume_long_frozen_today += amount
             return True
         elif towards in [ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN, ORDER_DIRECTION.BUY]:
-            res = True
+            """
+            冻结的保证金
+            """
+            moneyneed = float(amount)*float(price) *float(self.market_preset.get('unit_table', 1))* float(self.market_preset.get('buy_frozen_coeff', 1))
+            if self.moneypresetLeft > moneyneed:
+                self.moneypresetLeft -= moneyneed
+                res = True
 
         return res
 
@@ -427,7 +423,7 @@ class QA_Position():
             # 增加保证金
             temp_margin = temp_cost * \
                 self.market_preset['buy_frozen_coeff']
-            self.margin_long_today += temp_margin
+            self.margin_long += temp_margin
             # 重算开仓均价
             self.open_price_long = (
                 self.open_price_long * self.volume_long + amount*price) / (amount + self.volume_long)
@@ -444,8 +440,16 @@ class QA_Position():
 
         elif towards == ORDER_DIRECTION.SELL_OPEN:
             # 增加保证金
+            """
+            1. 增加卖空保证金
+            2. 重新计算 开仓成本
+            3. 重新计算 持仓成本
+            4. 增加开仓cost
+            5. 增加持仓cost
+            6. 增加空单仓位
+            """
 
-            self.margin_short_today += temp_cost * \
+            self.margin_short += temp_cost * \
                 self.market_preset['sell_frozen_coeff']
             # 重新计算开仓/持仓成本
             self.open_price_short = (
@@ -466,8 +470,8 @@ class QA_Position():
                 self.volume_short_today -= amount
                 self.volume_short_frozen_today += amount
                 # close_profit = (self.position_price_short - price) * volume * position->ins->volume_multiple;
-
-                #self.volume_short_frozen_today += amount
+                marginValue = temp_cost * self.market_preset['buy_frozen_coeff']
+                profit = (self.position_price_short -price) * amount *self.market_preset.get('unit_table')
                 # 释放保证金
                 # TODO
                 # self.margin_short
