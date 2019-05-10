@@ -47,8 +47,12 @@ class SPE_CONFIG():
 def get_config_SPE():
     config = configparser.ConfigParser()
     return SPE_CONFIG(
-        QA_Setting().get_config('SPE', 'uri', DEFAULT_SHIPANE_URL),
-        QA_Setting().get_config('SPE', 'key', DEFAULT_SHIPANE_KEY)
+        QA_Setting().get_config('SPE',
+                                'uri',
+                                DEFAULT_SHIPANE_URL),
+        QA_Setting().get_config('SPE',
+                                'key',
+                                DEFAULT_SHIPANE_KEY)
     )
 
 
@@ -357,13 +361,13 @@ class QA_SPEBroker(QA_Broker):
                                          self.dealstatus_headers].set_index(
                                              ['account_cookie',
                                               'realorder_id']
-                    ).sort_index()
+                                         ).sort_index()
                 else:
                     return order_all.loc[:,
                                          self.orderstatus_headers].set_index(
                                              ['account_cookie',
                                               'realorder_id']
-                    ).sort_index()
+                                         ).sort_index()
             else:
                 print('response is None')
                 return False

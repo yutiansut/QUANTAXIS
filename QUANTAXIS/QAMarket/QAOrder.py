@@ -23,16 +23,24 @@
 # SOFTWARE.
 
 import threading
+
 import pandas as pd
 
+from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAMarket.common import exchange_code
 from QUANTAXIS.QAUtil import (
     QA_util_log_info,
     QA_util_random_with_topic,
     QA_util_to_json_from_pandas
 )
-from QUANTAXIS.QAUtil.QAParameter import AMOUNT_MODEL, ORDER_STATUS, ORDER_DIRECTION, ORDER_MODEL
 from QUANTAXIS.QAUtil.QADate import QA_util_stamp2datetime
+from QUANTAXIS.QAUtil.QAParameter import (
+    AMOUNT_MODEL,
+    MARKET_TYPE,
+    ORDER_DIRECTION,
+    ORDER_MODEL,
+    ORDER_STATUS
+)
 """
 重新定义Order模式
 
@@ -74,7 +82,7 @@ class QA_Order():
             frequence=None,
             towards=None,
             code=None,
-            user=None,
+            user_cookie=None,
             account_cookie=None,
             strategy=None,
             order_model=None,
@@ -88,7 +96,7 @@ class QA_Order():
             commission_coeff=0.00025,
             tax_coeff=0.001,
             exchange_id=None,
-            pms_id =None,
+            pms_id=None,
             *args,
             **kwargs
     ):
@@ -107,7 +115,7 @@ class QA_Order():
         - frequence 频率 (回测用 DAY/1min/5min/15min/30min/...)
         - towards 买卖方向
         - code  订单的品种
-        - user  订单发起者
+        - user_cookie  订单发起者
         - account_cookie 订单发起账户的标识
         - stratgy 策略号
         - order_model  委托方式(限价/市价/下一个bar/)  type str eg 'limit'
@@ -121,7 +129,7 @@ class QA_Order():
         - tax_coeff  印花税系数(股票)
         - exchange_id  交易所id (一般用于实盘期货)
 
-        
+
         :param args: type tuple
         :param kwargs: type dict
 
@@ -161,7 +169,7 @@ class QA_Order():
         self.cancel_amount = 0                             # 撤销数量
         self.towards = towards                             # side
         self.code = code                                   # 委托证券代码
-        self.user = user                                   # 委托用户
+        self.user_cookie = user_cookie                     # 委托用户
         self.market_type = market_type                     # 委托市场类别
         self.frequence = frequence                         # 委托所在的频率(回测用)
         self.account_cookie = account_cookie
@@ -176,6 +184,7 @@ class QA_Order():
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.trade_id = trade_id if trade_id else []
+        self.market_preset = MARKET_PRESET().get_code(self.code)
 
         self.trade_price = 0                                       # 成交均价
         self.broker = broker
@@ -186,15 +195,64 @@ class QA_Order():
         self.time_condition = 'GFD'                                # 当日有效
         self._status = _status
         self.exchange_code = exchange_code
+        self.pms_id = pms_id
                                                                    # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         ) else kwargs['mainacc_id']
         self.subacc_id = None if 'subacc_id' not in kwargs.keys(
         ) else kwargs['subacc_id']
+        self.direction = 'BUY' if self.towards in [
+            ORDER_DIRECTION.BUY,
+            ORDER_DIRECTION.BUY_OPEN,
+            ORDER_DIRECTION.BUY_CLOSE
+        ] else 'SELL'
+        self.offset = 'OPEN' if self.towards in [
+            ORDER_DIRECTION.BUY,
+            ORDER_DIRECTION.BUY_OPEN,
+            ORDER_DIRECTION.SELL_OPEN
+        ] else 'CLOSE'
 
     @property
     def pending_amount(self):
         return self.amount - self.cancel_amount - self.trade_amount
+
+    @property
+    def __dict__(self):
+        return {
+            'price': self.price,
+            'datetime': self.datetime,
+            'date': self.date,
+            'sending_time': self.sending_time,
+            'trade_time': self.trade_time,
+            'amount': self.amount,
+            'trade_amount': self.trade_amount,
+            'cancel_amount': self.cancel_amount,
+            'towards': self.towards,
+            'code': self.code,
+            'user_cookie': self.user_cookie,
+            'market_type': self.market_type,
+            'frequence': self.frequence,
+            'account_cookie': self.account_cookie,
+            'strategy': self.strategy,
+            'type': self.market_type,
+            'order_model': self.order_model,
+            'amount_model': self.amount_model,
+            'order_id': self.order_id,
+            'realorder_id': self.realorder_id,
+            'commission_coeff': self.commission_coeff,
+            'tax_coeff': self.tax_coeff,
+            'trade_id': self.trade_id,
+            'trade_price': self.trade_price,
+            'broker': self.broker,
+            'callback': self.callback,
+            'money': self.money,
+            'reason': self.reason,
+            'exchange_id': self.exchange_id,
+            'time_condition': self.time_condition,
+            '_status': self.status,
+            'direction': self.direction,
+            'offset': self.offset
+        }
 
     def __repr__(self):
         '''
@@ -235,8 +293,31 @@ class QA_Order():
             self._status = ORDER_STATUS.QUEUED
             return self._status
 
+    def calc_commission(self, trade_price, trade_amount):
+
+        if self.market_type == MARKET_TYPE.FUTURE_CN:
+            value = trade_price * trade_amount * \
+                self.market_preset.get('unit_table', 1)
+            if self.towards in [ORDER_DIRECTION.BUY_OPEN,
+                                ORDER_DIRECTION.BUY_CLOSE,
+                                ORDER_DIRECTION.SELL_CLOSE,
+                                ORDER_DIRECTION.SELL_OPEN]:
+                commission_fee = self.market_preset['commission_coeff_pervol'] * trade_amount + \
+                    self.market_preset['commission_coeff_peramount'] * \
+                    abs(value)
+            elif self.towards in [ORDER_DIRECTION.BUY_CLOSETODAY,
+                                  ORDER_DIRECTION.SELL_CLOSETODAY]:
+                commission_fee = self.market_preset['commission_coeff_today_pervol'] * trade_amount + \
+                    self.market_preset['commission_coeff_today_peramount'] * \
+                    abs(value)
+            return commission_fee
+        elif self.market_type == MARKET_TYPE.STOCK_CN:
+            commission_fee = trade_price * trade_amount * self.commission_coeff
+
+            return max(commission_fee, 5)
+
     def get_exchange(self, code):
-        return self.exchange_code[code.lower()]
+        return self.exchange_code.get(code.lower(), 'Unknown')
 
     def create(self):
         """创建订单
@@ -282,6 +363,7 @@ class QA_Order():
             if trade_amount < 1:
 
                 self._status = ORDER_STATUS.NEXT
+                return False
             else:
                 if trade_id not in self.trade_id:
                     trade_price = float(trade_price)
@@ -307,12 +389,38 @@ class QA_Order():
                         self.towards,
                         trade_time
                     )
+                    return self.trade_message(
+                        trade_id,
+                        trade_price,
+                        trade_amount,
+                        trade_time
+                    )
                 else:
-                    pass
+                    return False
         else:
-            raise RuntimeError(
-                'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
+            print(
+                RuntimeError(
+                    'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
+                )
             )
+            return False
+
+    def trade_message(self, trade_id, trade_price, trade_amount, trade_time):
+        return {
+            "user_id": self.account_cookie,  # //用户ID
+            "order_id": self.order_id,  # //交易所单号
+            "trade_id": trade_id,  # //委托单ID, 对于一个USER, trade_id 是永远不重复的
+            "exchange_id": self.exchange_id,  # //交易所
+            "instrument_id": self.code,  # //在交易所中的合约代码
+            "exchange_trade_id": trade_id,  # //交易所单号
+            "direction": self.direction,  # //下单方向
+            "offset": self.offset,  # //开平标志
+            "volume": trade_amount,  # //成交手数
+            "price": trade_price,  # //成交价格
+            "trade_date_time":  trade_time,  # //成交时间, epoch nano
+            # //成交手续费
+            "commission": self.calc_commission(trade_price, trade_amount),
+            "seqno": ''}
 
     def queued(self, realorder_id):
         self.realorder_id = realorder_id
@@ -401,19 +509,42 @@ class QA_Order():
         }
 
     def to_qatradegatway(self):
+        """[summary]
+        {'topic': 'sendorder', 
+        'account_cookie': '100004', 
+        'strategy_id': None, 
+        'order_direction': 'SELL', 
+        'order_offset': 'OPEN', 
+        'code': 'rb1910', 
+        'price': 3745.0, 
+        'order_time': '2019-05-08 13:55:38.000000', 
+        'exchange_id': 'SHFE', 
+        'volume': 1.0, 
+        'order_id': '5ab55219-adf6-432f-90db-f1bc5f29f4e5'}
 
-        direction = 'BUY' if self.direction > 0 else 'SELL'
+
+        'topic': 'sendorder',
+        'account_cookie': acc,
+        'strategy_id': 'test',
+        'code': code,
+        'price': price[code],
+        'order_direction': 'SELL',
+        'order_offset': 'CLOSE',
+        'volume': 1,
+        'order_time': str(datetime.datetime.now()),
+        'exchange_id': 'SHFE'
+        """
         return {
             'topic': 'sendorder',
             'account_cookie': self.account_cookie,
             'strategy_id': self.strategy,
-            'order_direction': direction,
+            'order_direction': self.direction,
+            'order_offset': self.offset,
             'code': self.code.lower(),
             'price': self.price,
             'order_time': self.sending_time,
             'exchange_id': self.get_exchange(self.code),
-            'order_offset': self.offset,
-            'volume': self.amount,
+            'volume': int(self.amount),
             'order_id': self.order_id
         }
 
@@ -448,10 +579,10 @@ class QA_Order():
         self.code = str(otgOrder.get('instrument_id')).upper()
         self.offset = otgOrder.get('offset')
         self.direction = otgOrder.get('direction')
-        self.towards = eval('ORDER_DIRECTION.{}_{}'.format(
-            self.direction,
-            self.offset
-        ))
+        self.towards = eval(
+            'ORDER_DIRECTION.{}_{}'.format(self.direction,
+                                           self.offset)
+        )
         self.amount = otgOrder.get('volume_orign')
         self.trade_amount = self.amount - otgOrder.get('volume_left')
         self.price = otgOrder.get('limit_price')
@@ -495,7 +626,7 @@ class QA_Order():
             self.market_type = order_dict['market_type']
             self.towards = order_dict['towards']
             self.code = order_dict['code']
-            self.user = order_dict['user']
+            self.user_cookie = order_dict['user_cookie']
             self.account_cookie = order_dict['account_cookie']
             self.strategy = order_dict['strategy']
             self.type = order_dict['type']
@@ -573,7 +704,16 @@ class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
             print('QAERROR Wrong for get None type while insert order to Queue')
 
     def update_order(self, order):
-        self.order_list[order.order_id] = order
+        if self.order_list[order.order_id].status != order.status:
+            self.order_list[order.order_id] = order
+            return True
+        else:
+            if self.order_list[order.order_id
+                              ].trade_amount != order.trade_amount:
+                slef.order_list[order.order_id] = order
+                return True
+            else:
+                return False
 
     @property
     def order_ids(self):

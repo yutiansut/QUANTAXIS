@@ -4,8 +4,11 @@ import datetime
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
-from QUANTAXIS.QAUtil.QAParameter import (EXCHANGE_ID, MARKET_TYPE,
-                                          ORDER_DIRECTION)
+from QUANTAXIS.QAUtil.QAParameter import (
+    EXCHANGE_ID,
+    MARKET_TYPE,
+    ORDER_DIRECTION
+)
 
 
 class QA_Position():
@@ -50,6 +53,9 @@ class QA_Position():
     1/ 支持当价格变化后的 持仓的自行计算更新
     2/ 支持调仓模型(未加入)
     3/ 支持仓位风控(未加入)
+    4/ 支持资金分配和PMS内部资金结算(moneypreset)
+
+    PMS 内部可以预分配一个资金限额, 方便pms实时计算属于PMS的收益
 
     """
 
@@ -67,10 +73,8 @@ class QA_Position():
                  volume_short_frozen_his=0,
                  volume_short_frozen_today=0,
 
-                 margin_long_his=0,
-                 margin_short_his=0,
-                 margin_long_today=0,
-                 margin_short_today=0,
+                 margin_long=0,
+                 margin_short=0,
 
                  open_price_long=0,
                  open_price_short=0,
@@ -85,14 +89,18 @@ class QA_Position():
                  market_type=MARKET_TYPE.STOCK_CN,
                  exchange_id=EXCHANGE_ID.SZSE,
                  name=None,
+                 *args,
+                 **kwargs
 
                  ):
 
         self.code = code
         self.account_cookie = account_cookie
+        self.time = ''
         self.market_preset = MARKET_PRESET().get_code(self.code)
         self.position_id = str(uuid.uuid4())
         self.moneypreset = moneypreset
+        self.moneypresetLeft = self.moneypreset
         """{'name': '原油',
             'unit_table': 1000,
             'price_tick': 0.1,
@@ -119,10 +127,8 @@ class QA_Position():
         self.volume_short_frozen_his = volume_short_frozen_his
         self.volume_short_frozen_today = volume_short_frozen_today
 
-        self.margin_long_his = margin_long_his
-        self.margin_short_his = margin_short_his
-        self.margin_long_today = margin_long_today
-        self.margin_short_today = margin_short_today
+        self.margin_long = margin_long
+        self.margin_short = margin_short
 
         self.open_price_long = open_price_long
         self.open_price_short = open_price_short
@@ -140,13 +146,85 @@ class QA_Position():
             self.volume_short*self.market_preset.get('unit_table', 1)
 
         self.last_price = 0
+        self.trades = {}
 
     def __repr__(self):
-        return '< QAPOSITION {} amount {}/{} >'.format(self.code, self.volume_long, self.volume_short)
+        return '< QAPOSITION {} amount {}/{} >'.format(
+            self.code,
+            self.volume_long,
+            self.volume_short
+        )
+
+    def read_diff(self, diff_slice):
+        """[summary]
+        
+        Arguments:
+            diff_slice {dict} -- [description]
+
+            {'user_id': '100002',
+            'exchange_id': 'SHFE',
+            'instrument_id': 'rb1905',
+            'volume_long_today': 0,
+            'volume_long_his': 0,
+            'volume_long': 0,
+            'volume_long_frozen_today': 0,
+            'volume_long_frozen_his': 0,
+            'volume_long_frozen': 0,
+            'volume_short_today': 0,
+            'volume_short_his': 0,
+            'volume_short': 0,
+            'volume_short_frozen_today': 0,
+            'volume_short_frozen_his': 0,
+            'volume_short_frozen': 0,
+            'open_price_long': 4193.0,
+            'open_price_short': 4192.0,
+            'open_cost_long': 0.0,
+            'open_cost_short': 0.0,
+            'position_price_long': 4193.0,
+            'position_price_short': 4192.0,
+            'position_cost_long': 0.0,
+            'position_cost_short': 0.0,
+            'last_price': 4137.0,
+            'float_profit_long': 0.0,
+            'float_profit_short': 0.0,
+            'float_profit': 0.0,
+            'position_profit_long': 0.0,
+            'position_profit_short': 0.0,
+            'position_profit': 0.0,
+            'margin_long': 0.0,
+            'margin_short': 0.0,
+            'margin': 0.0}
+
+        Returns:
+            QA_Position -- [description]
+        """
+        self.account_cookie = diff_slice['user_id']
+        self.code = diff_slice['instrument_id']
+        self.volume_long_today = diff_slice['volume_long_today']
+        self.volume_long_his = diff_slice['volume_long_his']
+        self.volume_long_frozen_today = diff_slice['volume_long_frozen_today']
+        self.volume_long_frozen_his = diff_slice['volume_long_frozen_his']
+        self.volume_short_today = diff_slice['volume_short_today']
+        self.volume_short_his = diff_slice['volume_short_his']
+        self.volume_short_frozen_today = diff_slice['volume_short_frozen_today']
+        self.volume_short_frozen_his = diff_slice['volume_short_frozen_his']
+        self.open_price_long = diff_slice['open_price_long']
+        self.open_price_short = diff_slice['open_price_short']
+        self.open_cost_long = diff_slice['open_cost_long']
+        self.open_cost_short = diff_slice['open_cost_short']
+        self.position_price_long = diff_slice['position_price_long']
+        self.position_price_short = diff_slice['position_price_short']
+        self.position_cost_long = diff_slice['position_cost_long']
+        self.position_cost_short = diff_slice['position_cost_short']
+        self.margin_long = diff_slice['margin_long']
+        self.margin_short = diff_slice['margin_short']
+        self.exchange_id = diff_slice['exchange_id']
+        self.market_type = MARKET_TYPE.FUTURE_CN
+        return self
 
     @property
     def volume_long(self):
-        return self.volume_long_today+self.volume_long_his
+        return self.volume_long_today + self.volume_long_his
 
     @property
     def volume_short(self):
@@ -161,26 +239,24 @@ class QA_Position():
         return self.volume_short_frozen_his + self.volume_short_frozen_today
 
     @property
-    def margin_long(self):
-        return self.margin_long_his + self.margin_long_today
-
-    @property
-    def margin_short(self):
-        return self.margin_short_his + self.margin_short_today
-
-    @property
     def margin(self):
         return self.margin_long + self.margin_short
 
     @property
     def float_profit_long(self):
         if self.market_preset is not None:
-            return self.last_price * self.volume_long * self.market_preset.get('unit_table', 1) - self.open_cost_long
+            return self.last_price * self.volume_long * self.market_preset.get(
+                'unit_table',
+                1
+            ) - self.open_cost_long
 
     @property
     def float_profit_short(self):
         if self.market_preset is not None:
-            return self.open_cost_short - self.last_price * self.volume_short * self.market_preset.get('unit_table', 1)
+            return self.open_cost_short - self.last_price * self.volume_short * self.market_preset.get(
+                'unit_table',
+                1
+            )
 
     @property
     def float_profit(self):
@@ -189,12 +265,18 @@ class QA_Position():
     @property
     def position_profit_long(self):
         if self.market_preset is not None:
-            return self.last_price * self.volume_long * self.market_preset.get('unit_table', 1) - self.position_cost_long
+            return self.last_price * self.volume_long * self.market_preset.get(
+                'unit_table',
+                1
+            ) - self.position_cost_long
 
     @property
     def position_profit_short(self):
         if self.market_preset is not None:
-            return self.position_cost_short - self.last_price * self.volume_short * self.market_preset.get('unit_table', 1)
+            return self.position_cost_short - self.last_price * self.volume_short * self.market_preset.get(
+                'unit_table',
+                1
+            )
 
     @property
     def position_profit(self):
@@ -258,25 +340,54 @@ class QA_Position():
         }
 
     def order_check(self, amount: float, price: float, towards: int) -> bool:
-        if towards == ORDER_DIRECTION.BUY_CLOSE and (self.volume_short - self.volume_short_frozen) > amount:
-            # check
-            self.volume_short_frozen_today += amount
-            return True
+        res = False
+        if towards == ORDER_DIRECTION.BUY_CLOSE:
+            print('buyclose')
+            print(self.volume_short - self.volume_short_frozen)
+            print(amount)
+            if (self.volume_short - self.volume_short_frozen) >= amount:
+                # check
+                self.volume_short_frozen_today += amount
+                res = True
 
-        elif towards == ORDER_DIRECTION.BUY_CLOSETODAY and (self.volume_short_today - self.volume_short_frozen_today) > amount:
+        elif towards == ORDER_DIRECTION.BUY_CLOSETODAY and (
+                self.volume_short_today -
+                self.volume_short_frozen_today) >= amount:
             self.volume_short_frozen_today += amount
-            return True
+            res = True
 
-        elif towards == ORDER_DIRECTION.SELL_CLOSE and (self.volume_long - self.volume_long_frozen) > amount:
+        elif towards == ORDER_DIRECTION.SELL_CLOSE:
+            print('sellclose')
+            print(self.volume_long - self.volume_long_frozen)
+            print(amount)
+            if (self.volume_long - self.volume_long_frozen) >= amount:
+                self.volume_long_frozen_today += amount
+                res = True
+
+        elif towards == ORDER_DIRECTION.SELL_CLOSETODAY and (
+                self.volume_long_today -
+                self.volume_short_frozen_today) >= amount:
+            print('sellclosetoday')
+            print(self.volume_long_today - self.volume_long_frozen)
+            print(amount)
             self.volume_long_frozen_today += amount
             return True
+        elif towards in [ORDER_DIRECTION.BUY_OPEN,
+                         ORDER_DIRECTION.SELL_OPEN,
+                         ORDER_DIRECTION.BUY]:
+            """
+            冻结的保证金
+            """
+            moneyneed = float(amount) * float(price) * float(
+                self.market_preset.get('unit_table',
+                                       1)
+            ) * float(self.market_preset.get('buy_frozen_coeff',
+                                             1))
+            if self.moneypresetLeft > moneyneed:
+                self.moneypresetLeft -= moneyneed
+                res = True
 
-        elif towards == ORDER_DIRECTION.SELL_CLOSETODAY and (self.volume_long_today - self.volume_short_frozen_today) > amount:
-            self.volume_long_frozen_today += amount
-            return True
-
-        else:
-            return False
+        return res
 
     def send_order(self, amount: float, price: float, towards: int):
         if self.order_check(amount, price, towards):
@@ -288,7 +399,7 @@ class QA_Position():
                 'instrument_id': self.code,
                 'towards': int(towards),
                 'exchange_id': str(self.exchange_id),
-                'order_time': str(datetime.datetime.now()),
+                'order_time': str(self.time),
                 'volume': float(amount),
                 'price': float(price),
                 'order_id': str(uuid.uuid4())
@@ -319,9 +430,10 @@ class QA_Position():
             position_profit_long: 0
             position_profit_short: -200
         """
-        temp_cost = amount*price * \
-            self.market_preset.get('unit_table', 1)
-        # if towards == ORDER_DIRECTION.SELL_CLOSE:
+
+        temp_cost = float(amount)*float(price) * \
+            float(self.market_preset.get('unit_table', 1))
+
         if towards == ORDER_DIRECTION.BUY:
             # 股票模式/ 期货买入开仓
             self.volume_long_today += amount
@@ -334,30 +446,54 @@ class QA_Position():
         elif towards == ORDER_DIRECTION.BUY_OPEN:
 
             # 增加保证金
-            self.margin_long += temp_cost * \
+            temp_margin = temp_cost * \
                 self.market_preset['buy_frozen_coeff']
+            self.margin_long += temp_margin
             # 重算开仓均价
             self.open_price_long = (
-                self.open_price_long * self.volume_long + amount*price) / (amount + self.volume_long)
+                self.open_price_long * self.volume_long + amount * price
+            ) / (
+                amount + self.volume_long
+            )
             # 重算持仓均价
             self.position_price_long = (
-                self.position_price_long * self.volume_long + amount * price) / (amount + self.volume_long)
+                self.position_price_long * self.volume_long + amount * price
+            ) / (
+                amount + self.volume_long
+            )
             # 增加今仓数量 ==> 会自动增加volume_long
             self.volume_long_today += amount
             #
             self.open_cost_long += temp_cost
+            self.position_cost_long += temp_cost
+            self.moneypresetLeft -= temp_margin
 
         elif towards == ORDER_DIRECTION.SELL_OPEN:
             # 增加保证金
+            """
+            1. 增加卖空保证金
+            2. 重新计算 开仓成本
+            3. 重新计算 持仓成本
+            4. 增加开仓cost
+            5. 增加持仓cost
+            6. 增加空单仓位
+            """
 
             self.margin_short += temp_cost * \
                 self.market_preset['sell_frozen_coeff']
             # 重新计算开仓/持仓成本
             self.open_price_short = (
-                self.open_price_short * self.volume_short + amount*price) / (amount + self.volume_short)
+                self.open_price_short * self.volume_short + amount * price
+            ) / (
+                amount + self.volume_short
+            )
             self.position_price_short = (
-                self.position_price_short * self.volume_short + amount * price) / (amount + self.volume_short)
+                self.position_price_short * self.volume_short + amount * price
+            ) / (
+                amount + self.volume_short
+            )
             self.open_cost_short += temp_cost
+            self.position_cost_short += temp_cost
             self.volume_short_today += amount
 
         elif towards == ORDER_DIRECTION.BUY_CLOSETODAY:
@@ -367,9 +503,11 @@ class QA_Position():
                 self.open_cost_short = self.open_cost_short * \
                     (self.volume_short-amount)/self.volume_short
                 self.volume_short_today -= amount
+                self.volume_short_frozen_today += amount
                 # close_profit = (self.position_price_short - price) * volume * position->ins->volume_multiple;
-
-                #self.volume_short_frozen_today += amount
+                marginValue = temp_cost * self.market_preset['buy_frozen_coeff']
+                profit = (self.position_price_short - price
+                         ) * amount * self.market_preset.get('unit_table')
                 # 释放保证金
                 # TODO
                 # self.margin_short
@@ -382,6 +520,7 @@ class QA_Position():
                 self.open_cost_long = self.open_cost_long * \
                     (self.volume_long-amount)/self.volume_long
                 self.volume_long_today -= amount
+                self.volume_long_frozen_today += amount
 
         elif towards == ORDER_DIRECTION.BUY_CLOSE:
             # 有昨仓先平昨仓
@@ -394,6 +533,7 @@ class QA_Position():
             else:
                 self.volume_short_today -= (amount - self.volume_short_his)
                 self.volume_short_his = 0
+            self.volume_short_frozen_today -= amount
         elif towards == ORDER_DIRECTION.SELL_CLOSE:
             # 有昨仓先平昨仓
             self.position_cost_long = self.position_cost_long * \
@@ -404,8 +544,8 @@ class QA_Position():
                 self.volume_long_his -= amount
             else:
                 self.volume_long_today -= (amount - self.volume_long_his)
-                self.volume_long_his -= amount
-
+                self.volume_long_his = 0
+            self.volume_long_frozen_today -= amount
         # 计算收益/成本
 
     def settle(self):
@@ -447,12 +587,31 @@ class QA_Position():
         pass
 
     def on_order(self, order: QA_Order):
-        # self.update_pos(order.)
         pass
 
     def on_transaction(self, transaction: dict):
-        self.update_pos(
-            transaction['price'], transaction['amount'], transaction['towards'])
+        towards = transaction.get(
+            'towards',
+            eval(
+                'ORDER_DIRECTION.{}_{}'.format(
+                    transaction.get('direction'),
+                    transaction.get('offset')
+                )
+            )
+        )
+        #TODO:
+        #在这里可以加入更多关于PMS交易的代码
+        try:
+            self.update_pos(
+                transaction['price'],
+                transaction.get('amount',
+                                transaction.get('volume')),
+                towards
+            )
+        except Exception as e:
+            raise e
+
+        print(self.static_message)
 
     def on_pirce_change(self, price):
         self.last_price = price
@@ -488,6 +647,7 @@ class QA_Position():
 
 
 class QA_PMS():
+
     def __init__(self, init_position=None):
         self.pms = {}
 
@@ -565,6 +725,14 @@ if __name__ == "__main__":
     pos.on_pirce_change(4193)
     print(pos.realtime_message)
     print(pos.static_message)
+    pos.on_transaction(
+        {
+            'direction': 'SELL',
+            'offset': 'OPEN',
+            'price': 3678,
+            'volume': 1
+        }
+    )
 
     print('STOCK TEST')
 
