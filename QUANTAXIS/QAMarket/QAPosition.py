@@ -349,13 +349,15 @@ class QA_Position():
                 # check
                 self.volume_short_frozen_today += amount
                 res = True
+            else:
+                print('BUYCLOSE 仓位不足')
 
-        elif towards == ORDER_DIRECTION.BUY_CLOSETODAY and (
-                self.volume_short_today -
-                self.volume_short_frozen_today) >= amount:
-            self.volume_short_frozen_today += amount
-            res = True
-
+        elif towards == ORDER_DIRECTION.BUY_CLOSETODAY:
+            if (self.volume_short_today - self.volume_short_frozen_today) >= amount:
+                self.volume_short_frozen_today += amount
+                res = True
+            else:
+                print('BUYCLOSETODAY 今日仓位不足')
         elif towards == ORDER_DIRECTION.SELL_CLOSE:
             print('sellclose')
             print(self.volume_long - self.volume_long_frozen)
@@ -363,15 +365,18 @@ class QA_Position():
             if (self.volume_long - self.volume_long_frozen) >= amount:
                 self.volume_long_frozen_today += amount
                 res = True
+            else:
+                print('SELL CLOSE 仓位不足')
 
-        elif towards == ORDER_DIRECTION.SELL_CLOSETODAY and (
-                self.volume_long_today -
-                self.volume_short_frozen_today) >= amount:
-            print('sellclosetoday')
-            print(self.volume_long_today - self.volume_long_frozen)
-            print(amount)
-            self.volume_long_frozen_today += amount
-            return True
+        elif towards == ORDER_DIRECTION.SELL_CLOSETODAY:
+            if (self.volume_long_today - self.volume_short_frozen_today) >= amount:
+                print('sellclosetoday')
+                print(self.volume_long_today - self.volume_long_frozen)
+                print(amount)
+                self.volume_long_frozen_today += amount
+                return True
+            else:
+                print('SELLCLOSETODAY 今日仓位不足')
         elif towards in [ORDER_DIRECTION.BUY_OPEN,
                          ORDER_DIRECTION.SELL_OPEN,
                          ORDER_DIRECTION.BUY]:
@@ -386,6 +391,8 @@ class QA_Position():
             if self.moneypresetLeft > moneyneed:
                 self.moneypresetLeft -= moneyneed
                 res = True
+            else:
+                print('开仓保证金不足')
 
         return res
 
