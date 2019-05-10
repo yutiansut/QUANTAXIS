@@ -157,7 +157,7 @@ class QA_Position():
 
     def read_diff(self, diff_slice):
         """[summary]
-        
+
         Arguments:
             diff_slice {dict} -- [description]
 
@@ -392,7 +392,8 @@ class QA_Position():
                 self.moneypresetLeft -= moneyneed
                 res = True
             else:
-                print('开仓保证金不足')
+                print('开仓保证金不足 TOWARDS{} Need{} HAVE{}'.format(
+                    towards, moneyneed, self.moneypresetLeft))
 
         return res
 
@@ -512,9 +513,10 @@ class QA_Position():
                 self.volume_short_today -= amount
                 self.volume_short_frozen_today += amount
                 # close_profit = (self.position_price_short - price) * volume * position->ins->volume_multiple;
-                marginValue = temp_cost * self.market_preset['buy_frozen_coeff']
+                marginValue = temp_cost * \
+                    self.market_preset['buy_frozen_coeff']
                 profit = (self.position_price_short - price
-                         ) * amount * self.market_preset.get('unit_table')
+                          ) * amount * self.market_preset.get('unit_table')
                 # 释放保证金
                 # TODO
                 # self.margin_short
@@ -606,8 +608,8 @@ class QA_Position():
                 )
             )
         )
-        #TODO:
-        #在这里可以加入更多关于PMS交易的代码
+        # TODO:
+        # 在这里可以加入更多关于PMS交易的代码
         try:
             self.update_pos(
                 transaction['price'],
