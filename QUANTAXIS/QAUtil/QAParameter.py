@@ -55,6 +55,14 @@ class ORDER_DIRECTION():
     OTHER = 6
 
 
+class EXCHANGE_ID():
+    SSE = 'sse' #上交所
+    SZSE = 'szse' #深交所
+    SHFE = 'shfe' # 上期所
+    DCE = 'dce' #大商所
+    CZCE = 'czce' #郑商所
+    CFFEX = 'cffex' #中金所
+
 class OFFSET():
     """订单的开平仓属性
     OPEN 股票/期货 开仓
@@ -152,6 +160,7 @@ class RUNNING_ENVIRONMENT():
     TZERO = 't0'
     REAL = 'real'
     RANDOM = 'random'
+    TTS='tts'
 
 
 class TRADE_STATUS():
@@ -228,6 +237,7 @@ class BROKER_TYPE():
     REAL = 'real'
     RANDOM = 'random'
     SHIPANE = 'shipane'
+    TTS = 'tts'
 
 
 class EVENT_TYPE():
@@ -266,9 +276,13 @@ class ENGINE_EVENT():
     """引擎事件"""
     MARKET_INIT = 'market_init'
     UPCOMING_DATA = 'upcoming_data'
+    UPCOMING_TICK = 'upcoming_tick'
+    UPCOMING_BAR = 'upcoming_bar'
     BAR_SETTLE = 'bar_settle'
     DAILY_SETTLE = 'daily_settle'
     UPDATE = 'update'
+    TRANSACTION = 'transaction'
+    ORDER = 'order'
 
 
 class ACCOUNT_EVENT():
@@ -293,6 +307,7 @@ class BROKER_EVENT():
     DAILY_SETTLE = 'broker_dailysettle'
     RECEIVE_ORDER = 'receive_order'
     QUERY_DEAL = 'query_deal'
+    NEXT_TRADEDAY = 'next_tradeday'
 
 
 class ORDER_EVENT():
@@ -306,7 +321,8 @@ class ORDER_EVENT():
     CREATE = 'create'
     TRADE = 'trade'
     CANCEL = 'cancel'
-
+    FAIL = 'fail'
+    
 
 class FREQUENCE():
     """查询的级别
@@ -327,6 +343,7 @@ class FREQUENCE():
     SIXTY_MIN = '60min'  # 60min bar
     CURRENT = 'current'  # 当前bar
     TICK = 'tick'  # transaction
+    REALTIME = 'realtime' # 上下五档/一档
 
 
 class CURRENCY_TYPE():

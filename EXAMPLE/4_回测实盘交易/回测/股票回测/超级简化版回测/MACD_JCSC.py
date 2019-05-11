@@ -27,13 +27,17 @@ def MACD_JCSC(dataframe, SHORT=12, LONG=26, M=9):
 
 
 # create account
-Account = QA.QA_Account()
+user = QA.QA_User(username='quantaxis', password='quantaxis')
+portfolio = user.new_portfolio('qatestportfolio')
+
+
+Account = portfolio.new_account(account_cookie='macd_stock', init_cash=1000000)
 Broker = QA.QA_BacktestBroker()
 
-Account.reset_assets(1000000)
-Account.account_cookie = 'macd_stock'
 QA.QA_SU_save_strategy('MACD_JCSC','Indicator',Account.account_cookie)
 # get data from mongodb
+QA.QA_SU_save_strategy('MACD_JCSC', 'Indicator',
+                       Account.account_cookie, if_save=True)
 data = QA.QA_fetch_stock_day_adv(
     ['000001', '000002', '000004', '600000'], '2017-09-01', '2018-05-20')
 data = data.to_qfq()

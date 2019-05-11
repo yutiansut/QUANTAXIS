@@ -35,9 +35,17 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
 
 class QA_Thread(threading.Thread):
     '''
-        '这是一个随意新建线程的生产者消费者模型'
-        其实有个队列， 队列中保存的是 QA_Task 对象 ， callback 很重要，指定任务的时候可以绑定 函数执行
-        QA_Engine 继承这个类。
+    这是一个随意新建线程的生产者消费者模型'
+    其实有个队列， 队列中保存的是 QA_Task 对象 ， callback 很重要，指定任务的时候可以绑定 函数执行
+    QA_Engine 继承这个类。
+
+    自带一个Queue
+    有 self.put/ self.put_nowait/ self.get/ self.get_nowait 4个关于queue的方法        
+
+    如果你重写了run方法:
+    则你需要自行处理queue中的事情/简单的做你自己的逻辑
+
+
     '''
 
     def __init__(self, queue=None, name=None, daemon=False):
@@ -110,11 +118,11 @@ class QA_Thread(threading.Thread):
     def put_nowait(self, task):
         self.queue.put_nowait(task)
 
-    def get(self, task):
-        return self.get(task)
+    def get(self):
+        return self.queue.get()
 
-    def get_nowait(self, task):
-        return self.get_nowait(task)
+    def get_nowait(self):
+        return self.queue.get_nowait()
 
     def qsize(self):
         return self.queue.qsize()
@@ -241,10 +249,16 @@ class QA_Engine(QA_Thread):
         return res
 
     def join(self):
+        print(self.kernels_dict)
+        
         for item in self.kernels_dict.values():
+            print(item)
+            print(item.queue.qsize())
             item.queue.join()
         self.queue.join()
 
+    def join_single(self, kernel):
+        self.kernels_dict[kernel].queue.join()
 
 if __name__ == '__main__':
     import queue
