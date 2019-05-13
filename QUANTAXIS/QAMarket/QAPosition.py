@@ -99,7 +99,7 @@ class QA_Position():
                  trades=[],
                  orders=[],
                  name=None,
-                 if_reload=False,
+                 auto_reload=False,
                  *args,
                  **kwargs
 
@@ -162,7 +162,7 @@ class QA_Position():
         self.last_price = 0
         self.trades = trades
         self.orders = orders
-        if if_reload:
+        if auto_reload:
             self.save()
 
     def __repr__(self):
