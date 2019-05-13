@@ -105,7 +105,7 @@ class QA_Position():
         self.market_preset = MARKET_PRESET().get_code(self.code)
         self.position_id = str(uuid.uuid4()) if position_id is None else position_id
         self.moneypreset = moneypreset
-        self.moneypresetLeft = self.moneypreset if moneypreset is None else moneypresetLeft
+        self.moneypresetLeft = self.moneypreset if moneypresetLeft is None else moneypresetLeft
         """{'name': '原油',
             'unit_table': 1000,
             'price_tick': 0.1,
