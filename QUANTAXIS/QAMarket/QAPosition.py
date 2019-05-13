@@ -10,6 +10,7 @@ from QUANTAXIS.QAUtil.QAParameter import (
     ORDER_DIRECTION
 )
 from QUANTAXIS.QASU.save_position import save_position
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 
 
 class QA_Position():
@@ -98,6 +99,7 @@ class QA_Position():
                  trades=[],
                  orders=[],
                  name=None,
+                 if_reload=False,
                  *args,
                  **kwargs
 
@@ -160,6 +162,8 @@ class QA_Position():
         self.last_price = 0
         self.trades = trades
         self.orders = orders
+        if if_reload:
+            self.save()
 
     def __repr__(self):
         return '< QAPOSITION {} amount {}/{} >'.format(
@@ -642,7 +646,19 @@ class QA_Position():
         print(self.static_message)
         save_position(self.static_message)
 
-    def reload(self, message):
+    def reload(self):
+        res = DATABASE.positions.find_one({
+            'account_cookie': self.account_cookie,
+            'portfolio_coookie': self.portfolio_cookie,
+            'user_cookie': self.user_cookie,
+            'position_id': self.position_id
+        })
+        if res is None:
+            self.save()
+        else:
+            self.loadfrommessage(res)
+
+    def loadfrommessage(self, message):
         self.__init__(
             code=message['code'],
             account_cookie=message['account_cookie'],
