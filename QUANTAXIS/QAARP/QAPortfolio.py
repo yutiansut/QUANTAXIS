@@ -270,7 +270,7 @@ class QA_Portfolio(QA_Account):
                     return temp
 
                 else:
-                    return self.new_account()
+                    return self.new_accountpro()
         else:
             if self.cash_available >= init_cash:
                 if account_cookie not in self.account_list:
@@ -289,7 +289,12 @@ class QA_Portfolio(QA_Account):
                     self.cash.append(self.cash_available - init_cash)
                     return acc
                 else:
-                    return self.get_account_by_cookie(account_cookie)
+                    return QA_AccountPRO(
+                        account_cookie=cookie,
+                        user_cookie=self.user_cookie,
+                        portfolio_cookie=self.portfolio_cookie,
+                        auto_reload=True
+                    )
 
     def new_account(
             self,
