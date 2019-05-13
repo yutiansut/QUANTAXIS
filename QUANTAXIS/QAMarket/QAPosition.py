@@ -631,9 +631,7 @@ class QA_Position():
         save_position(self.static_message)
 
     def reload(self, message):
-        return self.__init__(
-
-        )
+        return self.__init__(message)
 
     def on_order(self, order: QA_Order):
         pass
