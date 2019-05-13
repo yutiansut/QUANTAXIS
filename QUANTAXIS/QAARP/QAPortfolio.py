@@ -27,6 +27,7 @@ from functools import lru_cache
 import pandas as pd
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAARP.QAAccountPro import QA_AccountPRO
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAUtil import (
     DATABASE,
@@ -226,6 +227,69 @@ class QA_Portfolio(QA_Account):
             raise RuntimeError(
                 'account {} is not in the portfolio'.format(account_cookie)
             )
+
+    def new_accountpro(
+            self,
+            account_cookie=None,
+            init_cash=1000000,
+            market_type=MARKET_TYPE.STOCK_CN,
+            *args,
+            **kwargs
+    ):
+        """创建一个新的Account
+
+        Keyword Arguments:
+            account_cookie {[type]} -- [description] (default: {None})
+
+        Returns:
+            [type] -- [description]
+        """
+
+        if account_cookie is None:
+            """创建新的account
+
+            Returns:
+                [type] -- [description]
+            """
+            # 如果组合的cash_available>创建新的account所需cash
+            if self.cash_available >= init_cash:
+
+                temp = QA_AccountPRO(
+                    user_cookie=self.user_cookie,
+                    portfolio_cookie=self.portfolio_cookie,
+                    init_cash=init_cash,
+                    market_type=market_type,
+                    *args,
+                    **kwargs
+                )
+                if temp.account_cookie not in self.account_list:
+                    #self.accounts[temp.account_cookie] = temp
+                    self.account_list.append(temp.account_cookie)
+                    temp.save()
+                    self.cash.append(self.cash_available - init_cash)
+                    return temp
+
+                else:
+                    return self.new_account()
+        else:
+            if self.cash_available >= init_cash:
+                if account_cookie not in self.account_list:
+
+                    acc = QA_AccountPRO(
+                        portfolio_cookie=self.portfolio_cookie,
+                        user_cookie=self.user_cookie,
+                        init_cash=init_cash,
+                        market_type=market_type,
+                        account_cookie=account_cookie,
+                        *args,
+                        **kwargs
+                    )
+                    acc.save()
+                    self.account_list.append(acc.account_cookie)
+                    self.cash.append(self.cash_available - init_cash)
+                    return acc
+                else:
+                    return self.get_account_by_cookie(account_cookie)
 
     def new_account(
             self,
