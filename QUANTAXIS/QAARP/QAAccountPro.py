@@ -60,7 +60,7 @@ from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 
 # pylint: disable=old-style-class, too-few-public-methods
-class QA_Account(QA_Worker):
+class QA_AccountPRO(QA_Worker):
     """QA_Account
 
     QAAccount
