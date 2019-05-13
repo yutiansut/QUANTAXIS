@@ -19,7 +19,7 @@ def save_position(message, collection=DATABASE.positions):
     except:
         pass
     collection.update(
-        {'account_cookie': message['account_cookie'], 'position_id': message['position_id'],
+        {'account_cookie': message['account_cookie'], 'position_id': message['position_id']},
         {'$set': message},
         upsert=True
     )
