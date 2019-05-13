@@ -58,11 +58,15 @@ class QA_Position():
 
     PMS 内部可以预分配一个资金限额, 方便pms实时计算属于PMS的收益
 
+    兼容QA_Account的创建/拆入Positions库
+
     """
 
     def __init__(self,
                  code='000001',
                  account_cookie='quantaxis',
+                 portfolio_cookie='portfolio',
+                 user_cookie='quantaxis',
                  moneypreset=100000,  # 初始分配资金
                  moneypresetLeft=None,
                  volume_long_today=0,
@@ -87,12 +91,12 @@ class QA_Position():
                  open_cost_short=0,
                  position_cost_long=0,
                  position_cost_short=0,
-                 position_id = None,
+                 position_id=None,
 
                  market_type=MARKET_TYPE.STOCK_CN,
                  exchange_id=EXCHANGE_ID.SZSE,
-                 trades = [],
-                 orders = [],
+                 trades=[],
+                 orders=[],
                  name=None,
                  *args,
                  **kwargs
@@ -101,9 +105,12 @@ class QA_Position():
 
         self.code = code
         self.account_cookie = account_cookie
+        self.portfolio_cookie = portfolio_cookie
+        self.user_cookie = user_cookie
         self.time = ''
         self.market_preset = MARKET_PRESET().get_code(self.code)
-        self.position_id = str(uuid.uuid4()) if position_id is None else position_id
+        self.position_id = str(
+            uuid.uuid4()) if position_id is None else position_id
         self.moneypreset = moneypreset
         self.moneypresetLeft = self.moneypreset if moneypresetLeft is None else moneypresetLeft
         """{'name': '原油',
@@ -295,6 +302,8 @@ class QA_Position():
             'code': self.code,  # 品种名称
             'instrument_id': self.code,
             'user_id': self.account_cookie,
+            'portfolio_cookie': self.portfolio_cookie,
+            'user_cookie'： self.user_cookie,
             'position_id': self.position_id,
             'account_cookie': self.account_cookie,
             'name': self.name,
@@ -414,7 +423,7 @@ class QA_Position():
         if self.order_check(amount, price, towards):
             print('order check success')
 
-            order ={
+            order = {
                 'position_id': str(self.position_id),
                 'account_cookie': self.account_cookie,
                 'instrument_id': self.code,
@@ -637,6 +646,8 @@ class QA_Position():
         self.__init__(
             code=message['code'],
             account_cookie=message['account_cookie'],
+            portfolio_cookie=message['portfolio_cookie'],
+            user_cookie=message['user_cookie'],
             moneypreset=message['moneypreset'],  # 初始分配资金
             moneypresetLeft=message['moneypresetLeft'],
             volume_long_today=message['volume_long_today'],
@@ -654,19 +665,21 @@ class QA_Position():
 
             open_price_long=message['open_price_long'],
             open_price_short=message['open_price_short'],
-            position_price_long=message['position_price_long'],  # 逐日盯市的前一交易日的结算价
-            position_price_short=message['position_price_short'],  # 逐日盯市的前一交易日的结算价
+            # 逐日盯市的前一交易日的结算价
+            position_price_long=message['position_price_long'],
+            # 逐日盯市的前一交易日的结算价
+            position_price_short=message['position_price_short'],
 
             open_cost_long=message['open_cost_long'],
             open_cost_short=message['open_cost_short'],
             position_cost_long=message['position_cost_long'],
             position_cost_short=message['position_cost_short'],
-            position_id = message['position_id'],
+            position_id=message['position_id'],
 
             market_type=message['market_type'],
             exchange_id=message['exchange_id'],
-            trades = message['trades'],
-            orders = message['orders'],
+            trades=message['trades'],
+            orders=message['orders'],
             name=message['name'])
 
         return self
