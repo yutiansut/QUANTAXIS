@@ -290,7 +290,7 @@ class QA_Portfolio(QA_Account):
                     return acc
                 else:
                     return QA_AccountPRO(
-                        account_cookie=cookie,
+                        account_cookie=account_cookie,
                         user_cookie=self.user_cookie,
                         portfolio_cookie=self.portfolio_cookie,
                         auto_reload=True

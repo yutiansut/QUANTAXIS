@@ -671,9 +671,9 @@ class QA_AccountPRO(QA_Worker):
 
     def create_position(self, code, money_preset):
         if self.cash_available > money_preset:
-            pos = QA_Position(code=code, money_preset=money_preset)
+            pos = QA_Position(code=code, money_preset=money_preset,user_cookie=self.user_cookie,portfolio_cookie=self.portfolio_cookie,account_cookie=self.account_cookie, auto_reload=True)
             self.pms[pos.position_id] = pos
-            self.cash.append[self.cash - money_preset]
+            self.cash.append(self.cash[-1] - money_preset)
             self.cash_available = self.cash[-1]
             return pos
         else:
