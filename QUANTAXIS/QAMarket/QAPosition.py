@@ -9,6 +9,7 @@ from QUANTAXIS.QAUtil.QAParameter import (
     MARKET_TYPE,
     ORDER_DIRECTION
 )
+from QUANTAXIS.QASU.save_position import save_position
 
 
 class QA_Position():
@@ -85,9 +86,12 @@ class QA_Position():
                  open_cost_short=0,
                  position_cost_long=0,
                  position_cost_short=0,
+                 position_id = None,
 
                  market_type=MARKET_TYPE.STOCK_CN,
                  exchange_id=EXCHANGE_ID.SZSE,
+                 trades = [],
+                 orders = [],
                  name=None,
                  *args,
                  **kwargs
@@ -98,7 +102,7 @@ class QA_Position():
         self.account_cookie = account_cookie
         self.time = ''
         self.market_preset = MARKET_PRESET().get_code(self.code)
-        self.position_id = str(uuid.uuid4())
+        self.position_id = str(uuid.uuid4()) if position_id is None else position_id
         self.moneypreset = moneypreset
         self.moneypresetLeft = self.moneypreset
         """{'name': '原油',
@@ -146,7 +150,8 @@ class QA_Position():
             self.volume_short*self.market_preset.get('unit_table', 1)
 
         self.last_price = 0
-        self.trades = {}
+        self.trades = trades
+        self.orders = orders
 
     def __repr__(self):
         return '< QAPOSITION {} amount {}/{} >'.format(
@@ -289,6 +294,8 @@ class QA_Position():
             'code': self.code,  # 品种名称
             'instrument_id': self.code,
             'user_id': self.account_cookie,
+            'position_id': self.position_id,
+            'account_cookie': self.account_cookie,
             'name': self.name,
             'market_type': self.market_type,
             'exchange_id': self.exchange_id,  # 交易所ID
@@ -319,7 +326,10 @@ class QA_Position():
             'open_price_long': self.open_price_long,  # 多头开仓价
             'open_cost_long': self.open_cost_long,  # 多头开仓成本
             'open_price_short': self.open_price_short,  # 空头开仓价
-            'open_cost_short': self.open_cost_short  # 空头成本
+            'open_cost_short': self.open_cost_short,  # 空头成本
+            # 历史字段
+            'trades': self.trades,
+            'orders': self.orders
         }
 
     @property
@@ -401,7 +411,7 @@ class QA_Position():
         if self.order_check(amount, price, towards):
             print('order check success')
 
-            return {
+            order ={
                 'position_id': str(self.position_id),
                 'account_cookie': self.account_cookie,
                 'instrument_id': self.code,
@@ -412,6 +422,8 @@ class QA_Position():
                 'price': float(price),
                 'order_id': str(uuid.uuid4())
             }
+            self.orders.append(order)
+            return order
         else:
             return RuntimeError('ORDER CHECK FALSE: {}'.format(self.code))
 
@@ -611,10 +623,17 @@ class QA_Position():
         self.moneypreset = money
 
     def save(self):
-        pass
+        """save&update
 
-    def reload(self):
-        pass
+        save data to mongodb | update
+        """
+        print(self.static_message)
+        save_position(self.static_message)
+
+    def reload(self, message):
+        return self.__init__(
+
+        )
 
     def on_order(self, order: QA_Order):
         pass
@@ -629,6 +648,7 @@ class QA_Position():
                 )
             )
         )
+        transaction['towards'] = towards
         # TODO:
         # 在这里可以加入更多关于PMS交易的代码
         try:
@@ -638,10 +658,9 @@ class QA_Position():
                                 transaction.get('volume')),
                 towards
             )
+            self.trades.append(transaction)
         except Exception as e:
             raise e
-
-        print(self.static_message)
 
     def on_pirce_change(self, price):
         self.last_price = price
