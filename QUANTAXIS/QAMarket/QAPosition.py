@@ -64,6 +64,7 @@ class QA_Position():
                  code='000001',
                  account_cookie='quantaxis',
                  moneypreset=100000,  # 初始分配资金
+                 moneypresetLeft=None,
                  volume_long_today=0,
                  volume_long_his=0,
                  volume_short_today=0,
@@ -104,7 +105,7 @@ class QA_Position():
         self.market_preset = MARKET_PRESET().get_code(self.code)
         self.position_id = str(uuid.uuid4()) if position_id is None else position_id
         self.moneypreset = moneypreset
-        self.moneypresetLeft = self.moneypreset
+        self.moneypresetLeft = self.moneypreset if moneypreset is None else moneypresetLeft
         """{'name': '原油',
             'unit_table': 1000,
             'price_tick': 0.1,
@@ -299,6 +300,8 @@ class QA_Position():
             'name': self.name,
             'market_type': self.market_type,
             'exchange_id': self.exchange_id,  # 交易所ID
+            'moneypreset': self.moneypreset,
+            'moneypresetLeft': self.moneypresetLeft,
             # 持仓量
             'volume_long_today': self.volume_long_today,
             'volume_long_his': self.volume_long_his,
@@ -631,7 +634,40 @@ class QA_Position():
         save_position(self.static_message)
 
     def reload(self, message):
-        return self.__init__(message)
+        return self.__init__(
+            code=message['code'],
+            account_cookie=message['account_cookie'],
+            moneypreset=message['moneypreset'],  # 初始分配资金
+            moneypresetLeft=message['moneypresetLeft']
+            volume_long_today=message['value_long_today'],
+            volume_long_his=message['volume_long_his'],
+            volume_short_today=message['volume_short_today'],
+            volume_short_his=message['volume_short_his'],
+
+            volume_long_frozen_his=message['volume_long_frozen_his'],
+            volume_long_frozen_today=message['volume_long_frozen_today'],
+            volume_short_frozen_his=message['volume_short_frozen_his'],
+            volume_short_frozen_today=message['volume_short_frozen_today'],
+
+            margin_long=message['margin_long'],
+            margin_short=message['margin_short'],
+
+            open_price_long=message['open_price_long'],
+            open_price_short=message['open_price_short'],
+            position_price_long=message['position_price_long'],  # 逐日盯市的前一交易日的结算价
+            position_price_short=message['position_price_short'],  # 逐日盯市的前一交易日的结算价
+
+            open_cost_long=message['open_cost_long'],
+            open_cost_short=message['open_cost_short'],
+            position_cost_long=message['position_cost_long'],
+            position_cost_short=message['position_cost_short'],
+            position_id = message['position_id'],
+
+            market_type=message['market_type'],
+            exchange_id=message['exchange_id'],
+            trades = message['trades'],
+            orders = message['orders'],
+            name=message['name'])
 
     def on_order(self, order: QA_Order):
         pass
