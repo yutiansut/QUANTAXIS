@@ -303,7 +303,7 @@ class QA_Position():
             'instrument_id': self.code,
             'user_id': self.account_cookie,
             'portfolio_cookie': self.portfolio_cookie,
-            'user_cookie'： self.user_cookie,
+            'user_cookie': self.user_cookie,
             'position_id': self.position_id,
             'account_cookie': self.account_cookie,
             'name': self.name,
