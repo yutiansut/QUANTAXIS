@@ -682,7 +682,7 @@ class QA_Account(QA_Worker):
     def get_position(self, position_id):
         return self.pms.get(position_id, None)
 
-        
+
 
     @property
     def hold(self):
@@ -1151,15 +1151,6 @@ class QA_Account(QA_Worker):
             self.cash_available = self.cash[-1]
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
 
-    @property
-    def node_view(self):
-        return {
-            'node_name': self.account_cookie,
-            'strategy_name': self.strategy_name,
-            'cash_available': self.cash_available,
-            'history': self.history
-        }
-
     def receive_deal(
             self,
             code: str,
@@ -1201,9 +1192,16 @@ class QA_Account(QA_Worker):
 
         market_towards = 1 if trade_towards > 0 else -1
         """2019/01/03 直接使用快速撮合接口了
-        2333 这两个接口现在也没啥区别了....
-        太绝望了
+        2019/05/13 使用 PMS来更新成交记录
         """
+        self.pms[self.oms[order_id]['positon_id']].on_transaction(
+            {'towards': trade_towards,
+            'code': code, 
+            'trade_id': trade_id,
+            'amount': trade_amount,
+            'time': trade_time,
+            'price': trade_price}
+        )
 
         self.receive_simpledeal(
             code,
