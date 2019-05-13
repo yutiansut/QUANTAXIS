@@ -357,7 +357,7 @@ class QA_AccountPRO(QA_Worker):
             self.reload()
 
     def __repr__(self):
-        return '< QA_Account {} market: {}>'.format(
+        return '< QA_AccountPRO {} market: {}>'.format(
             self.account_cookie,
             self.market_type
         )
