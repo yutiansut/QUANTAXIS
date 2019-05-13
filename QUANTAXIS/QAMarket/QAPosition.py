@@ -634,12 +634,12 @@ class QA_Position():
         save_position(self.static_message)
 
     def reload(self, message):
-        return self.__init__(
+        self.__init__(
             code=message['code'],
             account_cookie=message['account_cookie'],
             moneypreset=message['moneypreset'],  # 初始分配资金
-            moneypresetLeft=message['moneypresetLeft']
-            volume_long_today=message['value_long_today'],
+            moneypresetLeft=message['moneypresetLeft'],
+            volume_long_today=message['volume_long_today'],
             volume_long_his=message['volume_long_his'],
             volume_short_today=message['volume_short_today'],
             volume_short_his=message['volume_short_his'],
@@ -668,6 +668,8 @@ class QA_Position():
             trades = message['trades'],
             orders = message['orders'],
             name=message['name'])
+
+        return self
 
     def on_order(self, order: QA_Order):
         pass
