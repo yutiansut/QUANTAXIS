@@ -221,11 +221,13 @@ class QA_Account(QA_Worker):
         'margin': 0
          }
 
-         当传入后, 我们依然要进行一些判断:
+        AccPro 使用QA_Position来创建仓位管理
 
-         1. 是否需要settle
+        - 当创建QA_Account的时候， 会从Positions库中查询并恢复新的Positions
+        - 当申请创建一个新的分区的时候，Account会扣减一个额度(money_preset) 体现在cash/history中
+        - 当删除一个poistion 释放额度
+        - 策略会写入相应的position分区
 
-         如果是当日传入 则不需要
         """
         super().__init__()
 
@@ -316,7 +318,7 @@ class QA_Account(QA_Worker):
         }                        # 日结算
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
-
+        self.pms = {}
         ########################################################################
         # 规则类
         # 1.是否允许t+0 及买入及结算
@@ -666,6 +668,21 @@ class QA_Account(QA_Worker):
                 结算过程 是为了补平(等于让hold={})
                 结算后: init_hold
         """
+
+    def create_position(self, code, money_preset):
+        if self.cash_available > money_preset:
+            pos = QA_Position(code=code, money_preset=money_preset)
+            self.pms[pos.position_id] = pos
+            self.cash.append[self.cash - money_preset]
+            self.cash_available = self.cash[-1]
+            return pos
+        else:
+            return False
+
+    def get_position(self, position_id):
+        return self.pms.get(position_id, None)
+
+        
 
     @property
     def hold(self):
