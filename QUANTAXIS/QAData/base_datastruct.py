@@ -33,7 +33,7 @@ from functools import lru_cache
 
 import numpy as np
 import pandas as pd
-from pyecharts import Kline, Bar, Grid
+from pyecharts.charts import Kline, Bar, Grid
 
 from QUANTAXIS.QAUtil import (
     QA_util_log_info,
