@@ -24,7 +24,7 @@
 import os
 import webbrowser
 
-from pyecharts import Kline
+from pyecharts.charts import Kline
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
