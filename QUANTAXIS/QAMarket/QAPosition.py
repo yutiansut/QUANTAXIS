@@ -667,7 +667,7 @@ class QA_Position():
         self.__init__(
             code=message['code'],
             account_cookie=message['account_cookie'],
-            frozen = message['frozen']
+            frozen = message['frozen'],
             portfolio_cookie=message['portfolio_cookie'],
             user_cookie=message['user_cookie'],
             moneypreset=message['moneypreset'],  # 初始分配资金
