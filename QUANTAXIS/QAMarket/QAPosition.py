@@ -365,7 +365,7 @@ class QA_Position():
             "position_profit": self.position_profit
         }
 
-    def order_check(self, amount: float, price: float, towards: int) -> bool:
+    def order_check(self, amount: float, price: float, towards: int, order_id: str) -> bool:
         res = False
         if towards == ORDER_DIRECTION.BUY_CLOSE:
             print('buyclose')
@@ -416,6 +416,7 @@ class QA_Position():
                                              1))
             if self.moneypresetLeft > moneyneed:
                 self.moneypresetLeft -= moneyneed
+                self.frozen[order_id] = moneyneed
                 res = True
             else:
                 print('开仓保证金不足 TOWARDS{} Need{} HAVE{}'.format(
@@ -424,7 +425,8 @@ class QA_Position():
         return res
 
     def send_order(self, amount: float, price: float, towards: int):
-        if self.order_check(amount, price, towards):
+        order_id = str(uuid.uuid4())
+        if self.order_check(amount, price, towards, order_id):
             print('order check success')
 
             order = {
@@ -436,7 +438,7 @@ class QA_Position():
                 'order_time': str(self.time),
                 'volume': float(amount),
                 'price': float(price),
-                'order_id': str(uuid.uuid4())
+                'order_id': order_id
             }
             self.orders.append(order)
             return order
@@ -723,6 +725,8 @@ class QA_Position():
                                 transaction.get('volume')),
                 towards
             )
+            self.moneypresetLeft+= self.frozen[transaction['order_id']]
+            self.frozen[transaction['order_id']] =0
             self.trades.append(transaction)
         except Exception as e:
             raise e
