@@ -69,6 +69,7 @@ class QA_Position():
                  portfolio_cookie='portfolio',
                  user_cookie='quantaxis',
                  moneypreset=100000,  # 初始分配资金
+                 frozen = {},
                  moneypresetLeft=None,
                  volume_long_today=0,
                  volume_long_his=0,
@@ -162,6 +163,7 @@ class QA_Position():
         self.last_price = 0
         self.trades = trades
         self.orders = orders
+        self.frozen = frozen
         if auto_reload:
             self.save()
 
@@ -310,6 +312,7 @@ class QA_Position():
             'user_cookie': self.user_cookie,
             'position_id': self.position_id,
             'account_cookie': self.account_cookie,
+            'frozen': self.frozen,
             'name': self.name,
             'market_type': self.market_type,
             'exchange_id': self.exchange_id,  # 交易所ID
@@ -664,6 +667,7 @@ class QA_Position():
         self.__init__(
             code=message['code'],
             account_cookie=message['account_cookie'],
+            frozen = message['frozen']
             portfolio_cookie=message['portfolio_cookie'],
             user_cookie=message['user_cookie'],
             moneypreset=message['moneypreset'],  # 初始分配资金
