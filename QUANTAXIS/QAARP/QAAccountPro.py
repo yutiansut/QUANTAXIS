@@ -56,8 +56,6 @@ from QUANTAXIS.QAUtil.QAParameter import (
 )
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
-
-
 # pylint: disable=old-style-class, too-few-public-methods
 class QA_AccountPRO(QA_Worker):
     """QA_Account
@@ -256,6 +254,13 @@ class QA_AccountPRO(QA_Worker):
             'frozen',  # 冻结资金.
             'direction'  # 方向
         ]
+        self._activity_headers = [
+            'datetime',
+            'activity',
+            'event',
+            ''
+        ]
+        self.activity = []
         ########################################################################
         # 信息类:
 
