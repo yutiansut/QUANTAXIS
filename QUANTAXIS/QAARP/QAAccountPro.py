@@ -56,7 +56,6 @@ from QUANTAXIS.QAUtil.QAParameter import (
 )
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
-# 2017/6/4修改: 去除总资产的动态权益计算
 
 
 # pylint: disable=old-style-class, too-few-public-methods
@@ -227,6 +226,14 @@ class QA_AccountPRO(QA_Worker):
         - 当申请创建一个新的分区的时候，Account会扣减一个额度(money_preset) 体现在cash/history中
         - 当删除一个poistion 释放额度
         - 策略会写入相应的position分区
+
+
+        |           AccPro                         |
+
+        |   MPMS  |     MPMS    | SPMS |  FREECASH |
+
+        | POS POS | POS POS POS |  POS |           |
+
 
         """
         super().__init__()
@@ -560,11 +567,7 @@ class QA_AccountPRO(QA_Worker):
             return list(res_['datetime'])
         else:
             return self.time_index_max
-#
-#        if self.start_date < str(min(self.time_index))[0:10] :
-#             return QA_util_get_trade_range(self.start_date, self.end_date)
-#        else:
-#            return QA_util_get_trade_range(str(min(self.time_index))[0:10], str(max(self.time_index))[0:10])
+
 
     @property
     def history_min(self):
@@ -588,19 +591,7 @@ class QA_AccountPRO(QA_Worker):
             data=self.history_min,
             columns=self._history_headers[:lens]
         ).sort_index()
-#    @property
-#    def history(self):
-#        if len(self.history_max):
-#            res_=pd.DataFrame(self.history_max)
-#            res_['date']=[ i[0:10]  for i in res_[0]]
-#            res_=res_[res_['date'].isin(self.trade_range)]
-#            return np.array(res_.drop(['date'],axis=1)).tolist()
-#        else:
-#            return self.history_max
-#        res_=pd.DataFrame(self.time_index_max)
-#        res_.columns=(['datetime'])
-#        res_['date']=[ i[0:10]  for i in res_['datetime']]
-#        res_=res_[res_['date'].isin(self.trade_range)]
+
 
     @property
     def trade_day(self):
@@ -1226,7 +1217,7 @@ class QA_AccountPRO(QA_Worker):
             order_model=None,
             amount_model=None,
             order_id=None,
-            pms_id=None,
+            position_id=None,
             *args,
             **kwargs
     ):
@@ -1426,7 +1417,7 @@ class QA_AccountPRO(QA_Worker):
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
-                pms_id=pms_id,
+                position_id=position_id,
                 order_id=order_id,
                 *args,
                 **kwargs
