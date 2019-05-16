@@ -10,6 +10,7 @@ from QUANTAXIS.QAUtil.QAParameter import (
     ORDER_DIRECTION
 )
 from QUANTAXIS.QASU.save_position import save_position
+from QUANTAXIS.QAUtil.QASetting import DATABASE
 
 
 class QA_Position():
@@ -58,12 +59,17 @@ class QA_Position():
 
     PMS 内部可以预分配一个资金限额, 方便pms实时计算属于PMS的收益
 
+    兼容QA_Account的创建/拆入Positions库
+
     """
 
     def __init__(self,
                  code='000001',
                  account_cookie='quantaxis',
+                 portfolio_cookie='portfolio',
+                 user_cookie='quantaxis',
                  moneypreset=100000,  # 初始分配资金
+                 frozen = None,
                  moneypresetLeft=None,
                  volume_long_today=0,
                  volume_long_his=0,
@@ -87,13 +93,14 @@ class QA_Position():
                  open_cost_short=0,
                  position_cost_long=0,
                  position_cost_short=0,
-                 position_id = None,
+                 position_id=None,
 
                  market_type=MARKET_TYPE.STOCK_CN,
                  exchange_id=EXCHANGE_ID.SZSE,
-                 trades = [],
-                 orders = [],
+                 trades=None,
+                 orders=None,
                  name=None,
+                 auto_reload=False,
                  *args,
                  **kwargs
 
@@ -101,9 +108,12 @@ class QA_Position():
 
         self.code = code
         self.account_cookie = account_cookie
+        self.portfolio_cookie = portfolio_cookie
+        self.user_cookie = user_cookie
         self.time = ''
         self.market_preset = MARKET_PRESET().get_code(self.code)
-        self.position_id = str(uuid.uuid4()) if position_id is None else position_id
+        self.position_id = str(
+            uuid.uuid4()) if position_id is None else position_id
         self.moneypreset = moneypreset
         self.moneypresetLeft = self.moneypreset if moneypresetLeft is None else moneypresetLeft
         """{'name': '原油',
@@ -151,8 +161,11 @@ class QA_Position():
             self.volume_short*self.market_preset.get('unit_table', 1)
 
         self.last_price = 0
-        self.trades = trades
-        self.orders = orders
+        self.trades = [] if trades is None else trades
+        self.orders = [] if orders is None else orders
+        self.frozen = {} if frozen is None else frozen
+        if auto_reload:
+            self.save()
 
     def __repr__(self):
         return '< QAPOSITION {} amount {}/{} >'.format(
@@ -295,8 +308,11 @@ class QA_Position():
             'code': self.code,  # 品种名称
             'instrument_id': self.code,
             'user_id': self.account_cookie,
+            'portfolio_cookie': self.portfolio_cookie,
+            'user_cookie': self.user_cookie,
             'position_id': self.position_id,
             'account_cookie': self.account_cookie,
+            'frozen': self.frozen,
             'name': self.name,
             'market_type': self.market_type,
             'exchange_id': self.exchange_id,  # 交易所ID
@@ -352,7 +368,7 @@ class QA_Position():
             "position_profit": self.position_profit
         }
 
-    def order_check(self, amount: float, price: float, towards: int) -> bool:
+    def order_check(self, amount: float, price: float, towards: int, order_id: str) -> bool:
         res = False
         if towards == ORDER_DIRECTION.BUY_CLOSE:
             print('buyclose')
@@ -403,6 +419,7 @@ class QA_Position():
                                              1))
             if self.moneypresetLeft > moneyneed:
                 self.moneypresetLeft -= moneyneed
+                self.frozen[order_id] = moneyneed
                 res = True
             else:
                 print('开仓保证金不足 TOWARDS{} Need{} HAVE{}'.format(
@@ -411,10 +428,11 @@ class QA_Position():
         return res
 
     def send_order(self, amount: float, price: float, towards: int):
-        if self.order_check(amount, price, towards):
+        order_id = str(uuid.uuid4())
+        if self.order_check(amount, price, towards, order_id):
             print('order check success')
 
-            order ={
+            order = {
                 'position_id': str(self.position_id),
                 'account_cookie': self.account_cookie,
                 'instrument_id': self.code,
@@ -423,7 +441,7 @@ class QA_Position():
                 'order_time': str(self.time),
                 'volume': float(amount),
                 'price': float(price),
-                'order_id': str(uuid.uuid4())
+                'order_id': order_id
             }
             self.orders.append(order)
             return order
@@ -633,10 +651,25 @@ class QA_Position():
         print(self.static_message)
         save_position(self.static_message)
 
-    def reload(self, message):
+    def reload(self):
+        res = DATABASE.positions.find_one({
+            'account_cookie': self.account_cookie,
+            'portfolio_coookie': self.portfolio_cookie,
+            'user_cookie': self.user_cookie,
+            'position_id': self.position_id
+        })
+        if res is None:
+            self.save()
+        else:
+            self.loadfrommessage(res)
+
+    def loadfrommessage(self, message):
         self.__init__(
             code=message['code'],
             account_cookie=message['account_cookie'],
+            frozen = message['frozen'],
+            portfolio_cookie=message['portfolio_cookie'],
+            user_cookie=message['user_cookie'],
             moneypreset=message['moneypreset'],  # 初始分配资金
             moneypresetLeft=message['moneypresetLeft'],
             volume_long_today=message['volume_long_today'],
@@ -654,25 +687,48 @@ class QA_Position():
 
             open_price_long=message['open_price_long'],
             open_price_short=message['open_price_short'],
-            position_price_long=message['position_price_long'],  # 逐日盯市的前一交易日的结算价
-            position_price_short=message['position_price_short'],  # 逐日盯市的前一交易日的结算价
+            # 逐日盯市的前一交易日的结算价
+            position_price_long=message['position_price_long'],
+            # 逐日盯市的前一交易日的结算价
+            position_price_short=message['position_price_short'],
 
             open_cost_long=message['open_cost_long'],
             open_cost_short=message['open_cost_short'],
             position_cost_long=message['position_cost_long'],
             position_cost_short=message['position_cost_short'],
-            position_id = message['position_id'],
+            position_id=message['position_id'],
 
             market_type=message['market_type'],
             exchange_id=message['exchange_id'],
-            trades = message['trades'],
-            orders = message['orders'],
+            trades=message['trades'],
+            orders=message['orders'],
             name=message['name'])
 
         return self
 
     def on_order(self, order: QA_Order):
-        pass
+        """这里是一些外部操作导致的POS变化
+
+        - 交易过程的外部手动交易
+        - 风控状态下的监控外部交易
+        
+        order_id 是外部的
+        trade_id 不一定存在
+        """
+
+        if order['order_id'] not in self.frozen.keys():
+            print('OUTSIDE ORDER')
+            #self.frozen[order['order_id']] = order[]
+            # 回放订单/注册进订单系统
+            self.send_order(
+                order.get('amount', order.get('volume')),
+                order['price'], 
+                eval('ORDER_DIRECTION.{}_{}'.format(
+                    order.get('direction'),
+                    order.get('offset')
+                ))
+            )
+
 
     def on_transaction(self, transaction: dict):
         towards = transaction.get(
@@ -694,6 +750,9 @@ class QA_Position():
                                 transaction.get('volume')),
                 towards
             )
+            self.moneypresetLeft+= self.frozen.get(transaction['order_id'],0)
+            # 当出现外部交易的时候, 直接在frozen中注册订单
+            self.frozen[transaction['order_id']] =0
             self.trades.append(transaction)
         except Exception as e:
             raise e

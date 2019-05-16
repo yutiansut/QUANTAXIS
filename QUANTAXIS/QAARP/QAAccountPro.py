@@ -56,11 +56,8 @@ from QUANTAXIS.QAUtil.QAParameter import (
 )
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
-# 2017/6/4修改: 去除总资产的动态权益计算
-
-
 # pylint: disable=old-style-class, too-few-public-methods
-class QA_Account(QA_Worker):
+class QA_AccountPRO(QA_Worker):
     """QA_Account
 
     QAAccount
@@ -221,11 +218,21 @@ class QA_Account(QA_Worker):
         'margin': 0
          }
 
-         当传入后, 我们依然要进行一些判断:
+        AccPro 使用QA_Position来创建仓位管理
 
-         1. 是否需要settle
+        - 当创建QA_Account的时候， 会从Positions库中查询并恢复新的Positions
+        - 当申请创建一个新的分区的时候，Account会扣减一个额度(money_preset) 体现在cash/history中
+        - 当删除一个poistion 释放额度
+        - 策略会写入相应的position分区
 
-         如果是当日传入 则不需要
+
+        |           AccPro                         |
+
+        |   MPMS  |     MPMS    | SPMS |  FREECASH |
+
+        | POS POS | POS POS POS |  POS |           |
+
+
         """
         super().__init__()
 
@@ -247,6 +254,13 @@ class QA_Account(QA_Worker):
             'frozen',  # 冻结资金.
             'direction'  # 方向
         ]
+        self._activity_headers = [
+            'datetime',
+            'activity',
+            'event',
+            ''
+        ]
+        self.activity = []
         ########################################################################
         # 信息类:
 
@@ -316,7 +330,7 @@ class QA_Account(QA_Worker):
         }                        # 日结算
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
-
+        self.pms = {}
         ########################################################################
         # 规则类
         # 1.是否允许t+0 及买入及结算
@@ -355,7 +369,7 @@ class QA_Account(QA_Worker):
             self.reload()
 
     def __repr__(self):
-        return '< QA_Account {} market: {}>'.format(
+        return '< QA_AccountPRO {} market: {}>'.format(
             self.account_cookie,
             self.market_type
         )
@@ -558,11 +572,7 @@ class QA_Account(QA_Worker):
             return list(res_['datetime'])
         else:
             return self.time_index_max
-#
-#        if self.start_date < str(min(self.time_index))[0:10] :
-#             return QA_util_get_trade_range(self.start_date, self.end_date)
-#        else:
-#            return QA_util_get_trade_range(str(min(self.time_index))[0:10], str(max(self.time_index))[0:10])
+
 
     @property
     def history_min(self):
@@ -586,19 +596,7 @@ class QA_Account(QA_Worker):
             data=self.history_min,
             columns=self._history_headers[:lens]
         ).sort_index()
-#    @property
-#    def history(self):
-#        if len(self.history_max):
-#            res_=pd.DataFrame(self.history_max)
-#            res_['date']=[ i[0:10]  for i in res_[0]]
-#            res_=res_[res_['date'].isin(self.trade_range)]
-#            return np.array(res_.drop(['date'],axis=1)).tolist()
-#        else:
-#            return self.history_max
-#        res_=pd.DataFrame(self.time_index_max)
-#        res_.columns=(['datetime'])
-#        res_['date']=[ i[0:10]  for i in res_['datetime']]
-#        res_=res_[res_['date'].isin(self.trade_range)]
+
 
     @property
     def trade_day(self):
@@ -666,6 +664,21 @@ class QA_Account(QA_Worker):
                 结算过程 是为了补平(等于让hold={})
                 结算后: init_hold
         """
+
+    def create_position(self, code, money_preset):
+        if self.cash_available > money_preset:
+            pos = QA_Position(code=code, money_preset=money_preset,user_cookie=self.user_cookie,portfolio_cookie=self.portfolio_cookie,account_cookie=self.account_cookie, auto_reload=True)
+            self.pms[pos.position_id] = pos
+            self.cash.append(self.cash[-1] - money_preset)
+            self.cash_available = self.cash[-1]
+            return pos
+        else:
+            return False
+
+    def get_position(self, position_id):
+        return self.pms.get(position_id, None)
+
+
 
     @property
     def hold(self):
@@ -1134,15 +1147,6 @@ class QA_Account(QA_Worker):
             self.cash_available = self.cash[-1]
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
 
-    @property
-    def node_view(self):
-        return {
-            'node_name': self.account_cookie,
-            'strategy_name': self.strategy_name,
-            'cash_available': self.cash_available,
-            'history': self.history
-        }
-
     def receive_deal(
             self,
             code: str,
@@ -1184,9 +1188,16 @@ class QA_Account(QA_Worker):
 
         market_towards = 1 if trade_towards > 0 else -1
         """2019/01/03 直接使用快速撮合接口了
-        2333 这两个接口现在也没啥区别了....
-        太绝望了
+        2019/05/13 使用 PMS来更新成交记录
         """
+        self.pms[self.oms[order_id]['positon_id']].on_transaction(
+            {'towards': trade_towards,
+            'code': code, 
+            'trade_id': trade_id,
+            'amount': trade_amount,
+            'time': trade_time,
+            'price': trade_price}
+        )
 
         self.receive_simpledeal(
             code,
@@ -1211,7 +1222,7 @@ class QA_Account(QA_Worker):
             order_model=None,
             amount_model=None,
             order_id=None,
-            pms_id=None,
+            position_id=None,
             *args,
             **kwargs
     ):
@@ -1411,7 +1422,7 @@ class QA_Account(QA_Worker):
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
-                pms_id=pms_id,
+                position_id=position_id,
                 order_id=order_id,
                 *args,
                 **kwargs
