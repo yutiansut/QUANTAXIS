@@ -707,7 +707,28 @@ class QA_Position():
         return self
 
     def on_order(self, order: QA_Order):
-        pass
+        """这里是一些外部操作导致的POS变化
+
+        - 交易过程的外部手动交易
+        - 风控状态下的监控外部交易
+        
+        order_id 是外部的
+        trade_id 不一定存在
+        """
+
+        if order['order_id'] not in self.frozen.keys():
+            print('OUTSIDE ORDER')
+            #self.frozen[order['order_id']] = order[]
+            # 回放订单/注册进订单系统
+            self.send_order(
+                order.get('amount', order.get('volume')),
+                order['price'], 
+                eval('ORDER_DIRECTION.{}_{}'.format(
+                    order.get('direction'),
+                    order.get('offset')
+                ))
+            )
+
 
     def on_transaction(self, transaction: dict):
         towards = transaction.get(
@@ -729,7 +750,8 @@ class QA_Position():
                                 transaction.get('volume')),
                 towards
             )
-            self.moneypresetLeft+= self.frozen[transaction['order_id']]
+            self.moneypresetLeft+= self.frozen.get(transaction['order_id'],0)
+            # 当出现外部交易的时候, 直接在frozen中注册订单
             self.frozen[transaction['order_id']] =0
             self.trades.append(transaction)
         except Exception as e:
