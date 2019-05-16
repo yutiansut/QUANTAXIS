@@ -69,7 +69,7 @@ class QA_Position():
                  portfolio_cookie='portfolio',
                  user_cookie='quantaxis',
                  moneypreset=100000,  # 初始分配资金
-                 frozen = {},
+                 frozen = None,
                  moneypresetLeft=None,
                  volume_long_today=0,
                  volume_long_his=0,
@@ -97,8 +97,8 @@ class QA_Position():
 
                  market_type=MARKET_TYPE.STOCK_CN,
                  exchange_id=EXCHANGE_ID.SZSE,
-                 trades=[],
-                 orders=[],
+                 trades=None,
+                 orders=None,
                  name=None,
                  auto_reload=False,
                  *args,
@@ -161,9 +161,9 @@ class QA_Position():
             self.volume_short*self.market_preset.get('unit_table', 1)
 
         self.last_price = 0
-        self.trades = trades
-        self.orders = orders
-        self.frozen = frozen
+        self.trades = [] if trades is None else trades
+        self.orders = [] if orders is None else orders
+        self.frozen = {} if frozen is None else frozen
         if auto_reload:
             self.save()
 
