@@ -641,7 +641,9 @@ class QA_Position():
     def curpos(self):
         return {
             'volume_long': self.volume_long,
-            'volume_short': self.volume_short
+            'volume_short': self.volume_short,
+            'volume_long_frozen': self.volume_long_frozen,
+            'volume_short_frozen': self.volume_short_frozen
         }
 
     @property
