@@ -1657,9 +1657,10 @@ class QA_AccountPRO(QA_Worker):
         self.frozen = message.get('frozen', {})
         self.finishedOrderid = message.get('finished_id', [])
         pos_id = message.get('position_id', [])
+        print(pos_id)
         self.pms = dict(zip(pos_id, [QA_Position(position_id=item,
                                                  account_cookie=self.account_cookie, portfolio_cookie=self.portfolio_cookie,
-                                                 user_cookie=self.user_cookie) for item in pos_id]))
+                                                 user_cookie=self.user_cookie, auto_reload=True) for item in pos_id]))
 
         self.settle()
         return self
@@ -1825,9 +1826,15 @@ class QA_AccountPRO(QA_Worker):
 
     def get_holddetail(self, code):
         try:
-            return self.hold_detail.loc[(code, slice(None))].sum().to_dict()
+            return self.hold_detail.loc[code].to_dict()
         except KeyError:
-            return {'volume_long': 0, 'volume_short': 0}
+            return {'volume_long': 0,
+                    'volume_long_his': 0,
+                    'volume_long_today': 0,
+                    'volume_short': 0,
+                    'volume_short_his': 0,
+                    'volume_short_today': 0}
+
 
     def save(self):
         """
