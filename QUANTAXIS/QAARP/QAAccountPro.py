@@ -64,6 +64,8 @@ class QA_AccountPRO(QA_Worker):
 
     QAAccount
 
+    在QAAccountPro/Position的模型中, Pos不负责OMS业务,因此, 需要使用AccPro的sendOrder来主导OMS模型
+
     """
 
     def __init__(
@@ -1789,7 +1791,7 @@ class QA_AccountPRO(QA_Worker):
         """
         存储账户信息
         """
-        save_account(self.message)
+        save_account(self.message, self.client)
 
     def reload(self):
 
