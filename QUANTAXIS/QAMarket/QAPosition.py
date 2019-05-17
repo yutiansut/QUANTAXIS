@@ -101,6 +101,7 @@ class QA_Position():
                  orders=None,
                  name=None,
                  auto_reload=False,
+                 allow_exceed=False,
                  *args,
                  **kwargs
 
@@ -166,6 +167,7 @@ class QA_Position():
         self.frozen = {} if frozen is None else frozen
         if auto_reload:
             self.save()
+        self.allow_exceed = allow_exceed
 
     def __repr__(self):
         return '< QAPOSITION {} amount {}/{} >'.format(
@@ -417,7 +419,8 @@ class QA_Position():
                                        1)
             ) * float(self.market_preset.get('buy_frozen_coeff',
                                              1))
-            if self.moneypresetLeft > moneyneed:
+    
+            if (self.moneypresetLeft > moneyneed) or self.allow_exceed:
                 self.moneypresetLeft -= moneyneed
                 self.frozen[order_id] = moneyneed
                 res = True
