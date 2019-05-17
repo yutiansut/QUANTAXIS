@@ -70,7 +70,7 @@ class QA_Position():
                  portfolio_cookie='portfolio',
                  user_cookie='quantaxis',
                  moneypreset=100000,  # 初始分配资金
-                 frozen = None,
+                 frozen=None,
                  moneypresetLeft=None,
                  volume_long_today=0,
                  volume_long_his=0,
@@ -167,7 +167,7 @@ class QA_Position():
         self.orders = {} if orders is None else orders
         self.frozen = {} if frozen is None else frozen
         if auto_reload:
-            self.save()
+            self.reload()
         self.allow_exceed = allow_exceed
 
     def __repr__(self):
@@ -355,6 +355,18 @@ class QA_Position():
         }
 
     @property
+    def hold_detail(self):
+        return {
+            # 持仓量
+            'volume_long_today': self.volume_long_today,
+            'volume_long_his': self.volume_long_his,
+            'volume_long': self.volume_long,
+            'volume_short_today': self.volume_short_today,
+            'volume_short_his': self.volume_short_his,
+            'volume_short': self.volume_short
+        }
+
+    @property
     def realtime_message(self):
         return {
             # 扩展字段
@@ -420,7 +432,7 @@ class QA_Position():
                                        1)
             ) * float(self.market_preset.get('buy_frozen_coeff',
                                              1))
-    
+
             if (self.moneypresetLeft > moneyneed) or self.allow_exceed:
                 self.moneypresetLeft -= moneyneed
                 self.frozen[order_id] = moneyneed
@@ -658,7 +670,7 @@ class QA_Position():
     def reload(self):
         res = DATABASE.positions.find_one({
             'account_cookie': self.account_cookie,
-            'portfolio_coookie': self.portfolio_cookie,
+            'portfolio_cookie': self.portfolio_cookie,
             'user_cookie': self.user_cookie,
             'position_id': self.position_id
         })
@@ -671,7 +683,7 @@ class QA_Position():
         self.__init__(
             code=message['code'],
             account_cookie=message['account_cookie'],
-            frozen = message['frozen'],
+            frozen=message['frozen'],
             portfolio_cookie=message['portfolio_cookie'],
             user_cookie=message['user_cookie'],
             moneypreset=message['moneypreset'],  # 初始分配资金
@@ -715,18 +727,18 @@ class QA_Position():
 
         - 交易过程的外部手动交易
         - 风控状态下的监控外部交易
-        
+
         order_id 是外部的
         trade_id 不一定存在
         """
 
         if order['order_id'] not in self.frozen.keys():
             print('OUTSIDE ORDER')
-            #self.frozen[order['order_id']] = order[]
+            # self.frozen[order['order_id']] = order[]
             # 回放订单/注册进订单系统
             order = self.send_order(
                 order.get('amount', order.get('volume')),
-                order['price'], 
+                order['price'],
                 eval('ORDER_DIRECTION.{}_{}'.format(
                     order.get('direction'),
                     order.get('offset')
@@ -754,9 +766,9 @@ class QA_Position():
                                 transaction.get('volume')),
                 towards
             )
-            self.moneypresetLeft+= self.frozen.get(transaction['order_id'],0)
+            self.moneypresetLeft += self.frozen.get(transaction['order_id'], 0)
             # 当出现外部交易的时候, 直接在frozen中注册订单
-            self.frozen[transaction['order_id']] =0
+            self.frozen[transaction['order_id']] = 0
             self.orders[transaction['order_id']] = ORDER_STATUS.SUCCESS_ALL
             self.trades.append(transaction)
         except Exception as e:
