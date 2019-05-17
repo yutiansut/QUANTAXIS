@@ -124,9 +124,9 @@ class ORDER_STATUS():
     # FAILED = 600
 
     NEW = 'new'
-    SUCCESS_ALL = 'success_all'
+    SUCCESS_ALL = 'success_all' # == FINISHED
     SUCCESS_PART = 'success_part'
-    QUEUED = 'queued'  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
+    QUEUED = 'queued'  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交 == ALIVED
     CANCEL_ALL = 'cancel_all'
     CANCEL_PART = 'cancel_part'
     SETTLED = 'settled'

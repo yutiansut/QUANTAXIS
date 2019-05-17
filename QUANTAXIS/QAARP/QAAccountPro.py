@@ -57,10 +57,14 @@ from QUANTAXIS.QAUtil.QAParameter import (
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # pylint: disable=old-style-class, too-few-public-methods
+
+
 class QA_AccountPRO(QA_Worker):
     """QA_Account
 
     QAAccount
+
+    在QAAccountPro/Position的模型中, Pos不负责OMS业务,因此, 需要使用AccPro的sendOrder来主导OMS模型
 
     """
 
@@ -284,7 +288,7 @@ class QA_AccountPRO(QA_Worker):
         self.datetime = None
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
-        self.client = DATABASE.account
+        self.client = DATABASE.accountPro
         self.start_ = start
         self.end_ = end
         ### 下面是数据库创建index部分, 此部分可能导致部分代码和原先不兼容
@@ -331,14 +335,6 @@ class QA_AccountPRO(QA_Worker):
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
         self.pms = {}
-        ########################################################################
-        # 规则类
-        # 1.是否允许t+0 及买入及结算
-        # 2.是否允许卖空开仓
-        # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
-
-        # 期货: allow_t0 True allow_sellopen True
-        #
 
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
@@ -434,7 +430,9 @@ class QA_AccountPRO(QA_Worker):
             'frozen':
             self.frozen,
             'finished_id':
-            self.finishedOrderid
+            self.finishedOrderid,
+            'position_id':
+            list(self.pms.keys())
         }
 
     @property
@@ -573,7 +571,6 @@ class QA_AccountPRO(QA_Worker):
         else:
             return self.time_index_max
 
-
     @property
     def history_min(self):
         if len(self.history):
@@ -596,7 +593,6 @@ class QA_AccountPRO(QA_Worker):
             data=self.history_min,
             columns=self._history_headers[:lens]
         ).sort_index()
-
 
     @property
     def trade_day(self):
@@ -667,7 +663,8 @@ class QA_AccountPRO(QA_Worker):
 
     def create_position(self, code, money_preset):
         if self.cash_available > money_preset:
-            pos = QA_Position(code=code, money_preset=money_preset,user_cookie=self.user_cookie,portfolio_cookie=self.portfolio_cookie,account_cookie=self.account_cookie, auto_reload=True)
+            pos = QA_Position(code=code, money_preset=money_preset, user_cookie=self.user_cookie,
+                              portfolio_cookie=self.portfolio_cookie, account_cookie=self.account_cookie, auto_reload=True)
             self.pms[pos.position_id] = pos
             self.cash.append(self.cash[-1] - money_preset)
             self.cash_available = self.cash[-1]
@@ -677,8 +674,6 @@ class QA_AccountPRO(QA_Worker):
 
     def get_position(self, position_id):
         return self.pms.get(position_id, None)
-
-
 
     @property
     def hold(self):
@@ -1192,11 +1187,11 @@ class QA_AccountPRO(QA_Worker):
         """
         self.pms[self.oms[order_id]['positon_id']].on_transaction(
             {'towards': trade_towards,
-            'code': code, 
-            'trade_id': trade_id,
-            'amount': trade_amount,
-            'time': trade_time,
-            'price': trade_price}
+             'code': code,
+             'trade_id': trade_id,
+             'amount': trade_amount,
+             'time': trade_time,
+             'price': trade_price}
         )
 
         self.receive_simpledeal(
@@ -1661,6 +1656,12 @@ class QA_AccountPRO(QA_Worker):
         )
         self.frozen = message.get('frozen', {})
         self.finishedOrderid = message.get('finished_id', [])
+        pos_id = message.get('position_id', [])
+        print(pos_id)
+        self.pms = dict(zip(pos_id, [QA_Position(position_id=item,
+                                                 account_cookie=self.account_cookie, portfolio_cookie=self.portfolio_cookie,
+                                                 user_cookie=self.user_cookie, auto_reload=True) for item in pos_id]))
+
         self.settle()
         return self
 
@@ -1779,11 +1780,67 @@ class QA_AccountPRO(QA_Worker):
             if event.callback:
                 event.callback(event)
 
+    @property
+    def positions_with_pos(self):
+        return pd.DataFrame([item.curpos for item in self.pms.values()],
+                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.pms.values()], names=['code', 'pos_id']))
+    @property
+    def positions(self):
+        return self.positions_with_pos.groupby('code').sum()
+
+    @property
+    def hold_detail_with_pos(self):
+        return pd.DataFrame([item.hold_detail for item in self.pms.values()],
+                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.pms.values()], names=['code', 'pos_id']))
+    @property
+    def hold_detail(self):
+        return self.hold_detail_with_pos.groupby('code').sum()
+
+    def get_position(self, code):
+        """基于QAPosition的联合查询
+
+        Arguments:
+            code {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        try:
+            return self.positions.loc[code].to_dict()
+        except KeyError:
+            return {'volume_long': 0, 'volume_short': 0}
+
+    def get_position_with_pos(self, code, pos_id):
+        """基于QAPosition的联合查询
+
+        Arguments:
+            code {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        try:
+            return self.positions_with_pos.loc[(code, pos_id)].to_dict()
+        except KeyError:
+            return {'volume_long': 0, 'volume_short': 0}
+
+    def get_holddetail(self, code):
+        try:
+            return self.hold_detail.loc[code].to_dict()
+        except KeyError:
+            return {'volume_long': 0,
+                    'volume_long_his': 0,
+                    'volume_long_today': 0,
+                    'volume_short': 0,
+                    'volume_short_his': 0,
+                    'volume_short_today': 0}
+
+
     def save(self):
         """
         存储账户信息
         """
-        save_account(self.message)
+        save_account(self.message, self.client)
 
     def reload(self):
 
