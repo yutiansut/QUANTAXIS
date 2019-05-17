@@ -57,6 +57,8 @@ from QUANTAXIS.QAUtil.QAParameter import (
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # pylint: disable=old-style-class, too-few-public-methods
+
+
 class QA_AccountPRO(QA_Worker):
     """QA_Account
 
@@ -284,7 +286,7 @@ class QA_AccountPRO(QA_Worker):
         self.datetime = None
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
-        self.client = DATABASE.account
+        self.client = DATABASE.accountPro
         self.start_ = start
         self.end_ = end
         ### 下面是数据库创建index部分, 此部分可能导致部分代码和原先不兼容
@@ -434,7 +436,9 @@ class QA_AccountPRO(QA_Worker):
             'frozen':
             self.frozen,
             'finished_id':
-            self.finishedOrderid
+            self.finishedOrderid,
+            'position_id':
+            list(self.pms.keys())
         }
 
     @property
@@ -573,7 +577,6 @@ class QA_AccountPRO(QA_Worker):
         else:
             return self.time_index_max
 
-
     @property
     def history_min(self):
         if len(self.history):
@@ -596,7 +599,6 @@ class QA_AccountPRO(QA_Worker):
             data=self.history_min,
             columns=self._history_headers[:lens]
         ).sort_index()
-
 
     @property
     def trade_day(self):
@@ -667,7 +669,8 @@ class QA_AccountPRO(QA_Worker):
 
     def create_position(self, code, money_preset):
         if self.cash_available > money_preset:
-            pos = QA_Position(code=code, money_preset=money_preset,user_cookie=self.user_cookie,portfolio_cookie=self.portfolio_cookie,account_cookie=self.account_cookie, auto_reload=True)
+            pos = QA_Position(code=code, money_preset=money_preset, user_cookie=self.user_cookie,
+                              portfolio_cookie=self.portfolio_cookie, account_cookie=self.account_cookie, auto_reload=True)
             self.pms[pos.position_id] = pos
             self.cash.append(self.cash[-1] - money_preset)
             self.cash_available = self.cash[-1]
@@ -677,8 +680,6 @@ class QA_AccountPRO(QA_Worker):
 
     def get_position(self, position_id):
         return self.pms.get(position_id, None)
-
-
 
     @property
     def hold(self):
@@ -1192,11 +1193,11 @@ class QA_AccountPRO(QA_Worker):
         """
         self.pms[self.oms[order_id]['positon_id']].on_transaction(
             {'towards': trade_towards,
-            'code': code, 
-            'trade_id': trade_id,
-            'amount': trade_amount,
-            'time': trade_time,
-            'price': trade_price}
+             'code': code,
+             'trade_id': trade_id,
+             'amount': trade_amount,
+             'time': trade_time,
+             'price': trade_price}
         )
 
         self.receive_simpledeal(
@@ -1661,6 +1662,11 @@ class QA_AccountPRO(QA_Worker):
         )
         self.frozen = message.get('frozen', {})
         self.finishedOrderid = message.get('finished_id', [])
+        pos_id = message.get('position_id', [])
+        self.pms = dict(zip(pos_id, [QA_Position(position_id=item, 
+            account_cookie=self.account_cookie, portfolio_cookie=self.portfolio_cookie, 
+            user_cookie=self.user_cookie) for item in pos_id]))
+
         self.settle()
         return self
 
