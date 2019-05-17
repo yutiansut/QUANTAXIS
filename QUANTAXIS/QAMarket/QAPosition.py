@@ -7,7 +7,8 @@ from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAUtil.QAParameter import (
     EXCHANGE_ID,
     MARKET_TYPE,
-    ORDER_DIRECTION
+    ORDER_DIRECTION,
+    ORDER_STATUS
 )
 from QUANTAXIS.QASU.save_position import save_position
 from QUANTAXIS.QAUtil.QASetting import DATABASE
@@ -163,7 +164,7 @@ class QA_Position():
 
         self.last_price = 0
         self.trades = [] if trades is None else trades
-        self.orders = [] if orders is None else orders
+        self.orders = {} if orders is None else orders
         self.frozen = {} if frozen is None else frozen
         if auto_reload:
             self.save()
@@ -434,7 +435,6 @@ class QA_Position():
         order_id = str(uuid.uuid4())
         if self.order_check(amount, price, towards, order_id):
             print('order check success')
-
             order = {
                 'position_id': str(self.position_id),
                 'account_cookie': self.account_cookie,
@@ -444,9 +444,10 @@ class QA_Position():
                 'order_time': str(self.time),
                 'volume': float(amount),
                 'price': float(price),
-                'order_id': order_id
+                'order_id': order_id,
+                'status': ORDER_STATUS.NEW
             }
-            self.orders.append(order)
+            self.orders[order_id] = order
             return order
         else:
             return RuntimeError('ORDER CHECK FALSE: {}'.format(self.code))
@@ -723,7 +724,7 @@ class QA_Position():
             print('OUTSIDE ORDER')
             #self.frozen[order['order_id']] = order[]
             # 回放订单/注册进订单系统
-            self.send_order(
+            order = self.send_order(
                 order.get('amount', order.get('volume')),
                 order['price'], 
                 eval('ORDER_DIRECTION.{}_{}'.format(
@@ -731,7 +732,7 @@ class QA_Position():
                     order.get('offset')
                 ))
             )
-
+            self.orders[order]['status'] = ORDER_STATUS.QUEUED
 
     def on_transaction(self, transaction: dict):
         towards = transaction.get(
@@ -756,6 +757,7 @@ class QA_Position():
             self.moneypresetLeft+= self.frozen.get(transaction['order_id'],0)
             # 当出现外部交易的时候, 直接在frozen中注册订单
             self.frozen[transaction['order_id']] =0
+            self.orders[transaction['order_id']] = ORDER_STATUS.SUCCESS_ALL
             self.trades.append(transaction)
         except Exception as e:
             raise e
