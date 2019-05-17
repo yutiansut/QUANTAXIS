@@ -1808,7 +1808,7 @@ class QA_AccountPRO(QA_Worker):
         try:
             return self.positions.loc[code].to_dict()
         except KeyError:
-            return {'volume_long': 0, 'volume_short': 0}
+            return {'volume_long': 0, 'volume_short': 0, 'volume_long_frozen':0, 'volume_short_frozen': 0}
 
     def get_position_with_pos(self, code, pos_id):
         """基于QAPosition的联合查询
