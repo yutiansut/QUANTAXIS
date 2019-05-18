@@ -66,6 +66,11 @@ class QA_AccountPRO(QA_Worker):
 
     在QAAccountPro/Position的模型中, Pos不负责OMS业务,因此, 需要使用AccPro的sendOrder来主导OMS模型
 
+
+    一个简单的外部OMS
+
+    POS 下单以后, 订单信息被AccPro接受, 并生成QA_Order
+    基于QA_Order的成交 ==> receive_deal的回报模式, 记录history 更新POS的on_transaction
     """
 
     def __init__(
