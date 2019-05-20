@@ -387,6 +387,20 @@ class OUTPUT_FORMAT():
     JSON = 'json'
 
 
+class RUNNING_STATUS():
+    """运行状态
+
+    starting 是一个占用状态
+
+    100 - 202 - 200 - 400 - 500
+    """
+
+    PENDING = 100
+    RUNNING = 200
+    STARTING = 202
+    WRONG = 400
+    STOPED = 500
+
 DATABASE_TABLE = {
     (MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): 'stock_day',
     (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): 'stock_min',
