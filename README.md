@@ -48,6 +48,7 @@ Quantitative Financial FrameWork
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_shield)
 [![Waffle.io - Issues in progress](https://badge.waffle.io/yutiansut/QUANTAXIS.png?label=in%20progress&title=In%20Progress)](http://waffle.io/yutiansut/QUANTAXIS)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
+[![](http://rescdn.qqmail.com/zh_CN/htmledition/images/function/qm_open/ico_mailme_22.png)](http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=VSwgITw0OyYgIRUjPCV7JCR7Njo4)
 
 ## Contributors
 
