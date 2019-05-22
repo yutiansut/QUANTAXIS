@@ -62,6 +62,8 @@ class QA_Position():
 
     兼容QA_Account的创建/拆入Positions库
 
+    QAPosition 不对订单信息做正确性保证, 需要自行在外部构建 OMS系统 {QACEPEngine/QAAccountPro}
+
     """
 
     def __init__(self,
