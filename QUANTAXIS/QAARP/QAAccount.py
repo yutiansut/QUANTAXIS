@@ -1355,7 +1355,7 @@ class QA_Account(QA_Worker):
             order_model=None,
             amount_model=None,
             order_id=None,
-            pms_id=None,
+            position_id=None,
             *args,
             **kwargs
     ):
@@ -1555,7 +1555,7 @@ class QA_Account(QA_Worker):
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
-                pms_id=pms_id,
+                position_id=position_id,
                 order_id=order_id,
                 *args,
                 **kwargs

@@ -92,7 +92,7 @@ cdef class QA_Order():
     cdef public float commission_coeff
     cdef public float tax_coeff
     cdef public str exchange_id
-    cdef public str pms_id
+    cdef public str position_id
     cdef public float trade_price
     cdef public str reason
     cdef public str time_condition
@@ -124,7 +124,7 @@ cdef class QA_Order():
             commission_coeff=0.00025,
             tax_coeff=0.001,
             exchange_id=None,
-            pms_id=None
+            position_id=None
     ):
         '''
 
@@ -219,7 +219,7 @@ cdef class QA_Order():
         self.time_condition = 'GFD'                                # 当日有效
         self._status = _status
         self.exchange_code = exchange_code
-        self.pms_id = pms_id
+        self.position_id = position_id
         self.direction = 'BUY' if self.towards in [
             ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
         self.offset = 'OPEN' if self.towards in [

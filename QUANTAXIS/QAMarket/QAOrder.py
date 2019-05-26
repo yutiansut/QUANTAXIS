@@ -96,7 +96,7 @@ class QA_Order():
             commission_coeff=0.00025,
             tax_coeff=0.001,
             exchange_id=None,
-            pms_id=None,
+            position_id=None,
             *args,
             **kwargs
     ):
@@ -195,7 +195,7 @@ class QA_Order():
         self.time_condition = 'GFD'                                # 当日有效
         self._status = _status
         self.exchange_code = exchange_code
-        self.pms_id = pms_id
+        self.position_id = position_id
                                                                    # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         ) else kwargs['mainacc_id']

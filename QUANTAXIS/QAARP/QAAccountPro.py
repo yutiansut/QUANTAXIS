@@ -56,15 +56,21 @@ from QUANTAXIS.QAUtil.QAParameter import (
 )
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
-# 2017/6/4修改: 去除总资产的动态权益计算
-
-
 # pylint: disable=old-style-class, too-few-public-methods
-class QA_Account(QA_Worker):
+
+
+class QA_AccountPRO(QA_Worker):
     """QA_Account
 
     QAAccount
 
+    在QAAccountPro/Position的模型中, Pos不负责OMS业务,因此, 需要使用AccPro的sendOrder来主导OMS模型
+
+
+    一个简单的外部OMS
+
+    POS 下单以后, 订单信息被AccPro接受, 并生成QA_Order
+    基于QA_Order的成交 ==> receive_deal的回报模式, 记录history 更新POS的on_transaction
     """
 
     def __init__(
@@ -221,11 +227,21 @@ class QA_Account(QA_Worker):
         'margin': 0
          }
 
-         当传入后, 我们依然要进行一些判断:
+        AccPro 使用QA_Position来创建仓位管理
 
-         1. 是否需要settle
+        - 当创建QA_Account的时候， 会从Positions库中查询并恢复新的Positions
+        - 当申请创建一个新的分区的时候，Account会扣减一个额度(money_preset) 体现在cash/history中
+        - 当删除一个poistion 释放额度
+        - 策略会写入相应的position分区
 
-         如果是当日传入 则不需要
+
+        |           AccPro                         |
+
+        |   MPMS  |     MPMS    | SPMS |  FREECASH |
+
+        | POS POS | POS POS POS |  POS |           |
+
+
         """
         super().__init__()
 
@@ -247,6 +263,13 @@ class QA_Account(QA_Worker):
             'frozen',  # 冻结资金.
             'direction'  # 方向
         ]
+        self._activity_headers = [
+            'datetime',
+            'activity',
+            'event',
+            ''
+        ]
+        self.activity = []
         ########################################################################
         # 信息类:
 
@@ -270,7 +293,7 @@ class QA_Account(QA_Worker):
         self.datetime = None
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
-        self.client = DATABASE.account
+        self.client = DATABASE.accountPro
         self.start_ = start
         self.end_ = end
         ### 下面是数据库创建index部分, 此部分可能导致部分代码和原先不兼容
@@ -316,15 +339,7 @@ class QA_Account(QA_Worker):
         }                        # 日结算
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
-
-        ########################################################################
-        # 规则类
-        # 1.是否允许t+0 及买入及结算
-        # 2.是否允许卖空开仓
-        # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
-
-        # 期货: allow_t0 True allow_sellopen True
-        #
+        self.pms = {}
 
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
@@ -355,7 +370,7 @@ class QA_Account(QA_Worker):
             self.reload()
 
     def __repr__(self):
-        return '< QA_Account {} market: {}>'.format(
+        return '< QA_AccountPRO {} market: {}>'.format(
             self.account_cookie,
             self.market_type
         )
@@ -420,7 +435,9 @@ class QA_Account(QA_Worker):
             'frozen':
             self.frozen,
             'finished_id':
-            self.finishedOrderid
+            self.finishedOrderid,
+            'position_id':
+            list(self.pms.keys())
         }
 
     @property
@@ -558,11 +575,6 @@ class QA_Account(QA_Worker):
             return list(res_['datetime'])
         else:
             return self.time_index_max
-#
-#        if self.start_date < str(min(self.time_index))[0:10] :
-#             return QA_util_get_trade_range(self.start_date, self.end_date)
-#        else:
-#            return QA_util_get_trade_range(str(min(self.time_index))[0:10], str(max(self.time_index))[0:10])
 
     @property
     def history_min(self):
@@ -586,19 +598,6 @@ class QA_Account(QA_Worker):
             data=self.history_min,
             columns=self._history_headers[:lens]
         ).sort_index()
-#    @property
-#    def history(self):
-#        if len(self.history_max):
-#            res_=pd.DataFrame(self.history_max)
-#            res_['date']=[ i[0:10]  for i in res_[0]]
-#            res_=res_[res_['date'].isin(self.trade_range)]
-#            return np.array(res_.drop(['date'],axis=1)).tolist()
-#        else:
-#            return self.history_max
-#        res_=pd.DataFrame(self.time_index_max)
-#        res_.columns=(['datetime'])
-#        res_['date']=[ i[0:10]  for i in res_['datetime']]
-#        res_=res_[res_['date'].isin(self.trade_range)]
 
     @property
     def trade_day(self):
@@ -666,6 +665,20 @@ class QA_Account(QA_Worker):
                 结算过程 是为了补平(等于让hold={})
                 结算后: init_hold
         """
+
+    def create_position(self, code, money_preset):
+        if self.cash_available > money_preset:
+            pos = QA_Position(code=code, money_preset=money_preset, user_cookie=self.user_cookie,
+                              portfolio_cookie=self.portfolio_cookie, account_cookie=self.account_cookie, auto_reload=True)
+            self.pms[pos.position_id] = pos
+            self.cash.append(self.cash[-1] - money_preset)
+            self.cash_available = self.cash[-1]
+            return pos
+        else:
+            return False
+
+    def get_position(self, position_id):
+        return self.pms.get(position_id, None)
 
     @property
     def hold(self):
@@ -1134,15 +1147,6 @@ class QA_Account(QA_Worker):
             self.cash_available = self.cash[-1]
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
 
-    @property
-    def node_view(self):
-        return {
-            'node_name': self.account_cookie,
-            'strategy_name': self.strategy_name,
-            'cash_available': self.cash_available,
-            'history': self.history
-        }
-
     def receive_deal(
             self,
             code: str,
@@ -1184,9 +1188,16 @@ class QA_Account(QA_Worker):
 
         market_towards = 1 if trade_towards > 0 else -1
         """2019/01/03 直接使用快速撮合接口了
-        2333 这两个接口现在也没啥区别了....
-        太绝望了
+        2019/05/13 使用 PMS来更新成交记录
         """
+        self.pms[self.oms[order_id]['positon_id']].on_transaction(
+            {'towards': trade_towards,
+             'code': code,
+             'trade_id': trade_id,
+             'amount': trade_amount,
+             'time': trade_time,
+             'price': trade_price}
+        )
 
         self.receive_simpledeal(
             code,
@@ -1211,7 +1222,7 @@ class QA_Account(QA_Worker):
             order_model=None,
             amount_model=None,
             order_id=None,
-            pms_id=None,
+            position_id=None,
             *args,
             **kwargs
     ):
@@ -1411,7 +1422,7 @@ class QA_Account(QA_Worker):
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
-                pms_id=pms_id,
+                position_id=position_id,
                 order_id=order_id,
                 *args,
                 **kwargs
@@ -1650,6 +1661,12 @@ class QA_Account(QA_Worker):
         )
         self.frozen = message.get('frozen', {})
         self.finishedOrderid = message.get('finished_id', [])
+        pos_id = message.get('position_id', [])
+        print(pos_id)
+        self.pms = dict(zip(pos_id, [QA_Position(position_id=item,
+                                                 account_cookie=self.account_cookie, portfolio_cookie=self.portfolio_cookie,
+                                                 user_cookie=self.user_cookie, auto_reload=True) for item in pos_id]))
+
         self.settle()
         return self
 
@@ -1768,11 +1785,67 @@ class QA_Account(QA_Worker):
             if event.callback:
                 event.callback(event)
 
+    @property
+    def positions_with_pos(self):
+        return pd.DataFrame([item.curpos for item in self.pms.values()],
+                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.pms.values()], names=['code', 'pos_id']))
+    @property
+    def positions(self):
+        return self.positions_with_pos.groupby('code').sum()
+
+    @property
+    def hold_detail_with_pos(self):
+        return pd.DataFrame([item.hold_detail for item in self.pms.values()],
+                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.pms.values()], names=['code', 'pos_id']))
+    @property
+    def hold_detail(self):
+        return self.hold_detail_with_pos.groupby('code').sum()
+
+    def get_position(self, code):
+        """基于QAPosition的联合查询
+
+        Arguments:
+            code {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        try:
+            return self.positions.loc[code].to_dict()
+        except KeyError:
+            return {'volume_long': 0, 'volume_short': 0, 'volume_long_frozen':0, 'volume_short_frozen': 0}
+
+    def get_position_with_pos(self, code, pos_id):
+        """基于QAPosition的联合查询
+
+        Arguments:
+            code {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        try:
+            return self.positions_with_pos.loc[(code, pos_id)].to_dict()
+        except KeyError:
+            return {'volume_long': 0, 'volume_short': 0}
+
+    def get_holddetail(self, code):
+        try:
+            return self.hold_detail.loc[code].to_dict()
+        except KeyError:
+            return {'volume_long': 0,
+                    'volume_long_his': 0,
+                    'volume_long_today': 0,
+                    'volume_short': 0,
+                    'volume_short_his': 0,
+                    'volume_short_today': 0}
+
+
     def save(self):
         """
         存储账户信息
         """
-        save_account(self.message)
+        save_account(self.message, self.client)
 
     def reload(self):
 
