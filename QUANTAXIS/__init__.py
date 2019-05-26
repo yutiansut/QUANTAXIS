@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.5.1'
+__version__ = '1.5.3'
 __author__ = 'yutiansut'
 
 import argparse
@@ -226,7 +226,7 @@ from QUANTAXIS.QASU.save_strategy import QA_SU_save_strategy
 from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
 from QUANTAXIS.QAUtil import (  # QAPARAMETER
     AMOUNT_MODEL, BROKER_EVENT, BROKER_TYPE, DATABASE, DATASOURCE,
-    ENGINE_EVENT, EXCHANGE_ID, FREQUENCE, MARKET_ERROR, MARKET_EVENT,
+    ENGINE_EVENT, EXCHANGE_ID, FREQUENCE, MARKET_ERROR, MARKET_EVENT, RUNNING_STATUS,
     MARKET_TYPE, ORDER_DIRECTION, ORDER_EVENT, ORDER_MODEL, ORDER_STATUS,
     OUTPUT_FORMAT, RUNNING_ENVIRONMENT, TRADE_STATUS, QA_Setting,
     QA_util_calc_time, QA_util_cfg_initial, QA_util_code_tolist,
