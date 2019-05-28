@@ -1898,10 +1898,7 @@ class QA_Account(QA_Worker):
             """update the market_data
             1. update the inside market_data struct
             2. tell the on_bar methods
-
             # 这样有点慢
-
-
             """
 
             self._currenttime = event.market_data.datetime[0]
