@@ -55,6 +55,15 @@ class ORDER_DIRECTION():
     OTHER = 6
 
 
+class EXCHANGE_ID():
+    SSE = 'sse'  # 上交所
+    SZSE = 'szse'  # 深交所
+    SHFE = 'shfe'  # 上期所
+    DCE = 'dce'  # 大商所
+    CZCE = 'czce'  # 郑商所
+    CFFEX = 'cffex'  # 中金所
+
+
 class OFFSET():
     """订单的开平仓属性
     OPEN 股票/期货 开仓
@@ -83,12 +92,13 @@ class ORDER_MODEL():
     """
 
     LIMIT = 'LIMIT'  # 限价
-    ANY = 'MARKET' # 市价(otg兼容)
+    ANY = 'MARKET'  # 市价(otg兼容)
     MARKET = 'MARKET'  # 市价/在回测里是下个bar的开盘价买入/实盘就是五档剩余最优成交价
     CLOSE = 'CLOSE'  # 当前bar的收盘价买入
     NEXT_OPEN = 'NEXT_OPEN'  # 下个bar的开盘价买入
     STRICT = 'STRICT'  # 严格模式/不推荐(仅限回测测试用)
-    BEST = 'MARKET' # 中金所  最优成交剩余转限
+    BEST = 'MARKET'  # 中金所  最优成交剩余转限
+
 
 class ORDER_STATUS():
     """订单状态
@@ -116,9 +126,9 @@ class ORDER_STATUS():
     # FAILED = 600
 
     NEW = 'new'
-    SUCCESS_ALL = 'success_all'
+    SUCCESS_ALL = 'success_all'  # == FINISHED
     SUCCESS_PART = 'success_part'
-    QUEUED = 'queued'  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交
+    QUEUED = 'queued'  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交 == ALIVED
     CANCEL_ALL = 'cancel_all'
     CANCEL_PART = 'cancel_part'
     SETTLED = 'settled'
@@ -152,7 +162,7 @@ class RUNNING_ENVIRONMENT():
     TZERO = 't0'
     REAL = 'real'
     RANDOM = 'random'
-    TTS='tts'
+    TTS = 'tts'
 
 
 class TRADE_STATUS():
@@ -268,9 +278,13 @@ class ENGINE_EVENT():
     """引擎事件"""
     MARKET_INIT = 'market_init'
     UPCOMING_DATA = 'upcoming_data'
+    UPCOMING_TICK = 'upcoming_tick'
+    UPCOMING_BAR = 'upcoming_bar'
     BAR_SETTLE = 'bar_settle'
     DAILY_SETTLE = 'daily_settle'
     UPDATE = 'update'
+    TRANSACTION = 'transaction'
+    ORDER = 'order'
 
 
 class ACCOUNT_EVENT():
@@ -309,6 +323,7 @@ class ORDER_EVENT():
     CREATE = 'create'
     TRADE = 'trade'
     CANCEL = 'cancel'
+    FAIL = 'fail'
 
 
 class FREQUENCE():
@@ -330,7 +345,7 @@ class FREQUENCE():
     SIXTY_MIN = '60min'  # 60min bar
     CURRENT = 'current'  # 当前bar
     TICK = 'tick'  # transaction
-    REALTIME = 'realtime' # 上下五档/一档
+    REALTIME = 'realtime'  # 上下五档/一档
 
 
 class CURRENCY_TYPE():
@@ -372,6 +387,22 @@ class OUTPUT_FORMAT():
     NDARRAY = 'ndarray'
     LIST = 'list'
     JSON = 'json'
+
+
+class RUNNING_STATUS():
+    """运行状态
+
+    starting 是一个占用状态
+
+    100 - 202 - 200 - 400 - 500
+    """
+
+    PENDING = 100
+    SUCCESS = 200
+    STARTING = 202
+    RUNNING = 300
+    WRONG = 400
+    STOPED = 500
 
 
 DATABASE_TABLE = {
