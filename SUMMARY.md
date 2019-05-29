@@ -24,7 +24,7 @@
 * [QUANTAXIS行情研究](Documents/analysis.md)
 * [QUANTAXIS的高级财务获取方法](Documents/QA_FINANCIAL.md)
 * [QUANTAXIS财务指标](Documents/financial_means.md)
-* [QUANTAXIS的账户结构](Documents/account.md)
+* [QUANTAXIS的账户结构](Documents/QAAccount.md)
 * [QUANTAXIS的订单类介绍](Documents/QA_Order.md)
 * [QUANTAXIS 账户风险分析插件指南](Documents/risk.md)
 * [QUANTAXIS回测委托成交结算的说明](Documents/orderanddeal.md)

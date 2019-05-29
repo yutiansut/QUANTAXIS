@@ -10,6 +10,7 @@ from QUANTAXIS import __version__
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
+from QUANTAXIS.QAMarket.QAPosition import QA_Position , QA_PMS
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
@@ -63,7 +64,7 @@ cdef class QA_Account:
     cdef public str start_
     cdef public str end_
     cdef public object orders
-
+    cdef public object PMS
     cdef public list cash
     cdef public float cash_available
     cdef public object sell_available
@@ -243,6 +244,7 @@ cdef class QA_Account:
         ########################################################################
         # 资产类
         self.orders = QA_OrderQueue()       # 历史委托单
+        self.PMS = QA_PMS()
         self.init_cash = init_cash
         self.init_hold = pd.Series(
             init_hold,
@@ -439,7 +441,7 @@ cdef class QA_Account:
             return None
 
     @property
-    def poisitions(QA_Account self):
+    def positions(QA_Account self):
         raise NotImplementedError
 
     @property
@@ -1148,7 +1150,9 @@ cdef class QA_Account:
             price=None,
             money=None,
             order_model=None,
-            amount_model=None
+            amount_model=None,
+            order_id=None,
+            position_id=None,
     ):
         """
         ATTENTION CHANGELOG 1.0.28
@@ -1209,6 +1213,7 @@ cdef class QA_Account:
         cdef bint flag
         cdef float _money
         cdef float _hold
+
         wrong_reason = None
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
@@ -1348,7 +1353,9 @@ cdef class QA_Account:
                 broker=self.broker,
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
-                tax_coeff=self.tax_coeff
+                tax_coeff=self.tax_coeff,
+                position_id = position_id,
+                order_id = order_id
             )                                                           # init
                                                                         # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
             self.datetime = time
