@@ -537,9 +537,9 @@ class QA_Position():
             5. 增加持仓cost
             6. 增加空单仓位
             """
-
-            self.margin_short += temp_cost * \
+            temp_margin =temp_cost * \
                 self.market_preset['sell_frozen_coeff']
+            self.margin_short += temp_margin
             # 重新计算开仓/持仓成本
             self.open_price_short = (
                 self.open_price_short * self.volume_short + amount * price
@@ -554,7 +554,8 @@ class QA_Position():
             self.open_cost_short += temp_cost
             self.position_cost_short += temp_cost
             self.volume_short_today += amount
-
+            self.moneypresetLeft -= temp_margin
+            
         elif towards == ORDER_DIRECTION.BUY_CLOSETODAY:
             if self.volume_short_today > amount:
                 self.position_cost_short = self.position_cost_short * \
