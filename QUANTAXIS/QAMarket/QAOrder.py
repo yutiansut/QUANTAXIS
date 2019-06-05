@@ -28,14 +28,19 @@ import pandas as pd
 
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAMarket.common import exchange_code
-from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
-                              QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil import (
+    QA_util_log_info,
+    QA_util_random_with_topic,
+    QA_util_to_json_from_pandas
+)
 from QUANTAXIS.QAUtil.QADate import QA_util_stamp2datetime
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, MARKET_TYPE,
-                                          ORDER_DIRECTION, ORDER_MODEL,
-                                          ORDER_STATUS)
-
-
+from QUANTAXIS.QAUtil.QAParameter import (
+    AMOUNT_MODEL,
+    MARKET_TYPE,
+    ORDER_DIRECTION,
+    ORDER_MODEL,
+    ORDER_STATUS
+)
 """
 重新定义Order模式
 
@@ -91,7 +96,7 @@ class QA_Order():
             commission_coeff=0.00025,
             tax_coeff=0.001,
             exchange_id=None,
-            pms_id=None,
+            position_id=None,
             *args,
             **kwargs
     ):
@@ -156,15 +161,15 @@ class QA_Order():
             self.datetime = datetime
         else:
             pass
-        self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
+        self.sending_time = self.datetime if sending_time is None else sending_time # 下单时间
 
-        self.trade_time = trade_time if trade_time else []  # 成交时间
+        self.trade_time = trade_time if trade_time else [] # 成交时间
         self.amount = amount                               # 委托数量
         self.trade_amount = 0                              # 成交数量
         self.cancel_amount = 0                             # 撤销数量
         self.towards = towards                             # side
         self.code = code                                   # 委托证券代码
-        self.user_cookie = user_cookie                                   # 委托用户
+        self.user_cookie = user_cookie                     # 委托用户
         self.market_type = market_type                     # 委托市场类别
         self.frequence = frequence                         # 委托所在的频率(回测用)
         self.account_cookie = account_cookie
@@ -190,15 +195,22 @@ class QA_Order():
         self.time_condition = 'GFD'                                # 当日有效
         self._status = _status
         self.exchange_code = exchange_code
-        # 增加订单对于多账户以及多级别账户的支持 2018/11/12
+        self.position_id = position_id
+                                                                   # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         ) else kwargs['mainacc_id']
         self.subacc_id = None if 'subacc_id' not in kwargs.keys(
         ) else kwargs['subacc_id']
         self.direction = 'BUY' if self.towards in [
-            ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.BUY_CLOSE] else 'SELL'
+            ORDER_DIRECTION.BUY,
+            ORDER_DIRECTION.BUY_OPEN,
+            ORDER_DIRECTION.BUY_CLOSE
+        ] else 'SELL'
         self.offset = 'OPEN' if self.towards in [
-            ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN] else 'CLOSE'
+            ORDER_DIRECTION.BUY,
+            ORDER_DIRECTION.BUY_OPEN,
+            ORDER_DIRECTION.SELL_OPEN
+        ] else 'CLOSE'
 
     @property
     def pending_amount(self):
@@ -239,7 +251,8 @@ class QA_Order():
             'time_condition': self.time_condition,
             '_status': self.status,
             'direction': self.direction,
-            'offset': self.offset}
+            'offset': self.offset
+        }
 
     def __repr__(self):
         '''
@@ -350,6 +363,7 @@ class QA_Order():
             if trade_amount < 1:
 
                 self._status = ORDER_STATUS.NEXT
+                return False
             else:
                 if trade_id not in self.trade_id:
                     trade_price = float(trade_price)
@@ -375,13 +389,21 @@ class QA_Order():
                         self.towards,
                         trade_time
                     )
-                    return self.trade_message(trade_id, trade_price, trade_amount, trade_time)
+                    return self.trade_message(
+                        trade_id,
+                        trade_price,
+                        trade_amount,
+                        trade_time
+                    )
                 else:
-                    pass
+                    return False
         else:
-            raise RuntimeError(
-                'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
+            print(
+                RuntimeError(
+                    'ORDER STATUS {} CANNNOT TRADE'.format(self.status)
+                )
             )
+            return False
 
     def trade_message(self, trade_id, trade_price, trade_amount, trade_time):
         return {
@@ -487,6 +509,31 @@ class QA_Order():
         }
 
     def to_qatradegatway(self):
+        """[summary]
+        {'topic': 'sendorder', 
+        'account_cookie': '100004', 
+        'strategy_id': None, 
+        'order_direction': 'SELL', 
+        'order_offset': 'OPEN', 
+        'code': 'rb1910', 
+        'price': 3745.0, 
+        'order_time': '2019-05-08 13:55:38.000000', 
+        'exchange_id': 'SHFE', 
+        'volume': 1.0, 
+        'order_id': '5ab55219-adf6-432f-90db-f1bc5f29f4e5'}
+
+
+        'topic': 'sendorder',
+        'account_cookie': acc,
+        'strategy_id': 'test',
+        'code': code,
+        'price': price[code],
+        'order_direction': 'SELL',
+        'order_offset': 'CLOSE',
+        'volume': 1,
+        'order_time': str(datetime.datetime.now()),
+        'exchange_id': 'SHFE'
+        """
         return {
             'topic': 'sendorder',
             'account_cookie': self.account_cookie,
@@ -497,7 +544,7 @@ class QA_Order():
             'price': self.price,
             'order_time': self.sending_time,
             'exchange_id': self.get_exchange(self.code),
-            'volume': self.amount,
+            'volume': int(self.amount),
             'order_id': self.order_id
         }
 
@@ -532,10 +579,10 @@ class QA_Order():
         self.code = str(otgOrder.get('instrument_id')).upper()
         self.offset = otgOrder.get('offset')
         self.direction = otgOrder.get('direction')
-        self.towards = eval('ORDER_DIRECTION.{}_{}'.format(
-            self.direction,
-            self.offset
-        ))
+        self.towards = eval(
+            'ORDER_DIRECTION.{}_{}'.format(self.direction,
+                                           self.offset)
+        )
         self.amount = otgOrder.get('volume_orign')
         self.trade_amount = self.amount - otgOrder.get('volume_left')
         self.price = otgOrder.get('limit_price')
@@ -572,7 +619,7 @@ class QA_Order():
             self.price = order_dict['price']
             self.date = order_dict['date']
             self.datetime = order_dict['datetime']
-            self.sending_time = order_dict['sending_time']  # 下单时间
+            self.sending_time = order_dict['sending_time'] # 下单时间
             self.trade_time = order_dict['trade_time']
             self.amount = order_dict['amount']
             self.frequence = order_dict['frequence']
@@ -605,7 +652,7 @@ class QA_Order():
             QA_util_log_info('Failed to tran from dict {}'.format(e))
 
 
-class QA_OrderQueue():  # also the order tree ？？ what's the tree means?
+class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
     """
     一个待成交队列
     queue是一个dataframe
@@ -657,7 +704,16 @@ class QA_OrderQueue():  # also the order tree ？？ what's the tree means?
             print('QAERROR Wrong for get None type while insert order to Queue')
 
     def update_order(self, order):
-        self.order_list[order.order_id] = order
+        if self.order_list[order.order_id].status != order.status:
+            self.order_list[order.order_id] = order
+            return True
+        else:
+            if self.order_list[order.order_id
+                              ].trade_amount != order.trade_amount:
+                slef.order_list[order.order_id] = order
+                return True
+            else:
+                return False
 
     @property
     def order_ids(self):
