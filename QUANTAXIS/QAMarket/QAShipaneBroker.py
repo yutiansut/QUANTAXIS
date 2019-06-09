@@ -31,9 +31,8 @@ from QUANTAXIS.QAUtil.QAParameter import (
     ORDER_MODEL,
     ORDER_STATUS
 )
-from QUANTAXIS.QAUtil.QASetting import setting_path
+from QUANTAXIS.QAUtil.QASetting import setting_path, QA_Setting
 
-CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 DEFAULT_SHIPANE_URL = 'http://127.0.0.1:8888'
 DEFAULT_SHIPANE_KEY = ''
 
@@ -47,40 +46,14 @@ class SPE_CONFIG():
 
 def get_config_SPE():
     config = configparser.ConfigParser()
-
-    if os.path.exists(CONFIGFILE_PATH):
-        config.read(CONFIGFILE_PATH)
-        try:
-
-            return SPE_CONFIG(
-                config.get('SPE',
-                           'uri'),
-                config.get('SPE',
-                           'key')
-            )
-
-        except configparser.NoSectionError:
-            config.add_section('SPE')
-            config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
-            config.set('SPE', 'key', DEFAULT_SHIPANE_KEY)
-            return SPE_CONFIG()
-        except configparser.NoOptionError:
-            config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
-            config.set('SPE', 'key', DEFAULT_SHIPANE_KEY)
-            return SPE_CONFIG()
-        finally:
-
-            with open(CONFIGFILE_PATH, 'w') as f:
-                config.write(f)
-
-    else:
-        f = open(CONFIGFILE_PATH, 'w')
-        config.add_section('SPE')
-        config.set('SPE', 'uri', DEFAULT_SHIPANE_URL)
-        config.set('SPE', 'key', DEFAULT_SHIPANE_KEY)
-        config.write(f)
-        f.close()
-        return DEFAULT_SHIPANE_URL
+    return SPE_CONFIG(
+        QA_Setting().get_config('SPE',
+                                'uri',
+                                DEFAULT_SHIPANE_URL),
+        QA_Setting().get_config('SPE',
+                                'key',
+                                DEFAULT_SHIPANE_KEY)
+    )
 
 
 class QA_SPEBroker(QA_Broker):

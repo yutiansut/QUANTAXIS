@@ -10,17 +10,17 @@ import pandas as pd
 data = QA.QA_fetch_stock_min_adv('601318', '2018-03-22', '2018-08-23', '30min')
 
 
-
 res = data.add_func(QA.QA_indicator_KDJ)
 sig = QA.CROSS(res.KDJ_J, res.KDJ_K)
 sig2 = QA.CROSS(res.KDJ_K, res.KDJ_J)
 
 User = QA.QA_User(username='quantaxis', password='quantaxis')
 Portfolio = User.new_portfolio('qatestportfolio')
-Account = Portfolio.new_account(account_cookie='supersimple' ,init_cash=100000, init_hold={'601318':1000},
-                        frequence=QA.FREQUENCE.THIRTY_MIN)
+Account = Portfolio.new_account(account_cookie='supersimple', init_cash=100000, init_hold={'601318': 1000},
+                                frequence=QA.FREQUENCE.THIRTY_MIN)
 Broker = QA.QA_BacktestBroker()
-
+QA.QA_SU_save_strategy(Account.account_cookie,
+                       Account.portfolio_cookie, Account.account_cookie, if_save=True)
 
 _date = None
 for items in data.panel_gen:
@@ -42,7 +42,7 @@ for items in data.panel_gen:
             )
             if order:
                 order.trade('unknownTrade', order.price,
-                                    order.amount, order.datetime)
+                            order.amount, order.datetime)
         elif sig2[item.index].iloc[0] > 0:
             if Account.sell_available.get(item.code[0], 0) > 0:
                 order1 = Account.send_order(
@@ -56,7 +56,7 @@ for items in data.panel_gen:
                 )
                 if order1:
                     order1.trade('unknownTrade', order1.price,
-                                    order1.amount, order1.datetime)
+                                 order1.amount, order1.datetime)
 
 
 print(Account.history_table)
@@ -69,5 +69,5 @@ r.plot_assets_curve().show()
 
 print(r.profit_construct)
 
-User.save()
+Account.save()
 r.save()

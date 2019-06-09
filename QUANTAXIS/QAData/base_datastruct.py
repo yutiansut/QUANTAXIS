@@ -33,7 +33,11 @@ from functools import lru_cache
 
 import numpy as np
 import pandas as pd
-from pyecharts import Kline, Bar, Grid
+
+try:
+  from pyecharts import Kline, Bar, Grid
+except:
+  from pyecharts.charts import Kline, Bar, Grid
 
 from QUANTAXIS.QAUtil import (
     QA_util_log_info,
@@ -569,6 +573,13 @@ class _quotation_base():
         '返回DataStruct.price的百分比变化'
         res = self.price.groupby(level=1).apply(lambda x: x.pct_change())
         res.name = 'pct_change'
+        return res
+    
+    @lru_cache()
+    def close_pct_change(self):
+        '返回DataStruct.close的百分比变化'
+        res = self.close.groupby(level=1).apply(lambda x: x.pct_change())
+        res.name = 'close_pct_change'
         return res
 
     # 平均绝对偏差

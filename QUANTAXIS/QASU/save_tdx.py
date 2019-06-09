@@ -193,16 +193,6 @@ def gen_param(codelist, start_date=None, end_date=None, if_fq='00', frequence='d
             for code, i in [(code, next(my_iterator) % count) for code in codelist]]
 
 
-def gen_param(codelist, start_date=None, end_date=None, if_fq='00', frequence='day', IPList=[]):
-    # 生成QA.QAFetch.QATdx.QQA_fetch_get_stock_day多进程处理的参数
-    count = len(IPList)
-    my_iterator = iter(range(len(codelist)))
-    start_date = str(start_date)[0:10]
-    end_date = str(end_date)[0:10]
-    return [(code, start_date, end_date, if_fq, frequence, IPList[i % count]['ip'], IPList[i % count]['port'])
-            for code, i in [(code, next(my_iterator) % count) for code in codelist]]
-
-
 def QA_SU_save_stock_week(client=DATABASE, ui_log=None, ui_progress=None):
     """save stock_week
 
@@ -1181,6 +1171,40 @@ def QA_SU_save_stock_list(client=DATABASE, ui_log=None, ui_progress=None):
         pass
 
 
+def QA_SU_save_etf_list(client=DATABASE, ui_log=None, ui_progress=None):
+    """save etf_list
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+    try:
+        QA_util_log_info(
+            '##JOB16 Now Saving ETF_LIST ====',
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=5000
+        )
+        etf_list_from_tdx = QA_fetch_get_stock_list(type_="etf")
+        pandas_data = QA_util_to_json_from_pandas(etf_list_from_tdx)
+
+        if len(pandas_data) > 0:
+            # 获取到数据后才进行drop collection 操作
+            client.drop_collection('etf_list')
+            coll = client.etf_list
+            coll.create_index('code')
+            coll.insert_many(pandas_data)
+        QA_util_log_info(
+            "完成ETF列表获取",
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=10000
+        )
+    except Exception as e:
+        QA_util_log_info(e, ui_log=ui_log)
+        print(" Error save_tdx.QA_SU_save_etf_list exception!")
+        pass
+
+
 def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
     """save stock_block
 
@@ -1248,7 +1272,7 @@ def QA_SU_save_stock_info(client=DATABASE, ui_log=None, ui_progress=None):
 
     def __saving_work(code, coll):
         QA_util_log_info(
-            '##JOB010 Now Saving STOCK INFO ==== {}'.format(str(code)),
+            '##JOB10 Now Saving STOCK INFO ==== {}'.format(str(code)),
             ui_log=ui_log
         )
         try:
