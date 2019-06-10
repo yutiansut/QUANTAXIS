@@ -28,6 +28,7 @@
 # 具体参见rainx的pytdx(https://github.com/rainx/pytdx)
 #
 
+
 import datetime
 
 import numpy as np
@@ -159,7 +160,6 @@ def get_ip_list_by_ping(ip_list=[], _type='stock'):
 def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock'):
     ''' 根据ping排序返回可用的ip列表
     2019 03 31 取消参数filename
-
     :param ip_list: ip列表
     :param n: 最多返回的ip数量， 当可用ip数量小于n，返回所有可用的ip；n=0时，返回所有可用ip
     :param _type: ip类型
@@ -226,11 +226,9 @@ def get_extensionmarket_ip(ip, port):
 
 def get_mainmarket_ip(ip, port):
     """[summary]
-
     Arguments:
         ip {[type]} -- [description]
         port {[type]} -- [description]
-
     Returns:
         [type] -- [description]
     """
@@ -250,16 +248,13 @@ def get_mainmarket_ip(ip, port):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
     """按bar长度推算数据
-
     Arguments:
         code {[type]} -- [description]
         _type {[type]} -- [description]
         lens {[type]} -- [description]
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {best_ip})
         port {[type]} -- [description] (default: {7709})
-
     Returns:
         [type] -- [description]
     """
@@ -286,23 +281,17 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00', frequence='day', ip=None, port=None):
     """获取日线及以上级别的数据
-
-
     Arguments:
         code {str:6} -- code 是一个单独的code 6位长度的str
         start_date {str:10} -- 10位长度的日期 比如'2017-01-01'
         end_date {str:10} -- 10位长度的日期 比如'2018-01-01'
-
     Keyword Arguments:
         if_fq {str} -- '00'/'bfq' -- 不复权 '01'/'qfq' -- 前复权 '02'/'hfq' -- 后复权 '03'/'ddqfq' -- 定点前复权 '04'/'ddhfq' --定点后复权
         frequency {str} -- day/week/month/quarter/year 也可以是简写 D/W/M/Q/Y
         ip {str} -- [description] (default: None) ip可以通过select_best_ip()函数重新获取
         port {int} -- [description] (default: {None})
-
-
     Returns:
         pd.DataFrame/None -- 返回的是dataframe,如果出错比如只获取了一天,而当天停牌,返回None
-
     Exception:
         如果出现网络问题/服务器拒绝, 会出现socket:time out 尝试再次获取/更换ip即可, 本函数不做处理
     """
@@ -491,10 +480,7 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
 201×××国债回购；
 310×××国债期货；
 500×××550×××基金；
-
-
 600×××A股；
-
 700×××配股；
 710×××转配股；
 701×××转配股再配股；
@@ -504,8 +490,6 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
 735×××新基金申购；
 737×××新股配售；
 900×××B股。
-
-
 深市
 第1位	第二位	第3-6位	含义
 0	0	XXXX	A股证券
@@ -526,14 +510,10 @@ def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
 3	7	XXXX	创业板增发
 3	8	XXXX	创业板权证
 3	9	XXXX	综合指数/成份指数
-
-
 深市A股票买卖的代码是以000打头，如：顺鑫农业：股票代码是000860。
 B股买卖的代码是以200打头，如：深中冠B股，代码是200018。
 中小板股票代码以002打头，如：东华合创股票代码是002065。
 创业板股票代码以300打头，如：探路者股票代码是：300005
-
-
 更多参见 issue https://github.com/QUANTAXIS/QUANTAXIS/issues/158
 @yutiansut
 '''
@@ -541,10 +521,8 @@ B股买卖的代码是以200打头，如：深中冠B股，代码是200018。
 
 def for_sz(code):
     """深市代码分类
-
     Arguments:
         code {[type]} -- [description]
-
     Returns:
         [type] -- [description]
     """
@@ -622,11 +600,9 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_index_list(ip=None, port=None):
     """获取指数列表
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
     Returns:
         [type] -- [description]
     """
@@ -650,7 +626,6 @@ def QA_fetch_get_index_list(ip=None, port=None):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_bond_list(ip=None, port=None):
     """bond
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
@@ -728,12 +703,10 @@ def QA_fetch_get_index_day(code, start_date, end_date, frequence='day', ip=None,
         code {[type]} -- [description]
         start_date {[type]} -- [description]
         end_date {[type]} -- [description]
-
     Keyword Arguments:
         frequence {str} -- [description] (default: {'day'})
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
     Returns:
         [type] -- [description]
     """
@@ -891,7 +864,6 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None, port=None):
     '''
-
     :param code: 股票代码
     :param start: 开始日期
     :param end:  结束日期
@@ -1009,11 +981,8 @@ def QA_fetch_get_stock_block(ip=None, port=None):
 
 """
 http://www.tdx.com.cn/page_46.html
-
-
     market  category      name short_name
         1         1       临时股         TP
-
 ## 期权 OPTION
         4        12    郑州商品期权         OZ
         5        12    大连商品期权         OD
@@ -1024,7 +993,6 @@ http://www.tdx.com.cn/page_46.html
 ## 汇率 EXCHANGERATE
        10         4      基本汇率         FE
        11         4      交叉汇率         FX
-
 ## 全球 GLOBALMARKET
        37        11  全球指数(静态)         FW
        12         5      国际指数         WI
@@ -1038,16 +1006,13 @@ http://www.tdx.com.cn/page_46.html
        20         3      纽约期货         NB
        77         3     新加坡期货         SX
        39         3      马来期货         ML
-
 # 港股 HKMARKET
        27         5      香港指数         FH
        31         2      香港主板         KH
        48         2     香港创业板         KG
        49         2      香港基金         KT
        43         1     B股转H股         HB
-
 # 期货现货
-
        42         3      商品指数         TI
        60         3    主力期货合约         MA
        28         3      郑州商品         QZ
@@ -1057,7 +1022,6 @@ http://www.tdx.com.cn/page_46.html
        47         3     中金所期货         CZ
        50         3      渤海商品         BH
        76         3      齐鲁商品         QL
-
 ## 基金 
        33         8     开放式基金         FU
        34         9     货币型基金         FB
@@ -1066,33 +1030,24 @@ http://www.tdx.com.cn/page_46.html
        56         8    阳光私募基金         TA
        57         8    券商集合理财         TB
        58         9    券商货币理财         TC
-
 ## 美股 USA STOCK
        74        13      美国股票         US
        40        11     中国概念股         CH
        41        11    美股知名公司         MG
-
-
 ## 其他
        38        10      宏观指标         HG
        44         1      股转系统         SB
        54         6     国债预发行         GY
        62         5      中证指数         ZZ
-
-
        70         5    扩展板块指数         UZ
        71         2     港股通             GH
-
 """
 
 """
 扩展行情
-
 首先会初始化/存储一个
-
 市场状况  extension_market_info
 代码对应表 extension_market_list
-
 """
 
 global extension_market_info
@@ -1133,22 +1088,17 @@ def QA_fetch_get_extensionmarket_list(ip=None, port=None):
 
 def QA_fetch_get_future_list(ip=None, port=None):
     """[summary]
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
     42         3      商品指数         TI
     60         3    主力期货合约         MA
     28         3      郑州商品         QZ
     29         3      大连商品         QD
     30         3      上海期货(原油+贵金属)  QS
     47         3     中金所期货         CZ
-
     50         3      渤海商品         BH
     76         3      齐鲁商品         QL
-
-
     46        11      上海黄金(伦敦金T+D)         SG
     """
 
@@ -1161,15 +1111,11 @@ def QA_fetch_get_future_list(ip=None, port=None):
 
 def QA_fetch_get_globalindex_list(ip=None, port=None):
     """全球指数列表
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
        37        11  全球指数(静态)         FW
        12         5      国际指数         WI
-
-
     """
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(
@@ -1180,22 +1126,17 @@ def QA_fetch_get_globalindex_list(ip=None, port=None):
 
 def QA_fetch_get_goods_list(ip=None, port=None):
     """[summary]
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
     42         3      商品指数         TI
     60         3    主力期货合约         MA
     28         3      郑州商品         QZ
     29         3      大连商品         QD
     30         3      上海期货(原油+贵金属)  QS
     47         3     中金所期货         CZ
-
     50         3      渤海商品         BH
     76         3      齐鲁商品         QL
-
-
     46        11      上海黄金(伦敦金T+D)         SG
     """
 
@@ -1208,11 +1149,9 @@ def QA_fetch_get_goods_list(ip=None, port=None):
 
 def QA_fetch_get_globalfuture_list(ip=None, port=None):
     """[summary]
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
        14         3      伦敦金属         LM
        15         3      伦敦石油         IP
        16         3      纽约商品         CO
@@ -1222,7 +1161,6 @@ def QA_fetch_get_globalfuture_list(ip=None, port=None):
        20         3      纽约期货         NB
        77         3     新加坡期货         SX
        39         3      马来期货         ML
-
     """
 
     global extension_market_list
@@ -1235,18 +1173,15 @@ def QA_fetch_get_globalfuture_list(ip=None, port=None):
 
 def QA_fetch_get_hkstock_list(ip=None, port=None):
     """[summary]
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
 # 港股 HKMARKET
        27         5      香港指数         FH
        31         2      香港主板         KH
        48         2     香港创业板         KG
        49         2      香港基金         KT
        43         1     B股转H股         HB
-
     """
 
     global extension_market_list
@@ -1258,18 +1193,15 @@ def QA_fetch_get_hkstock_list(ip=None, port=None):
 
 def QA_fetch_get_hkindex_list(ip=None, port=None):
     """[summary]
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
 # 港股 HKMARKET
        27         5      香港指数         FH
        31         2      香港主板         KH
        48         2     香港创业板         KG
        49         2      香港基金         KT
        43         1     B股转H股         HB
-
     """
 
     global extension_market_list
@@ -1281,18 +1213,15 @@ def QA_fetch_get_hkindex_list(ip=None, port=None):
 
 def QA_fetch_get_hkfund_list(ip=None, port=None):
     """[summary]
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
     # 港股 HKMARKET
         27         5      香港指数         FH
         31         2      香港主板         KH
         48         2     香港创业板         KG
         49         2      香港基金         KT
         43         1     B股转H股         HB
-
     """
 
     global extension_market_list
@@ -1304,17 +1233,13 @@ def QA_fetch_get_hkfund_list(ip=None, port=None):
 
 def QA_fetch_get_usstock_list(ip=None, port=None):
     """[summary]
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
     ## 美股 USA STOCK
         74        13      美国股票         US
         40        11     中国概念股         CH
         41        11    美股知名公司         MG
-
-
     """
 
     global extension_market_list
@@ -1326,14 +1251,10 @@ def QA_fetch_get_usstock_list(ip=None, port=None):
 
 def QA_fetch_get_macroindex_list(ip=None, port=None):
     """宏观指标列表
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
         38        10      宏观指标         HG
-
-
     """
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(
@@ -1342,32 +1263,7 @@ def QA_fetch_get_macroindex_list(ip=None, port=None):
     return extension_market_list.query('market==38')
 
 
-def QA_fetch_get_option_list(ip=None, port=None):
-    """期权列表
-
-    Keyword Arguments:
-        ip {[type]} -- [description] (default: {None})
-        port {[type]} -- [description] (default: {None})
-
-    ## 期权 OPTION
-            1        12    临时期权(主要是50ETF)
-            4        12    郑州商品期权         OZ
-            5        12    大连商品期权         OD
-            6        12    上海商品期权         OS
-            7        12     中金所期权         OJ
-            8        12    上海股票期权         QQ
-            9        12    深圳股票期权      (推测)
-
-
-    """
-    global extension_market_list
-    extension_market_list = QA_fetch_get_extensionmarket_list(
-    ) if extension_market_list is None else extension_market_list
-
-    return extension_market_list.query('category==12 and market!=1')
-
-
-def QA_fetch_get_option_contract_time_to_market():
+def QA_fetch_get_option_all_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
     :return: list Series
@@ -1591,12 +1487,54 @@ def QA_fetch_get_option_contract_time_to_market():
 
             pass
         else:
-            print("未知类型合约")
-            print(strName)
+
+            result.loc[idx, 'meaningful_name'] = "未知类型合约"
+            row = result.loc[idx]
+            rows.append(row)
+
 
     return rows
 
 
+###############################################################
+#期权合约分类
+###############################################################
+
+
+def QA_fetch_get_option_list(ip=None, port=None):
+    """期权列表
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    ## 期权 OPTION
+            1        12    临时期权(主要是50ETF)
+            4        12    郑州商品期权         OZ
+            5        12    大连商品期权         OD
+            6        12    上海商品期权         OS
+            7        12     中金所期权         OJ
+            8        12    上海股票期权         QQ
+            9        12    深圳股票期权      (推测)
+    """
+    global extension_market_list
+    extension_market_list = QA_fetch_get_extensionmarket_list(
+    ) if extension_market_list is None else extension_market_list
+
+    return extension_market_list.query('category==12 and market!=1')
+
+
+###############################################################
+#期权合约分类
+#50ETF
+#棉花
+#天然橡胶
+#铜
+#玉米
+#豆粕
+#白糖
+#红枣
+###############################################################
+#50ETF
+###############################################################
 def QA_fetch_get_option_50etf_contract_time_to_market():
     '''
         #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1681,6 +1619,9 @@ def QA_fetch_get_option_50etf_contract_time_to_market():
     return rows
 
 
+###############################################################
+#棉花
+###############################################################
 def QA_fetch_get_commodity_option_CF_contract_time_to_market():
     '''
     铜期权  CU 开头   上期证
@@ -1715,7 +1656,9 @@ def QA_fetch_get_commodity_option_CF_contract_time_to_market():
 
     pass
 
-
+###############################################################
+#天然橡胶
+###############################################################
 def QA_fetch_get_commodity_option_RU_contract_time_to_market():
     '''
     铜期权  CU 开头   上期证
@@ -1750,7 +1693,9 @@ def QA_fetch_get_commodity_option_RU_contract_time_to_market():
 
     pass
 
-
+###############################################################
+#玉米
+###############################################################
 def QA_fetch_get_commodity_option_C_contract_time_to_market():
     '''
     铜期权  CU 开头   上期证
@@ -1785,7 +1730,9 @@ def QA_fetch_get_commodity_option_C_contract_time_to_market():
 
     pass
 
-
+###############################################################
+#铜
+###############################################################
 def QA_fetch_get_commodity_option_CU_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1816,6 +1763,9 @@ def QA_fetch_get_commodity_option_CU_contract_time_to_market():
     return rows
 
 
+###############################################################
+#豆粕
+###############################################################
 def QA_fetch_get_commodity_option_M_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1828,7 +1778,6 @@ def QA_fetch_get_commodity_option_M_contract_time_to_market():
     铜期权  CU 开头   上期证
     豆粕    M开头     大商所
     白糖    SR开头    郑商所
-
     '''
     # df = pd.DataFrame()
     rows = []
@@ -1851,6 +1800,9 @@ def QA_fetch_get_commodity_option_M_contract_time_to_market():
     return rows
 
 
+###############################################################
+#白糖
+###############################################################
 def QA_fetch_get_commodity_option_SR_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1863,7 +1815,6 @@ def QA_fetch_get_commodity_option_SR_contract_time_to_market():
     铜期权  CU 开头   上期证
     豆粕    M开头     大商所
     白糖    SR开头    郑商所
-
     '''
     # df = pd.DataFrame()
     rows = []
@@ -1885,19 +1836,16 @@ def QA_fetch_get_commodity_option_SR_contract_time_to_market():
 
     return rows
 
+#########################################################################################
 
 def QA_fetch_get_exchangerate_list(ip=None, port=None):
     """汇率列表
-
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
-
     ## 汇率 EXCHANGERATE
         10         4      基本汇率         FE
         11         4      交叉汇率         FX
-
-
     """
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(

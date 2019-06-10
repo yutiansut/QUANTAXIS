@@ -37,6 +37,7 @@ import os
 import sys
 from zenlog import logging
 from QUANTAXIS.QASetting.QALocalize import log_path, setting_path
+
 from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 

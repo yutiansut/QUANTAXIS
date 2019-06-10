@@ -1,6 +1,8 @@
 
 # QUANTAXIS 量化金融策略框架
 
+> 2019-04-26 update: 重大更新即将上线/ OMS/RMS/多场景无缝切换/CEP即将上线
+
 -------------------------------------------------------------
 
 Quantitative Financial FrameWork
@@ -46,10 +48,11 @@ Quantitative Financial FrameWork
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUANTAXIS%2FQUANTAXIS?ref=badge_shield)
 [![Waffle.io - Issues in progress](https://badge.waffle.io/yutiansut/QUANTAXIS.png?label=in%20progress&title=In%20Progress)](http://waffle.io/yutiansut/QUANTAXIS)
 [![Reviewed by Hound](https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg)](https://houndci.com)
+[![](http://rescdn.qqmail.com/zh_CN/htmledition/images/function/qm_open/ico_mailme_22.png)](http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=VSwgITw0OyYgIRUjPCV7JCR7Njo4)
 
 ## Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [[Contribute](https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors)].
 <a href="https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors"><img src="https://opencollective.com/QUANTAXIS/contributors.svg?width=890&button=false" /></a>
 
 
@@ -258,6 +261,22 @@ CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_
 [PDF](https://www.gitbook.com/download/pdf/book/quantaxis/quantaxis) | [MOBI](https://www.gitbook.com/download/mobi/book/quantaxis/quantaxis) | [EPUB](https://www.gitbook.com/download/epub/book/quantaxis/quantaxis)
 
 ##  3. 安装和部署
+
+```
+quantaxis 1.4.4 增加了cython编译加速过程, 如果需要cython的同学 使用:
+
+python setup_cython.py build_ext --inplace
+
+再继续 pip install -e .
+
+必须要注意的事情: 以上为可选项 并非强制!!
+
+
+cython 提速:
+
+1.4.3的Account.receive_simpledeal( 包括接受订单/更新账户) 为单次 1.88微秒
+1.4.4的Account.receive_simpledeal  为单次 570纳秒
+```
 
 ### 3.0 安装说明
 参见 [安装说明](Documents/install.md)
