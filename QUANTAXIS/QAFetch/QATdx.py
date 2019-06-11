@@ -1263,28 +1263,7 @@ def QA_fetch_get_macroindex_list(ip=None, port=None):
     return extension_market_list.query('market==38')
 
 
-def QA_fetch_get_option_list(ip=None, port=None):
-    """期权列表
-    Keyword Arguments:
-        ip {[type]} -- [description] (default: {None})
-        port {[type]} -- [description] (default: {None})
-    ## 期权 OPTION
-            1        12    临时期权(主要是50ETF)
-            4        12    郑州商品期权         OZ
-            5        12    大连商品期权         OD
-            6        12    上海商品期权         OS
-            7        12     中金所期权         OJ
-            8        12    上海股票期权         QQ
-            9        12    深圳股票期权      (推测)
-    """
-    global extension_market_list
-    extension_market_list = QA_fetch_get_extensionmarket_list(
-    ) if extension_market_list is None else extension_market_list
-
-    return extension_market_list.query('category==12 and market!=1')
-
-
-def QA_fetch_get_option_contract_time_to_market():
+def QA_fetch_get_option_all_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
     :return: list Series
@@ -1508,12 +1487,54 @@ def QA_fetch_get_option_contract_time_to_market():
 
             pass
         else:
-            print("未知类型合约")
-            print(strName)
+
+            result.loc[idx, 'meaningful_name'] = "未知类型合约"
+            row = result.loc[idx]
+            rows.append(row)
+
 
     return rows
 
 
+###############################################################
+#期权合约分类
+###############################################################
+
+
+def QA_fetch_get_option_list(ip=None, port=None):
+    """期权列表
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    ## 期权 OPTION
+            1        12    临时期权(主要是50ETF)
+            4        12    郑州商品期权         OZ
+            5        12    大连商品期权         OD
+            6        12    上海商品期权         OS
+            7        12     中金所期权         OJ
+            8        12    上海股票期权         QQ
+            9        12    深圳股票期权      (推测)
+    """
+    global extension_market_list
+    extension_market_list = QA_fetch_get_extensionmarket_list(
+    ) if extension_market_list is None else extension_market_list
+
+    return extension_market_list.query('category==12 and market!=1')
+
+
+###############################################################
+#期权合约分类
+#50ETF
+#棉花
+#天然橡胶
+#铜
+#玉米
+#豆粕
+#白糖
+#红枣
+###############################################################
+#50ETF
+###############################################################
 def QA_fetch_get_option_50etf_contract_time_to_market():
     '''
         #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1598,6 +1619,9 @@ def QA_fetch_get_option_50etf_contract_time_to_market():
     return rows
 
 
+###############################################################
+#棉花
+###############################################################
 def QA_fetch_get_commodity_option_CF_contract_time_to_market():
     '''
     铜期权  CU 开头   上期证
@@ -1632,7 +1656,9 @@ def QA_fetch_get_commodity_option_CF_contract_time_to_market():
 
     pass
 
-
+###############################################################
+#天然橡胶
+###############################################################
 def QA_fetch_get_commodity_option_RU_contract_time_to_market():
     '''
     铜期权  CU 开头   上期证
@@ -1667,7 +1693,9 @@ def QA_fetch_get_commodity_option_RU_contract_time_to_market():
 
     pass
 
-
+###############################################################
+#玉米
+###############################################################
 def QA_fetch_get_commodity_option_C_contract_time_to_market():
     '''
     铜期权  CU 开头   上期证
@@ -1702,7 +1730,9 @@ def QA_fetch_get_commodity_option_C_contract_time_to_market():
 
     pass
 
-
+###############################################################
+#铜
+###############################################################
 def QA_fetch_get_commodity_option_CU_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1733,6 +1763,9 @@ def QA_fetch_get_commodity_option_CU_contract_time_to_market():
     return rows
 
 
+###############################################################
+#豆粕
+###############################################################
 def QA_fetch_get_commodity_option_M_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1767,6 +1800,9 @@ def QA_fetch_get_commodity_option_M_contract_time_to_market():
     return rows
 
 
+###############################################################
+#白糖
+###############################################################
 def QA_fetch_get_commodity_option_SR_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1800,6 +1836,7 @@ def QA_fetch_get_commodity_option_SR_contract_time_to_market():
 
     return rows
 
+#########################################################################################
 
 def QA_fetch_get_exchangerate_list(ip=None, port=None):
     """汇率列表
