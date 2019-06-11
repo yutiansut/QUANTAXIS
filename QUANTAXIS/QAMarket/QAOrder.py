@@ -601,9 +601,11 @@ class QA_Order():
         self.message = otgOrder.get('last_msg')
 
         self._status = ORDER_STATUS.NEW
-        if '已撤单' in self.message or '拒绝' in self.message or '仓位不足' in self.message:
+        if '拒绝' in self.message or '仓位不足' in self.message:
             # 仓位不足:  一般是平今/平昨仓位不足
             self._status = ORDER_STATUS.FAILED
+        if '已撤单' in self.message:
+            self._status = ORDER_STATUS.CANCEL_ALL
         self.realorder_id = otgOrder.get('exchange_order_id')
         return self
 
