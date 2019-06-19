@@ -1,3 +1,27 @@
+# coding:utf-8
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 import copy
 import datetime
 import warnings
@@ -10,7 +34,7 @@ from QUANTAXIS import __version__
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
-from QUANTAXIS.QAMarket.QAPosition import QA_Position , QA_PMS
+from QUANTAXIS.QAMarket.QAPosition import QA_Position, QA_PMS
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
@@ -27,59 +51,28 @@ from QUANTAXIS.QAUtil.QAParameter import (
     ORDER_DIRECTION,
     ORDER_MODEL,
     RUNNING_ENVIRONMENT,
-    TRADE_STATUS
+    TRADE_STATUS,
+    EXCHANGE_ID
 )
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
+# pylint: disable=old-style-class, too-few-public-methods
 
-cdef class QA_Account:
 
-    cdef public str user_cookie
-    cdef public str portfolio_cookie
-    cdef public list history_headers
-    cdef public str account_cookie
-    cdef public str strategy_name
-    cdef public str market_type
-    cdef public str frequence
-    cdef public str broker
-    cdef public object init_hold
-    cdef public float init_cash
-    cdef public float commission_coeff
-    cdef public float tax_coeff
-    cdef public dict margin_level
-    cdef public bint allow_t0
-    cdef public bint allow_sellopen
-    cdef public bint allow_margin
-    cdef public str running_environment
-    cdef public bint auto_reload
-    cdef public str generated
-    cdef public str start
-    cdef public str end 
-    cdef public list _market_data
-    cdef public str _currenttime
-    cdef public str datetime
-    cdef public str running_time
-    cdef public object client
-    cdef public str quantaxis_version
-    cdef public str start_
-    cdef public str end_
-    cdef public object orders
-    cdef public object PMS
-    cdef public list cash
-    cdef public float cash_available
-    cdef public object sell_available
-    cdef public object buy_available
-    cdef public object time_index_max
-    cdef public list history
-    cdef public dict static_balance
-    cdef public dict today_trade
-    cdef public dict today_orders
+class QA_AccountPRO(QA_Worker):
+    """QA_Account
 
-    cdef public dict frozen
-    cdef public list finishedOrderid
+    QAAccount
 
-    
-    cdef public object market_preset
+    在QAAccountPro/Position的模型中, Pos不负责OMS业务,因此, 需要使用AccPro的sendOrder来主导OMS模型
+
+
+    一个简单的外部OMS
+
+    POS 下单以后, 订单信息被AccPro接受, 并生成QA_Order
+    基于QA_Order的成交 ==> receive_deal的回报模式, 记录history 更新POS的on_transaction
+    """
+
     def __init__(
             self,
             user_cookie: str,
@@ -122,7 +115,7 @@ cdef class QA_Account:
         :param [Bool] auto_reload:       是否自动从数据库中同步数据
         :param [Bool] generated:         从哪里生成==> directed: 直接生成  portfolio: 组合生成
 
-        
+
         ### 注意
         >>>>>>>>>>>>>
         在期货账户中:
@@ -182,12 +175,79 @@ cdef class QA_Account:
                 -1, amount # 空单待平仓
             }
         }
+
+
+        >>>>>>>>>>>>>>>>>>>>>>>>>
+
+        init_hold面临的一个改进和问题:
+
+        >> init_hold就是简化的position模型
+
+        init_hold目前是一个类似这样的字段:
+
+        {'000001':100}
+
+        实际上我们需要对于他进行进一步的改进, 用以用于支持更多场景:
+
+
+        {
+        'code': 000001, #品种名称
+        'instrument_id': 000001,
+        'name': '中国平安', #
+        'market_type': QA.MARKET_TYPE.STOCK_CN,
+        'exchange_id': QA.EXCHANGE_ID.SZSE, #交易所ID
+        'volume_short': 0, #空头持仓数量  
+        'volume_long': 100,  #持仓数量
+
+        'volume_long_today': 0,
+        'volume_long_his': 1,
+        'volume_long': 1,
+        'volume_long_frozen_today': 0,
+        'volume_long_frozen_his': 0,
+        'volume_long_frozen': 0,
+        'volume_short_today': 0,
+        'volume_short_his: 0,
+        'volume_short': 0,
+        'volume_short_frozen_today': 0,
+        'volume_short_frozen_his': 0,
+        'volume_short_frozen': 0,
+
+        'position_price_long': 9.5,   #多头成本价
+        'position_cost_long': 9500,   # 多头成本
+        'position_price_short': 0,
+        'position_cost_short': 0,
+
+        'open_price_long': 9.5,     #多头开仓价
+        'open_cost_long': 9500,     #多头开仓成本
+        'open_price_short': 0,      #空头开仓价
+        'open_cost_short': 0,       #空头成本
+
+        'margin_long': 0,       # 多头保证金
+        'margin_short': 0,
+        'margin': 0
+         }
+
+        AccPro 使用QA_Position来创建仓位管理
+
+        - 当创建QA_Account的时候， 会从Positions库中查询并恢复新的Positions
+        - 当申请创建一个新的分区的时候，Account会扣减一个额度(money_preset) 体现在cash/history中
+        - 当删除一个poistion 释放额度
+        - 策略会写入相应的position分区
+
+
+        |           AccPro                         |
+
+        |   MPMS  |     MPMS    | SPMS |  FREECASH |
+
+        | POS POS | POS POS POS |  POS |           |
+
+
         """
         super().__init__()
 
         # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
         #         ', DeprecationWarning, stacklevel=2)
-        self.history_headers = [
+        self._history_headers = [
             'datetime',  # 日期/时间
             'code',  # 品种
             'price',  # 成交价
@@ -201,8 +261,15 @@ cdef class QA_Account:
             'tax',  # 税
             'message',  # 备注
             'frozen',  # 冻结资金.
-            'direction' # 方向
+            'direction'  # 方向
         ]
+        self._activity_headers = [
+            'datetime',
+            'activity',
+            'event',
+            ''
+        ]
+        self.activity = []
         ########################################################################
         # 信息类:
 
@@ -224,11 +291,11 @@ cdef class QA_Account:
         self.commission_coeff = commission_coeff
         self.tax_coeff = tax_coeff
         self.datetime = None
-        self.running_time = str(datetime.datetime.now())
+        self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
-        self.client = DATABASE.account
-        self.start_=start
-        self.end_=end
+        self.client = DATABASE.accountPro
+        self.start_ = start
+        self.end_ = end
         ### 下面是数据库创建index部分, 此部分可能导致部分代码和原先不兼容
         self.client.create_index(
             [
@@ -245,7 +312,9 @@ cdef class QA_Account:
         # 资产类
         self.orders = QA_OrderQueue()       # 历史委托单
         self.PMS = QA_PMS()
+        # self.risks = QA_RMS()
         self.init_cash = init_cash
+
         self.init_hold = pd.Series(
             init_hold,
             name='amount'
@@ -253,7 +322,7 @@ cdef class QA_Account:
                         dict) else init_hold
         self.init_hold.index.name = 'code'
         self.cash = [self.init_cash]
-        self.cash_available = self.cash[-1] # 可用资金
+        self.cash_available = self.cash[-1]  # 可用资金
         self.sell_available = copy.deepcopy(self.init_hold)
         self.buy_available = copy.deepcopy(self.init_hold)
         self.history = []
@@ -270,20 +339,12 @@ cdef class QA_Account:
         }                        # 日结算
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
-
-        ########################################################################
-        # 规则类
-        # 1.是否允许t+0 及买入及结算
-        # 2.是否允许卖空开仓
-        # 3.是否允许保证金交易/ 如果不是false 就需要制定保证金比例(dict形式)
-
-        # 期货: allow_t0 True allow_sellopen True
-        #
+        self.pms = {}
 
         self.allow_t0 = allow_t0
         self.allow_sellopen = allow_sellopen
         self.allow_margin = allow_margin
-        self.margin_level = margin_level # 保证金比例
+        self.margin_level = margin_level  # 保证金比例
 
         if self.market_type is MARKET_TYPE.FUTURE_CN:
             self.allow_t0 = True
@@ -302,84 +363,85 @@ cdef class QA_Account:
 
         """
 
-        self.frozen = {} # 冻结资金(保证金)
+        self.frozen = {}  # 冻结资金(保证金)
         self.finishedOrderid = []
 
         if auto_reload:
             self.reload()
 
     def __repr__(self):
-        return '< QA_Account {} market: {}>'.format(
+        return '< QA_AccountPRO {} market: {}>'.format(
             self.account_cookie,
             self.market_type
         )
 
-
-    property message:
+    @property
+    def message(self):
         'the standard message which can be transfer'
-        def __get__(self):
-            return {
-                'source':
-                'account',
-                'frequence':
-                self.frequence,
-                'account_cookie':
-                self.account_cookie,
-                'portfolio_cookie':
-                self.portfolio_cookie,
-                'user_cookie':
-                self.user_cookie,
-                'broker':
-                self.broker,
-                'market_type':
-                self.market_type,
-                'strategy_name':
-                self.strategy_name,
-                'current_time':
-                str(self._currenttime),
-                'allow_sellopen':
-                self.allow_sellopen,
-                'allow_margin':
-                self.allow_margin,
-                'allow_t0':
-                self.allow_t0,
-                'margin_level':
-                self.margin_level,
-                'init_assets':
-                self.init_assets,
-                'init_cash':
-                self.init_cash,
-                'init_hold':
-                self.init_hold.to_dict(),
-                'commission_coeff':
-                self.commission_coeff,
-                'tax_coeff':
-                self.tax_coeff,
-                'cash':
-                self.cash,
-                'history':
-                self.history,
-                'trade_index':
-                self.time_index_max,
-                'running_time':
-                str(datetime.datetime.now())
-                if self.running_time is None else str(self.running_time),
-                'quantaxis_version':
-                self.quantaxis_version,
-                'running_environment':
-                self.running_environment,
-                'start_date':
-                self.start_date,
-                'end_date':
-                self.end_date,
-                'frozen':
-                self.frozen,
-                'finished_id':
-                self.finishedOrderid
-            }
+        return {
+            'source':
+            'account',
+            'frequence':
+            self.frequence,
+            'account_cookie':
+            self.account_cookie,
+            'portfolio_cookie':
+            self.portfolio_cookie,
+            'user_cookie':
+            self.user_cookie,
+            'broker':
+            self.broker,
+            'market_type':
+            self.market_type,
+            'strategy_name':
+            self.strategy_name,
+            'current_time':
+            str(self._currenttime),
+            'allow_sellopen':
+            self.allow_sellopen,
+            'allow_margin':
+            self.allow_margin,
+            'allow_t0':
+            self.allow_t0,
+            'margin_level':
+            self.margin_level,
+            'init_assets':
+            self.init_assets,
+            'init_cash':
+            self.init_cash,
+            'init_hold':
+            self.init_hold.to_dict(),
+            'commission_coeff':
+            self.commission_coeff,
+            'tax_coeff':
+            self.tax_coeff,
+            'cash':
+            self.cash,
+            'history':
+            self.history,
+            'trade_index':
+            self.time_index_max,
+            'running_time':
+            str(datetime.datetime.now())
+            if self.running_time is None else str(self.running_time),
+            'quantaxis_version':
+            self.quantaxis_version,
+            'running_environment':
+            self.running_environment,
+            'start_date':
+            self.start_date,
+            'end_date':
+            self.end_date,
+            'frozen':
+            self.frozen,
+            'finished_id':
+            self.finishedOrderid,
+            'position_id':
+            list(self.pms.keys())
+        }
 
     @property
-    def freecash_precent(QA_Account self):
+    def freecash_precent(self):
         """剩余资金比例
 
         Returns:
@@ -395,7 +457,7 @@ cdef class QA_Account:
         self.market_preset = MARKET_PRESET()
 
     @property
-    def init_hold_with_account(QA_Account self):
+    def init_hold_with_account(self):
         """带account_cookie的初始化持仓
 
         Returns:
@@ -408,7 +470,7 @@ cdef class QA_Account:
                      'account_cookie'])
 
     @property
-    def init_assets(QA_Account self):
+    def init_assets(self):
         """初始化账户资产
 
         Returns:
@@ -418,14 +480,14 @@ cdef class QA_Account:
         return {'cash': self.init_cash, 'hold': self.init_hold.to_dict()}
 
     @property
-    def code(QA_Account self):
+    def code(self):
         """
         该账户曾交易代码 用set 去重
         """
         return list(set([item[1] for item in self.history]))
 
     @property
-    def date(QA_Account self):
+    def date(self):
         """账户运行的日期
 
         Arguments:
@@ -441,11 +503,11 @@ cdef class QA_Account:
             return None
 
     @property
-    def positions(QA_Account self):
+    def positions(self):
         raise NotImplementedError
 
     @property
-    def start_date(QA_Account self):
+    def start_date(self):
         """账户的起始交易日期(只在回测中使用)
 
         Raises:
@@ -454,7 +516,7 @@ cdef class QA_Account:
         Returns:
             [type] -- [description]
         """
-        if self.start_==None:
+        if self.start_ == None:
             if len(self.time_index_max) > 0:
                 return str(min(self.time_index_max))[0:10]
             else:
@@ -464,10 +526,10 @@ cdef class QA_Account:
                     )
                 )
         else:
-            return self.start_        
+            return self.start_
 
     @property
-    def end_date(QA_Account self):
+    def end_date(self):
         """账户的交易结束日期(只在回测中使用)
 
         Raises:
@@ -476,7 +538,7 @@ cdef class QA_Account:
         Returns:
             [type] -- [description]
         """
-        if self.start_==None:
+        if self.start_ == None:
             if len(self.time_index_max) > 0:
                 return str(max(self.time_index_max))[0:10]
             else:
@@ -487,93 +549,85 @@ cdef class QA_Account:
                 )
         else:
             return self.end_
+
     @property
-    def market_data(QA_Account self):
+    def market_data(self):
         return self._market_data
 
     @property
-    def trade_range(QA_Account self):
+    def trade_range(self):
         return QA_util_get_trade_range(self.start_date, self.end_date)
 
     @property
-    def trade_range_max(QA_Account self):
-        if self.start_date < str(min(self.time_index_max))[0:10] :
-             return QA_util_get_trade_range(self.start_date, self.end_date) 
+    def trade_range_max(self):
+        if self.start_date < str(min(self.time_index_max))[0:10]:
+            return QA_util_get_trade_range(self.start_date, self.end_date)
         else:
             return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], str(max(self.time_index_max))[0:10])
+
     @property
-    def time_index(QA_Account self):
+    def time_index(self):
         if len(self.time_index_max):
-            res_=pd.DataFrame(self.time_index_max)
-            res_.columns=(['datetime'])
-            res_['date']=[ i[0:10]  for i in res_['datetime']]
-            res_=res_[res_['date'].isin(self.trade_range)]
+            res_ = pd.DataFrame(self.time_index_max)
+            res_.columns = (['datetime'])
+            res_['date'] = [i[0:10] for i in res_['datetime']]
+            res_ = res_[res_['date'].isin(self.trade_range)]
             return list(res_['datetime'])
         else:
             return self.time_index_max
 
     @property
-    def history_min(QA_Account self):
+    def history_min(self):
         if len(self.history):
-            res_=pd.DataFrame(self.history)
-            res_['date']=[ i[0:10]  for i in res_[0]]
-            res_=res_[res_['date'].isin(self.trade_range)]   
-            return np.array(res_.drop(['date'],axis=1)).tolist() 
+            res_ = pd.DataFrame(self.history)
+            res_['date'] = [i[0:10] for i in res_[0]]
+            res_ = res_[res_['date'].isin(self.trade_range)]
+            return np.array(res_.drop(['date'], axis=1)).tolist()
         else:
             return self.history
+
     @property
-    def history_table_min(QA_Account self):
+    def history_table_min(self):
         '区间交易历史的table'
         if len(self.history_min) > 0:
             lens = len(self.history_min[0])
         else:
-            lens = len(self.history_headers)
+            lens = len(self._history_headers)
 
         return pd.DataFrame(
             data=self.history_min,
-            columns=self.history_headers[:lens]
-        ).sort_index()        
-#    @property
-#    def history(self):
-#        if len(self.history_max):
-#            res_=pd.DataFrame(self.history_max)
-#            res_['date']=[ i[0:10]  for i in res_[0]]
-#            res_=res_[res_['date'].isin(self.trade_range)]   
-#            return np.array(res_.drop(['date'],axis=1)).tolist() 
-#        else:
-#            return self.history_max
-#        res_=pd.DataFrame(self.time_index_max)
-#        res_.columns=(['datetime'])
-#        res_['date']=[ i[0:10]  for i in res_['datetime']]
-#        res_=res_[res_['date'].isin(self.trade_range)]
+            columns=self._history_headers[:lens]
+        ).sort_index()
+
     @property
-    def trade_day(QA_Account self):
+    def trade_day(self):
         return list(
-            pd.Series(self.time_index_max).apply(lambda x: str(x)[0:10]).unique()
+            pd.Series(self.time_index_max).apply(
+                lambda x: str(x)[0:10]).unique()
         )
 
     @property
-    def history_table(QA_Account self):
+    def history_table(self):
         '交易历史的table'
         if len(self.history) > 0:
             lens = len(self.history[0])
         else:
-            lens = len(self.history_headers)
+            lens = len(self._history_headers)
 
         return pd.DataFrame(
             data=self.history,
-            columns=self.history_headers[:lens]
+            columns=self._history_headers[:lens]
         ).sort_index()
 
     @property
-    def today_trade_table(QA_Account self):
+    def today_trade_table(self):
         return pd.DataFrame(
             data=self.today_trade['current'],
-            columns=self.history_headers
+            columns=self._history_headers
         ).sort_index()
 
     @property
-    def cash_table(QA_Account self):
+    def cash_table(self):
         '现金的table'
         _cash = pd.DataFrame(
             data=[self.cash[1::],
@@ -612,8 +666,22 @@ cdef class QA_Account:
                 结算后: init_hold
         """
 
+    def create_position(self, code, money_preset):
+        if self.cash_available > money_preset:
+            pos = QA_Position(code=code, money_preset=money_preset, user_cookie=self.user_cookie,
+                              portfolio_cookie=self.portfolio_cookie, account_cookie=self.account_cookie, auto_reload=True)
+            self.pms[pos.position_id] = pos
+            self.cash.append(self.cash[-1] - money_preset)
+            self.cash_available = self.cash[-1]
+            return pos
+        else:
+            return False
+
+    def get_position(self, position_id):
+        return self.pms.get(position_id, None)
+
     @property
-    def hold(QA_Account self):
+    def hold(self):
         """真实持仓
         """
         return pd.concat(
@@ -622,9 +690,8 @@ cdef class QA_Account:
         ).groupby('code').sum().replace(0,
                                         np.nan).dropna().sort_index()
 
-
     @property
-    def hold_available(QA_Account self):
+    def hold_available(self):
         """可用持仓
         """
         return self.history_table.groupby('code').amount.sum().replace(
@@ -638,7 +705,7 @@ cdef class QA_Account:
     #     return self.orders.trade_list
 
     @property
-    def trade(QA_Account self):
+    def trade(self):
         """每次交易的pivot表
 
         Returns:
@@ -656,18 +723,20 @@ cdef class QA_Account:
         ).fillna(0).sort_index()
 
     @property
-    def daily_cash(QA_Account self):
+    def daily_cash(self):
         '每日交易结算时的现金表'
         res = self.cash_table.drop_duplicates(subset='date', keep='last')
-        le=pd.DataFrame(pd.Series(data=None, index=pd.to_datetime(self.trade_range_max).set_names('date'), name='predrop'))
-        ri=res.set_index('date')
-        res_=pd.merge(le,ri,how='left',left_index=True,right_index=True)
-        res_=res_.ffill().fillna(self.init_cash).drop(['predrop','datetime','account_cookie'], axis=1).reset_index().set_index(['date'],drop=False).sort_index()        
-        res_=res_[res_.index.isin(self.trade_range)]
+        le = pd.DataFrame(pd.Series(data=None, index=pd.to_datetime(
+            self.trade_range_max).set_names('date'), name='predrop'))
+        ri = res.set_index('date')
+        res_ = pd.merge(le, ri, how='left', left_index=True, right_index=True)
+        res_ = res_.ffill().fillna(self.init_cash).drop(
+            ['predrop', 'datetime', 'account_cookie'], axis=1).reset_index().set_index(['date'], drop=False).sort_index()
+        res_ = res_[res_.index.isin(self.trade_range)]
         return res_
-            
+
     @property
-    def daily_hold(QA_Account self):
+    def daily_hold(self):
         '每日交易结算时的持仓表'
         data = self.trade.cumsum()
         if len(data) < 1:
@@ -682,26 +751,31 @@ cdef class QA_Account:
             data = data.set_index(['date', 'account_cookie'])
             res = data[~data.index.duplicated(keep='last')].sort_index()
             # 这里会导致股票停牌时的持仓也被计算 但是计算market_value的时候就没了
-            le=pd.DataFrame(pd.Series(data=None, index=pd.to_datetime(self.trade_range_max).set_names('date'), name='predrop'))
-            ri=res.reset_index().set_index('date')
-            res_=pd.merge(le,ri,how='left',left_index=True,right_index=True)
-            res_=res_.ffill().fillna(0).drop(['predrop','account_cookie'], axis=1).reset_index().set_index(['date']).sort_index()
-            res_=res_[res_.index.isin(self.trade_range)]
+            le = pd.DataFrame(pd.Series(data=None, index=pd.to_datetime(
+                self.trade_range_max).set_names('date'), name='predrop'))
+            ri = res.reset_index().set_index('date')
+            res_ = pd.merge(le, ri, how='left',
+                            left_index=True, right_index=True)
+            res_ = res_.ffill().fillna(0).drop(
+                ['predrop', 'account_cookie'], axis=1).reset_index().set_index(['date']).sort_index()
+            res_ = res_[res_.index.isin(self.trade_range)]
             return res_
 
     @property
-    def daily_frozen(QA_Account self):
+    def daily_frozen(self):
         '每日交易结算时的持仓表'
-        res_=self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index('date').resample('D').frozen.last().fillna(method='pad')
-        res_=res_[res_.index.isin(self.trade_range)]
+        res_ = self.history_table.assign(date=pd.to_datetime(self.history_table.datetime)).set_index(
+            'date').resample('D').frozen.last().fillna(method='pad')
+        res_ = res_[res_.index.isin(self.trade_range)]
         return res_
+
     @property
-    def latest_cash(QA_Account self):
+    def latest_cash(self):
         'return the lastest cash 可用资金'
         return self.cash[-1]
 
     @property
-    def current_time(QA_Account self):
+    def current_time(self):
         'return current time (in backtest/real environment)'
         return self._currenttime
 
@@ -715,11 +789,11 @@ cdef class QA_Account:
             hold_available = self.history_table.set_index(
                 'datetime'
             ).sort_index().loc[:datetime].groupby('code'
-                                                 ).amount.sum().sort_index()
+                                                  ).amount.sum().sort_index()
 
         return pd.concat([self.init_hold,
                           hold_available]).groupby('code').sum().sort_index(
-                          ).apply(lambda x: x if x > 0 else None).dropna()
+        ).apply(lambda x: x if x > 0 else None).dropna()
 
     def current_hold_price(self):
         """计算目前持仓的成本  用于模拟盘和实盘查询
@@ -727,16 +801,16 @@ cdef class QA_Account:
         Returns:
             [type] -- [description]
         """
-        
+
         def weights(x):
-            cdef int n=len(x)
-            cdef float res=1
-            while res>0 or res<0:
-                res=sum(x[:n]['amount'])
-                n=n-1
-            
-            x=x[n+1:]     
-            
+            n = len(x)
+            res = 1
+            while res > 0 or res < 0:
+                res = sum(x[:n]['amount'])
+                n = n-1
+
+            x = x[n+1:]
+
             if sum(x['amount']) != 0:
                 return np.average(
                     x['price'],
@@ -749,7 +823,7 @@ cdef class QA_Account:
             'datetime',
             drop=False
         ).sort_index().groupby('code').apply(weights).dropna()
-    
+
     def hold_price(self, datetime=None):
         """计算持仓成本  如果给的是日期,则返回当日开盘前的持仓
 
@@ -780,7 +854,7 @@ cdef class QA_Account:
                 'datetime',
                 drop=False
             ).sort_index().loc[:datetime].groupby('code').apply(weights
-                                                               ).dropna()
+                                                                ).dropna()
 
     # @property
     def hold_time(self, datetime=None):
@@ -793,7 +867,7 @@ cdef class QA_Account:
         def weights(x):
             if sum(x['amount']) != 0:
                 return pd.Timestamp(self.datetime
-                                   ) - pd.to_datetime(x.datetime.max())
+                                    ) - pd.to_datetime(x.datetime.max())
             else:
                 return np.nan
 
@@ -807,7 +881,7 @@ cdef class QA_Account:
                 'datetime',
                 drop=False
             ).sort_index().loc[:datetime].groupby('code').apply(weights
-                                                               ).dropna()
+                                                                ).dropna()
 
     def reset_assets(self, init_cash=None):
         'reset_history/cash/'
@@ -815,19 +889,19 @@ cdef class QA_Account:
         self.history = []
         self.init_cash = init_cash
         self.cash = [self.init_cash]
-        self.cash_available = self.cash[-1] # 在途资金
+        self.cash_available = self.cash[-1]  # 在途资金
 
-    cpdef receive_simpledeal(
-            QA_Account self,
-            str code,
-            float trade_price,
-            int trade_amount,
-            int trade_towards,
-            str trade_time,
-            str message=None,
-            str order_id=None,
-            str trade_id=None,
-            str realorder_id=None
+    def receive_simpledeal(
+            self,
+            code,
+            trade_price,
+            trade_amount,
+            trade_towards,
+            trade_time,
+            message=None,
+            order_id=None,
+            trade_id=None,
+            realorder_id=None
     ):
         """快速撮合成交接口
 
@@ -870,21 +944,15 @@ cdef class QA_Account:
             pass
         else:
             self.finishedOrderid.append(realorder_id)
-            
-        cdef int market_towards = 1 if trade_towards > 0 else -1
-        cdef float trade_money
-        cdef float raw_trade_money # 总市值
-        cdef float value
-        cdef float unit
-        cdef float frozen
-        cdef dict commission_fee_preset
-        cdef float commission_fee
-        cdef float frozen_part
+
+        market_towards = 1 if trade_towards > 0 else -1
         # value 合约价值 unit 合约乘数
         if self.allow_margin:
-            frozen = self.market_preset.get_frozen(code)                  # 保证金率
-            unit = self.market_preset.get_unit(code)                      # 合约乘数
-            raw_trade_money = trade_price * trade_amount * market_towards # 总市值
+            frozen = self.market_preset.get_frozen(
+                code)                  # 保证金率
+            unit = self.market_preset.get_unit(
+                code)                      # 合约乘数
+            raw_trade_money = trade_price * trade_amount * market_towards  # 总市值
             value = raw_trade_money * unit                                # 合约总价值
             trade_money = value * frozen                                  # 交易保证金
         else:
@@ -893,8 +961,8 @@ cdef class QA_Account:
             value = trade_money
             unit = 1
             frozen = 1
-                                                                          # 计算费用
-                                                                          # trade_price
+            # 计算费用
+            # trade_price
 
         if self.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
@@ -914,7 +982,7 @@ cdef class QA_Account:
                     commission_fee_preset['commission_coeff_today_peramount'] * \
                     abs(value)
 
-            tax_fee = 0 # 买入不收印花税
+            tax_fee = 0  # 买入不收印花税
         elif self.market_type == MARKET_TYPE.STOCK_CN:
 
             commission_fee = self.commission_coeff * \
@@ -922,14 +990,12 @@ cdef class QA_Account:
 
             commission_fee = 5 if commission_fee < 5 else commission_fee
             if int(trade_towards) > 0:
-                tax_fee = 0 # 买入不收印花税
+                tax_fee = 0  # 买入不收印花税
             else:
                 tax_fee = self.tax_coeff * abs(trade_money)
 
         # 结算交易
-        cdef float t
-        t = self.cash[-1] - trade_money - commission_fee - tax_fee
-        if t>0:
+        if self.cash[-1] > trade_money + commission_fee + tax_fee:
             self.time_index_max.append(trade_time)
             # TODO: 目前还不支持期货的锁仓
             if self.allow_sellopen:
@@ -986,7 +1052,8 @@ cdef class QA_Account:
                         self.frozen[code][str(trade_towards)]['amount'] +
                         trade_amount
                     )
-                    self.frozen[code][str(trade_towards)]['amount'] += trade_amount
+                    self.frozen[code][str(trade_towards)
+                                      ]['amount'] += trade_amount
 
                     self.cash.append(
                         self.cash[-1] - abs(trade_money) - commission_fee -
@@ -998,10 +1065,11 @@ cdef class QA_Account:
                     # if trade_towards == ORDER_DIRECTION.BUY_CLOSE:
                     # 卖空开仓 平仓买入
                     # self.cash
-                    if trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.BUY_CLOSETODAY]:  # 买入平仓  之前是空开
+                    # 买入平仓  之前是空开
+                    if trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.BUY_CLOSETODAY]:
                                                                     # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
                         self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
-                                         ]['amount'] -= trade_amount
+                                          ]['amount'] -= trade_amount
 
                         frozen_part = self.frozen[code][
                             str(ORDER_DIRECTION.SELL_OPEN)]['money'] * trade_amount
@@ -1012,32 +1080,36 @@ cdef class QA_Account:
                             commission_fee - tax_fee
                         )
                         if self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
-                                            ]['amount'] == 0:
+                                             ]['amount'] == 0:
                             self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
-                                             ]['money'] = 0
+                                              ]['money'] = 0
                             self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)
-                                             ]['avg_price'] = 0
+                                              ]['avg_price'] = 0
 
-                    elif trade_towards in [ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_CLOSETODAY]: # 卖出平仓  之前是多开
+                    # 卖出平仓  之前是多开
+                    elif trade_towards in [ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_CLOSETODAY]:
                                                                       # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
                         self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
-                                         ]['amount'] -= trade_amount
+                                          ]['amount'] -= trade_amount
 
                         frozen_part = self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
-                                                       ]['money'] * trade_amount
+                                                        ]['money'] * trade_amount
                         self.cash.append(
                             self.cash[-1] + frozen_part +
                             (abs(trade_money) - frozen_part) / frozen -
                             commission_fee - tax_fee
                         )
                         if self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
-                                            ]['amount'] == 0:
+                                             ]['amount'] == 0:
                             self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
-                                             ]['money'] = 0
+                                              ]['money'] = 0
                             self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)
-                                             ]['avg_price'] = 0
-            else: # 不允许卖空开仓的==> 股票
-                self.cash.append(t)
+                                              ]['avg_price'] = 0
+            else:  # 不允许卖空开仓的==> 股票
+
+                self.cash.append(
+                    self.cash[-1] - trade_money - tax_fee - commission_fee
+                )
             if self.allow_t0 or trade_towards == ORDER_DIRECTION.SELL:
                 self.sell_available[code] = self.sell_available.get(
                     code,
@@ -1056,7 +1128,7 @@ cdef class QA_Account:
                     code,
                     trade_price,
                     market_towards * trade_amount,
-                    self.cash_available,
+                    self.cash[-1],
                     order_id,
                     realorder_id,
                     trade_id,
@@ -1074,15 +1146,6 @@ cdef class QA_Account:
             print(self.cash[-1])
             self.cash_available = self.cash[-1]
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
-
-    @property
-    def node_view(self):
-        return {
-            'node_name': self.account_cookie,
-            'strategy_name': self.strategy_name,
-            'cash_available': self.cash_available,
-            'history': self.history
-        }
 
     def receive_deal(
             self,
@@ -1125,9 +1188,16 @@ cdef class QA_Account:
 
         market_towards = 1 if trade_towards > 0 else -1
         """2019/01/03 直接使用快速撮合接口了
-        2333 这两个接口现在也没啥区别了....
-        太绝望了
+        2019/05/13 使用 PMS来更新成交记录
         """
+        self.pms[self.oms[order_id]['positon_id']].on_transaction(
+            {'towards': trade_towards,
+             'code': code,
+             'trade_id': trade_id,
+             'amount': trade_amount,
+             'time': trade_time,
+             'price': trade_price}
+        )
 
         self.receive_simpledeal(
             code,
@@ -1141,7 +1211,7 @@ cdef class QA_Account:
             realorder_id=realorder_id
         )
 
-    cpdef send_order(
+    def send_order(
             self,
             code=None,
             amount=None,
@@ -1153,6 +1223,8 @@ cdef class QA_Account:
             amount_model=None,
             order_id=None,
             position_id=None,
+            *args,
+            **kwargs
     ):
         """
         ATTENTION CHANGELOG 1.0.28
@@ -1208,12 +1280,6 @@ cdef class QA_Account:
         3. 保证金账户的判断
 
         """
-        cdef str date
-        cdef str wrong_reason
-        cdef bint flag
-        cdef float _money
-        cdef float _hold
-
         wrong_reason = None
         assert code is not None and time is not None and towards is not None and order_model is not None and amount_model is not None
 
@@ -1254,10 +1320,11 @@ cdef class QA_Account:
         # flag 判断买卖 数量和价格以及买卖方向是否正确
         flag = False
 
+        assert (int(towards) != 0)
         if int(towards) in [1, 2, 3]:
             # 是买入的情况(包括买入.买开.买平)
             if self.cash_available >= money:
-                if self.market_type == MARKET_TYPE.STOCK_CN: # 如果是股票 买入的时候有100股的最小限制
+                if self.market_type == MARKET_TYPE.STOCK_CN:  # 如果是股票 买入的时候有100股的最小限制
                     amount = int(amount / 100) * 100
                     self.cash_available -= money
                     flag = True
@@ -1274,16 +1341,17 @@ cdef class QA_Account:
 
                 if self.market_type == MARKET_TYPE.FUTURE_CN:
                     # 如果有负持仓-- 允许卖空的时候
-                    if towards == 3: # 多平
+                    if towards == 3:  # 多平
                         _hold = self.sell_available.get(code, 0)
-                                     # 假设有负持仓:
-                                     # amount为下单数量 如  账户原先-3手 现在平1手
+                        # 假设有负持仓:
+                        # amount为下单数量 如  账户原先-3手 现在平1手
 
                         #left_amount = amount+_hold if _hold < 0 else amount
                         _money = abs(
                             float(amount * price * (1 + self.commission_coeff))
                         )
 
+                        print(_hold)
                         if self.cash_available >= _money:
                             if _hold < 0:
                                 self.cash_available -= _money
@@ -1307,7 +1375,7 @@ cdef class QA_Account:
         elif int(towards) in [-1, -2, -3]:
             # 是卖出的情况(包括卖出，卖出开仓allow_sellopen如果允许. 卖出平仓)
             # print(self.sell_available[code])
-            _hold = self.sell_available.get(code, 0) # _hold 是你的持仓
+            _hold = self.sell_available.get(code, 0)  # _hold 是你的持仓
 
             # 如果你的hold> amount>0
             # 持仓数量>卖出数量
@@ -1321,7 +1389,7 @@ cdef class QA_Account:
                 # 如果是允许卖空开仓 实际计算时  先减去持仓(正持仓) 再计算 负持仓 就按原先的占用金额计算
                 if self.allow_sellopen and towards == -2:
 
-                    if self.cash_available >= money: # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
+                    if self.cash_available >= money:  # 卖空的市值小于现金（有担保的卖空）， 不允许裸卖空
                                                      # self.cash_available -= money
                         flag = True
                     else:
@@ -1354,10 +1422,12 @@ cdef class QA_Account:
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
-                position_id = position_id,
-                order_id = order_id
+                position_id=position_id,
+                order_id=order_id,
+                *args,
+                **kwargs
             )                                                           # init
-                                                                        # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
+            # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中
             self.datetime = time
             self.orders.insert_order(_order)
             return _order
@@ -1434,7 +1504,7 @@ cdef class QA_Account:
                 )
             )
 
-    def settle(self, settle_data = None):
+    def settle(self, settle_data=None):
         """
         股票/期货的日结算
 
@@ -1569,7 +1639,8 @@ cdef class QA_Account:
         self.allow_margin = message.get('allow_margin', False)
         self.allow_t0 = message.get('allow_t0', False)
         self.margin_level = message.get('margin_level', False)
-        self.frequence = message.get('frequence', FREQUENCE.FIFTEEN_MIN) #默认15min
+        self.frequence = message.get(
+            'frequence', FREQUENCE.FIFTEEN_MIN)  # 默认15min
         self.init_cash = message.get(
             'init_cash',
             message.get('init_assets',
@@ -1590,6 +1661,12 @@ cdef class QA_Account:
         )
         self.frozen = message.get('frozen', {})
         self.finishedOrderid = message.get('finished_id', [])
+        pos_id = message.get('position_id', [])
+        print(pos_id)
+        self.pms = dict(zip(pos_id, [QA_Position(position_id=item,
+                                                 account_cookie=self.account_cookie, portfolio_cookie=self.portfolio_cookie,
+                                                 user_cookie=self.user_cookie, auto_reload=True) for item in pos_id]))
+
         self.settle()
         return self
 
@@ -1708,11 +1785,67 @@ cdef class QA_Account:
             if event.callback:
                 event.callback(event)
 
+    @property
+    def positions_with_pos(self):
+        return pd.DataFrame([item.curpos for item in self.pms.values()],
+                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.pms.values()], names=['code', 'pos_id']))
+    @property
+    def positions(self):
+        return self.positions_with_pos.groupby('code').sum()
+
+    @property
+    def hold_detail_with_pos(self):
+        return pd.DataFrame([item.hold_detail for item in self.pms.values()],
+                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.pms.values()], names=['code', 'pos_id']))
+    @property
+    def hold_detail(self):
+        return self.hold_detail_with_pos.groupby('code').sum()
+
+    def get_position(self, code):
+        """基于QAPosition的联合查询
+
+        Arguments:
+            code {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        try:
+            return self.positions.loc[code].to_dict()
+        except KeyError:
+            return {'volume_long': 0, 'volume_short': 0, 'volume_long_frozen':0, 'volume_short_frozen': 0}
+
+    def get_position_with_pos(self, code, pos_id):
+        """基于QAPosition的联合查询
+
+        Arguments:
+            code {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        try:
+            return self.positions_with_pos.loc[(code, pos_id)].to_dict()
+        except KeyError:
+            return {'volume_long': 0, 'volume_short': 0}
+
+    def get_holddetail(self, code):
+        try:
+            return self.hold_detail.loc[code].to_dict()
+        except KeyError:
+            return {'volume_long': 0,
+                    'volume_long_his': 0,
+                    'volume_long_today': 0,
+                    'volume_short': 0,
+                    'volume_short_his': 0,
+                    'volume_short_today': 0}
+
+
     def save(self):
         """
         存储账户信息
         """
-        save_account(self.message)
+        save_account(self.message, self.client)
 
     def reload(self):
 
@@ -1742,7 +1875,7 @@ cdef class QA_Account:
         self.sell_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.cash = [self.init_cash]
-        self.cash_available = self.cash[-1] # 在途资金
+        self.cash_available = self.cash[-1]  # 在途资金
 
     def change_cash(self, money):
         """
@@ -1775,3 +1908,16 @@ cdef class QA_Account:
         ).loc[slice(pd.Timestamp(start),
                     pd.Timestamp(end))]
 
+
+class Account_handler():
+
+    def __init__(self):
+        pass
+
+    def get_account(self, message):
+        pass
+
+
+if __name__ == '__main__':
+    account = QA_Account()
+    # 创建一个account账户
