@@ -1175,7 +1175,7 @@ class QA_AccountPRO(QA_Worker):
             [type] -- [description]
         """
 
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!receive deal')
+        print('QAACCOUNTPRO ==> receive deal')
 
         trade_time = str(trade_time)
         code = str(code)
