@@ -161,6 +161,55 @@ def get_ip_list_by_ping(ip_list=[], _type='stock'):
     best_ip = get_ip_list_by_multi_process_ping(ip_list, 1, _type)
     return best_ip[0]
 
+def get_best_ip_by_real_data_fetch(_type='stock'):
+    """
+    用特定的数据获取函数测试数据获得的时间,从而选择下载数据最快的服务器ip
+    默认使用特定品种1min的方式的获取
+    """
+    from QUANTAXIS.QAUtil.QADate import QA_util_today_str
+    import time
+    
+    #找到前两天的有效交易日期
+    pre_trade_date=QA_util_get_real_date(QA_util_today_str())
+    pre_trade_date=QA_util_get_real_date(pre_trade_date)
+    
+    # 某个函数获取的耗时测试
+    def get_stock_data_by_ip(ips):
+        start=time.time()
+        try:
+            QA_fetch_get_stock_transaction('000001',pre_trade_date,pre_trade_date,2,ips['ip'],ips['port'])
+            end=time.time()
+            return end-start
+        except:
+            return 9999
+
+    def get_future_data_by_ip(ips):
+        start=time.time()
+        try:
+            QA_fetch_get_future_transaction('RBL8',pre_trade_date,pre_trade_date,2,ips['ip'],ips['port'])
+            end=time.time()
+            return end-start
+        except:
+            return 9999
+
+    func,ip_list=0,0
+    if _type=='stock':
+        func,ip_list=get_stock_data_by_ip,stock_ip_list
+    else:
+        func,ip_list=get_future_data_by_ip,future_ip_list  
+    from pathos.multiprocessing import Pool
+    def multiMap(func,sequence):
+        res=[]
+        pool=Pool(4)
+        for i in sequence:
+            res.append(pool.apply_async(func,(i,)))
+        pool.close()
+        pool.join()
+        return list(map(lambda x:x.get(),res))
+   
+    res=multiMap(func,ip_list)
+    index=res.index(min(res))
+    return ip_list[index]
 
 def get_ip_list_by_multi_process_ping(ip_list=[], n=0, _type='stock',
                                       cache_age=86400):
