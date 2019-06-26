@@ -42,7 +42,10 @@ from functools import lru_cache, partial, reduce
 
 import numpy as np
 import pandas as pd
-from pyecharts import Kline
+try:
+  from pyecharts import Kline
+except:
+  from pyecharts.charts import Kline
 
 from QUANTAXIS.QAData.base_datastruct import _quotation_base
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq

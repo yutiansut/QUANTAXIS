@@ -206,7 +206,7 @@ def QA_SU_save_option_contract_list(engine, client=DATABASE):
     engine.QA_SU_save_option_contract_list(client=client)
 
 
-def QA_SU_save_option_day(engine, client=DATABASE):
+def QA_SU_save_option_day_all(engine, client=DATABASE):
     '''
 
     :param engine:
@@ -214,10 +214,10 @@ def QA_SU_save_option_day(engine, client=DATABASE):
     :return:
     '''
     engine = select_save_engine(engine)
-    engine.QA_SU_save_option_day(client=client)
+    engine.QA_SU_save_option_day_all(client=client)
 
 
-def QA_SU_save_option_min(engine, client=DATABASE):
+def QA_SU_save_option_min_all(engine, client=DATABASE):
     '''
 
     :param engine:
@@ -225,7 +225,29 @@ def QA_SU_save_option_min(engine, client=DATABASE):
     :return:
     '''
     engine = select_save_engine(engine)
-    engine.QA_SU_save_option_min(client=client)
+    engine.QA_SU_save_option_min_all(client=client)
+
+
+def QA_SU_save_option_50etf_day(engine, client=DATABASE):
+    '''
+
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_50etf_day(client=client)
+
+
+def QA_SU_save_option_50etf_min(engine, client=DATABASE):
+    '''
+
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_50etf_min(client=client)
 
 
 def QA_SU_save_option_commodity_min(engine, client=DATABASE):
