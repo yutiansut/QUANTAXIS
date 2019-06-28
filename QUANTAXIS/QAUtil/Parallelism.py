@@ -38,6 +38,7 @@ class Parallelism_abs(object, metaclass=ABCMeta):
         self.results = []
         self.data = []
         self.cores = processes  # cpu核心数量
+        self._loginfolist = []  # 保存打印信息
 
     def __getstate__(self):
         self_dict = self.__dict__.copy()
@@ -117,6 +118,7 @@ class Parallelism_Thread(Parallelism_abs):
     def __init__(self, processes=cpu_count()):
         super(Parallelism_Thread, self).__init__(processes)
         self.pool = ThreadPoolExecutor(self.cores)
+
 
     def run(self, iter):
         ''' 使用concurrent.futures import ThreadPoolExecutor线程

@@ -11,12 +11,14 @@ import pandas as pd
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from QUANTAXIS.QAMarket.QAOrderHandler import QA_OrderHandler
-from QUANTAXIS.QAFetch.QATdx import (QA_fetch_get_future_day,
-                                     QA_fetch_get_future_min,
-                                     QA_fetch_get_index_day,
-                                     QA_fetch_get_index_min,
-                                     QA_fetch_get_stock_day,
-                                     QA_fetch_get_stock_min)
+from QUANTAXIS.QAFetch.QATdx import (
+    QA_fetch_get_future_day,
+    QA_fetch_get_future_min,
+    QA_fetch_get_index_day,
+    QA_fetch_get_index_min,
+    QA_fetch_get_stock_day,
+    QA_fetch_get_stock_min
+)
 from QUANTAXIS.QAMarket.common import (
     cn_en_compare,
     order_status_cn_en,
@@ -63,8 +65,10 @@ class TTSConfig(configparser.ConfigParser):
                         self.values[key] = self.get(self.__config_section, key)
         if self.values['user_name'] == '' or self.values['user_pass'] == '':
             raise Exception(
-                'user_name 和 user_pass不能为空，请在%s中配置' % self.__config_path)
-        self.values['user_tx_pass'] = self.values['user_pass'] if self.values['user_tx_pass'] == '' else self.values['user_tx_pass']
+                'user_name 和 user_pass不能为空，请在%s中配置' % self.__config_path
+            )
+        self.values['user_tx_pass'] = self.values['user_pass'] if self.values[
+            'user_tx_pass'] == '' else self.values['user_tx_pass']
 
     def __generate_default(self):
         f = open(self.__config_path, 'w')
@@ -76,24 +80,44 @@ class TTSConfig(configparser.ConfigParser):
 
 
 class QA_TTSBroker(QA_Broker):
-    fetcher = {(MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): QA_fetch_get_stock_day,
-               (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_get_stock_min,
-               (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): QA_fetch_get_stock_min,
-               (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): QA_fetch_get_stock_min,
-               (MARKET_TYPE.STOCK_CN, FREQUENCE.THIRTY_MIN): QA_fetch_get_stock_min,
-               (MARKET_TYPE.STOCK_CN, FREQUENCE.SIXTY_MIN): QA_fetch_get_stock_min,
-               (MARKET_TYPE.INDEX_CN, FREQUENCE.DAY): QA_fetch_get_index_day,
-               (MARKET_TYPE.INDEX_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.INDEX_CN, FREQUENCE.ONE_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.INDEX_CN, FREQUENCE.FIVE_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.INDEX_CN, FREQUENCE.THIRTY_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.INDEX_CN, FREQUENCE.SIXTY_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.FUND_CN, FREQUENCE.DAY): QA_fetch_get_index_day,
-               (MARKET_TYPE.FUND_CN, FREQUENCE.FIFTEEN_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.FUND_CN, FREQUENCE.ONE_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.FUND_CN, FREQUENCE.FIVE_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): QA_fetch_get_index_min,
-               (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): QA_fetch_get_index_min}
+    fetcher = {
+        (MARKET_TYPE.STOCK_CN,
+         FREQUENCE.DAY): QA_fetch_get_stock_day,
+        (MARKET_TYPE.STOCK_CN,
+         FREQUENCE.FIFTEEN_MIN): QA_fetch_get_stock_min,
+        (MARKET_TYPE.STOCK_CN,
+         FREQUENCE.ONE_MIN): QA_fetch_get_stock_min,
+        (MARKET_TYPE.STOCK_CN,
+         FREQUENCE.FIVE_MIN): QA_fetch_get_stock_min,
+        (MARKET_TYPE.STOCK_CN,
+         FREQUENCE.THIRTY_MIN): QA_fetch_get_stock_min,
+        (MARKET_TYPE.STOCK_CN,
+         FREQUENCE.SIXTY_MIN): QA_fetch_get_stock_min,
+        (MARKET_TYPE.INDEX_CN,
+         FREQUENCE.DAY): QA_fetch_get_index_day,
+        (MARKET_TYPE.INDEX_CN,
+         FREQUENCE.FIFTEEN_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.INDEX_CN,
+         FREQUENCE.ONE_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.INDEX_CN,
+         FREQUENCE.FIVE_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.INDEX_CN,
+         FREQUENCE.THIRTY_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.INDEX_CN,
+         FREQUENCE.SIXTY_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.FUND_CN,
+         FREQUENCE.DAY): QA_fetch_get_index_day,
+        (MARKET_TYPE.FUND_CN,
+         FREQUENCE.FIFTEEN_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.FUND_CN,
+         FREQUENCE.ONE_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.FUND_CN,
+         FREQUENCE.FIVE_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.FUND_CN,
+         FREQUENCE.THIRTY_MIN): QA_fetch_get_index_min,
+        (MARKET_TYPE.FUND_CN,
+         FREQUENCE.SIXTY_MIN): QA_fetch_get_index_min
+    }
 
     def __init__(self, auto_logon=True):
         super().__init__()
@@ -101,9 +125,12 @@ class QA_TTSBroker(QA_Broker):
         self.config = TTSConfig()
         self.order_handler = QA_OrderHandler()
         self._endpoint = 'http://%s:%s/api' % (
-            self.config.values['trade_server_ip'], self.config.values['trade_server_port'])
+            self.config.values['trade_server_ip'],
+            self.config.values['trade_server_port']
+        )
         self._encoding = "utf-8"
-        if self.config.values['transport_enc_key'] == '' or self.config.values['transport_enc_iv'] == '':
+        if self.config.values['transport_enc_key'] == '' or self.config.values[
+                'transport_enc_iv'] == '':
             self._transport_enc = False
             self._transport_enc_key = None
             self._transport_enc_iv = None
@@ -111,27 +138,30 @@ class QA_TTSBroker(QA_Broker):
         else:
             self._transport_enc = True
             self._transport_enc_key = bytes(
-                self.config.values['transport_enc_key'], encoding=self._encoding)
+                self.config.values['transport_enc_key'],
+                encoding=self._encoding
+            )
             self._transport_enc_iv = bytes(
-                self.config.values['transport_enc_iv'], encoding=self._encoding)
+                self.config.values['transport_enc_iv'],
+                encoding=self._encoding
+            )
             self._cipher = Cipher(
                 algorithms.AES(self._transport_enc_key),
                 modes.CBC(self._transport_enc_iv),
-                backend=default_backend())
+                backend=default_backend()
+            )
 
         self._session = requests.Session()
         self.client_id = 0
-        self.gddm_sh = 0  # 上海股东代码
-        self.gddm_sz = 0  # 深圳股东代码
+        self.gddm_sh = 0 # 上海股东代码
+        self.gddm_sz = 0 # 深圳股东代码
 
         if auto_logon is True:
             self.logon()
 
     def call(self, func, params=None):
 
-        json_obj = {
-            "func": func
-        }
+        json_obj = {"func": func}
 
         if params is not None:
             json_obj["params"] = params
@@ -174,23 +204,37 @@ class QA_TTSBroker(QA_Broker):
             data = result['data']
             df = pd.DataFrame(data=data)
             df.rename(
-                columns=lambda x: cn_en_compare[x] if x in cn_en_compare else x, inplace=True)
+                columns=lambda x: cn_en_compare[x] if x in cn_en_compare else x,
+                inplace=True
+            )
             if hasattr(df, 'towards'):
                 df.towards = df.towards.apply(
-                    lambda x: trade_towards_cn_en[x] if x in trade_towards_cn_en else x)
+                    lambda x: trade_towards_cn_en[x]
+                    if x in trade_towards_cn_en else x
+                )
             if hasattr(df, 'status'):
                 df.status = df.status.apply(
-                    lambda x: order_status_cn_en[x] if x in order_status_cn_en else x)
+                    lambda x: order_status_cn_en[x]
+                    if x in order_status_cn_en else x
+                )
             if hasattr(df, 'order_time'):
                 df.order_time = df.order_time.apply(
                     lambda x: '{} {}'.format(
                         datetime.date.today().strftime('%Y-%m-%d'),
-                        datetime.datetime.strptime(x, '%H%M%S').strftime('%H:%M:%S')))
+                        datetime.datetime.strptime(x,
+                                                   '%H%M%S').
+                        strftime('%H:%M:%S')
+                    )
+                )
             if hasattr(df, 'trade_time'):
                 df.trade_time = df.trade_time.apply(
                     lambda x: '{} {}'.format(
                         datetime.date.today().strftime('%Y-%m-%d'),
-                        datetime.datetime.strptime(x, '%H%M%S').strftime('%H:%M:%S')))
+                        datetime.datetime.strptime(x,
+                                                   '%H%M%S').
+                        strftime('%H:%M:%S')
+                    )
+                )
             if hasattr(df, 'realorder_id'):
                 df.realorder_id = df.realorder_id.apply(str)
             if hasattr(df, 'amount'):
@@ -224,16 +268,19 @@ class QA_TTSBroker(QA_Broker):
         return self.call("ping", {})
 
     def logon(self):
-        data = self.call("logon", {
-            "ip": self.config.values['tdx_server_ip'],
-            "port": int(self.config.values['tdx_server_port']),
-            "version": self.config.values['tdx_version'],
-            "yyb_id": int(self.config.values['user_yyb']),
-            "account_no": self.config.values['user_name'],
-            "trade_account": self.config.values['user_name'],
-            "jy_password": self.config.values['user_pass'],
-            "tx_password": self.config.values['user_tx_pass']
-        })
+        data = self.call(
+            "logon",
+            {
+                "ip": self.config.values['tdx_server_ip'],
+                "port": int(self.config.values['tdx_server_port']),
+                "version": self.config.values['tdx_version'],
+                "yyb_id": int(self.config.values['user_yyb']),
+                "account_no": self.config.values['user_name'],
+                "trade_account": self.config.values['user_name'],
+                "jy_password": self.config.values['user_pass'],
+                "tx_password": self.config.values['user_tx_pass']
+            }
+        )
         if data['success']:
             self.client_id = data["data"]["client_id"]
             self.gddm_sh = self.query_data(5)['data'][0]['股东代码']
@@ -242,17 +289,26 @@ class QA_TTSBroker(QA_Broker):
         return data
 
     def logoff(self):
-        return self.call("logoff", {
-            "client_id": self.client_id
-        })
+        return self.call("logoff", {"client_id": self.client_id})
 
-    def query_data(self,  category):
-        return self.call("query_data", {
-            "client_id": self.client_id,
-            "category": category
-        })
+    def query_data(self, category):
+        return self.call(
+            "query_data",
+            {
+                "client_id": self.client_id,
+                "category": category
+            }
+        )
 
-    def send_order(self,  code, price, amount, towards, order_model, market=None):
+    def send_order(
+            self,
+            code,
+            price,
+            amount,
+            towards,
+            order_model,
+            market=None
+    ):
         """下单
 
         Arguments:
@@ -281,15 +337,20 @@ class QA_TTSBroker(QA_Broker):
         if market not in ['sh', 'sz']:
             raise Exception('%s不支持，请检查code和market参数' % market)
 
-        return self.data_to_df(self.call("send_order", {
-            'client_id': self.client_id,
-            'category': towards,
-            'price_type': order_model,
-            'gddm': self.gddm_sh if market == 'sh' else self.gddm_sz,
-            'zqdm': code,
-            'price': price,
-            'quantity': amount
-        }))
+        return self.data_to_df(
+            self.call(
+                "send_order",
+                {
+                    'client_id': self.client_id,
+                    'category': towards,
+                    'price_type': order_model,
+                    'gddm': self.gddm_sh if market == 'sh' else self.gddm_sz,
+                    'zqdm': code,
+                    'price': price,
+                    'quantity': amount
+                }
+            )
+        )
 
     def cancel_order(self, exchange_id, order_id):
         """
@@ -302,27 +363,41 @@ class QA_TTSBroker(QA_Broker):
             [type] -- [description]
         """
 
-        return self.call("cancel_order", {
-            'client_id': self.client_id,
-            'exchange_id': exchange_id,
-            'hth': order_id
-        })
+        return self.call(
+            "cancel_order",
+            {
+                'client_id': self.client_id,
+                'exchange_id': exchange_id,
+                'hth': order_id
+            }
+        )
 
     def get_quote(self, code):
-        return self.call("get_quote", {
-            'client_id': self.client_id,
-            'code': code,
-        })
+        return self.call(
+            "get_quote",
+            {
+                'client_id': self.client_id,
+                'code': code,
+            }
+        )
 
-    def repay(self,  amount):
-        return self.call("repay", {
-            'client_id': self.client_id,
-            'amount': amount
-        })
+    def repay(self, amount):
+        return self.call(
+            "repay",
+            {
+                'client_id': self.client_id,
+                'amount': amount
+            }
+        )
 
     def receive_order(self, event):
-        res = self.send_order(code=event.order.code, price=event.order.price, amount=event.order.amount,
-                              towards=event.order.towards, order_model=event.order.order_model)
+        res = self.send_order(
+            code=event.order.code,
+            price=event.order.price,
+            amount=event.order.amount,
+            towards=event.order.towards,
+            order_model=event.order.order_model
+        )
         try:
             event.order.queued(res.realorder_id[0])
             print('success receive order {}'.format(event.order.realorder_id))
@@ -371,8 +446,12 @@ class QA_TTSBroker(QA_Broker):
 
     def get_market(self, order):
         try:
-            data = self.fetcher[(order.market_type, order.frequence)](
-                code=order.code, start=order.datetime, end=order.datetime).values[0]
+            data = self.fetcher[(order.market_type,
+                                 order.frequence)](
+                                     code=order.code,
+                                     start=order.datetime,
+                                     end=order.datetime
+                                 ).values[0]
             if 'vol' in data.keys() and 'volume' not in data.keys():
                 data['volume'] = data['vol']
             elif 'vol' not in data.keys() and 'volume' in data.keys():
@@ -386,13 +465,15 @@ class QA_TTSBroker(QA_Broker):
         df = self.data_to_df(self.query_data(3 if status is 'filled' else 2))
         df['account_cookie'] = account_cookie
         if status is 'filled':
-            df = df[self.dealstatus_headers] if len(
-                df) > 0 else pd.DataFrame(columns=self.dealstatus_headers)
+            df = df[self.dealstatus_headers] if len(df) > 0 else pd.DataFrame(
+                columns=self.dealstatus_headers
+            )
         else:
             df['cancel_amount'] = 0
-            df = df[self.orderstatus_headers] if len(
-                df) > 0 else pd.DataFrame(columns=self.orderstatus_headers)
-        return df.set_index(['account_cookie',  'realorder_id']).sort_index()
+            df = df[self.orderstatus_headers] if len(df) > 0 else pd.DataFrame(
+                columns=self.orderstatus_headers
+            )
+        return df.set_index(['account_cookie', 'realorder_id']).sort_index()
 
     def query_positions(self, account_cookie):
         data = {
@@ -404,8 +485,11 @@ class QA_TTSBroker(QA_Broker):
             if 'data' in result and len(result['data']) > 0:
                 # 使用减法避免因为账户日内现金理财导致可用金额错误
                 data['cash_available'] = round(
-                    float(result['data'][0]['总资产']) - float(result['data'][0]['最新市值']) - float(
-                        result['data'][0]['冻结资金']), 2)
+                    float(result['data'][0]['总资产']) - float(
+                        result['data'][0]['最新市值']
+                    ) - float(result['data'][0]['冻结资金']),
+                    2
+                )
 
             result = self.data_to_df(self.query_data(1))
             if len(result) > 0:
@@ -421,7 +505,9 @@ class QA_TTSBroker(QA_Broker):
 if __name__ == "__main__":
     import os
     import QUANTAXIS as QA
-    print('在运行前 请先运行tdxtradeserver的 exe文件, 目录是你直接get_tts指定的 一般是 C:\tdxTradeServer')
+    print(
+        '在运行前 请先运行tdxtradeserver的 exe文件, 目录是你直接get_tts指定的 一般是 C:\tdxTradeServer'
+    )
     api = QA_TTSBroker(auto_logon=False)
 
     print("---Ping---")
@@ -441,7 +527,14 @@ if __name__ == "__main__":
 
         if str(input('我已知晓, 并下单 按y继续 n 退出'))[0] == 'y':
 
-            print(api.send_order(code='000001', price=9.8, amount=100,
-                                 towards=QA.ORDER_DIRECTION.BUY, order_model=QA.ORDER_MODEL.LIMIT))
+            print(
+                api.send_order(
+                    code='000001',
+                    price=9.8,
+                    amount=100,
+                    towards=QA.ORDER_DIRECTION.BUY,
+                    order_model=QA.ORDER_MODEL.LIMIT
+                )
+            )
         print("---登出---")
         print(api.logoff())

@@ -28,7 +28,7 @@ import numpy as np
 import sched
 import threading
 
-from QUANTAXIS.QAARP.QAAccount import QA_Account
+# from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
@@ -107,10 +107,7 @@ class QA_Market(QA_Trade):
         data 是市场数据
         被 QABacktest 中run 方法调用 upcoming_data
         '''
-        # main thread'
-        # if self.running_time is not None and self.running_time!= data.datetime[0]:
-        #     for item in self.broker.keys():
-        #         self._settle(item)
+
         self.running_time = data.datetime[0]
         for account in self.session.values():
             account.run(QA_Event(
@@ -208,10 +205,11 @@ class QA_Market(QA_Trade):
         res = False
         if account is None:
             if account_cookie not in self.session.keys():
-                self.session[account_cookie] = QA_Account(
-                    account_cookie=account_cookie,
-                    broker=broker_name
-                )
+
+                # self.session[account_cookie] = QA_Account(
+                #     account_cookie=account_cookie,
+                #     broker=broker_name
+                # )
                 if self.sync_account(broker_name, account_cookie):
                     res = True
 
