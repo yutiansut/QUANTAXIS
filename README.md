@@ -87,6 +87,8 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QUANTAXIS_QARISKPRO](https://github.com/yutiansut/QARISKPRO) QUANTAXIS 多市场多账户集成的实时风控系统
 - [QUANTAXIS QADESKPRO](https://github.com/yutiansut/qadeskpro) 新版本客户端网页(部分开源)
 - [QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker) 基于海风at的接口封装
+- [QUANTAXIS OTGBROKER](https://github.com/QUANTAXIS/QA_OTGBROKER) 基于OPEN_TRADE_GATEWAY的接口封装
+- [QUANTAXIS TRADER](https://github.com/yutiansut/QATrader) 一个开源的websocket版本的期货交易实例
 
 ### 社区提供的工具链
 
