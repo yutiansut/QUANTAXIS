@@ -40,7 +40,8 @@ from multiprocessing import cpu_count
 from QUANTAXIS.QASU.save_tdx import now_time
 from QUANTAXIS.QAFetch.QATdx import (
     get_ip_list_by_multi_process_ping,
-    stock_ip_list
+    stock_ip_list,
+    QA_fetch_get_stock_xdxr
 )
 from QUANTAXIS.QAUtil.QACache import QA_util_cache
 
@@ -96,6 +97,20 @@ class QA_SU_save_day_parallelism(Parallelism):
         else:
             raise Exception('value must be great than zero.')
 
+    def loginfo(self, code, listCounts=10):
+        if len(self._loginfolist) < listCounts:
+            self._loginfolist.append(code)
+        else:
+            str = ''
+            for i in range(len(self._loginfolist)):
+                str += + self._loginfolist[i] + ' '
+            str += code
+            QA_util_log_info(
+                '##JOB02 Now Saved STOCK_DAY==== {}'.format(
+                    ),
+                self.ui_log
+            )
+            self._loginfolist.clear()
 
 class QA_SU_save_day_parallelism_thread(Parallelism_Thread):
     def __init__(self, processes=cpu_count(), client=DATABASE, ui_log=None,
@@ -127,6 +142,20 @@ class QA_SU_save_day_parallelism_thread(Parallelism_Thread):
         else:
             raise Exception('value must be great than zero.')
 
+    def loginfo(self, code, listCounts=10):
+        if len(self._loginfolist) < listCounts:
+            self._loginfolist.append(code)
+        else:
+            str = ''
+            for i in range(len(self._loginfolist)):
+                str += + self._loginfolist[i] + ' '
+            str += code
+            QA_util_log_info(
+                '##JOB02 Now Saved STOCK_DAY==== {}'.format(
+                    ),
+                self.ui_log
+            )
+            self._loginfolist.clear()
 
 class QA_SU_save_stock_day_parallelism(QA_SU_save_day_parallelism):
     def complete(self, result):
@@ -197,7 +226,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
             try:
                 code = stock_list[item]
                 QA_util_log_info(
-                    '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)),
+                    '##JOB01 Now Saving STOCK_DAY=== {}'.format(str(code)),
                     ui_log
                 )
 
@@ -279,23 +308,48 @@ def do_saving_work(code, start_date, end_date, if_fq='00', frequence='day',
 
 class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
 
+    def get_index_or_etf_from_code(self, code):
+        # 判断指数或基金
+        if code.startswith('15') or code.startswith('5'):
+            index_or_etf = 'ETF'
+        else:
+            index_or_etf = 'INDEX'
+        return index_or_etf
+
     def __saving_work(self, code):
         def __QA_log_info(code, end_time, start_time):
-            # 判断指数或基金
-            if code.startswith('15') or code.startswith('5'):
-                index_or_etf = 'ETF'
-            else:
-                index_or_etf = 'INDEX'
-            log_info = '##JOB04 Saving {}_DAY====\nTrying updating {} from {} to {}'.format(
-                index_or_etf,
+            def loginfo(prefix='', astr='', listCounts=5):
+                if len(self._loginfolist) < listCounts:
+                    self._loginfolist.append(astr)
+                else:
+                    str = ''
+                    for i in range(len(self._loginfolist)):
+                        str += self._loginfolist[i] + ' '
+                    str += astr
+                    QA_util_log_info(
+                        prefix.format(str),
+                        self.ui_log
+                    )
+                    self._loginfolist.clear()
+
+            index_or_etf = self.get_index_or_etf_from_code(code)
+            prefix = '##JOB04 Saving {}_DAY ==== Trying updating\n{}'.format(index_or_etf, '{}')
+            loginfo(prefix, ' {} from {} to {}'.format(
                 code,
                 start_time,
                 end_time
-            )
-            QA_util_log_info(
-                log_info,
-                ui_log=self.ui_log
-            )
+            ))
+            # log_info = '##JOB04 Saving {}_DAY====\nTrying updating {} from {} to {}'.format(
+            #     index_or_etf,
+            #     code,
+            #     start_time,
+            #     end_time
+            # )
+            # QA_util_log_info(
+            #     log_info,
+            #     ui_log=self.ui_log
+            # )
+
 
         try:
             search_cond = {'code': str(code)[0:6]}
@@ -416,3 +470,68 @@ def QA_SU_save_etf_day(client=DATABASE, ui_log=None, ui_progress=None):
 
     index__or_etf = 'etf'
     _QA_SU_save_index_or_etf_day(index__or_etf, client, ui_log, ui_progress)
+
+
+
+def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
+    """[summary]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+    stock_list = QA_fetch_get_stock_list().code.unique().tolist()
+    # client.drop_collection('stock_xdxr')
+    try:
+
+        coll = client.stock_xdxr
+        coll.create_index(
+            [('code',
+              pymongo.ASCENDING),
+             ('date',
+              pymongo.ASCENDING)],
+            unique=True
+        )
+    except:
+        client.drop_collection('stock_xdxr')
+        coll = client.stock_xdxr
+        coll.create_index(
+            [('code',
+              pymongo.ASCENDING),
+             ('date',
+              pymongo.ASCENDING)],
+            unique=True
+        )
+    err = []
+
+    def __saving_work(code, coll):
+        QA_util_log_info(
+            '##JOB02 Now Saving XDXR INFO ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+            coll.insert_many(
+                QA_util_to_json_from_pandas(QA_fetch_get_stock_xdxr(str(code))),
+                ordered=False
+            )
+
+        except:
+
+            err.append(str(code))
+
+    for i_ in range(len(stock_list)):
+        QA_util_log_info(
+            'The {} of Total {}'.format(i_,
+                                        len(stock_list)),
+            ui_log=ui_log
+        )
+        strLogInfo = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(i_ / len(stock_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(i_ / len(stock_list) * 100))
+        QA_util_log_info(
+            strLogInfo,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        __saving_work(stock_list[i_], coll)

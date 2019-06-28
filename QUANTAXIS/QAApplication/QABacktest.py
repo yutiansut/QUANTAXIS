@@ -25,7 +25,7 @@
 import time
 from functools import lru_cache
 
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_stock_min_adv

@@ -167,3 +167,5 @@ kernel*.json
 
 selenium_driver/*
 QUANTAXIS_WEBDRIVER/*
+
+celerybeat*

@@ -24,7 +24,10 @@
 import os
 import webbrowser
 
-from pyecharts import Kline
+try:
+  from pyecharts import Kline
+except:
+  from pyecharts.charts import Kline
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
