@@ -3,7 +3,7 @@
 
 > 2019-04-26 update: 重大更新即将上线/ OMS/RMS/多场景无缝切换/CEP即将上线
 
-点击此处下载 QUANTAXIS2019 介绍性pdf (quantaxis 2019)[http://whl.yutiansut.com/QUANTAXIS%202019.pdf]
+点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
 
 -------------------------------------------------------------
 
