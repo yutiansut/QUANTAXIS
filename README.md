@@ -3,11 +3,14 @@
 
 > 2019-04-26 update: 重大更新即将上线/ OMS/RMS/多场景无缝切换/CEP即将上线
 
+点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
+
 -------------------------------------------------------------
 
 Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
+
 
 ![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
 
@@ -68,34 +71,44 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ==========================================
 
+## 关联项目:
+
+技术栈: python/nodejs/vue/mongodb/rabbitmq/c++
+
+### 核心工具链(生产环境在用)
+
+- [QUANTAXIS](https://github.com/QUANTAXIS/QUANTAXIS) QUANTAXIS的核心部分
+- [QUANTAXIS_WEBSERVER](https://github.com/QUANTAXIS/QUANTAXIS_WEBSERVER) 基于tornado的web api/ websocket
+- [QUANTAXIS_RUN](https://github.com/QUANTAXIS/quantaxis_run) 基于rabbitmq/celery的分布式任务部署
+- [QUANTAXIS_PUBSUB](https://github.com/QUANTAXIS/QAPUBSUB) 基于RABBITMQ的消息分发订阅
+- [QUANTAXIS_REALTIME_RESOLUTION](https://github.com/yutiansut/QUANTAXIS_REALTIME_RESOLUTION) 实时交易/部署解决方案(未开源)
+- [QUANTAXIS UNICORN](https://github.com/yutiansut/quantaxis_unicorn) QUANTAXIS 策略托管, 交易监控解决方案(未开源)
+- [QUANTAXIS_RANK](https://github.com/yutiansut/quantaxis_rank) QUANTAXIS实时账户评估
+- [QUANTAXIS_CEPEngine](https://github.com/yutiansut/QACEPEngine) QUANTAXIS 复杂事件处理引擎
+- [QUANTAXIS_PBSystem](https://github.com/yutiansut/QAPBSystem) QUANTAXIS PB系统
+- [QUANTAXIS_QARISKPRO](https://github.com/yutiansut/QARISKPRO) QUANTAXIS 多市场多账户集成的实时风控系统
+- [QUANTAXIS QADESKPRO](https://github.com/yutiansut/qadeskpro) 新版本客户端网页(部分开源)
+- [QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker) 基于海风at的接口封装
+- [QUANTAXIS OTGBROKER](https://github.com/QUANTAXIS/QA_OTGBROKER) 基于OPEN_TRADE_GATEWAY的接口封装
+- [QUANTAXIS TRADER](https://github.com/yutiansut/QATrader) 一个开源的websocket版本的期货交易实例
+
+### 社区提供的工具链
+
+- [QUANTAXIS_MONITOR_GUI](https://github.com/QUANTAXIS/QUANTAXIS_Monitor_GUI) 基于QT的python监控
+- (目前废弃)[QUANTAXIS_DESKTOP](https://github.com/QUANTAXIS/QADESKTOP) 基于VUE.js/ ELECTRON的 桌面终端
+- [portable_QA](https://github.com/QUANTAXIS/portable_QA) 一个独立的python环境,免配置
+- [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
+
+![qa2018](http://pic.yutiansut.com/qa2018.png)
+![qaresolution](http://pic.yutiansut.com/QARESOLUTION.png)
+
+==========================================
+
 ## 视频录播(2019-03-23)
 
 QUANTAXIS 2019 支持多市场的面向场景解决方案
 ![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
 [在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
-
-==========================================
-
-## 关联项目:
-
-技术栈: python/nodejs/vue/mongodb/rabbitmq
-
-- [QUANTAXIS](https://github.com/QUANTAXIS/QUANTAXIS) QUANTAXIS的核心部分
-- [QUANTAXIS_MONITOR_GUI](https://github.com/QUANTAXIS/QUANTAXIS_Monitor_GUI) 基于QT的python监控
-- [QUANTAXIS_WEBSERVER](https://github.com/QUANTAXIS/QUANTAXIS_WEBSERVER) 基于tornado的web api/ websocket
-- [QUANTAXIS_RUN](https://github.com/QUANTAXIS/quantaxis_run) 基于rabbitmq/celery的分布式任务部署
-- [QUANTAXIS_PUBSUB](https://github.com/QUANTAXIS/QAPUBSUB) 基于RABBITMQ的消息分发订阅
-- (目前废弃)[QUANTAXIS_DESKTOP](https://github.com/QUANTAXIS/QADESKTOP) 基于VUE.js/ ELECTRON的 桌面终端
-- [QUANTAXIS QADESKPRO](https://github.com/yutiansut/qadeskpro) 新版本客户端网页(部分开源)
-- [portable_QA](https://github.com/QUANTAXIS/portable_QA) 一个独立的python环境,免配置
-- [QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker) 基于海风at的接口封装
-- [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
-- [QUANTAXIS_REALTIME_RESOLUTION](https://github.com/yutiansut/QUANTAXIS_REALTIME_RESOLUTION) 实时交易/部署解决方案(未开源)
-- [QUANTAXIS UNICORN](https://github.com/yutiansut/quantaxis_unicorn) QUANTAXIS 策略托管, 交易监控解决方案(未开源)
-
-
-![qa2018](http://pic.yutiansut.com/qa2018.png)
-![qaresolution](http://pic.yutiansut.com/QARESOLUTION.png)
 
 ==========================================
 
@@ -208,7 +221,7 @@ QUANTAXIS 2019 支持多市场的面向场景解决方案
 
 ### 1.6 实盘
 
-#### 1.6.1 (股票) 实盘易  QAShipaneBroker
+#### 1.6.1 (股票) 实盘易  QAShipaneBroker(推荐)
 
 
 实盘易插件 参见[实盘易](http://www.iguuu.com/e?x=18839)
@@ -225,14 +238,20 @@ CTP 的websocket交易 :  simnow demo:  ws://www.yutiansut.com:7988
 
 关于websocket交易(可能存在一些不确定的bug 因此暂时不开放):
 
-- 目前仅提供demo/ 模拟盘接入
-- 具体需要私聊我 yutiansut@qq.com
+目前已经开源 参见 [QAOTGBROKER](https://github.com/yutiansut/QAOTGBROKER)
 
-#### 1.6.4 (期货)  海风AT封装 QAAtBroker
+### 1.6.4 (期货) QATRADER(推荐)
+
+CTP 的websocket 封装 包括完整的账户/HTTP控制等
+
+目前已经开源 参见 [QATRADER](https://github.com/yutiansut/QATRADER)
+
+#### 1.6.5 (期货)  海风AT封装 QAAtBroker
+
 CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_AtBroker)
 
 
-#### 1.6.5 (期货) VNPY QAVNPYBroker
+#### 1.6.6 (期货) VNPY QAVNPYBroker
 
 目前等VNPY 2.0的横空出世, 兼容py3.6/3.7后将进行对接
 
