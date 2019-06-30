@@ -74,7 +74,11 @@ if platform.system() not in ['Windows',
                                                           '') == '':
     print('no display found. Using non-interactive Agg backend')
     print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
-    matplotlib.use('Agg')
+    # try:
+    #     pass
+    # except expression as identifier:
+    #     pass
+    # matplotlib.use('Agg')
     """
     matplotlib可用模式:
     ['GTK', 'GTKAgg', 'GTKCairo', 'MacOSX', 'Qt4Agg', 'Qt5Agg', 'TkAgg', 'WX',
