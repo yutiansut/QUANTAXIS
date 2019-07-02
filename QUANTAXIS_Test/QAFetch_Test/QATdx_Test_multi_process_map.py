@@ -253,6 +253,9 @@ class TestSelect_best_ip(TestCase):
                                 len(data2), len(data1)))
             print('保存前日期： {}， 保存后日期 {}'.format(data1.datetime[-1],
                                                data2.datetime[-1]))
+            import inspect
+            source=inspect.getsource(QA_SU_save_index_day)
+            print(source)
 
     def test_QA_SU_save_index_day_with_delete(self):
         #  删除部分数据
