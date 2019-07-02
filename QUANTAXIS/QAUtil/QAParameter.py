@@ -54,6 +54,19 @@ class ORDER_DIRECTION():
     XDXR = 5
     OTHER = 6
 
+class TIME_CONDITION():
+    IOC	= 'IOC' # 立即完成，否则撤销
+    GFS	= 'GFS' # 本节有效
+    GFD	= 'GFD' # 当日有效
+    GTD	= 'GTD' # 指定日期前有效
+    GTC	= 'GTC' # 撤销前有效
+    GFA	= 'GFA' # 集合竞价有效
+
+class VOLUME_CONDITION():
+    ANY = 'ANY' # 任意数量
+    MIN	= 'MIN' # 最小数量
+    ALL = 'ALL' # 全部数量
+
 
 class EXCHANGE_ID():
     SSE = 'sse'  # 上交所
@@ -92,12 +105,13 @@ class ORDER_MODEL():
     """
 
     LIMIT = 'LIMIT'  # 限价
-    ANY = 'MARKET'  # 市价(otg兼容)
+    ANY = 'ANY'  # 市价(otg兼容)
     MARKET = 'MARKET'  # 市价/在回测里是下个bar的开盘价买入/实盘就是五档剩余最优成交价
     CLOSE = 'CLOSE'  # 当前bar的收盘价买入
     NEXT_OPEN = 'NEXT_OPEN'  # 下个bar的开盘价买入
     STRICT = 'STRICT'  # 严格模式/不推荐(仅限回测测试用)
-    BEST = 'MARKET'  # 中金所  最优成交剩余转限
+    BEST = 'BEST'  # 中金所  最优成交剩余转限
+    FIVELEVEL = 'FIVELEVEL'
 
 
 class ORDER_STATUS():

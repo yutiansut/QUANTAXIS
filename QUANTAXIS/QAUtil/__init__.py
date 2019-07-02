@@ -105,7 +105,8 @@ from QUANTAXIS.QAUtil.QAMongo import (QA_util_mongo_infos,
 from QUANTAXIS.QAUtil.QAParameter import (
     ACCOUNT_EVENT, AMOUNT_MODEL, BROKER_EVENT, BROKER_TYPE, DATASOURCE,
     ENGINE_EVENT, EVENT_TYPE, EXCHANGE_ID, FREQUENCE, MARKET_ERROR,
-    MARKET_EVENT, MARKET_TYPE, ORDER_DIRECTION, ORDER_EVENT, ORDER_MODEL,
+    MARKET_EVENT, MARKET_TYPE, ORDER_DIRECTION, ORDER_EVENT, ORDER_MODEL, 
+    TIME_CONDITION, VOLUME_CONDITION, 
     ORDER_STATUS, OUTPUT_FORMAT, RUNNING_ENVIRONMENT, TRADE_STATUS, RUNNING_STATUS)
 # RANDOM class
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
@@ -143,25 +144,25 @@ from QUANTAXIS.QAUtil.QADateTools import (
 from QUANTAXIS.QAUtil.Parallelism import Parallelism, Parallelism_Thread
 from QUANTAXIS.QAUtil.QACache import QA_util_cache
 from QUANTAXIS.QAUtil.QASingleton import singleton
-from resource import getrusage as resource_usage, RUSAGE_SELF
+# from resource import getrusage as resource_usage, RUSAGE_SELF
 from time import time as timestamp
 from functools import wraps
 
 
-def print_used_time(func):
-    ''' 打印运行时间
+# def print_used_time(func):
+#     ''' 打印运行时间
 
-    :param func: 运行的函数名称
-    :return:
-    '''
+#     :param func: 运行的函数名称
+#     :return:
+#     '''
 
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start_time, start_resources = timestamp(), resource_usage(RUSAGE_SELF)
-        func(*args, **kwargs)
-        end_resources, end_time = resource_usage(RUSAGE_SELF), timestamp()
-        print({'消耗时间':{'real': end_time - start_time,
-                'sys': end_resources.ru_stime - start_resources.ru_stime,
-                'user': end_resources.ru_utime - start_resources.ru_utime}})
-        return True
-    return wrapper
+#     @wraps(func)
+#     def wrapper(*args, **kwargs):
+#         start_time, start_resources = timestamp(), resource_usage(RUSAGE_SELF)
+#         func(*args, **kwargs)
+#         end_resources, end_time = resource_usage(RUSAGE_SELF), timestamp()
+#         print({'消耗时间':{'real': end_time - start_time,
+#                 'sys': end_resources.ru_stime - start_resources.ru_stime,
+#                 'user': end_resources.ru_utime - start_resources.ru_utime}})
+#         return True
+#     return wrapper
