@@ -146,9 +146,9 @@ from QUANTAXIS.QAUtil.QASingleton import singleton
 
 import platform
 from functools import wraps
-platform_flag = platform.system() == 'Linux'
+platform_flag = platform.system() == 'Windows'
 
-if platform_flag:
+if not platform_flag:
     from resource import getrusage as resource_usage, RUSAGE_SELF
     from time import time as timestamp
 
