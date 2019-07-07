@@ -23,7 +23,7 @@ Subpackages
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS
+.. automodapi:: QUANTAXIS
     :members:
     :undoc-members:
     :show-inheritance:

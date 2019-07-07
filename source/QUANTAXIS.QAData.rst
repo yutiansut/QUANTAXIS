@@ -7,7 +7,7 @@ Submodules
 QUANTAXIS.QAData.QABlockStruct module
 -------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.QABlockStruct
+.. automodapi:: QUANTAXIS.QAData.QABlockStruct
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +15,7 @@ QUANTAXIS.QAData.QABlockStruct module
 QUANTAXIS.QAData.QADataStruct module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.QADataStruct
+.. automodapi:: QUANTAXIS.QAData.QADataStruct
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +23,7 @@ QUANTAXIS.QAData.QADataStruct module
 QUANTAXIS.QAData.QAFinancialStruct module
 -----------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.QAFinancialStruct
+.. automodapi:: QUANTAXIS.QAData.QAFinancialStruct
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +31,7 @@ QUANTAXIS.QAData.QAFinancialStruct module
 QUANTAXIS.QAData.QAIndicatorStruct module
 -----------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.QAIndicatorStruct
+.. automodapi:: QUANTAXIS.QAData.QAIndicatorStruct
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +39,7 @@ QUANTAXIS.QAData.QAIndicatorStruct module
 QUANTAXIS.QAData.QASeriesStruct module
 --------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.QASeriesStruct
+.. automodapi:: QUANTAXIS.QAData.QASeriesStruct
     :members:
     :undoc-members:
     :show-inheritance:
@@ -47,7 +47,7 @@ QUANTAXIS.QAData.QASeriesStruct module
 QUANTAXIS.QAData.base\_datastruct module
 ----------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.base_datastruct
+.. automodapi:: QUANTAXIS.QAData.base_datastruct
     :members:
     :undoc-members:
     :show-inheritance:
@@ -55,7 +55,7 @@ QUANTAXIS.QAData.base\_datastruct module
 QUANTAXIS.QAData.data\_fq module
 --------------------------------
 
-.. automodule:: QUANTAXIS.QAData.data_fq
+.. automodapi:: QUANTAXIS.QAData.data_fq
     :members:
     :undoc-members:
     :show-inheritance:
@@ -63,7 +63,7 @@ QUANTAXIS.QAData.data\_fq module
 QUANTAXIS.QAData.data\_marketvalue module
 -----------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.data_marketvalue
+.. automodapi:: QUANTAXIS.QAData.data_marketvalue
     :members:
     :undoc-members:
     :show-inheritance:
@@ -71,7 +71,7 @@ QUANTAXIS.QAData.data\_marketvalue module
 QUANTAXIS.QAData.data\_resample module
 --------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.data_resample
+.. automodapi:: QUANTAXIS.QAData.data_resample
     :members:
     :undoc-members:
     :show-inheritance:
@@ -79,7 +79,7 @@ QUANTAXIS.QAData.data\_resample module
 QUANTAXIS.QAData.dsmethods module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAData.dsmethods
+.. automodapi:: QUANTAXIS.QAData.dsmethods
     :members:
     :undoc-members:
     :show-inheritance:
@@ -87,24 +87,15 @@ QUANTAXIS.QAData.dsmethods module
 QUANTAXIS.QAData.financial\_mean module
 ---------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.financial_mean
+.. automodapi:: QUANTAXIS.QAData.financial_mean
     :members:
     :undoc-members:
     :show-inheritance:
-
 
 QUANTAXIS.QAData.realtimedata module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QAData.realtimedata
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QAData.schema module
-------------------------------
-
-.. automodule:: QUANTAXIS.QAData.schema
+.. automodapi:: QUANTAXIS.QAData.realtimedata
     :members:
     :undoc-members:
     :show-inheritance:
@@ -112,7 +103,7 @@ QUANTAXIS.QAData.schema module
 QUANTAXIS.QAData.serialize module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAData.serialize
+.. automodapi:: QUANTAXIS.QAData.serialize
     :members:
     :undoc-members:
     :show-inheritance:
@@ -121,7 +112,7 @@ QUANTAXIS.QAData.serialize module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QAData
+.. automodapi:: QUANTAXIS.QAData
     :members:
     :undoc-members:
     :show-inheritance:

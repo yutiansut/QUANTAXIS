@@ -4,10 +4,18 @@ QUANTAXIS.QAAnalysis package
 Submodules
 ----------
 
+QUANTAXIS.QAAnalysis.QAAnalysis\_account module
+-----------------------------------------------
+
+.. automodapi:: QUANTAXIS.QAAnalysis.QAAnalysis_account
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 QUANTAXIS.QAAnalysis.QAAnalysis\_block module
 ---------------------------------------------
 
-.. automodule:: QUANTAXIS.QAAnalysis.QAAnalysis_block
+.. automodapi:: QUANTAXIS.QAAnalysis.QAAnalysis_block
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +23,7 @@ QUANTAXIS.QAAnalysis.QAAnalysis\_block module
 QUANTAXIS.QAAnalysis.QAAnalysis\_dataframe module
 -------------------------------------------------
 
-.. automodule:: QUANTAXIS.QAAnalysis.QAAnalysis_dataframe
+.. automodapi:: QUANTAXIS.QAAnalysis.QAAnalysis_dataframe
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +31,7 @@ QUANTAXIS.QAAnalysis.QAAnalysis\_dataframe module
 QUANTAXIS.QAAnalysis.QAAnalysis\_machinelearning module
 -------------------------------------------------------
 
-.. automodule:: QUANTAXIS.QAAnalysis.QAAnalysis_machinelearning
+.. automodapi:: QUANTAXIS.QAAnalysis.QAAnalysis_machinelearning
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +39,7 @@ QUANTAXIS.QAAnalysis.QAAnalysis\_machinelearning module
 QUANTAXIS.QAAnalysis.QAAnalysis\_series module
 ----------------------------------------------
 
-.. automodule:: QUANTAXIS.QAAnalysis.QAAnalysis_series
+.. automodapi:: QUANTAXIS.QAAnalysis.QAAnalysis_series
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +47,7 @@ QUANTAXIS.QAAnalysis.QAAnalysis\_series module
 QUANTAXIS.QAAnalysis.QAAnalysis\_tick module
 --------------------------------------------
 
-.. automodule:: QUANTAXIS.QAAnalysis.QAAnalysis_tick
+.. automodapi:: QUANTAXIS.QAAnalysis.QAAnalysis_tick
     :members:
     :undoc-members:
     :show-inheritance:
@@ -47,7 +55,7 @@ QUANTAXIS.QAAnalysis.QAAnalysis\_tick module
 QUANTAXIS.QAAnalysis.QAAnalysis\_trade module
 ---------------------------------------------
 
-.. automodule:: QUANTAXIS.QAAnalysis.QAAnalysis_trade
+.. automodapi:: QUANTAXIS.QAAnalysis.QAAnalysis_trade
     :members:
     :undoc-members:
     :show-inheritance:
@@ -56,7 +64,7 @@ QUANTAXIS.QAAnalysis.QAAnalysis\_trade module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QAAnalysis
+.. automodapi:: QUANTAXIS.QAAnalysis
     :members:
     :undoc-members:
     :show-inheritance:
