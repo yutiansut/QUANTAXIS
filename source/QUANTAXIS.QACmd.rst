@@ -7,7 +7,7 @@ Submodules
 QUANTAXIS.QACmd.runner module
 -----------------------------
 
-.. automodule:: QUANTAXIS.QACmd.runner
+.. automodapi:: QUANTAXIS.QACmd.runner
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,7 +16,7 @@ QUANTAXIS.QACmd.runner module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QACmd
+.. automodapi:: QUANTAXIS.QACmd
     :members:
     :undoc-members:
     :show-inheritance:

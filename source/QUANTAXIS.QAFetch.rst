@@ -7,7 +7,7 @@ Submodules
 QUANTAXIS.QAFetch.Fetcher module
 --------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.Fetcher
+.. automodapi:: QUANTAXIS.QAFetch.Fetcher
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +15,7 @@ QUANTAXIS.QAFetch.Fetcher module
 QUANTAXIS.QAFetch.QABitmex module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QABitmex
+.. automodapi:: QUANTAXIS.QAFetch.QABitmex
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +23,7 @@ QUANTAXIS.QAFetch.QABitmex module
 QUANTAXIS.QAFetch.QACrawler module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QACrawler
+.. automodapi:: QUANTAXIS.QAFetch.QACrawler
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +31,7 @@ QUANTAXIS.QAFetch.QACrawler module
 QUANTAXIS.QAFetch.QAEastMoney module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAEastMoney
+.. automodapi:: QUANTAXIS.QAFetch.QAEastMoney
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,17 +39,23 @@ QUANTAXIS.QAFetch.QAEastMoney module
 QUANTAXIS.QAFetch.QAHexun module
 --------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAHexun
+.. automodapi:: QUANTAXIS.QAFetch.QAHexun
     :members:
     :undoc-members:
     :show-inheritance:
 
+QUANTAXIS.QAFetch.QAJQdata module
+---------------------------------
 
+.. automodapi:: QUANTAXIS.QAFetch.QAJQdata
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 QUANTAXIS.QAFetch.QAQUANTAXISWEB module
 ---------------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAQUANTAXISWEB
+.. automodapi:: QUANTAXIS.QAFetch.QAQUANTAXISWEB
     :members:
     :undoc-members:
     :show-inheritance:
@@ -57,7 +63,7 @@ QUANTAXIS.QAFetch.QAQUANTAXISWEB module
 QUANTAXIS.QAFetch.QAQuery module
 --------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAQuery
+.. automodapi:: QUANTAXIS.QAFetch.QAQuery
     :members:
     :undoc-members:
     :show-inheritance:
@@ -65,7 +71,7 @@ QUANTAXIS.QAFetch.QAQuery module
 QUANTAXIS.QAFetch.QAQuery\_Advance module
 -----------------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAQuery_Advance
+.. automodapi:: QUANTAXIS.QAFetch.QAQuery_Advance
     :members:
     :undoc-members:
     :show-inheritance:
@@ -73,7 +79,7 @@ QUANTAXIS.QAFetch.QAQuery\_Advance module
 QUANTAXIS.QAFetch.QAQuery\_Async module
 ---------------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAQuery_Async
+.. automodapi:: QUANTAXIS.QAFetch.QAQuery_Async
     :members:
     :undoc-members:
     :show-inheritance:
@@ -81,7 +87,7 @@ QUANTAXIS.QAFetch.QAQuery\_Async module
 QUANTAXIS.QAFetch.QASina module
 -------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QASina
+.. automodapi:: QUANTAXIS.QAFetch.QASina
     :members:
     :undoc-members:
     :show-inheritance:
@@ -89,7 +95,7 @@ QUANTAXIS.QAFetch.QASina module
 QUANTAXIS.QAFetch.QATdx module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QATdx
+.. automodapi:: QUANTAXIS.QAFetch.QATdx
     :members:
     :undoc-members:
     :show-inheritance:
@@ -97,7 +103,7 @@ QUANTAXIS.QAFetch.QATdx module
 QUANTAXIS.QAFetch.QATdx\_adv module
 -----------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QATdx_adv
+.. automodapi:: QUANTAXIS.QAFetch.QATdx_adv
     :members:
     :undoc-members:
     :show-inheritance:
@@ -105,7 +111,7 @@ QUANTAXIS.QAFetch.QATdx\_adv module
 QUANTAXIS.QAFetch.QAThs module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAThs
+.. automodapi:: QUANTAXIS.QAFetch.QAThs
     :members:
     :undoc-members:
     :show-inheritance:
@@ -113,7 +119,7 @@ QUANTAXIS.QAFetch.QAThs module
 QUANTAXIS.QAFetch.QATradeFile module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QATradeFile
+.. automodapi:: QUANTAXIS.QAFetch.QATradeFile
     :members:
     :undoc-members:
     :show-inheritance:
@@ -121,7 +127,7 @@ QUANTAXIS.QAFetch.QATradeFile module
 QUANTAXIS.QAFetch.QATushare module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QATushare
+.. automodapi:: QUANTAXIS.QAFetch.QATushare
     :members:
     :undoc-members:
     :show-inheritance:
@@ -129,7 +135,7 @@ QUANTAXIS.QAFetch.QATushare module
 QUANTAXIS.QAFetch.QAWind module
 -------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAWind
+.. automodapi:: QUANTAXIS.QAFetch.QAWind
     :members:
     :undoc-members:
     :show-inheritance:
@@ -137,23 +143,7 @@ QUANTAXIS.QAFetch.QAWind module
 QUANTAXIS.QAFetch.QAbinance module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAbinance
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QAFetch.QAcalendar module
------------------------------------
-
-.. automodule:: QUANTAXIS.QAFetch.QAcalendar
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QAFetch.QAdivyield module
------------------------------------
-
-.. automodule:: QUANTAXIS.QAFetch.QAdivyield
+.. automodapi:: QUANTAXIS.QAFetch.QAbinance
     :members:
     :undoc-members:
     :show-inheritance:
@@ -161,7 +151,7 @@ QUANTAXIS.QAFetch.QAdivyield module
 QUANTAXIS.QAFetch.QAfinancial module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.QAfinancial
+.. automodapi:: QUANTAXIS.QAFetch.QAfinancial
     :members:
     :undoc-members:
     :show-inheritance:
@@ -169,7 +159,7 @@ QUANTAXIS.QAFetch.QAfinancial module
 QUANTAXIS.QAFetch.base module
 -----------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.base
+.. automodapi:: QUANTAXIS.QAFetch.base
     :members:
     :undoc-members:
     :show-inheritance:
@@ -177,7 +167,7 @@ QUANTAXIS.QAFetch.base module
 QUANTAXIS.QAFetch.data\_list module
 -----------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.data_list
+.. automodapi:: QUANTAXIS.QAFetch.data_list
     :members:
     :undoc-members:
     :show-inheritance:
@@ -185,7 +175,7 @@ QUANTAXIS.QAFetch.data\_list module
 QUANTAXIS.QAFetch.realtime module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAFetch.realtime
+.. automodapi:: QUANTAXIS.QAFetch.realtime
     :members:
     :undoc-members:
     :show-inheritance:
@@ -194,7 +184,7 @@ QUANTAXIS.QAFetch.realtime module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QAFetch
+.. automodapi:: QUANTAXIS.QAFetch
     :members:
     :undoc-members:
     :show-inheritance:

@@ -7,7 +7,7 @@ Submodules
 QUANTAXIS.QAIndicator.base module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAIndicator.base
+.. automodapi:: QUANTAXIS.QAIndicator.base
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +15,7 @@ QUANTAXIS.QAIndicator.base module
 QUANTAXIS.QAIndicator.hurst module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QAIndicator.hurst
+.. automodapi:: QUANTAXIS.QAIndicator.hurst
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +23,7 @@ QUANTAXIS.QAIndicator.hurst module
 QUANTAXIS.QAIndicator.indicators module
 ---------------------------------------
 
-.. automodule:: QUANTAXIS.QAIndicator.indicators
+.. automodapi:: QUANTAXIS.QAIndicator.indicators
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +31,7 @@ QUANTAXIS.QAIndicator.indicators module
 QUANTAXIS.QAIndicator.talib\_indicators module
 ----------------------------------------------
 
-.. automodule:: QUANTAXIS.QAIndicator.talib_indicators
+.. automodapi:: QUANTAXIS.QAIndicator.talib_indicators
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +39,7 @@ QUANTAXIS.QAIndicator.talib\_indicators module
 QUANTAXIS.QAIndicator.talib\_series module
 ------------------------------------------
 
-.. automodule:: QUANTAXIS.QAIndicator.talib_series
+.. automodapi:: QUANTAXIS.QAIndicator.talib_series
     :members:
     :undoc-members:
     :show-inheritance:
@@ -48,7 +48,7 @@ QUANTAXIS.QAIndicator.talib\_series module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QAIndicator
+.. automodapi:: QUANTAXIS.QAIndicator
     :members:
     :undoc-members:
     :show-inheritance:

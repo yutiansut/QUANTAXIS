@@ -4,10 +4,18 @@ QUANTAXIS.QAUtil package
 Submodules
 ----------
 
+QUANTAXIS.QAUtil.Parallelism module
+-----------------------------------
+
+.. automodapi:: QUANTAXIS.QAUtil.Parallelism
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 QUANTAXIS.QAUtil.QAAuth module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAAuth
+.. automodapi:: QUANTAXIS.QAUtil.QAAuth
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +23,15 @@ QUANTAXIS.QAUtil.QAAuth module
 QUANTAXIS.QAUtil.QABar module
 -----------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QABar
+.. automodapi:: QUANTAXIS.QAUtil.QABar
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAUtil.QACache module
+-------------------------------
+
+.. automodapi:: QUANTAXIS.QAUtil.QACache
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +39,7 @@ QUANTAXIS.QAUtil.QABar module
 QUANTAXIS.QAUtil.QACfg module
 -----------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QACfg
+.. automodapi:: QUANTAXIS.QAUtil.QACfg
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +47,7 @@ QUANTAXIS.QAUtil.QACfg module
 QUANTAXIS.QAUtil.QACode module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QACode
+.. automodapi:: QUANTAXIS.QAUtil.QACode
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +55,7 @@ QUANTAXIS.QAUtil.QACode module
 QUANTAXIS.QAUtil.QACsv module
 -----------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QACsv
+.. automodapi:: QUANTAXIS.QAUtil.QACsv
     :members:
     :undoc-members:
     :show-inheritance:
@@ -47,7 +63,7 @@ QUANTAXIS.QAUtil.QACsv module
 QUANTAXIS.QAUtil.QADate module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QADate
+.. automodapi:: QUANTAXIS.QAUtil.QADate
     :members:
     :undoc-members:
     :show-inheritance:
@@ -55,7 +71,7 @@ QUANTAXIS.QAUtil.QADate module
 QUANTAXIS.QAUtil.QADateTools module
 -----------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QADateTools
+.. automodapi:: QUANTAXIS.QAUtil.QADateTools
     :members:
     :undoc-members:
     :show-inheritance:
@@ -63,7 +79,7 @@ QUANTAXIS.QAUtil.QADateTools module
 QUANTAXIS.QAUtil.QADate\_trade module
 -------------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QADate_trade
+.. automodapi:: QUANTAXIS.QAUtil.QADate_trade
     :members:
     :undoc-members:
     :show-inheritance:
@@ -71,7 +87,7 @@ QUANTAXIS.QAUtil.QADate\_trade module
 QUANTAXIS.QAUtil.QADict module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QADict
+.. automodapi:: QUANTAXIS.QAUtil.QADict
     :members:
     :undoc-members:
     :show-inheritance:
@@ -79,15 +95,7 @@ QUANTAXIS.QAUtil.QADict module
 QUANTAXIS.QAUtil.QAError module
 -------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAError
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QAUtil.QAEtl module
------------------------------
-
-.. automodule:: QUANTAXIS.QAUtil.QAEtl
+.. automodapi:: QUANTAXIS.QAUtil.QAError
     :members:
     :undoc-members:
     :show-inheritance:
@@ -95,7 +103,7 @@ QUANTAXIS.QAUtil.QAEtl module
 QUANTAXIS.QAUtil.QAFile module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAFile
+.. automodapi:: QUANTAXIS.QAUtil.QAFile
     :members:
     :undoc-members:
     :show-inheritance:
@@ -103,7 +111,7 @@ QUANTAXIS.QAUtil.QAFile module
 QUANTAXIS.QAUtil.QAList module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAList
+.. automodapi:: QUANTAXIS.QAUtil.QAList
     :members:
     :undoc-members:
     :show-inheritance:
@@ -111,7 +119,7 @@ QUANTAXIS.QAUtil.QAList module
 QUANTAXIS.QAUtil.QALogs module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QALogs
+.. automodapi:: QUANTAXIS.QAUtil.QALogs
     :members:
     :undoc-members:
     :show-inheritance:
@@ -119,7 +127,7 @@ QUANTAXIS.QAUtil.QALogs module
 QUANTAXIS.QAUtil.QAMail module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAMail
+.. automodapi:: QUANTAXIS.QAUtil.QAMail
     :members:
     :undoc-members:
     :show-inheritance:
@@ -127,15 +135,7 @@ QUANTAXIS.QAUtil.QAMail module
 QUANTAXIS.QAUtil.QAMongo module
 -------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAMongo
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QAUtil.QAMySQL module
--------------------------------
-
-.. automodule:: QUANTAXIS.QAUtil.QAMySQL
+.. automodapi:: QUANTAXIS.QAUtil.QAMongo
     :members:
     :undoc-members:
     :show-inheritance:
@@ -143,7 +143,15 @@ QUANTAXIS.QAUtil.QAMySQL module
 QUANTAXIS.QAUtil.QAParameter module
 -----------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAParameter
+.. automodapi:: QUANTAXIS.QAUtil.QAParameter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAUtil.QAParameter module
+-----------------------------------
+
+.. automodapi:: QUANTAXIS.QAUtil.QAParameter
     :members:
     :undoc-members:
     :show-inheritance:
@@ -151,7 +159,7 @@ QUANTAXIS.QAUtil.QAParameter module
 QUANTAXIS.QAUtil.QAPlot module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAPlot
+.. automodapi:: QUANTAXIS.QAUtil.QAPlot
     :members:
     :undoc-members:
     :show-inheritance:
@@ -159,7 +167,7 @@ QUANTAXIS.QAUtil.QAPlot module
 QUANTAXIS.QAUtil.QARandom module
 --------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QARandom
+.. automodapi:: QUANTAXIS.QAUtil.QARandom
     :members:
     :undoc-members:
     :show-inheritance:
@@ -167,7 +175,15 @@ QUANTAXIS.QAUtil.QARandom module
 QUANTAXIS.QAUtil.QASetting module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QASetting
+.. automodapi:: QUANTAXIS.QAUtil.QASetting
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAUtil.QASingleton module
+-----------------------------------
+
+.. automodapi:: QUANTAXIS.QAUtil.QASingleton
     :members:
     :undoc-members:
     :show-inheritance:
@@ -175,7 +191,7 @@ QUANTAXIS.QAUtil.QASetting module
 QUANTAXIS.QAUtil.QASql module
 -----------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QASql
+.. automodapi:: QUANTAXIS.QAUtil.QASql
     :members:
     :undoc-members:
     :show-inheritance:
@@ -183,7 +199,7 @@ QUANTAXIS.QAUtil.QASql module
 QUANTAXIS.QAUtil.QAText module
 ------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAText
+.. automodapi:: QUANTAXIS.QAUtil.QAText
     :members:
     :undoc-members:
     :show-inheritance:
@@ -191,7 +207,7 @@ QUANTAXIS.QAUtil.QAText module
 QUANTAXIS.QAUtil.QATransform module
 -----------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QATransform
+.. automodapi:: QUANTAXIS.QAUtil.QATransform
     :members:
     :undoc-members:
     :show-inheritance:
@@ -199,7 +215,7 @@ QUANTAXIS.QAUtil.QATransform module
 QUANTAXIS.QAUtil.QAWebutil module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAWebutil
+.. automodapi:: QUANTAXIS.QAUtil.QAWebutil
     :members:
     :undoc-members:
     :show-inheritance:
@@ -207,7 +223,7 @@ QUANTAXIS.QAUtil.QAWebutil module
 QUANTAXIS.QAUtil.QAcrypto module
 --------------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.QAcrypto
+.. automodapi:: QUANTAXIS.QAUtil.QAcrypto
     :members:
     :undoc-members:
     :show-inheritance:
@@ -215,7 +231,7 @@ QUANTAXIS.QAUtil.QAcrypto module
 QUANTAXIS.QAUtil.host module
 ----------------------------
 
-.. automodule:: QUANTAXIS.QAUtil.host
+.. automodapi:: QUANTAXIS.QAUtil.host
     :members:
     :undoc-members:
     :show-inheritance:
@@ -224,7 +240,7 @@ QUANTAXIS.QAUtil.host module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QAUtil
+.. automodapi:: QUANTAXIS.QAUtil
     :members:
     :undoc-members:
     :show-inheritance:

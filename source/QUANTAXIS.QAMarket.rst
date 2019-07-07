@@ -4,18 +4,11 @@ QUANTAXIS.QAMarket package
 Submodules
 ----------
 
-QUANTAXIS.QAMarket.Broker\_Calender module
-------------------------------------------
-
-.. automodule:: QUANTAXIS.QAMarket.Broker_Calender
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 QUANTAXIS.QAMarket.QAAtBroker module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QAAtBroker
+.. automodapi:: QUANTAXIS.QAMarket.QAAtBroker
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +16,7 @@ QUANTAXIS.QAMarket.QAAtBroker module
 QUANTAXIS.QAMarket.QABacktestBroker module
 ------------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QABacktestBroker
+.. automodapi:: QUANTAXIS.QAMarket.QABacktestBroker
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +24,7 @@ QUANTAXIS.QAMarket.QABacktestBroker module
 QUANTAXIS.QAMarket.QABroker module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QABroker
+.. automodapi:: QUANTAXIS.QAMarket.QABroker
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +32,7 @@ QUANTAXIS.QAMarket.QABroker module
 QUANTAXIS.QAMarket.QACtpBroker module
 -------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QACtpBroker
+.. automodapi:: QUANTAXIS.QAMarket.QACtpBroker
     :members:
     :undoc-members:
     :show-inheritance:
@@ -47,7 +40,7 @@ QUANTAXIS.QAMarket.QACtpBroker module
 QUANTAXIS.QAMarket.QADealer module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QADealer
+.. automodapi:: QUANTAXIS.QAMarket.QADealer
     :members:
     :undoc-members:
     :show-inheritance:
@@ -55,7 +48,7 @@ QUANTAXIS.QAMarket.QADealer module
 QUANTAXIS.QAMarket.QAMarket module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QAMarket
+.. automodapi:: QUANTAXIS.QAMarket.QAMarket
     :members:
     :undoc-members:
     :show-inheritance:
@@ -63,7 +56,15 @@ QUANTAXIS.QAMarket.QAMarket module
 QUANTAXIS.QAMarket.QAOrder module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QAOrder
+.. automodapi:: QUANTAXIS.QAMarket.QAOrder
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAMarket.QAOrder module
+---------------------------------
+
+.. automodapi:: QUANTAXIS.QAMarket.QAOrder
     :members:
     :undoc-members:
     :show-inheritance:
@@ -71,7 +72,7 @@ QUANTAXIS.QAMarket.QAOrder module
 QUANTAXIS.QAMarket.QAOrderHandler module
 ----------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QAOrderHandler
+.. automodapi:: QUANTAXIS.QAMarket.QAOrderHandler
     :members:
     :undoc-members:
     :show-inheritance:
@@ -79,7 +80,15 @@ QUANTAXIS.QAMarket.QAOrderHandler module
 QUANTAXIS.QAMarket.QAOrderHandler\_async module
 -----------------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QAOrderHandler_async
+.. automodapi:: QUANTAXIS.QAMarket.QAOrderHandler_async
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAMarket.QAPosition module
+------------------------------------
+
+.. automodapi:: QUANTAXIS.QAMarket.QAPosition
     :members:
     :undoc-members:
     :show-inheritance:
@@ -87,7 +96,7 @@ QUANTAXIS.QAMarket.QAOrderHandler\_async module
 QUANTAXIS.QAMarket.QARandomBroker module
 ----------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QARandomBroker
+.. automodapi:: QUANTAXIS.QAMarket.QARandomBroker
     :members:
     :undoc-members:
     :show-inheritance:
@@ -95,7 +104,7 @@ QUANTAXIS.QAMarket.QARandomBroker module
 QUANTAXIS.QAMarket.QARealBroker module
 --------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QARealBroker
+.. automodapi:: QUANTAXIS.QAMarket.QARealBroker
     :members:
     :undoc-members:
     :show-inheritance:
@@ -103,7 +112,7 @@ QUANTAXIS.QAMarket.QARealBroker module
 QUANTAXIS.QAMarket.QAShipaneBroker module
 -----------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QAShipaneBroker
+.. automodapi:: QUANTAXIS.QAMarket.QAShipaneBroker
     :members:
     :undoc-members:
     :show-inheritance:
@@ -111,7 +120,15 @@ QUANTAXIS.QAMarket.QAShipaneBroker module
 QUANTAXIS.QAMarket.QASimulatedBroker module
 -------------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QASimulatedBroker
+.. automodapi:: QUANTAXIS.QAMarket.QASimulatedBroker
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAMarket.QATTSBroker module
+-------------------------------------
+
+.. automodapi:: QUANTAXIS.QAMarket.QATTSBroker
     :members:
     :undoc-members:
     :show-inheritance:
@@ -119,7 +136,7 @@ QUANTAXIS.QAMarket.QASimulatedBroker module
 QUANTAXIS.QAMarket.QATrade module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.QATrade
+.. automodapi:: QUANTAXIS.QAMarket.QATrade
     :members:
     :undoc-members:
     :show-inheritance:
@@ -127,7 +144,7 @@ QUANTAXIS.QAMarket.QATrade module
 QUANTAXIS.QAMarket.common module
 --------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.common
+.. automodapi:: QUANTAXIS.QAMarket.common
     :members:
     :undoc-members:
     :show-inheritance:
@@ -135,15 +152,7 @@ QUANTAXIS.QAMarket.common module
 QUANTAXIS.QAMarket.shipaneclient module
 ---------------------------------------
 
-.. automodule:: QUANTAXIS.QAMarket.shipaneclient
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QAMarket.tdxRealBroker module
----------------------------------------
-
-.. automodule:: QUANTAXIS.QAMarket.tdxRealBroker
+.. automodapi:: QUANTAXIS.QAMarket.shipaneclient
     :members:
     :undoc-members:
     :show-inheritance:
@@ -152,7 +161,7 @@ QUANTAXIS.QAMarket.tdxRealBroker module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QAMarket
+.. automodapi:: QUANTAXIS.QAMarket
     :members:
     :undoc-members:
     :show-inheritance:

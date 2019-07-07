@@ -7,7 +7,7 @@ Submodules
 QUANTAXIS.QAApplication.OldBacktest module
 ------------------------------------------
 
-.. automodule:: QUANTAXIS.QAApplication.OldBacktest
+.. automodapi:: QUANTAXIS.QAApplication.OldBacktest
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +15,7 @@ QUANTAXIS.QAApplication.OldBacktest module
 QUANTAXIS.QAApplication.QAAnalysis module
 -----------------------------------------
 
-.. automodule:: QUANTAXIS.QAApplication.QAAnalysis
+.. automodapi:: QUANTAXIS.QAApplication.QAAnalysis
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,15 +23,7 @@ QUANTAXIS.QAApplication.QAAnalysis module
 QUANTAXIS.QAApplication.QABacktest module
 -----------------------------------------
 
-.. automodule:: QUANTAXIS.QAApplication.QABacktest
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QAApplication.QAModels module
----------------------------------------
-
-.. automodule:: QUANTAXIS.QAApplication.QAModels
+.. automodapi:: QUANTAXIS.QAApplication.QABacktest
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +31,7 @@ QUANTAXIS.QAApplication.QAModels module
 QUANTAXIS.QAApplication.QAResult module
 ---------------------------------------
 
-.. automodule:: QUANTAXIS.QAApplication.QAResult
+.. automodapi:: QUANTAXIS.QAApplication.QAResult
     :members:
     :undoc-members:
     :show-inheritance:
@@ -47,7 +39,7 @@ QUANTAXIS.QAApplication.QAResult module
 QUANTAXIS.QAApplication.QAT0Backtest module
 -------------------------------------------
 
-.. automodule:: QUANTAXIS.QAApplication.QAT0Backtest
+.. automodapi:: QUANTAXIS.QAApplication.QAT0Backtest
     :members:
     :undoc-members:
     :show-inheritance:
@@ -55,7 +47,7 @@ QUANTAXIS.QAApplication.QAT0Backtest module
 QUANTAXIS.QAApplication.QATradeRealtime module
 ----------------------------------------------
 
-.. automodule:: QUANTAXIS.QAApplication.QATradeRealtime
+.. automodapi:: QUANTAXIS.QAApplication.QATradeRealtime
     :members:
     :undoc-members:
     :show-inheritance:
@@ -63,7 +55,7 @@ QUANTAXIS.QAApplication.QATradeRealtime module
 QUANTAXIS.QAApplication.backtest\_setting module
 ------------------------------------------------
 
-.. automodule:: QUANTAXIS.QAApplication.backtest_setting
+.. automodapi:: QUANTAXIS.QAApplication.backtest_setting
     :members:
     :undoc-members:
     :show-inheritance:
@@ -72,7 +64,7 @@ QUANTAXIS.QAApplication.backtest\_setting module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QAApplication
+.. automodapi:: QUANTAXIS.QAApplication
     :members:
     :undoc-members:
     :show-inheritance:

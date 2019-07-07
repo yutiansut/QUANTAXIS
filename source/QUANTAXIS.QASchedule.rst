@@ -4,7 +4,7 @@ QUANTAXIS.QASchedule package
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QASchedule
+.. automodapi:: QUANTAXIS.QASchedule
     :members:
     :undoc-members:
     :show-inheritance:

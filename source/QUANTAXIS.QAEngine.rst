@@ -4,10 +4,42 @@ QUANTAXIS.QAEngine package
 Submodules
 ----------
 
+QUANTAXIS.QAEngine.QAAsyncExec module
+-------------------------------------
+
+.. automodapi:: QUANTAXIS.QAEngine.QAAsyncExec
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAEngine.QAAsyncSchedule module
+-----------------------------------------
+
+.. automodapi:: QUANTAXIS.QAEngine.QAAsyncSchedule
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAEngine.QAAsyncTask module
+-------------------------------------
+
+.. automodapi:: QUANTAXIS.QAEngine.QAAsyncTask
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QAEngine.QAAsyncThread module
+---------------------------------------
+
+.. automodapi:: QUANTAXIS.QAEngine.QAAsyncThread
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 QUANTAXIS.QAEngine.QAAsyncioEngine module
 -----------------------------------------
 
-.. automodule:: QUANTAXIS.QAEngine.QAAsyncioEngine
+.. automodapi:: QUANTAXIS.QAEngine.QAAsyncioEngine
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,7 +47,7 @@ QUANTAXIS.QAEngine.QAAsyncioEngine module
 QUANTAXIS.QAEngine.QAEvent module
 ---------------------------------
 
-.. automodule:: QUANTAXIS.QAEngine.QAEvent
+.. automodapi:: QUANTAXIS.QAEngine.QAEvent
     :members:
     :undoc-members:
     :show-inheritance:
@@ -23,7 +55,7 @@ QUANTAXIS.QAEngine.QAEvent module
 QUANTAXIS.QAEngine.QATask module
 --------------------------------
 
-.. automodule:: QUANTAXIS.QAEngine.QATask
+.. automodapi:: QUANTAXIS.QAEngine.QATask
     :members:
     :undoc-members:
     :show-inheritance:
@@ -31,7 +63,7 @@ QUANTAXIS.QAEngine.QATask module
 QUANTAXIS.QAEngine.QAThreadEngine module
 ----------------------------------------
 
-.. automodule:: QUANTAXIS.QAEngine.QAThreadEngine
+.. automodapi:: QUANTAXIS.QAEngine.QAThreadEngine
     :members:
     :undoc-members:
     :show-inheritance:
@@ -40,7 +72,7 @@ QUANTAXIS.QAEngine.QAThreadEngine module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QAEngine
+.. automodapi:: QUANTAXIS.QAEngine
     :members:
     :undoc-members:
     :show-inheritance:

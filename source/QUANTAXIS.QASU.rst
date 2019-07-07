@@ -4,34 +4,10 @@ QUANTAXIS.QASU package
 Submodules
 ----------
 
-QUANTAXIS.QASU.crawl\_eastmoney module
---------------------------------------
-
-.. automodule:: QUANTAXIS.QASU.crawl_eastmoney
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QASU.crawl\_jrj\_financial\_reportdate module
--------------------------------------------------------
-
-.. automodule:: QUANTAXIS.QASU.crawl_jrj_financial_reportdate
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-QUANTAXIS.QASU.crawl\_jrj\_stock\_divyield module
--------------------------------------------------
-
-.. automodule:: QUANTAXIS.QASU.crawl_jrj_stock_divyield
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 QUANTAXIS.QASU.main module
 --------------------------
 
-.. automodule:: QUANTAXIS.QASU.main
+.. automodapi:: QUANTAXIS.QASU.main
     :members:
     :undoc-members:
     :show-inheritance:
@@ -39,7 +15,7 @@ QUANTAXIS.QASU.main module
 QUANTAXIS.QASU.save\_account module
 -----------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_account
+.. automodapi:: QUANTAXIS.QASU.save_account
     :members:
     :undoc-members:
     :show-inheritance:
@@ -47,7 +23,7 @@ QUANTAXIS.QASU.save\_account module
 QUANTAXIS.QASU.save\_backtest module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_backtest
+.. automodapi:: QUANTAXIS.QASU.save_backtest
     :members:
     :undoc-members:
     :show-inheritance:
@@ -55,7 +31,7 @@ QUANTAXIS.QASU.save\_backtest module
 QUANTAXIS.QASU.save\_binance module
 -----------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_binance
+.. automodapi:: QUANTAXIS.QASU.save_binance
     :members:
     :undoc-members:
     :show-inheritance:
@@ -63,7 +39,7 @@ QUANTAXIS.QASU.save\_binance module
 QUANTAXIS.QASU.save\_bitmex module
 ----------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_bitmex
+.. automodapi:: QUANTAXIS.QASU.save_bitmex
     :members:
     :undoc-members:
     :show-inheritance:
@@ -71,7 +47,23 @@ QUANTAXIS.QASU.save\_bitmex module
 QUANTAXIS.QASU.save\_financialfiles module
 ------------------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_financialfiles
+.. automodapi:: QUANTAXIS.QASU.save_financialfiles
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QASU.save\_gm module
+------------------------------
+
+.. automodapi:: QUANTAXIS.QASU.save_gm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QASU.save\_jq module
+------------------------------
+
+.. automodapi:: QUANTAXIS.QASU.save_jq
     :members:
     :undoc-members:
     :show-inheritance:
@@ -79,7 +71,15 @@ QUANTAXIS.QASU.save\_financialfiles module
 QUANTAXIS.QASU.save\_orderhandler module
 ----------------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_orderhandler
+.. automodapi:: QUANTAXIS.QASU.save_orderhandler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QASU.save\_position module
+------------------------------------
+
+.. automodapi:: QUANTAXIS.QASU.save_position
     :members:
     :undoc-members:
     :show-inheritance:
@@ -87,7 +87,7 @@ QUANTAXIS.QASU.save\_orderhandler module
 QUANTAXIS.QASU.save\_strategy module
 ------------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_strategy
+.. automodapi:: QUANTAXIS.QASU.save_strategy
     :members:
     :undoc-members:
     :show-inheritance:
@@ -95,7 +95,7 @@ QUANTAXIS.QASU.save\_strategy module
 QUANTAXIS.QASU.save\_tdx module
 -------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_tdx
+.. automodapi:: QUANTAXIS.QASU.save_tdx
     :members:
     :undoc-members:
     :show-inheritance:
@@ -103,15 +103,15 @@ QUANTAXIS.QASU.save\_tdx module
 QUANTAXIS.QASU.save\_tdx\_file module
 -------------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_tdx_file
+.. automodapi:: QUANTAXIS.QASU.save_tdx_file
     :members:
     :undoc-members:
     :show-inheritance:
 
-QUANTAXIS.QASU.save\_to\_db\_fields\_description module
--------------------------------------------------------
+QUANTAXIS.QASU.save\_tdx\_parallelism module
+--------------------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_to_db_fields_description
+.. automodapi:: QUANTAXIS.QASU.save_tdx_parallelism
     :members:
     :undoc-members:
     :show-inheritance:
@@ -119,7 +119,15 @@ QUANTAXIS.QASU.save\_to\_db\_fields\_description module
 QUANTAXIS.QASU.save\_tushare module
 -----------------------------------
 
-.. automodule:: QUANTAXIS.QASU.save_tushare
+.. automodapi:: QUANTAXIS.QASU.save_tushare
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QASU.save\_tusharepro\_pg module
+------------------------------------------
+
+.. automodapi:: QUANTAXIS.QASU.save_tusharepro_pg
     :members:
     :undoc-members:
     :show-inheritance:
@@ -127,7 +135,23 @@ QUANTAXIS.QASU.save\_tushare module
 QUANTAXIS.QASU.test\_save\_strategy module
 ------------------------------------------
 
-.. automodule:: QUANTAXIS.QASU.test_save_strategy
+.. automodapi:: QUANTAXIS.QASU.test_save_strategy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QASU.trans\_gm module
+-------------------------------
+
+.. automodapi:: QUANTAXIS.QASU.trans_gm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+QUANTAXIS.QASU.trans\_ss module
+-------------------------------
+
+.. automodapi:: QUANTAXIS.QASU.trans_ss
     :members:
     :undoc-members:
     :show-inheritance:
@@ -135,7 +159,7 @@ QUANTAXIS.QASU.test\_save\_strategy module
 QUANTAXIS.QASU.user module
 --------------------------
 
-.. automodule:: QUANTAXIS.QASU.user
+.. automodapi:: QUANTAXIS.QASU.user
     :members:
     :undoc-members:
     :show-inheritance:
@@ -144,7 +168,7 @@ QUANTAXIS.QASU.user module
 Module contents
 ---------------
 
-.. automodule:: QUANTAXIS.QASU
+.. automodapi:: QUANTAXIS.QASU
     :members:
     :undoc-members:
     :show-inheritance:
