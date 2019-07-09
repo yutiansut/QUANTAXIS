@@ -622,7 +622,19 @@ class QA_Account(QA_Worker):
             return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], 
                                            str(max(max(self.time_index_max),self.end_date))[0:10])
 
+    @property
+    def total_commission(self):
+        """
+        总手续费
+        """
+        return np.asarray(self.history).T[9].sum()
 
+    @property
+    def total_tax(self):
+        """
+        总印花税
+        """
+        return np.asarray(self.history).T[10].sum()
 
     @property
     def time_index(self):
