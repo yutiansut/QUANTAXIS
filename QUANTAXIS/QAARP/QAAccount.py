@@ -627,14 +627,20 @@ class QA_Account(QA_Worker):
         """
         总手续费
         """
-        return np.asarray(self.history).T[9].sum()
+        try:
+            return np.asarray(self.history).T[9].sum()
+        except:
+            return 0
 
     @property
     def total_tax(self):
         """
         总印花税
         """
-        return np.asarray(self.history).T[10].sum()
+        try:
+            return np.asarray(self.history).T[10].sum()
+        except:
+            return 0
 
     @property
     def time_index(self):
