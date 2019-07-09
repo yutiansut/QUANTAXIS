@@ -388,9 +388,9 @@ class QA_Position():
     def order_check(self, amount: float, price: float, towards: int, order_id: str) -> bool:
         res = False
         if towards == ORDER_DIRECTION.BUY_CLOSE:
-            print('buyclose')
-            print(self.volume_short - self.volume_short_frozen)
-            print(amount)
+            # print('buyclose')
+            #print(self.volume_short - self.volume_short_frozen)
+            # print(amount)
             if (self.volume_short - self.volume_short_frozen) >= amount:
                 # check
                 self.volume_short_frozen_today += amount
@@ -405,9 +405,9 @@ class QA_Position():
             else:
                 print('BUYCLOSETODAY 今日仓位不足')
         elif towards == ORDER_DIRECTION.SELL_CLOSE:
-            print('sellclose')
-            print(self.volume_long - self.volume_long_frozen)
-            print(amount)
+            # print('sellclose')
+            #print(self.volume_long - self.volume_long_frozen)
+            # print(amount)
             if (self.volume_long - self.volume_long_frozen) >= amount:
                 self.volume_long_frozen_today += amount
                 res = True
@@ -416,9 +416,9 @@ class QA_Position():
 
         elif towards == ORDER_DIRECTION.SELL_CLOSETODAY:
             if (self.volume_long_today - self.volume_short_frozen_today) >= amount:
-                print('sellclosetoday')
-                print(self.volume_long_today - self.volume_long_frozen)
-                print(amount)
+                # print('sellclosetoday')
+                #print(self.volume_long_today - self.volume_long_frozen)
+                # print(amount)
                 self.volume_long_frozen_today += amount
                 return True
             else:
@@ -448,7 +448,7 @@ class QA_Position():
     def send_order(self, amount: float, price: float, towards: int):
         order_id = str(uuid.uuid4())
         if self.order_check(amount, price, towards, order_id):
-            print('order check success')
+            #print('order check success')
             order = {
                 'position_id': str(self.position_id),
                 'account_cookie': self.account_cookie,
@@ -537,7 +537,7 @@ class QA_Position():
             5. 增加持仓cost
             6. 增加空单仓位
             """
-            temp_margin =temp_cost * \
+            temp_margin = temp_cost * \
                 self.market_preset['sell_frozen_coeff']
             self.margin_short += temp_margin
             # 重新计算开仓/持仓成本
@@ -555,7 +555,7 @@ class QA_Position():
             self.position_cost_short += temp_cost
             self.volume_short_today += amount
             self.moneypresetLeft -= temp_margin
-            
+
         elif towards == ORDER_DIRECTION.BUY_CLOSETODAY:
             if self.volume_short_today > amount:
                 self.position_cost_short = self.position_cost_short * \
@@ -789,7 +789,7 @@ class QA_Position():
             bar {[type]} -- [description]
         """
         self.last_price = bar['close']
-        print(self.realtime_message)
+        # print(self.realtime_message)
         pass
 
     def on_tick(self, tick):
@@ -799,7 +799,7 @@ class QA_Position():
             tick {[type]} -- [description]
         """
         self.last_price = tick['LastPrice']
-        print(self.realtime_message)
+        # print(self.realtime_message)
         pass
 
     def on_signal(self, signal):

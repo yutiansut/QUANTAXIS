@@ -618,10 +618,11 @@ class QA_Account(QA_Worker):
         if self.start_date < str(min(self.time_index_max))[0:10]:
             return QA_util_get_trade_range(self.start_date, self.end_date)
         else:
-            return QA_util_get_trade_range(
-                str(min(self.time_index_max))[0:10],
-                str(max(self.time_index_max))[0:10]
-            )
+
+            return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], 
+                                           str(max(max(self.time_index_max),self.end_date))[0:10])
+
+
 
     @property
     def time_index(self):
@@ -1315,7 +1316,7 @@ class QA_Account(QA_Worker):
             [type] -- [description]
         """
 
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!receive deal')
+        print('QAACCOUNT ==> receive deal')
 
         trade_time = str(trade_time)
         code = str(code)
