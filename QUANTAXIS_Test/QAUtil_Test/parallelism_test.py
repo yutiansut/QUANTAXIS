@@ -14,7 +14,7 @@ class TestParallelSim(TestCase):
         pl = Parallelism()
         counts = 5000
         aiter = [(x, x + 1) for x in range(counts)]
-        pl.add(add, aiter)
+        pl.run(add, aiter)
         data = list(pl.get_results())
         self.assertTrue(len(data) == counts, '返回结果的数量和原始数据布匹配：{} {}'.format(len(data), counts))
 
