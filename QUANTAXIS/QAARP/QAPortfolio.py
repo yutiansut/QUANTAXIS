@@ -27,6 +27,7 @@ from functools import lru_cache
 import pandas as pd
 
 from QUANTAXIS.QAARP.QAAccount import QA_Account
+from QUANTAXIS.QAARP.QAAccountPro import QA_AccountPRO
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
 from QUANTAXIS.QAUtil import (
     DATABASE,
@@ -219,12 +220,81 @@ class QA_Portfolio(QA_Account):
         if account_cookie in self.account_list:
             res = self.account_list.remove(account_cookie)
             self.cash.append(
-                self.cash[-1] + self.get_account_by_cookie(res).init_cash)
+                self.cash[-1] + self.get_account_by_cookie(res).init_cash
+            )
             return True
         else:
             raise RuntimeError(
                 'account {} is not in the portfolio'.format(account_cookie)
             )
+
+    def new_accountpro(
+            self,
+            account_cookie=None,
+            init_cash=1000000,
+            market_type=MARKET_TYPE.STOCK_CN,
+            *args,
+            **kwargs
+    ):
+        """创建一个新的Account
+
+        Keyword Arguments:
+            account_cookie {[type]} -- [description] (default: {None})
+
+        Returns:
+            [type] -- [description]
+        """
+
+        if account_cookie is None:
+            """创建新的account
+
+            Returns:
+                [type] -- [description]
+            """
+            # 如果组合的cash_available>创建新的account所需cash
+            if self.cash_available >= init_cash:
+
+                temp = QA_AccountPRO(
+                    user_cookie=self.user_cookie,
+                    portfolio_cookie=self.portfolio_cookie,
+                    init_cash=init_cash,
+                    market_type=market_type,
+                    *args,
+                    **kwargs
+                )
+                if temp.account_cookie not in self.account_list:
+                    #self.accounts[temp.account_cookie] = temp
+                    self.account_list.append(temp.account_cookie)
+                    temp.save()
+                    self.cash.append(self.cash_available - init_cash)
+                    return temp
+
+                else:
+                    return self.new_accountpro()
+        else:
+            if self.cash_available >= init_cash:
+                if account_cookie not in self.account_list:
+
+                    acc = QA_AccountPRO(
+                        portfolio_cookie=self.portfolio_cookie,
+                        user_cookie=self.user_cookie,
+                        init_cash=init_cash,
+                        market_type=market_type,
+                        account_cookie=account_cookie,
+                        *args,
+                        **kwargs
+                    )
+                    acc.save()
+                    self.account_list.append(acc.account_cookie)
+                    self.cash.append(self.cash_available - init_cash)
+                    return acc
+                else:
+                    return QA_AccountPRO(
+                        account_cookie=account_cookie,
+                        user_cookie=self.user_cookie,
+                        portfolio_cookie=self.portfolio_cookie,
+                        auto_reload=True
+                    )
 
     def new_account(
             self,
@@ -509,8 +579,15 @@ class QA_Portfolio(QA_Account):
             self.init_cash = message['init_cash']
             self.cash = message['cash']
 
-            self.account_list = [item['account_cookie'] for item in DATABASE.account.find(
-                {'user_cookie': self.user_cookie, 'portfolio_cookie': self.portfolio_cookie}, {'account_cookie':1})]
+            self.account_list = [
+                item['account_cookie'] for item in DATABASE.account.find(
+                    {
+                        'user_cookie': self.user_cookie,
+                        'portfolio_cookie': self.portfolio_cookie
+                    },
+                    {'account_cookie': 1}
+                )
+            ]
             #self.history = (message['history'], message['history_header'])
             #account_list = message['account_list']
 
@@ -660,12 +737,12 @@ class QA_PortfolioView():
     @property
     def history_table(self):
         return pd.concat([item.history_table for item in self.accounts]
-                         ).sort_index()
+                        ).sort_index()
 
     @property
     def trade_day(self):
         return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
-                         ).drop_duplicates().sort_values().tolist()
+                        ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):

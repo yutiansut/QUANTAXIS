@@ -333,14 +333,17 @@ class QA_BacktestBroker(QA_Broker):
             """
             收盘价模式
             """
-            try:
+                    
+            if order.frequence is FREQUENCE.DAY:
                 order.date = order.datetime[0:10]
                 order.datetime = '{} 15:00:00'.format(order.date)
-            except:
-                if len(str(order.datetime)) == 19:
-                    pass
-                else:
-                    order.datetime = '{} 15:00:00'.format(order.date)
+            elif order.frequence in [FREQUENCE.ONE_MIN,
+                                     FREQUENCE.FIVE_MIN,
+                                     FREQUENCE.FIFTEEN_MIN,
+                                     FREQUENCE.THIRTY_MIN,
+                                     FREQUENCE.SIXTY_MIN]:
+
+                order.date = str(order.datetime)[0:10]                    
 
             order.price = float(self.market_data.get('close'))
 

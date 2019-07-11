@@ -34,7 +34,7 @@ def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
     2. 仅测试过，与通达信 1 分钟数据达成一致
     3. 经测试，可以匹配 QA.QA_fetch_get_stock_transaction 得到的数据，其他类型数据未测试
     demo:
-    df = QA.QA_fetch_get_stock_transaction(package='tdx', code='000001', 
+    df = QA.QA_fetch_get_stock_transaction(package='tdx', code='000001',
                                            start='2018-08-01 09:25:00',
                                            end='2018-08-03 15:00:00')
     df_min = QA_data_tick_resample_1min(df)
@@ -408,6 +408,60 @@ def QA_data_min_resample(min_data, type_='5min'):
     return resx.dropna().reset_index().set_index(['datetime', 'code'])
 
 
+def QA_data_min_resample_stock(min_data, period=5):
+    """
+    1min 分钟线采样成 period 级别的分钟线
+    :param min_data:
+    :param period:
+    :return:
+    """
+    if isinstance(period, float):
+        period = int(period)
+    elif isinstance(period, str):
+        period = period.replace('min', '')
+    elif isinstance(period, int):
+        pass
+    _period = '%sT' % period
+    min_data = min_data.reset_index()
+    if 'datetime' not in min_data.columns:
+        return None
+    # 9:30 - 11:30
+    min_data_morning = min_data.set_index(
+        "datetime").loc[time(9, 30):time(11, 30)].reset_index()
+    min_data_morning.index = pd.DatetimeIndex(
+        min_data_morning.datetime).to_period('T')
+    # 13:00 - 15:00
+    min_data_afternoon = min_data.set_index(
+        "datetime").loc[time(13, 00):time(15, 00)].reset_index()
+    min_data_afternoon.index = pd.DatetimeIndex(
+        min_data_afternoon.datetime).to_period('T')
+
+    _conversion = {
+        'code': 'first',
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+    }
+    if 'vol' in min_data.columns:
+        _conversion["vol"] = "sum"
+    elif 'volume' in min_data.columns:
+        _conversion["volume"] = "sum"
+    if 'amount' in min_data.columns:
+        _conversion['amount'] = 'sum'
+
+    res = pd.concat([
+        min_data_morning.resample(
+            _period, closed="right", kind="period").apply(_conversion).dropna(),
+        min_data_afternoon.resample(
+            _period, closed="right", kind="period").apply(_conversion).dropna()
+    ])
+    # 10:31:00 => 10:30:00
+    res.index = (res.index + res.index.freq).to_timestamp() - \
+        pd.Timedelta(minutes=1)
+    return res.reset_index().set_index(["datetime", "code"]).sort_index()
+
+
 def QA_data_futuremin_resample(min_data, type_='5min'):
     """期货分钟线采样成大周期
 
@@ -496,3 +550,11 @@ if __name__ == '__main__':
     print(QA_data_tick_resample(tick, '60min'))
     print(QA_data_tick_resample(tick, '15min'))
     print(QA_data_tick_resample(tick, '35min'))
+
+    print("test QA_data_min_resample_stock, level: 120")
+    start, end, level = "2019-05-01", "2019-05-08", 120
+    data = QA.QA_fetch_stock_min_adv("000001", start, end)
+    res = QA_data_min_resample_stock(data.data, level)
+    print(res)
+    res2 = QA.QA_fetch_stock_min_adv(["000001", '000002'], start, end).add_func(QA_data_min_resample_stock, level)
+    print(res2)

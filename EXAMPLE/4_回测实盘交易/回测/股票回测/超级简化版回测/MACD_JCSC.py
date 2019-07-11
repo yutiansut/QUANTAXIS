@@ -51,6 +51,7 @@ data_forbacktest=data.select_time('2018-01-01','2018-05-01')
 
 for items in data_forbacktest.panel_gen:
     for item in items.security_gen:
+        ###################
         daily_ind=ind.loc[item.index]
 
         if daily_ind.CROSS_JC.iloc[0]>0:
