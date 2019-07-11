@@ -23,7 +23,7 @@ import pandas as pd
 class TestOptionData(unittest.TestCase):
 
     def testQA_SU_save_stock_day(self):
-        QA_SU_save_option_day('tdx')
+        QA_SU_save_option_50etf_day('tdx')
 
     def testGetOptionMin(self):
         #
