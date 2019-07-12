@@ -161,7 +161,7 @@ def QA_quotation(code, start, end, frequence, market, source=DATASOURCE.TDX, out
                     res = QAQueryAdv.QA_fetch_future_day_adv(code, start, end)
                 except:
                     res = None
-            if source == DATASOURCE.TDX or res == None:
+            if source == DATASOURCE.TDX or res is None:
                 res = QATdx.QA_fetch_get_future_day(code, start, end)
                 res = QA_DataStruct_Future_day(res.set_index(['date', 'code']))
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
@@ -171,7 +171,7 @@ def QA_quotation(code, start, end, frequence, market, source=DATASOURCE.TDX, out
                         code, start, end, frequence=frequence)
                 except:
                     res = None
-            if source == DATASOURCE.TDX or res == None:
+            if source == DATASOURCE.TDX or res is None:
                 res = QATdx.QA_fetch_get_future_min(
                     code, start, end, frequence=frequence)
                 res = QA_DataStruct_Future_min(
@@ -179,9 +179,16 @@ def QA_quotation(code, start, end, frequence, market, source=DATASOURCE.TDX, out
 
     # 指数代码和股票代码是冲突重复的，  sh000001 上证指数  000001 是不同的
     elif market == MARKET_TYPE.INDEX_CN:
-        if frequence == FREQUENCE.DAY:
-            if source == DATASOURCE.MONGO:
+        if source == DATASOURCE.MONGO:
+            try:
                 res = QAQueryAdv.QA_fetch_index_day_adv(code, start, end)
+            except:
+                res = None
+        if source == DATASOURCE.TDX or res is None:
+            res = QATdx.QA_fetch_get_index_day(
+                code, start, end, frequence=frequence)
+            res = QA_DataStruct_Future_min(
+                res.set_index(['date', 'code']))
 
     elif market == MARKET_TYPE.OPTION_CN:
         if source == DATASOURCE.MONGO:
