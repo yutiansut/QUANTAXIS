@@ -45,7 +45,6 @@ class ORDER_DIRECTION():
     SELL = -1
     BUY_OPEN = 2
     BUY_CLOSE = 3
-    BUY_CLOSE = 3
     SELL_OPEN = -2
     SELL_CLOSE = -3
     SELL_CLOSETODAY = -4
