@@ -30,7 +30,7 @@ from QUANTAXIS.QASU import save_gm as sgm
 from QUANTAXIS.QASU import save_jq as sjq
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
-from QUANTAXIS.QAUtil import DATABASE#print_used_time
+from QUANTAXIS.QAUtil import DATABASE, print_used_time
 import time
 
 
@@ -178,7 +178,7 @@ def QA_SU_save_future_min_all(engine, client=DATABASE):
     engine.QA_SU_save_future_min_all(client=client)
 
 
-#@print_used_time
+@print_used_time
 def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=False):
     """save stock_day
 
@@ -284,7 +284,7 @@ def QA_SU_save_stock_min(engine, client=DATABASE):
     engine.QA_SU_save_stock_min(client=client)
 
 
-#@print_used_time
+@print_used_time
 def QA_SU_save_index_day(engine, client=DATABASE, paralleled=False):
     """save index_day
 
@@ -315,7 +315,7 @@ def QA_SU_save_index_min(engine, client=DATABASE):
     engine.QA_SU_save_index_min(client=client)
 
 
-#@print_used_time
+@print_used_time
 def QA_SU_save_etf_day(engine, client=DATABASE, paralleled=False):
     """save etf_day
 

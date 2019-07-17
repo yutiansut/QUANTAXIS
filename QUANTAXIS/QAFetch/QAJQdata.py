@@ -3,7 +3,7 @@
 
 try: 
     import jqdatasdk
-    jqdatasdk.auth(input('account:'),input('password:'))
+    #jqdatasdk.auth(input('account:'),input('password:'))
 except:
     raise ModuleNotFoundError
 
