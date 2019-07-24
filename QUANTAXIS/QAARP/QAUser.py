@@ -394,7 +394,7 @@ class QA_User():
         '''
         # return self.portfolio_list[portfolio]
         # fix here use cookie as key to find value in dict
-        return QA.QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie= portfolio_cookie)
+        return QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie= portfolio_cookie)
 
     def generate_simpleaccount(self):
         """make a simple account with a easier way
@@ -560,7 +560,7 @@ class QA_User():
         self.password = message.get('password')
         self.user_cookie = message.get('user_cookie')
         #
-        self.portfolio_list = [
+        self.portfolio_list = list(set([
             item['portfolio_cookie'] for item in DATABASE.portfolio.find(
                 {'user_cookie': self.user_cookie},
                 {
@@ -568,7 +568,7 @@ class QA_User():
                     '_id': 0
                 }
             )
-        ]
+        ]))
 
         # portfolio_list = message.get('portfolio_list')
         # if len(portfolio_list) > 0:
