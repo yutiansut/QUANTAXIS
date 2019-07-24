@@ -389,7 +389,7 @@ class QA_Order():
                         self.towards,
                         trade_time
                     )
-                    if res == 0
+                    if res == 0:
                         return self.trade_message(
                             trade_id,
                             trade_price,
