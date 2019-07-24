@@ -317,7 +317,7 @@ class QA_Account(QA_Worker):
             'tax',  # 税
             'message',  # 备注
             'frozen',  # 冻结资金.
-            'direction'  # 方向,
+            'direction',  # 方向,
             'total_frozen'
         ]
         ########################################################################
