@@ -1290,11 +1290,13 @@ class QA_Account(QA_Worker):
                     trade_towards
                 ]
             )
+            return 0
 
         else:
             print('ALERT MONEY NOT ENOUGH!!!')
             print(self.cash[-1])
             self.cash_available = self.cash[-1]
+            return -1
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
 
     @property
@@ -1347,21 +1349,38 @@ class QA_Account(QA_Worker):
 
         market_towards = 1 if trade_towards > 0 else -1
         """2019/01/03 直接使用快速撮合接口了
-        2333 这两个接口现在也没啥区别了....
-        太绝望了
-        """
+        
 
-        self.receive_simpledeal(
-            code,
-            trade_price,
-            trade_amount,
-            trade_towards,
-            trade_time,
-            message=message,
-            order_id=order_id,
-            trade_id=trade_id,
-            realorder_id=realorder_id
-        )
+        2019/07/25 在此函数中增加账户的可买可卖可平逻辑
+        flag 是用于控制可平的
+
+        res是用于接收从receive_simpledeal的返回值
+        如果返回值是0  则表明交易撮合成功
+        如果是是-1 则表明未进行撮合
+
+        """
+        flag = True
+        res = -1
+        if trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.BUY_CLOSETODAY]:
+            if self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)]['amount'] < trade_amount:
+                flag = False
+        elif trade_towards in [ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_CLOSETODAY]:
+            if self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)]['amount'] < trade_amount:
+                flag = False
+        
+        if flag:
+            res = self.receive_simpledeal(
+                code,
+                trade_price,
+                trade_amount,
+                trade_towards,
+                trade_time,
+                message=message,
+                order_id=order_id,
+                trade_id=trade_id,
+                realorder_id=realorder_id
+            )
+        return res
 
     def send_order(
             self,
