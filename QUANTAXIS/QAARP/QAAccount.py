@@ -317,7 +317,8 @@ class QA_Account(QA_Worker):
             'tax',  # 税
             'message',  # 备注
             'frozen',  # 冻结资金.
-            'direction'  # 方向
+            'direction'  # 方向,
+            'total_frozen'
         ]
         ########################################################################
         # 信息类:
@@ -873,7 +874,7 @@ class QA_Account(QA_Worker):
         '每日交易结算时的持仓表'
         res_ = self.history_table.assign(
             date=pd.to_datetime(self.history_table.datetime)
-        ).set_index('date').resample('D').frozen.last().fillna(method='pad')
+        ).set_index('date').resample('D').total_frozen.last().fillna(method='pad')
         res_ = res_[res_.index.isin(self.trade_range)]
         return res_
 
@@ -1164,7 +1165,7 @@ class QA_Account(QA_Worker):
                         (
                             self.frozen[code][str(trade_towards)]['avg_price'] *
                             self.frozen[code][str(trade_towards)]['amount']
-                        ) + abs(raw_trade_money)
+                        ) + abs(trade_money)
                     ) / (
                         self.frozen[code][str(trade_towards)]['amount'] +
                         trade_amount
@@ -1272,6 +1273,11 @@ class QA_Account(QA_Worker):
                 ORDER_DIRECTION.BUY_OPEN,
                 ORDER_DIRECTION.SELL_OPEN
             ] else 0
+
+            try:
+                total_frozen = sum([itex.get('avg_price',0)* itex.get('amount',0) for item in ac.frozen.values() for itex in item.values()])
+            except:
+                total_frozen = 0
             self.history.append(
                 [
                     str(trade_time),
@@ -1287,7 +1293,8 @@ class QA_Account(QA_Worker):
                     tax_fee,
                     message,
                     frozen_money,
-                    trade_towards
+                    trade_towards,
+                    total_frozen
                 ]
             )
             return 0
