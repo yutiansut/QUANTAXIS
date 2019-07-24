@@ -1275,8 +1275,9 @@ class QA_Account(QA_Worker):
             ] else 0
 
             try:
-                total_frozen = sum([itex.get('avg_price',0)* itex.get('amount',0) for item in ac.frozen.values() for itex in item.values()])
-            except:
+                total_frozen = sum([itex.get('avg_price',0)* itex.get('amount',0) for item in self.frozen.values() for itex in item.values()])
+            except Exception as e:
+                print(e)
                 total_frozen = 0
             self.history.append(
                 [
