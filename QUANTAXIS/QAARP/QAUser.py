@@ -394,7 +394,7 @@ class QA_User():
         '''
         # return self.portfolio_list[portfolio]
         # fix here use cookie as key to find value in dict
-        return QA.QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie= portfolio_cookie)
+        return QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie= portfolio_cookie)
 
     def generate_simpleaccount(self):
         """make a simple account with a easier way
