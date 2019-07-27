@@ -18,7 +18,7 @@ RUN apt-get update \
 	&& echo "LC_ALL=zh_CN.UTF-8" >> /etc/environment
 
 RUN \
-  git clone https://github.com/QUANTAXIS/QUANTAXIS \
+  git clone https://gitee.com/yutiansut/QUANTAXIS \
   && cd QUANTAXIS \
   && pip install -r /QUANTAXIS/requirements.txt \
   && pip install -r /requirements.txt \
