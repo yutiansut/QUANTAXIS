@@ -1,11 +1,9 @@
 version: '2'
 services:
     qa:
-        build:
-            context: ./qa-base
-            dockerfile: Dockerfile
-        image: yutiansut/qabase
-        container_name: qabase
+        image: yutiansut/qa-jupyter:v156
+        container_name: qajupyter
+        network_mode: "host"
         ports:
             - "8888:8888"
         environment:
@@ -14,14 +12,16 @@ services:
             - qacode:/home
         restart: always
 
-    qacron:
-        image: barretthugh/qa-cron
-        environment:
-            - MONGODB=mgdb
-        restart: always
+    # qacron:
+    #     image: barretthugh/qa-cron
+    #     environment:
+    #         - MONGODB=mgdb
+    #     restart: always
 
     qaweb:
-        image: barretthugh/qa-web
+        image: yutiansut/qawebserver
+        container_name: qawebserver
+        network_mode: "host"
         ports:
             - "8010:8010"
         environment:

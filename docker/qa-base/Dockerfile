@@ -31,3 +31,7 @@ RUN \
   ENV LANG zh_CN.UTF-8
   ENV LANGUAGE zh_CN.UTF-8
   ENV LC_ALL zh_CN.UTF-8
+
+
+RUN \
+  cd ~ && mkdir .quantaxis && cd ~/.quantaxis && mkdir setting

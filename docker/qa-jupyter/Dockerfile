@@ -1,4 +1,4 @@
-FROM barretthugh/qa-base
+FROM yutiansut/qabase:v156
 
 COPY requirements.txt /requirements.txt
 COPY entrypoint.sh /entrypoint.sh
@@ -18,8 +18,8 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && pip install -r /requirements.txt \
   && pip install prompt-toolkit \
   && jupyter nbextension enable --py widgetsnbextension \
-  && jupyter serverextension enable --py jupyterlab \
-  && chmod +x /entrypoint.sh
+  && jupyter serverextension enable --py jupyterlab
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 8888
 
