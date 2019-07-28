@@ -1,6 +1,6 @@
 pymongo
 bs4
-pandas
+pandas<0.25.0
 lxml
 matplotlib
 requests
