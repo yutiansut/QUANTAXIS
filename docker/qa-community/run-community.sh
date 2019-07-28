@@ -2,4 +2,4 @@
 
 sed -i "s|localhost|$MONGODB|"  /QUANTAXIS/QUANTAXIS/QAUtil/QASetting.py
 jupyter lab --allow-root &
-cd ~ && python -m http.server 80 &
+cd ~/QADESK_BASIC && python -m http.server 80
