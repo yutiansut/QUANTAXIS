@@ -20,8 +20,10 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
 RUN chmod +x /entrypoint.sh
+EXPOSE 8888 
 
-EXPOSE 8888
+COPY runpy.sh /root/
+RUN chmod +x /QUANTAXIS/QUANTAXIS/QAUtil/QASetting.py
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["jupyter", "lab", "--allow-root"]
+RUN chmod +x /root/runpy.sh
+CMD ["bash", "/root/runpy.sh"]
