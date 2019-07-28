@@ -31,10 +31,11 @@ services:
             - "8010:8010"
         environment:
           - MONGODB=mgdb
-          - QAPUBSUB_IP='qaeventmq'
+          - QAPUBSUB_IP=qaeventmq
           - QAPUBSUB_PORT=5672
-          - QAPUBSUB_USER='admin'
-          - QAPUBSUB_PWD='admin'
+          - QAPUBSUB_USER=admin
+          - QAPUBSUB_PWD=admin
+          - QARUN_AMQP=amqp://admin:admin@qaeventmq:5672//
         restart: always
         depends_on:
           - qaeventmq
