@@ -71,6 +71,18 @@ services:
             qanetwork:
                 ipv4_address: 172.19.0.5
         restart: always
+
+    qamonitor:
+        image: yutiansut/qamonitor:latest
+        ports:
+            - "61209:61209"
+            - "61208:61208"
+        pid: 'host'
+        networks: 
+            qanetwork:
+                ipv4_address: 172.19.0.6
+                
+        restart: always
 volumes:
     qamg:
         external:
