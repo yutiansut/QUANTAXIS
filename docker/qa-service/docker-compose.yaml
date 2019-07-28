@@ -21,7 +21,7 @@ services:
     #         - MONGODB=mgdb
     #     restart: always
 
-    qaweb:
+    qaweb_run:
         image: yutiansut/qarun
         container_name: qarun
         networks: 
@@ -31,9 +31,13 @@ services:
             - "8010:8010"
         environment:
           - MONGODB=mgdb
+          - QAPUBSUB_IP='qaeventmq'
+          - QAPUBSUB_PORT=5672
+          - QAPUBSUB_USER='admin'
+          - QAPUBSUB_PWD='admin'
         restart: always
         depends_on:
-          - rabbit
+          - qaeventmq
 
     mgdb:
         image: mongo:4.1.3
@@ -50,8 +54,8 @@ services:
         restart: always
 
 
-    rabbit:
-        image: rabbitmq:management
+    qaeventmq:
+        image: yutiansut/qaeventmq:latest
         ports: 
             - "15672:15672"
             - "5672:5672"
