@@ -1,13 +1,15 @@
 version: '2'
 services:
     qa:
-        image: yutiansut/qa-jupyter:v156
+        image: yutiansut/qa-jupyter:latest
         container_name: qajupyter
-        network_mode: "host"
+        networks: 
+            qanetwork:
+                ipv4_address: 172.19.0.3
         ports:
             - "8888:8888"
         environment:
-          - MONGODB=mgdb
+          - MONGODB='172.19.0.2'
         volumes:
             - qacode:/home
         restart: always
@@ -21,11 +23,13 @@ services:
     qaweb:
         image: yutiansut/qawebserver
         container_name: qawebserver
-        network_mode: "host"
+        networks: 
+            qanetwork:
+                ipv4_address: 172.19.0.4
         ports:
             - "8010:8010"
         environment:
-            - MONGODB=mgdb
+          - MONGODB='172.19.0.2'
         restart: always
 
     mgdb:
@@ -37,6 +41,9 @@ services:
             - MONGO_INITDB_DATABASE=quantaxis
         volumes:
             - qamg:/data/db
+        networks: 
+            qanetwork:
+                ipv4_address: 172.19.0.2
         restart: always
 
 volumes:
@@ -46,3 +53,9 @@ volumes:
     qacode:
         external:
             name: qacode
+networks:
+    qanetwork:
+        ipam:
+            config:
+            - subnet: 172.19.0.0/16
+              gateway: 172.19.0.1
