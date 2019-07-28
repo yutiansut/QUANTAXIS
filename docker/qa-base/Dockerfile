@@ -8,7 +8,9 @@ COPY requirements.txt /requirements.txt
 COPY pip.conf /root/.pip/pip.conf
 COPY source.list /etc/apt/sources.list
 
-RUN apt-get update \
+RUN \ 
+  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E40EBBA24FF2FC69 \
+  && apt-get update \
   && apt-get install -y apt-utils locales --force-yes\
   && apt install gcc -y --force-yes\
   && locale-gen zh_CN.UTF-8 \
