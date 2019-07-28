@@ -14,4 +14,4 @@ RUN pip install git+https://github.com/yutiansut/tornado_http2 \
 
 EXPOSE 8010
 
-CMD ["/entrypoint.sh"]
+CMD ["bash", "/entrypoint.sh"]

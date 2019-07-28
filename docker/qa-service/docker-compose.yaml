@@ -29,7 +29,7 @@ services:
         ports:
             - "8010:8010"
         environment:
-          - MONGODB= 172.19.0.2
+          - MONGODB=172.19.0.2
         restart: always
 
     mgdb:
