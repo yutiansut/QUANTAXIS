@@ -9,7 +9,8 @@ services:
         ports:
             - "8888:8888"
         environment:
-          - MONGODB=172.19.0.2
+          - MONGODB=mgdb
+          - QARUN=qaweb
         volumes:
             - qacode:/home
         restart: always
@@ -29,7 +30,7 @@ services:
         ports:
             - "8010:8010"
         environment:
-          - MONGODB=172.19.0.2
+          - MONGODB=mgdb
         restart: always
         depends_on:
           - rabbit
