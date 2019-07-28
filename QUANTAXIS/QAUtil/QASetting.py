@@ -68,7 +68,7 @@ class QA_Setting():
         else:
             config = configparser.ConfigParser()
             config.add_section('MONGODB')
-            config.set('MONGODB', 'uri', 'mongodb://localhost:27017')
+            config.set('MONGODB', 'uri', DEFAULT_DB_URI)
             f = open('{}{}{}'.format(setting_path, os.sep, 'config.ini'), 'w')
             config.write(f)
             res = DEFAULT_DB_URI
