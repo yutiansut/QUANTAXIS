@@ -1,4 +1,4 @@
-FROM yutiansut/qabase:v156
+FROM yutiansut/qabase:latest
 
 COPY requirements.txt /requirements.txt
 COPY entrypoint.sh /entrypoint.sh
