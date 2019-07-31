@@ -405,9 +405,8 @@ def QA_fetch_future_min(
 
     __data = DataFrame(__data, columns=[
         'code', 'open', 'high', 'low', 'close',  'position', 'price', 'trade', 'datetime', 'tradetime', 'time_stamp', 'date', 'type'])
+    __data = __data.assign(datetime=pd.to_datetime(__data['datetime'])).drop_duplicates((['datetime', 'code'])).set_index('datetime', drop=False)
 
-    __data['datetime'] = pd.to_datetime(__data['datetime'])
-    __data = __data.set_index('datetime', drop=False)
     if format in ['numpy', 'np', 'n']:
         return numpy.asarray(__data)
     elif format in ['list', 'l', 'L']:
