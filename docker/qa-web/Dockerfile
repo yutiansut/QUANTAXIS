@@ -1,4 +1,4 @@
-FROM yutiansut/qabase:v156
+FROM yutiansut/qabase:latest
 
 COPY entrypoint.sh /entrypoint.sh
 
