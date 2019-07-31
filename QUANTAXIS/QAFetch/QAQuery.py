@@ -400,7 +400,7 @@ def QA_fetch_future_min(
     for item in cursor:
 
         _data.append([str(item['code']), float(item['open']), float(item['high']), float(
-            item['low']), float(item['close']), float(item.get('position', 0)), float(item.get('price', 0)) float(item.get('trade', item.get('volume', 0))),
+            item['low']), float(item['close']), float(item.get('position', 0)), float(item.get('price', 0)), float(item.get('trade', item.get('volume', 0))),
             item['datetime'], item['tradetime'], item['time_stamp'], item['date'], item['type']])
 
     _data = DataFrame(_data, columns=[
