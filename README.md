@@ -80,7 +80,7 @@ ubuntu 一键脚本
 
 ```
 wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/install_docker.sh
-sudo install_docker.sh
+sudo bash install_docker.sh
 ```
 
 ### 使用QA_SERVICE
@@ -88,7 +88,7 @@ sudo install_docker.sh
 第一次使用
 ```
 wget https://github.com/QUANTAXIS/QUANTAXIS/blob/master/docker/qaservice_docker.sh
-sudo qaservice_docker.sh
+sudo bash qaservice_docker.sh
 ```
 
 后续使用
