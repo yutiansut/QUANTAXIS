@@ -21,6 +21,7 @@ ENV LC_ALL zh_CN.UTF-8
 
 RUN cd ~ \
 && git clone https://github.com/yutiansut/ctpbee \
+&& chmod +x ~/ctpbee/examples/run.py \
 && cd ctpbee && pip install -e .
 
 
