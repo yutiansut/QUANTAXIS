@@ -1,4 +1,53 @@
 
+# QUANTAXIS DOCKER
+
+## 安装docker 
+
+ubuntu 一键脚本
+
+```
+wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/install_docker.sh
+sudo install_docker.sh
+```
+
+## 使用QA_SERVICE
+
+第一次使用
+```
+wget https://github.com/QUANTAXIS/QUANTAXIS/blob/master/docker/qaservice_docker.sh
+sudo qaservice_docker.sh
+```
+
+后续使用
+
+```
+docker-compose up -d
+```
+
+端口:
+
+- 27017 mongodb
+- 8888 jupyter
+- 8010 quantaxis_webserver
+- 80 quantaxis_community 社区版界面
+- 61208 系统监控
+- 15672 qa-eventmq
+
+
+然后就可以开始你的量化之路了骚年!
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 镜像说明：
 qa-base: QA 基础镜像  
 qa-cron: cron 镜像, 每周一到五19:00自动更新数据(update_all.py)，如需更改计划任务，请自行制作py文件并更新Dockerfile  
