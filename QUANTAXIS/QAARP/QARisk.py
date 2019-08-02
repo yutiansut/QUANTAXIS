@@ -136,7 +136,7 @@ class QA_Risk():
         if_fq选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
         """
         self.account = account
-        self.benchmark_code = benchmark_code # 默认沪深300
+        self.benchmark_code = benchmark_code  # 默认沪深300
         self.benchmark_type = benchmark_type
         self.client = DATABASE.risk
 
@@ -175,13 +175,14 @@ class QA_Risk():
                 self.market_data = market_data
             self.if_fq = if_fq
             if self.account.market_type == MARKET_TYPE.FUTURE_CN:
-                self.if_fq = False # 如果是期货， 默认设为FALSE
+                self.if_fq = False  # 如果是期货， 默认设为FALSE
 
             if self.market_value is not None:
                 if self.account.market_type == MARKET_TYPE.FUTURE_CN and self.account.allow_margin == True:
                     print('margin!')
                     self._assets = (
                         self.account.daily_frozen +
+                        # self.market_value.sum(axis=1) +
                         self.account.daily_cash.set_index('date').cash
                     ).dropna()
                 else:
@@ -191,9 +192,9 @@ class QA_Risk():
                     ).fillna(method='pad')
             else:
                 self._assets = self.account.daily_cash.set_index('date'
-                                                                ).cash.fillna(
-                                                                    method='pad'
-                                                                )
+                                                                 ).cash.fillna(
+                    method='pad'
+                )
 
             self.time_gap = QA_util_get_trade_gap(
                 self.account.start_date,
@@ -392,8 +393,8 @@ class QA_Risk():
             'totaltimeindex': self.total_timeindex,
             'ir': self.ir,
             'month_profit': self.month_assets_profit.to_dict()
-                                                                    # 'init_assets': round(float(self.init_assets), 2),
-                                                                    # 'last_assets': round(float(self.assets.iloc[-1]), 2)
+            # 'init_assets': round(float(self.init_assets), 2),
+            # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
 
     @property

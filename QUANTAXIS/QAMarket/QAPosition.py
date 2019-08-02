@@ -464,7 +464,8 @@ class QA_Position():
             self.orders[order_id] = order
             return order
         else:
-            return RuntimeError('ORDER CHECK FALSE: {}'.format(self.code))
+            print(RuntimeError('ORDER CHECK FALSE: {}'.format(self.code)))
+            return False
 
     def update_pos(self, price, amount, towards):
         """支持股票/期货的更新仓位
