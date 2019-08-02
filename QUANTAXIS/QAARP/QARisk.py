@@ -1199,7 +1199,7 @@ class QA_Performance():
                             data.price,
                             data.direction)
                         ) 
-
+                    break
                 elif data.direction in[-1, 3, -3]:
                     
                     
