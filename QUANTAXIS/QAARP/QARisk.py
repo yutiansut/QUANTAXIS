@@ -1177,111 +1177,117 @@ class QA_Performance():
         X = dict(
             zip(
                 self.target.code,
-                [deque() for i in range(len(self.target.code))]
+                [{'buy':deque(),'sell':deque()} for i in range(len(self.target.code))]
             )
         )
         pair_table = []
         for _, data in self.target.history_table_min.iterrows():
             while True:
-                if len(X[data.code]) == 0:
-                    X[data.code].append(
-                        (data.datetime,
-                         data.amount,
-                         data.price)
-                    )
-                    break
-                else:
-                    l = X[data.code].popleft()
-                    if (l[1] * data.amount) < 0:
-                        # 原有多仓/ 平仓 或者原有空仓/平仓
 
-                        if abs(l[1]) > abs(data.amount):
-                            temp = (l[0], l[1] + data.amount, l[2])
-                            X[data.code].appendleft(temp)
-                            if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
-                                        data.datetime,
-                                        l[0],
-                                        abs(data.amount),
-                                        data.price,
-                                        l[2]
-                                    ]
-                                )
-                                break
-                            else:
-                                pair_table.append(
-                                    [
-                                        data.code,
-                                        l[0],
-                                        data.datetime,
-                                        abs(data.amount),
-                                        l[2],
-                                        data.price
-                                    ]
-                                )
-                                break
-
-                        elif abs(l[1]) < abs(data.amount):
-                            data.amount = data.amount + l[1]
-
-                            if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
-                                        data.datetime,
-                                        l[0],
-                                        l[1],
-                                        data.price,
-                                        l[2]
-                                    ]
-                                )
-                            else:
-                                pair_table.append(
-                                    [
-                                        data.code,
-                                        l[0],
-                                        data.datetime,
-                                        l[1],
-                                        l[2],
-                                        data.price
-                                    ]
-                                )
-                        else:
-                            if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
-                                        data.datetime,
-                                        l[0],
-                                        abs(data.amount),
-                                        data.price,
-                                        l[2]
-                                    ]
-                                )
-                                break
-                            else:
-                                pair_table.append(
-                                    [
-                                        data.code,
-                                        l[0],
-                                        data.datetime,
-                                        abs(data.amount),
-                                        l[2],
-                                        data.price
-                                    ]
-                                )
-                                break
-
-                    else:
-                        X[data.code].appendleft(l)
-                        X[data.code].appendleft(
+                if data.direction in[1, 2, -2]:
+                    if data.direction in [1, 2]:
+                        X[data.code]['buy'].append(
                             (data.datetime,
-                             data.amount,
-                             data.price)
+                            data.amount,
+                            data.price,
+                            data.direction)
                         )
-                        break
+                    elif data.direction in [-2]:
+                        X[data.code]['sell'].append(
+                            (data.datetime,
+                            data.amount,
+                            data.price,
+                            data.direction)
+                        ) 
+
+                elif data.direction in[-1, 3, -3]:
+                    
+                    
+                    rawoffset = 'buy' if data.direction in [-1, -3] else 'sell'
+
+                    l = X[data.code][rawoffset].popleft()
+                    if abs(l[1]) > abs(data.amount):
+                        """
+                        if raw> new_close:
+                        """
+                        temp = (l[0], l[1] + data.amount, l[2])
+                        X[data.code][rawoffset].appendleft(temp)
+                        if data.amount < 0:
+                            pair_table.append(
+                                [
+                                    data.code,
+                                    data.datetime,
+                                    l[0],
+                                    abs(data.amount),
+                                    data.price,
+                                    l[2]
+                                ]
+                            )
+                            break
+                        else:
+                            pair_table.append(
+                                [
+                                    data.code,
+                                    l[0],
+                                    data.datetime,
+                                    abs(data.amount),
+                                    l[2],
+                                    data.price
+                                ]
+                            )
+                            break
+
+                    elif abs(l[1]) < abs(data.amount):
+                        data.amount = data.amount + l[1]
+
+                        if data.amount < 0:
+                            pair_table.append(
+                                [
+                                    data.code,
+                                    data.datetime,
+                                    l[0],
+                                    l[1],
+                                    data.price,
+                                    l[2]
+                                ]
+                            )
+                        else:
+                            pair_table.append(
+                                [
+                                    data.code,
+                                    l[0],
+                                    data.datetime,
+                                    l[1],
+                                    l[2],
+                                    data.price
+                                ]
+                            )
+                    else:
+                            if data.amount < 0:
+                                pair_table.append(
+                                    [
+                                        data.code,
+                                        data.datetime,
+                                        l[0],
+                                        abs(data.amount),
+                                        data.price,
+                                        l[2]
+                                    ]
+                                )
+                                break
+                            else:
+                                pair_table.append(
+                                    [
+                                        data.code,
+                                        l[0],
+                                        data.datetime,
+                                        abs(data.amount),
+                                        l[2],
+                                        data.price
+                                    ]
+                                )
+                                break
+
 
         pair_title = [
             'code',
