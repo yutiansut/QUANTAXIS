@@ -1220,7 +1220,8 @@ class QA_Performance():
                                     l[0],
                                     abs(data.amount),
                                     data.price,
-                                    l[2]
+                                    l[2],
+                                    rawoffset
                                 ]
                             )
                             break
@@ -1232,7 +1233,8 @@ class QA_Performance():
                                     data.datetime,
                                     abs(data.amount),
                                     l[2],
-                                    data.price
+                                    data.price,
+                                    rawoffset
                                 ]
                             )
                             break
@@ -1248,7 +1250,8 @@ class QA_Performance():
                                     l[0],
                                     l[1],
                                     data.price,
-                                    l[2]
+                                    l[2],
+                                    rawoffset
                                 ]
                             )
                         else:
@@ -1259,7 +1262,8 @@ class QA_Performance():
                                     data.datetime,
                                     l[1],
                                     l[2],
-                                    data.price
+                                    data.price,
+                                    rawoffset
                                 ]
                             )
                     else:
@@ -1271,7 +1275,8 @@ class QA_Performance():
                                         l[0],
                                         abs(data.amount),
                                         data.price,
-                                        l[2]
+                                        l[2],
+                                        rawoffset
                                     ]
                                 )
                                 break
@@ -1283,7 +1288,8 @@ class QA_Performance():
                                         data.datetime,
                                         abs(data.amount),
                                         l[2],
-                                        data.price
+                                        data.price,
+                                        rawoffset
                                     ]
                                 )
                                 break
@@ -1295,7 +1301,8 @@ class QA_Performance():
             'buy_date',
             'amount',
             'sell_price',
-            'buy_price'
+            'buy_price',
+            'rawdirection'
         ]
         pnl = pd.DataFrame(pair_table, columns=pair_title)
 
@@ -1308,8 +1315,7 @@ class QA_Performance():
         pnl = pnl.assign(
             pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
-            if_buyopen=(pnl.sell_date - pnl.buy_date) >
-            datetime.timedelta(days=0)
+            if_buyopen= pnl.rawdirection == 'buy'
         )
         pnl = pnl.assign(
             openprice=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) *
