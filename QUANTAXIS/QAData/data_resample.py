@@ -359,11 +359,6 @@ def QA_data_min_resample(min_data, type_='5min'):
         new_type {[type]} -- [description]
     """
 
-    try:
-        min_data = min_data.reset_index().set_index('datetime', drop=False)
-    except:
-        min_data = min_data.set_index('datetime', drop=False)
-
     CONVERSION = {
         'code': 'first',
         'open': 'first',
@@ -381,35 +376,27 @@ def QA_data_min_resample(min_data, type_='5min'):
         'volume': 'sum',
         'amount': 'sum'
     }
-    resx = pd.DataFrame()
-
-    for item in set(min_data.index.date):
-        min_data_p = min_data.loc[str(item)]
-        n = min_data_p['{} 21:00:00'.format(item):].resample(
-            type_,
-            base=30,
-            closed='right',
-            loffset=type_
-        ).apply(CONVERSION)
-
-        d = min_data_p[:'{} 11:30:00'.format(item)].resample(
-            type_,
-            base=30,
-            closed='right',
-            loffset=type_
-        ).apply(CONVERSION)
-        f = min_data_p['{} 13:00:00'.format(item):].resample(
-            type_,
-            closed='right',
-            loffset=type_
-        ).apply(CONVERSION)
-
-        resx = resx.append(d).append(f)
-
-    return resx.dropna().reset_index().set_index(['datetime', 'code'])
+    min_data = min_data.loc[:, list(CONVERSION.keys())]
+    idx = min_data.index
+    part_1 = min_data.iloc[idx.indexer_between_time('9:30', '11:30')]
+    part_1_res = part_1.resample(
+        type_,
+        base=30,
+        closed='right',
+        loffset=type_
+    ).apply(CONVERSION)
+    part_2 = min_data.iloc[idx.indexer_between_time('13:00', '15:00')]
+    part_2_res = part_2.resample(
+        type_,
+        base=0,
+        closed='right',
+        loffset=type_
+    ).agg(CONVERSION)
+    return pd.concat([part_1_res, part_2_res]).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
 
 
-def QA_data_min_resample_stock(min_data, period=5):
+
+def QA_data_stockmin_resample(min_data, period=5):
     """
     1min 分钟线采样成 period 级别的分钟线
     :param min_data:
@@ -609,11 +596,11 @@ if __name__ == '__main__':
     print(QA_data_tick_resample(tick, '15min'))
     print(QA_data_tick_resample(tick, '35min'))
 
-    print("test QA_data_min_resample_stock, level: 120")
+    print("test QA_data_stockmin_resample, level: 120")
     start, end, level = "2019-05-01", "2019-05-08", 120
     data = QA.QA_fetch_stock_min_adv("000001", start, end)
-    res = QA_data_min_resample_stock(data.data, level)
+    res = QA_data_stockmin_resample(data.data, level)
     print(res)
     res2 = QA.QA_fetch_stock_min_adv(["000001", '000002'], start, end).add_func(
-        QA_data_min_resample_stock, level)
+        QA_data_stockmin_resample, level)
     print(res2)
