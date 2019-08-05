@@ -71,6 +71,60 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ==========================================
 
+
+## docker 一键部署(无需任何环境! 最好是直接拿个新机器)
+
+### 安装docker 
+
+ubuntu 一键脚本
+
+```
+wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/install_docker.sh
+sudo bash install_docker.sh
+```
+
+win/mac 安装
+
+非常简单 去docker网站下载win/mac的docker_desktop
+
+文件较大, 我在群文件也共享了
+
+或者你可以使用国内镜像站
+
+- win [https://download.daocloud.io/d/Docker_Mirror/Docker_for_Windows_Mac/17.03.1-ce/docker-for-windows-stable.msi]
+- mac [https://download.daocloud.io/d/Docker_Mirror/Docker_for_Windows_Mac/17.03.1-ce/docker-for-mac-stable.dmg]
+
+ps: quantaxis强烈推荐不要使用win10以下的系统...(好吧忽略我)
+
+
+### 使用QA_SERVICE
+
+第一次使用
+```
+wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/qaservice_docker.sh
+sudo bash qaservice_docker.sh
+```
+
+后续使用
+
+```
+docker-compose up -d
+```
+
+端口:
+
+- 27017 mongodb
+- 8888 jupyter
+- 8010 quantaxis_webserver
+- 80 quantaxis_community 社区版界面
+- 61208 系统监控
+- 15672 qa-eventmq
+
+
+然后就可以开始你的量化之路了骚年!
+
+
+
 ## 关联项目:
 
 技术栈: python/nodejs/vue/mongodb/rabbitmq/c++

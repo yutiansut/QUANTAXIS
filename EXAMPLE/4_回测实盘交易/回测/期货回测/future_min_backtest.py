@@ -15,7 +15,7 @@ import sys
 user = QA.QA_User(username='quantaxis', password='quantaxis')
 portfolio = user.new_portfolio('qatestportfolio')
 Account = portfolio.new_account(allow_sellopen=True, allow_margin=True, init_cash=5000, allow_t0=True,
-                                account_cookie='future_test', market_type=QA.MARKET_TYPE.FUTURE_CN, frequence=QA.FREQUENCE.FIFTEEN_MIN)
+                                account_cookie='future_testx', market_type=QA.MARKET_TYPE.FUTURE_CN, frequence=QA.FREQUENCE.FIFTEEN_MIN)
 
 
 # %%
@@ -24,7 +24,7 @@ Broker = QA.QA_BacktestBroker()
 
 # %%
 rb_ds = QA.QA_fetch_future_min_adv(
-    'RBL8', '2018-01-01', '2018-08-28', frequence='15min')
+    'RBL8', '2019-01-01', '2019-07-20', frequence='15min')
 
 
 # %%
@@ -105,7 +105,6 @@ for items in rb_ds.panel_gen:
                     order.trade(res.trade_id, res.trade_price,
                                 res.trade_amount, res.trade_time)
     Account.settle()
-
 
 # %%
 Risk = QA.QA_Risk(Account)
