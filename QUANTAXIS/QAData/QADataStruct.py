@@ -268,7 +268,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
     def resample(self, level):
         try:
-            return self.add_func(QA_data_min_resample, level).sort_index()
+            return self.add_funcx(QA_data_min_resample, level).sort_index()
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None
