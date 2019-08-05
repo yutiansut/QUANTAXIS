@@ -1,0 +1,1 @@
+FROM library/redis:latest
