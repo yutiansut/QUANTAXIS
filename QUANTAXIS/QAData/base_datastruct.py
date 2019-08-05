@@ -35,9 +35,9 @@ import numpy as np
 import pandas as pd
 
 try:
-  from pyecharts import Kline, Bar, Grid
+    from pyecharts import Kline, Bar, Grid
 except:
-  from pyecharts.charts import Kline, Bar, Grid
+    from pyecharts.charts import Kline, Bar, Grid
 
 from QUANTAXIS.QAUtil import (
     QA_util_log_info,
@@ -67,7 +67,7 @@ class _quotation_base():
             dtype='undefined',
             if_fq='bfq',
             marketdata_type='None',
-            frequence = None
+            frequence=None
     ):
         '''
         :param df: DataFrame 类型
@@ -462,7 +462,7 @@ class _quotation_base():
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.pvariance(x))
+                                 ).apply(lambda x: statistics.pvariance(x))
         res.name = 'pvariance'
         return res
 
@@ -472,7 +472,7 @@ class _quotation_base():
     def variance(self):
         '返回DataStruct.price的方差 variance'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.variance(x))
+                                 ).apply(lambda x: statistics.variance(x))
         res.name = 'variance'
         return res
 
@@ -518,7 +518,7 @@ class _quotation_base():
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.harmonic_mean(x))
+                                 ).apply(lambda x: statistics.harmonic_mean(x))
         res.name = 'mean_harmonic'
         return res
 
@@ -529,7 +529,7 @@ class _quotation_base():
         '返回DataStruct.price的众数'
         try:
             res = self.price.groupby(level=1
-                                    ).apply(lambda x: statistics.mode(x))
+                                     ).apply(lambda x: statistics.mode(x))
             res.name = 'mode'
             return res
         except:
@@ -575,7 +575,7 @@ class _quotation_base():
         res = self.price.groupby(level=1).apply(lambda x: x.pct_change())
         res.name = 'pct_change'
         return res
-    
+
     @lru_cache()
     def close_pct_change(self):
         '返回DataStruct.close的百分比变化'
@@ -971,10 +971,10 @@ class _quotation_base():
         """
         转换DataStruct为json
         """
-        
+
         data = self.data
         if self.type[-3:] != 'min':
-            data = self.data.assign(datetime= self.datetime)
+            data = self.data.assign(datetime=self.datetime)
         return QA_util_to_json_from_pandas(data.reset_index())
 
     def to_string(self):
@@ -1042,7 +1042,7 @@ class _quotation_base():
         """
 
         return self.groupby(level=1, sort=False).apply(func, *arg, **kwargs)
-    
+
     def add_funcx(self, func, *arg, **kwargs):
         """QADATASTRUCT的指标/函数apply入口
 
@@ -1051,7 +1051,7 @@ class _quotation_base():
         add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
         """
 
-        return self.groupby(level=1, sort=False).apply(lambda x: x.reset_index(1).apply(func, *arg, **kwargs))
+        return self.groupby(level=1, sort=False).apply(lambda x: func(x.reset_index(1), *arg, **kwargs))
     # def add_func_adv(self, func, *arg, **kwargs):
     #     """QADATASTRUCT的指标/函数apply入口
 
