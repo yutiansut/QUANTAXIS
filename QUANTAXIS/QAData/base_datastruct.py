@@ -66,7 +66,8 @@ class _quotation_base():
             DataFrame,
             dtype='undefined',
             if_fq='bfq',
-            marketdata_type='None'
+            marketdata_type='None',
+            frequence = None
     ):
         '''
         :param df: DataFrame 类型
@@ -88,7 +89,7 @@ class _quotation_base():
 
         self.type = dtype
         self.data_id = QA_util_random_with_topic('DATA', lens=3)
-
+        self.frequence = frequence
         # 默认是不复权
         self.if_fq = if_fq
         # dtype 参数 指定类 mongo 中 collection 的名字   ，
@@ -1041,7 +1042,16 @@ class _quotation_base():
         """
 
         return self.groupby(level=1, sort=False).apply(func, *arg, **kwargs)
+    
+    def add_funcx(self, func, *arg, **kwargs):
+        """QADATASTRUCT的指标/函数apply入口
 
+        add_funcx 和add_func 的区别是:
+
+        add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
+        """
+
+        return self.groupby(level=1, sort=False).apply(lambda x: x.reset_index(1).apply(func, *arg, **kwargs))
     # def add_func_adv(self, func, *arg, **kwargs):
     #     """QADATASTRUCT的指标/函数apply入口
 
