@@ -395,7 +395,6 @@ def QA_data_min_resample(min_data, type_='5min'):
     return pd.concat([part_1_res, part_2_res]).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
 
 
-
 def QA_data_stockmin_resample(min_data, period=5):
     """
     1min 分钟线采样成 period 级别的分钟线
@@ -537,6 +536,56 @@ def QA_data_futuremin_resample(min_data, type_='5min', exchange_id=EXCHANGE_ID.S
             loffset=type_
         ).agg(CONVERSION)
         return pd.concat([part_1_res, part_2_res]).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
+
+
+def QA_data_futuremin_resample_series(min_data, key='open', type_='5min', exchange_id=EXCHANGE_ID.SHFE):
+
+    if isinstance(min_data.index, pd.MultiIndex):
+        min_data = min_data.reset_index(1)
+        idx = min_data.index
+    else:
+        idx = pd.to_datetime(min_data.index)
+
+    CONVERSION = {
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'volume': 'sum'}
+
+    if exchange_id == EXCHANGE_ID.CFFEX:
+        part_1 = min_data.iloc[idx.indexer_between_time('9:30', '11:30')]
+        part_1_res = part_1.resample(
+            type_,
+            base=30,
+            closed='right',
+            loffset=type_
+        ).apply({key: CONVERSION[key]})
+        part_2 = min_data.iloc[idx.indexer_between_time('13:00', '15:00')]
+        part_2_res = part_2.resample(
+            type_,
+            base=0,
+            closed='right',
+            loffset=type_
+        ).agg({key: CONVERSION[key]})
+        return pd.concat([part_1_res, part_2_res]).dropna().sort_index()
+    else:
+        part_1 = min_data.iloc[np.append(idx.indexer_between_time(
+            '0:00', '11:30'), idx.indexer_between_time('0:00', '11:30'))]
+        part_1_res = part_1.resample(
+            type_,
+            base=0,
+            closed='right',
+            loffset=type_
+        ).apply({key: CONVERSION[key]})
+        part_2 = min_data.iloc[idx.indexer_between_time('13:30', '15:00')]
+        part_2_res = part_2.resample(
+            type_,
+            base=30,
+            closed='right',
+            loffset=type_
+        ).agg({key: CONVERSION[key]})
+        return pd.concat([part_1_res, part_2_res]).dropna().sort_index()
 
 
 def QA_data_day_resample(day_data, type_='w'):
