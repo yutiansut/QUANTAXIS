@@ -21,3 +21,27 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE
+
+
+class QA_MultiLevel(self):
+    def __ini__(self, data):
+        self.data = data
+        self.level_data = {
+            FREQUENCE.TICK: None,
+            FREQUENCE.REALTIME_MIN: None
+            FREQUENCE.REALTIME: None,
+            FREQUENCE.ONE_MIN: None,
+            FREQUENCE.FIVE_MIN: None,
+            FREQUENCE.FIFTEEN_MIN: None,
+            FREQUENCE.THIRTY_MIN: None,
+            FREQUENCE.HOUR: None,
+            FREQUENCE.DAY: None,
+            FREQUENCE.WEEK: None,
+            FREQUENCE.MONTH: None,
+            FREQUENCE.YEAR: None
+        }
+
+    def resample(self):
+        pass
