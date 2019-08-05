@@ -25,7 +25,10 @@
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_marketvalue import (QA_data_calc_marketvalue,
                                                QA_data_marketvalue)
-from QUANTAXIS.QAData.data_resample import (QA_data_tick_resample,
+from QUANTAXIS.QAData.data_resample import (QA_data_min_resample,
+                                            QA_data_ctptick_resample, QA_data_day_resample,
+                                            QA_data_futuremin_resample_series,
+                                            QA_data_futuremin_resample, QA_data_tick_resample,
                                             QA_data_tick_resample_1min)
 from QUANTAXIS.QAData.dsmethods import (QDS_IndexDayWarpper,
                                         QDS_IndexMinWarpper,
@@ -46,7 +49,3 @@ from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Day,
 from QUANTAXIS.QAData.QAFinancialStruct import QA_DataStruct_Financial
 from QUANTAXIS.QAData.QAIndicatorStruct import QA_DataStruct_Indicators
 from QUANTAXIS.QAData.QASeriesStruct import QA_DataStruct_Series
-
-QA_data_min_resample, QA_data_day_resample,
-QA_data_ctptick_resample, QA_data_futuremin_resample_series,
-QA_data_futuremin_resample
