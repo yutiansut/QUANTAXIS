@@ -538,6 +538,54 @@ def QA_data_futuremin_resample(min_data, type_='5min', exchange_id=EXCHANGE_ID.S
         return pd.concat([part_1_res, part_2_res]).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
 
 
+def QA_data_futuremin_resample_today(min_data, type_='1D', exchange_id=EXCHANGE_ID.SHFE):
+    """期货分钟线采样成大周期
+
+
+    分钟线采样成子级别的分钟线
+
+    future:
+
+    vol ==> trade
+    amount X
+
+    期货一般两种模式:
+
+    中金所 股指期货: 9:30 - 11:30/ 13:00 -15:00
+
+    其他期货: -1 21:00: 2:30  /  9:00 - 11:30 / 13:30-15:00
+    (builtins.sum, "sum"),
+    (builtins.max, "max"),
+    (builtins.min, "min"),
+    (np.all, "all"),
+    (np.any, "any"),
+    (np.sum, "sum"),
+    (np.nansum, "sum"),
+    (np.mean, "mean"),
+    (np.nanmean, "mean"),
+    (np.prod, "prod"),
+    (np.nanprod, "prod"),
+    (np.std, "std"),
+    (np.nanstd, "std"),
+    (np.var, "var"),
+    (np.nanvar, "var"),
+    (np.median, "median"),
+    (np.nanmedian, "median"),
+    (np.max, "max"),
+    (np.nanmax, "max"),
+    (np.min, "min"),
+    (np.nanmin, "min"),
+    (np.cumprod, "cumprod"),
+    (np.nancumprod, "cumprod"),
+    (np.cumsum, "cumsum"),
+    (np.nancumsum, "cumsum"),
+
+    """
+    return min_data.assign(tradedate=pd.to_datetime(min_data.tradetime.apply(lambda x: x[0:10]))).reset_index().set_index('tradedate').resample(type_).\
+        apply({'code': 'first', 'open': 'first', 'high': 'max',
+               'low': 'min', 'close': 'last', 'volume': 'sum'}).dropna()
+
+
 def QA_data_futuremin_resample_series(min_data, key='open', type_='5min', exchange_id=EXCHANGE_ID.SHFE):
 
     if isinstance(min_data.index, pd.MultiIndex):
