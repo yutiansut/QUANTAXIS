@@ -143,13 +143,13 @@ class QA_User():
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins # 积分
-        self.money = money # 钱
+        self.coins = coins  # 积分
+        self.money = money  # 钱
 
         # ==============================
         self._subscribed_strategy = {}
         self._subscribed_code = []
-        self._signals = [] # 预期收到的信号
+        self._signals = []  # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -330,9 +330,18 @@ class QA_User():
         self.wechat_id = id
 
     def sub_code(self, code):
-        """关注的品种
+        """订阅某个品种
         """
-        self._subscribed_code.append(code)
+        if code not in self._subscribed_code:
+            self._subscribed_code.append(code)
+
+    def unsub_code(self, code):
+        """取消订阅品种
+
+        Arguments:
+            code {[type]} -- [description]
+        """
+        self._subscribed_code.remove(code)
 
     @property
     def subscribed_code(self):
@@ -355,8 +364,8 @@ class QA_User():
         if portfolio_cookie not in self.portfolio_list:
             self.portfolio_list.append(portfolio_cookie)
             return QA_Portfolio(
-            user_cookie=self.user_cookie,
-            portfolio_cookie=portfolio_cookie
+                user_cookie=self.user_cookie,
+                portfolio_cookie=portfolio_cookie
             )
         else:
             print(
@@ -394,7 +403,7 @@ class QA_User():
         '''
         # return self.portfolio_list[portfolio]
         # fix here use cookie as key to find value in dict
-        return QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie= portfolio_cookie)
+        return QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie=portfolio_cookie)
 
     def generate_simpleaccount(self):
         """make a simple account with a easier way
