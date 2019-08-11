@@ -663,7 +663,8 @@ def QA_data_day_resample(day_data, type_='w'):
         'low': 'min',
         'close': 'last',
         'vol': 'sum',
-        'amount': 'sum'
+        'amount': 'sum',
+        'date': 'last'
     } if 'vol' in day_data.columns else {
         'code': 'first',
         'open': 'first',
@@ -671,14 +672,14 @@ def QA_data_day_resample(day_data, type_='w'):
         'low': 'min',
         'close': 'last',
         'volume': 'sum',
-        'amount': 'sum'
+        'amount': 'sum',
+        'date': 'last'
     }
 
     return day_data.resample(
         type_,
         closed='right'
-    ).apply(CONVERSION).dropna().reset_index().set_index(['date',
-                                                          'code'])
+    ).apply(CONVERSION).dropna().set_index(['date','code'])
 
 
 if __name__ == '__main__':
