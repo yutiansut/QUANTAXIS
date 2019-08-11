@@ -30,7 +30,7 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QASetting import QA_Setting, DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day, QA_util_get_real_date
-
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, FREQUENCE
 
 class QA_User():
     """QA_User 
@@ -148,7 +148,29 @@ class QA_User():
 
         # ==============================
         self._subscribed_strategy = {}
-        self._subscribed_code = []
+        
+        """
+        self._subscribed_code: {
+            'stock_cn': {
+                '000001': ['1min','5min'],
+                '600010': ['tick']
+            },
+            'future_cn': {
+                'rb1910.SHFE':['tick','60min'],
+                'IF1909.IFFEX':['tick','1min']
+            },
+            'index_cn': {
+                '000300': ['1min']
+            }
+        }
+
+        """
+        self._subscribed_code = {
+            MARKET_TYPE.STOCK_CN: {},
+            MARKET_TYPE.FUTURE_CN: {},
+            MARKET_TYPE.INDEX_CN: {},
+            MARKET_TYPE.OPTION_CN: {}
+        }
         self._signals = []  # 预期收到的信号
         self._cash = []
         self._history = []
@@ -329,10 +351,10 @@ class QA_User():
 
         self.wechat_id = id
 
-    def sub_code(self, code):
+    def sub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
         """订阅某个品种
         """
-        if code not in self._subscribed_code:
+        if code not in self._subscribed_code[market_type]:
             self._subscribed_code.append(code)
 
     def unsub_code(self, code):
