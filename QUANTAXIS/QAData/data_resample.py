@@ -676,10 +676,11 @@ def QA_data_day_resample(day_data, type_='w'):
         'date': 'last'
     }
 
-    return day_data.resample(
+    data = day_data.resample(
         type_,
         closed='right'
-    ).apply(CONVERSION).dropna().set_index(['date','code'])
+    ).apply(CONVERSION).dropna()
+    return data.assign(date=pd.to_datetime(data.date)).set_index(['date','code'])
 
 
 if __name__ == '__main__':
