@@ -249,16 +249,16 @@ class QA_Tdx_Executor(QA_Thread):
         while True:
             _time = datetime.datetime.now()
             if QA_util_if_tradetime(_time):  # 如果在交易时间
-                data = x.get_realtime_concurrent(code)
-
+                data = self.get_realtime_concurrent(code)
+                
                 data[0]['datetime'] = data[1]
-                x.save_mongo(data[0])
+                self.save_mongo(data[0])
 
                 print('Time {}'.format(
                     (datetime.datetime.now() - _time).total_seconds()))
                 time.sleep(sleep)
                 print('Connection Pool NOW LEFT {} Available IP'.format(
-                    x._queue.qsize()))
+                    self._queue.qsize()))
                 print('Program Last Time {}'.format(
                     (datetime.datetime.now() - _time1).total_seconds()))
             else:
