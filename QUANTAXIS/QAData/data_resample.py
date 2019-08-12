@@ -535,7 +535,14 @@ def QA_data_futuremin_resample(min_data, type_='5min', exchange_id=EXCHANGE_ID.S
             closed='right',
             loffset=type_
         ).agg(CONVERSION)
-        return pd.concat([part_1_res, part_2_res]).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
+        part_3 = min_data.iloc[idx.indexer_between_time('21:00', '23:59')]
+        part_3_res = part_3.resample(
+            type_,
+            base=0,
+            closed='right',
+            loffset=type_
+        ).agg(CONVERSION)
+        return pd.concat([part_1_res, part_2_res, part_3_res]).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
 
 
 def QA_data_futuremin_resample_today(min_data, type_='1D', exchange_id=EXCHANGE_ID.SHFE):
@@ -680,7 +687,7 @@ def QA_data_day_resample(day_data, type_='w'):
         type_,
         closed='right'
     ).apply(CONVERSION).dropna()
-    return data.assign(date=pd.to_datetime(data.date)).set_index(['date','code'])
+    return data.assign(date=pd.to_datetime(data.date)).set_index(['date', 'code'])
 
 
 if __name__ == '__main__':
