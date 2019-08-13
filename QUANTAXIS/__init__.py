@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.5.8'
+__version__ = '1.5.9'
 __author__ = 'yutiansut'
 
 import argparse
@@ -63,6 +63,7 @@ from QUANTAXIS.QAData import (
     QA_data_tick_resample_1min,
     QA_data_futuremin_resample_series,
     QA_data_futuremin_resample,
+    QA_data_futuremin_resample_tb_kq,
     QA_DataStruct_Day,
     QA_DataStruct_Financial,
     QA_DataStruct_Future_day,
