@@ -567,7 +567,7 @@ def QA_data_futuremin_resample_tb_kq(min_data, type_='5min', exchange_id=EXCHANG
     return min_data.resample(
         type_,
         base=0,
-        closed='left',
+        closed='right',
         loffset=type_
     ).agg(CONVERSION).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
 
