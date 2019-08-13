@@ -64,6 +64,7 @@ from QUANTAXIS.QAData import (
     QA_data_futuremin_resample_series,
     QA_data_futuremin_resample,
     QA_data_futuremin_resample_tb_kq,
+    QA_data_futuremin_resample_tb_kq2,
     QA_DataStruct_Day,
     QA_DataStruct_Financial,
     QA_DataStruct_Future_day,
