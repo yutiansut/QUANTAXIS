@@ -30,6 +30,7 @@ from QUANTAXIS.QAData.data_resample import (QA_data_min_resample,
                                             QA_data_futuremin_resample_series,
                                             QA_data_futuremin_resample, QA_data_tick_resample,
                                             QA_data_futuremin_resample_tb_kq,
+                                            QA_data_futuremin_resample_tb_kq2,
                                             QA_data_tick_resample_1min)
 from QUANTAXIS.QAData.dsmethods import (QDS_IndexDayWarpper,
                                         QDS_IndexMinWarpper,

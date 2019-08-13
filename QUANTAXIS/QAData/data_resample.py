@@ -553,6 +553,10 @@ def QA_data_futuremin_resample_tb_kq(min_data, type_='5min', exchange_id=EXCHANG
     分钟线采样成子级别的分钟线
 
 
+    FROM TB 数据
+
+    TO   TB 数据
+
     """
     CONVERSION = {
         'code': 'first',
@@ -568,6 +572,34 @@ def QA_data_futuremin_resample_tb_kq(min_data, type_='5min', exchange_id=EXCHANG
         type_,
         base=0,
         closed='left'
+    ).agg(CONVERSION).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
+
+
+def QA_data_futuremin_resample_tb_kq2(min_data, type_='5min', exchange_id=EXCHANGE_ID.SHFE):
+    """期货分钟线采样成大周期
+
+    此采样方法仅适用于tb/快期, 因此单独拿出来
+
+    FROM TDX 数据
+
+    TO   TB 数据
+
+
+    """
+    CONVERSION = {
+        'code': 'first',
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'tradetime': 'last',
+        'position': 'last',
+        'volume': 'sum'}
+    min_data = min_data.loc[:, list(CONVERSION.keys())]
+    return min_data.resample(
+        type_,
+        base=0,
+        closed='right'
     ).agg(CONVERSION).dropna().sort_index().reset_index().set_index(['datetime', 'code'])
 
 
