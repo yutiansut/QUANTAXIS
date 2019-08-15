@@ -9,12 +9,25 @@ ubuntu 一键脚本
 wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/install_docker.sh
 sudo bash install_docker.sh
 ```
+win/mac 安装
 
-## 使用QA_SERVICE
+非常简单 去docker网站下载win/mac的docker_desktop
+
+文件较大, 我在群文件也共享了
+
+或者你可以使用国内镜像站
+
+- win [https://download.daocloud.io/d/Docker_Mirror/Docker_for_Windows_Mac/17.03.1-ce/docker-for-windows-stable.msi]
+- mac [https://download.daocloud.io/d/Docker_Mirror/Docker_for_Windows_Mac/17.03.1-ce/docker-for-mac-stable.dmg]
+
+ps: quantaxis强烈推荐不要使用win10以下的系统...(好吧忽略我)
+
+
+### 使用QA_SERVICE
 
 第一次使用
 ```
-wget https://github.com/QUANTAXIS/QUANTAXIS/blob/master/docker/qaservice_docker.sh
+wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/qaservice_docker.sh
 sudo bash qaservice_docker.sh
 ```
 
