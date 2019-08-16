@@ -105,6 +105,9 @@ class QA_Position():
                  name=None,
                  auto_reload=False,
                  allow_exceed=False,
+
+                 spms_id =None,
+                 oms_id = None,
                  *args,
                  **kwargs
 
@@ -168,6 +171,8 @@ class QA_Position():
         self.trades = [] if trades is None else trades
         self.orders = {} if orders is None else orders
         self.frozen = {} if frozen is None else frozen
+        self.spms_id = spms_id
+        self.oms_id = oms_id
         if auto_reload:
             self.reload()
         self.allow_exceed = allow_exceed
@@ -319,10 +324,13 @@ class QA_Position():
             'account_cookie': self.account_cookie,
             'frozen': self.frozen,
             'name': self.name,
+            'spms_id': self.spms_id,
+            'oms_id': self.oms_id,
             'market_type': self.market_type,
             'exchange_id': self.exchange_id,  # 交易所ID
             'moneypreset': self.moneypreset,
             'moneypresetLeft': self.moneypresetLeft,
+            'lastupdatetime': str(self.time),
             # 持仓量
             'volume_long_today': self.volume_long_today,
             'volume_long_his': self.volume_long_his,
@@ -779,7 +787,7 @@ class QA_Position():
             self.trades.append(transaction)
         except Exception as e:
             raise e
-
+        
     def on_pirce_change(self, price):
         self.last_price = price
 
