@@ -135,7 +135,6 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [portable_QA](https://github.com/QUANTAXIS/portable_QA) 一个独立的python环境,免配置
 - [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
 
-![qa2018](http://pic.yutiansut.com/qa2018.png)
 ![qaresolution](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190815112455.png)
 
 ==========================================
