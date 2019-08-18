@@ -1,7 +1,6 @@
 
 # QUANTAXIS 量化金融策略框架
 
-> 2019-04-26 update: 重大更新即将上线/ OMS/RMS/多场景无缝切换/CEP即将上线
 
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
 
@@ -72,6 +71,77 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 ==========================================
 
 
+## 关联项目:
+
+技术栈: python/nodejs/vue/mongodb/rabbitmq/c++
+
+### 核心工具链(生产环境在用)
+
+#### 已开源
+
+> 数据存储/数据分析/回测
+
+- [QUANTAXIS](https://github.com/QUANTAXIS/QUANTAXIS) QUANTAXIS的核心部分
+
+> WEB相关, http/websocket/开放数据接口
+
+- [QUANTAXIS_WEBSERVER](https://github.com/QUANTAXIS/QUANTAXIS_WEBSERVER) 基于tornado的web api/ websocket
+
+> 分布式相关, 任务异步执行, 跨进程分布式消息订阅分发
+
+- [QUANTAXIS_RUN](https://github.com/QUANTAXIS/quantaxis_run) 基于rabbitmq/celery的分布式任务部署
+- [QUANTAXIS_PUBSUB](https://github.com/QUANTAXIS/QAPUBSUB) 基于RABBITMQ的消息分发订阅
+
+> 接口相关: 交易账户/ 期货接口封装/ Trader实例
+- [QUANTAXIS OTGBROKER](https://github.com/QUANTAXIS/QAOTGBROKER) 基于OPEN_TRADE_GATEWAY的接口封装
+- [QUANTAXIS CTPBEEBROKER](https://github.com/QUANTAXIS/QACTPBeeBroker) 基于CTPBee的接口封装
+- [QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker) 基于海风at的接口封装
+- [QUANTAXIS TRADER](https://github.com/yutiansut/QATrader) 一个开源的websocket版本的期货交易实例
+
+> 行情相关: 主推行情实现/ 基于OU过程的模拟行情
+- [QUNATAXIS MARKETCOLLECTOR](https://github.com/yutiansut/QUANTAXIS_RealtimeCollector) 全市场订阅分发的行情推送
+- [QUANTAXIS_RandomPrice](https://github.com/yutiansut/QUANTAXIS_RandomPrice) 基于OU过程的随机行情模拟
+
+
+#### 未开源
+
+> 实时交易解决方案/ 无人值守/状态汇报/实时账户评估/多账户/策略账户拆分/事件流风控/PB系统/CEP引擎/多系统终端
+
+- [QUANTAXIS_REALTIME_RESOLUTION](https://github.com/yutiansut/QUANTAXIS_REALTIME_RESOLUTION) 实时交易/部署解决方案(未开源)
+- [QUANTAXIS UNICORN](https://github.com/yutiansut/quantaxis_unicorn) QUANTAXIS 策略托管, 交易监控解决方案(未开源)
+- [QUANTAXIS_RANK](https://github.com/yutiansut/QARank) QUANTAXIS实时账户评估
+- [QUANTAXIS_CEPEngine](https://github.com/yutiansut/QACEPEngine) QUANTAXIS 复杂事件处理引擎
+- [QUANTAXIS_PBSystem](https://github.com/yutiansut/QAPBSystem) QUANTAXIS PB系统
+- [QUANTAXIS_QARISKPRO](https://github.com/yutiansut/QARISKPRO) QUANTAXIS 多市场多账户集成的实时风控系统
+- [QUANTAXIS QADESKPRO](https://github.com/yutiansut/qadeskpro) 新版本客户端网页(部分开源)
+
+> tick回测
+
+- [QUANTAXIS TICKBacktest](https://github.com/yutiansut/QATickBacktest) tick回测 支持真实tick/仿真tick
+
+> jupyterhub 定制(多人编辑)
+
+- [QUANTAXIS JUPYTERHUB](https://github.com/yutiansut/QAJupyter)
+
+> docker cluster
+
+- [QUANTAXIS PROCluster](https://github.com/yutiansut/QAPRO_dockercluster) 一键部署的docker集群, 2地3中心的高可用灾备投研/交易环境
+
+
+### 社区提供的工具链
+
+- [QUANTAXIS_MONITOR_GUI](https://github.com/QUANTAXIS/QUANTAXIS_Monitor_GUI) 基于QT的python监控
+- (目前废弃)[QUANTAXIS_DESKTOP](https://github.com/QUANTAXIS/QADESKTOP) 基于VUE.js/ ELECTRON的 桌面终端
+- [portable_QA](https://github.com/QUANTAXIS/portable_QA) 一个独立的python环境,免配置
+- [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
+
+![qa2018](http://pic.yutiansut.com/qa2018.png)
+![qaresolution](http://pic.yutiansut.com/QARESOLUTION.png)
+
+==========================================
+
+
+
 ## docker 一键部署(无需任何环境! 最好是直接拿个新机器)
 
 ### 安装docker 
@@ -123,41 +193,8 @@ docker-compose up -d
 
 然后就可以开始你的量化之路了骚年!
 
-
-
-## 关联项目:
-
-技术栈: python/nodejs/vue/mongodb/rabbitmq/c++
-
-### 核心工具链(生产环境在用)
-
-- [QUANTAXIS](https://github.com/QUANTAXIS/QUANTAXIS) QUANTAXIS的核心部分
-- [QUANTAXIS_WEBSERVER](https://github.com/QUANTAXIS/QUANTAXIS_WEBSERVER) 基于tornado的web api/ websocket
-- [QUANTAXIS_RUN](https://github.com/QUANTAXIS/quantaxis_run) 基于rabbitmq/celery的分布式任务部署
-- [QUANTAXIS_PUBSUB](https://github.com/QUANTAXIS/QAPUBSUB) 基于RABBITMQ的消息分发订阅
-- [QUANTAXIS_REALTIME_RESOLUTION](https://github.com/yutiansut/QUANTAXIS_REALTIME_RESOLUTION) 实时交易/部署解决方案(未开源)
-- [QUANTAXIS UNICORN](https://github.com/yutiansut/quantaxis_unicorn) QUANTAXIS 策略托管, 交易监控解决方案(未开源)
-- [QUANTAXIS_RANK](https://github.com/yutiansut/quantaxis_rank) QUANTAXIS实时账户评估
-- [QUANTAXIS_CEPEngine](https://github.com/yutiansut/QACEPEngine) QUANTAXIS 复杂事件处理引擎
-- [QUANTAXIS_PBSystem](https://github.com/yutiansut/QAPBSystem) QUANTAXIS PB系统
-- [QUANTAXIS_QARISKPRO](https://github.com/yutiansut/QARISKPRO) QUANTAXIS 多市场多账户集成的实时风控系统
-- [QUANTAXIS QADESKPRO](https://github.com/yutiansut/qadeskpro) 新版本客户端网页(部分开源)
-- [QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker) 基于海风at的接口封装
-- [QUANTAXIS OTGBROKER](https://github.com/QUANTAXIS/QAOTGBROKER) 基于OPEN_TRADE_GATEWAY的接口封装
-- [QUANTAXIS CTPBEEBROKER](https://github.com/QUANTAXIS/QACTPBeeBroker) 基于CTPBee的接口封装
-- [QUANTAXIS TRADER](https://github.com/yutiansut/QATrader) 一个开源的websocket版本的期货交易实例
-
-### 社区提供的工具链
-
-- [QUANTAXIS_MONITOR_GUI](https://github.com/QUANTAXIS/QUANTAXIS_Monitor_GUI) 基于QT的python监控
-- (目前废弃)[QUANTAXIS_DESKTOP](https://github.com/QUANTAXIS/QADESKTOP) 基于VUE.js/ ELECTRON的 桌面终端
-- [portable_QA](https://github.com/QUANTAXIS/portable_QA) 一个独立的python环境,免配置
-- [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
-
-![qa2018](http://pic.yutiansut.com/qa2018.png)
-![qaresolution](http://pic.yutiansut.com/QARESOLUTION.png)
-
 ==========================================
+
 
 ## 视频录播(2019-03-23)
 
