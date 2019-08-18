@@ -1255,7 +1255,7 @@ def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
             QA_util_to_json_from_pandas(QA_fetch_get_stock_block('QA'))
         )
         QA_util_log_info(
-            'ths Block ====',
+            'QA_Select Block ====',
             ui_log=ui_log,
             ui_progress=ui_progress,
             ui_progress_int_value=8000
