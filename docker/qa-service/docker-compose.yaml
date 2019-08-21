@@ -83,6 +83,14 @@ services:
                 ipv4_address: 172.19.0.6
                 
         restart: always
+
+    qactpbeebroker:
+        image: daocloud.io/quantaxis/qactpbeebroker:latest
+        ports: 
+            - "5000:5000"
+        networks: 
+            qanetwork:
+                ipv4_address: 172.19.0.7
 volumes:
     qamg:
         external:
