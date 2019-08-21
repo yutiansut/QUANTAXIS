@@ -430,6 +430,7 @@ class _quotation_base():
     def max(self):
         res = self.price.groupby(level=1).apply(lambda x: x.max())
         res.name = 'max'
+        return res
 
     @property
     @lru_cache()
