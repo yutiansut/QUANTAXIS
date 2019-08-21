@@ -356,7 +356,7 @@ class QA_User():
         """订阅某个品种
         """
         if code not in self._subscribed_code[market_type]:
-            self._subscribed_code.append(code)
+            self._subscribed_code[market_type].append(code)
 
     def unsub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
         """取消订阅品种
