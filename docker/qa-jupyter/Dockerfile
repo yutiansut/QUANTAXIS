@@ -1,4 +1,4 @@
-FROM yutiansut/qabase:latest
+FROM daocloud.io/quantaxis/qabase:latest
 
 COPY requirements.txt /requirements.txt
 COPY entrypoint.sh /entrypoint.sh
