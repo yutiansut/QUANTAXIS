@@ -32,6 +32,7 @@ from QUANTAXIS.QAUtil.QASetting import QA_Setting, DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day, QA_util_get_real_date
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, FREQUENCE
 
+
 class QA_User():
     """QA_User 
     User-->Portfolio-->Account/Strategy
@@ -148,7 +149,7 @@ class QA_User():
 
         # ==============================
         self._subscribed_strategy = {}
-        
+
         """
         self._subscribed_code: {
             'stock_cn': {
@@ -166,10 +167,10 @@ class QA_User():
 
         """
         self._subscribed_code = {
-            MARKET_TYPE.STOCK_CN: {},
-            MARKET_TYPE.FUTURE_CN: {},
-            MARKET_TYPE.INDEX_CN: {},
-            MARKET_TYPE.OPTION_CN: {}
+            MARKET_TYPE.STOCK_CN: [],
+            MARKET_TYPE.FUTURE_CN: [],
+            MARKET_TYPE.INDEX_CN: [],
+            MARKET_TYPE.OPTION_CN: []
         }
         self._signals = []  # 预期收到的信号
         self._cash = []
@@ -355,15 +356,18 @@ class QA_User():
         """订阅某个品种
         """
         if code not in self._subscribed_code[market_type]:
-            self._subscribed_code.append(code)
+            self._subscribed_code[market_type].append(code)
 
-    def unsub_code(self, code):
+    def unsub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
         """取消订阅品种
 
         Arguments:
             code {[type]} -- [description]
         """
-        self._subscribed_code.remove(code)
+        try:
+            self._subscribed_code[market_type].remove(code)
+        except:
+            pass
 
     @property
     def subscribed_code(self):
@@ -373,7 +377,7 @@ class QA_User():
             [type] -- [description]
         """
 
-        return list(set(self._subscribed_code))
+        return self._subscribed_code
 
     def new_portfolio(self, portfolio_cookie=None):
         '''
@@ -586,7 +590,11 @@ class QA_User():
         self.coins_history = message.get('coins_history')
         self.money = message.get('money')
         self._subscribed_strategy = message.get('subuscribed_strategy')
-        self._subscribed_code = message.get('subscribed_code')
+        subscribed_code = message.get('subscribed_code')
+        if isinstance(subscribed_code, list):
+            pass
+        else:
+            self._subscribed_code = subscribed_code
         self.username = message.get('username')
         self.password = message.get('password')
         self.user_cookie = message.get('user_cookie')
