@@ -4,9 +4,9 @@ ENV TZ=Asia/Shanghai
 
 ENV RABBITMQ_DEFAULT_USER=admin 
 ENV RABBITMQ_DEFAULT_PASS=admin 
-RUN rabbitmqctl add_user guest guest \
-&& rabbitmqctl set_user_tags guest administrator \
-&& rabbitmqctl  set_permissions -p "/" guest '.*' '.*' '.*'
+# RUN rabbitmqctl add_user guest guest \
+# && rabbitmqctl set_user_tags guest administrator \
+# && rabbitmqctl  set_permissions -p "/" guest '.*' '.*' '.*'
 
 
 # RUN netstat -ano | grep 5672
