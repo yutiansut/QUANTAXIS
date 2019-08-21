@@ -1,4 +1,4 @@
-FROM yutiansut/qa-jupyter
+FROM daocloud.io/quantaxis/qa-jupyter
 
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive

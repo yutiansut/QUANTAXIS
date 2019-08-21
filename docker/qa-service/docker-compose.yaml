@@ -1,14 +1,14 @@
 version: '2'
 services:
     qa:
-        image: yutiansut/qacommunity:latest
+        image: daocloud.io/quantaxis/qacommunity:latest
         container_name: qacommunity
         networks: 
             qanetwork:
                 ipv4_address: 172.19.0.3
         ports:
             - "8888:8888"
-            - "80:80"
+            - "81:80"
         environment:
           - TZ=Asia/Shanghai
           - MONGODB=mgdb
@@ -24,7 +24,7 @@ services:
     #     restart: always
 
     qaweb_run:
-        image: yutiansut/qarun:latest
+        image: daocloud.io/quantaxis/qarun:latest
         container_name: qarun
         networks: 
             qanetwork:
@@ -45,7 +45,7 @@ services:
 
 
     mgdb:
-        image: mongo:4.1.3
+        image: daocloud.io/quantaxis/qamongo_single:latest
         ports:
             - "27017:27017"
         environment:
@@ -60,7 +60,7 @@ services:
 
 
     qaeventmq:
-        image: yutiansut/qaeventmq:latest
+        image: daocloud.io/quantaxis/qaeventmq:latest
         ports: 
             - "15672:15672"
             - "5672:5672"
@@ -73,7 +73,7 @@ services:
         restart: always
 
     qamonitor:
-        image: yutiansut/qamonitor:latest
+        image: daocloud.io/quantaxis/qa-monitor:latest
         ports:
             - "61209:61209"
             - "61208:61208"

@@ -234,7 +234,7 @@ docker-compose up -d
 - 27017 mongodb
 - 8888 jupyter
 - 8010 quantaxis_webserver
-- 80 quantaxis_community 社区版界面
+- 81 quantaxis_community 社区版界面
 - 61208 系统监控
 - 15672 qa-eventmq
 
