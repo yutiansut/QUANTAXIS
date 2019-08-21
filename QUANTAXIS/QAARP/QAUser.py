@@ -167,10 +167,10 @@ class QA_User():
 
         """
         self._subscribed_code = {
-            MARKET_TYPE.STOCK_CN: {},
-            MARKET_TYPE.FUTURE_CN: {},
-            MARKET_TYPE.INDEX_CN: {},
-            MARKET_TYPE.OPTION_CN: {}
+            MARKET_TYPE.STOCK_CN: [],
+            MARKET_TYPE.FUTURE_CN: [],
+            MARKET_TYPE.INDEX_CN: [],
+            MARKET_TYPE.OPTION_CN: []
         }
         self._signals = []  # 预期收到的信号
         self._cash = []
@@ -352,23 +352,20 @@ class QA_User():
 
         self.wechat_id = id
 
-    def sub_code(self, code, frequence, market_type=MARKET_TYPE.STOCK_CN):
+    def sub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
         """订阅某个品种
         """
-        if code not in self._subscribed_code[market_type].keys():
-            self._subscribed_code[market_type][code] = [frequence]
-        else:
-            if frequence not in self._subscribed_code[market_type][code]:
-                self._subscribed_code[market_type][code].append(frequence)
+        if code not in self._subscribed_code[market_type]:
+            self._subscribed_code.append(code)
 
-    def unsub_code(self, code, frequence, market_type=MARKET_TYPE.STOCK_CN):
+    def unsub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
         """取消订阅品种
 
         Arguments:
             code {[type]} -- [description]
         """
         try:
-            self._subscribed_code[market_type][code].remove(frequence)
+            self._subscribed_code[market_type].remove(code)
         except:
             pass
 
