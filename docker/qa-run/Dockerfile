@@ -1,4 +1,4 @@
-FROM yutiansut/qawebserver:latest
+FROM daocloud.io/quantaxis/qawebserver:latest
 # RUN \ 
 # apt-get clean && cd /var/lib/apt && mv lists lists.old && mkdir -p lists/partial && apt-get clean\
 # && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 40976EAF437D05B5
