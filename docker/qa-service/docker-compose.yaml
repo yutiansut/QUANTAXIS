@@ -8,7 +8,7 @@ services:
                 ipv4_address: 172.19.0.3
         ports:
             - "8888:8888"
-            - "80:80"
+            - "81:80"
         environment:
           - TZ=Asia/Shanghai
           - MONGODB=mgdb
