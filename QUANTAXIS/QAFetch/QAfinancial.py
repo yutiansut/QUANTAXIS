@@ -34,7 +34,7 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, download_path
 参见PYTDX 1.65
 """
 
-FINANCIAL_URL = 'http://down.tdx.com.cn:8001/fin/gpcw.txt'
+FINANCIAL_URL = 'https://gitee.com/yutiansut/QADATA/raw/master/financial/content.txt'
 
 
 class QAHistoryFinancialCrawler(HistoryFinancialCrawler):
@@ -98,7 +98,7 @@ def download_financialzip():
             print('FILE {} is already in {}'.format(item, download_path))
         else:
             print('CURRENTLY GET/UPDATE {}'.format(item[0:12]))
-            r = requests.get('http://down.tdx.com.cn:8001/fin/{}'.format(item))
+            r = requests.get('https://gitee.com/yutiansut/QADATA/raw/master/financial/{}'.format(item))
 
             file = '{}{}{}'.format(download_path, os.sep, item)
 
