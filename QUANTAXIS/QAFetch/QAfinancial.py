@@ -98,16 +98,7 @@ def download_financialzip():
             print('FILE {} is already in {}'.format(item, download_path))
         else:
             print('CURRENTLY GET/UPDATE {}'.format(item[0:12]))
-            r = requests.get('https://gitee.com/yutiansut/QADATA/raw/master/financial/{}'.format(item), headers={
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36',
-                'Host': 'gitee.com',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Connection': 'keep-alive',
-                'Cookie': 'user_locale=zh-CN; oschina_new_user=false; _pk_id.1.dc8b=1fcc14de2962d601.1564332911.1.1564332914.1564332911.; close_wechat_tour=true; tz=Asia%2FShanghai; Hm_lvt_24f17767262929947cc3631f99bfd274=1566137348,1566225437,1\
-                            566405419,1566488922; Hm_lpvt_24f17767262929947cc3631f99bfd274=1566489980; gitee-session-n=BAh7C0kiD3Nlc3Npb25faWQGOgZFVEkiJTIxOGRkYzY3NzIyZDdiYTcwMmYwNDgwZmExYTAyODM1BjsAVEkiGXdhcmRlbi51c2VyLnVzZXIua2V5BjsAVFsHWwZpA%2BtBDUkiIiQ\
-                            yYSQxMCR1NEc5RXl6TzczNDk3S2ZCVGoxZ3dlBjsAVEkiHXdhcmRlbi51c2VyLnVzZXIuc2Vzc2lvbgY7AFR7BkkiFGxhc3RfcmVxdWVzdF9hdAY7AFRJdToJVGltZQ3Q3h3AYozMLQk6DW5hbm9fbnVtaQI7AzoNbmFub19kZW5pBjoNc3VibWljcm8iB4JwOgl6b25lSSIIVVRDBjsAVEkiFGFkZF9lbWF\
-                            pbF9ndWlkZQY7AEZGSSIXYWN0aXZlX2VtYWlsX2d1aWRlBjsARkZJIhBfY3NyZl90b2tlbgY7AEZJIjF5K1hBV0NCZlVuRXRsWFZ2anMyZXZLZ29UNzluSWF2YXRSaHI0UDIxNTA0PQY7AEY%3D--36f4ddcf2b8e48f83a84404d1a18c8b772ad6920'})
+            r = requests.get('http://data.yutiansut.com/{}'.format(item))
             file = '{}{}{}'.format(download_path, os.sep, item)
 
             with open(file, "wb") as code:
