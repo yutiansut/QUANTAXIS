@@ -41,7 +41,7 @@ from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_str2int, QA_util_date_valid,
                               QA_util_get_real_date, QA_util_get_real_datelist,
-                              QA_util_future_to_realdatetime,
+                              QA_util_future_to_realdatetime, QA_util_tdxtimestamp,
                               QA_util_future_to_tradedatetime,
                               QA_util_get_trade_gap, QA_util_log_info,
                               QA_util_time_stamp, QA_util_web_ping,
@@ -488,9 +488,10 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
             __data = __data.append(api.to_df(api.get_security_quotes(
                 [(_select_market_code(x), x) for x in
                  code[80 * id_:80 * (id_ + 1)]])))
-            __data['datetime'] = datetime.datetime.now()
+            __data = __data.assign(datetime=datetime.datetime.now(), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
+            #__data['rev']
         data = __data[
-            ['datetime', 'active1', 'active2', 'last_close', 'code', 'open',
+            ['datetime', 'servertime', 'active1', 'active2', 'last_close', 'code', 'open',
              'high', 'low', 'price', 'cur_vol',
              's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1',
              'ask2', 'ask_vol2',

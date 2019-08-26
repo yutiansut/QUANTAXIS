@@ -43,7 +43,7 @@ def QA_fetch_get_stock_block():
         [type] -- [description]
     """
 
-    url = 'https://gitee.com/yutiansut/QADATA/raw/master/self_block.csv'
+    url = 'http://data.yutiansut.com/self_block.csv'
     try:
         bl = pd.read_csv(url)
         return bl.assign(code=bl['证券代码'].apply(QA_util_code_tostr), blockname=bl['行业'], name=bl['证券名称'], source='outside', type='outside').set_index('code', drop=False)
