@@ -6,7 +6,7 @@
 
 * [STU 课程01](STU/P0_Head.md)
 * [STU 课程02](STU/P1_Prepare.md)
-
+* [STU 课程03](STU/P2_DataFlow.md)
 
 * [小白上手教程WIN](Documents/install_for_new_to_coding.md)
 * [部署](Documents/install.md)
