@@ -24,7 +24,7 @@ RUN chmod +x /entrypoint.sh
 EXPOSE 8888 
 
 COPY runpy.sh /root/
-RUN chmod +x /QUANTAXIS/QUANTAXIS/QAUtil/QASetting.py
+RUN chmod +x /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py
 
 RUN chmod +x /root/runpy.sh
 CMD ["bash", "/root/runpy.sh"]

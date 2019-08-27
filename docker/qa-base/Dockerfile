@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 COPY requirements.txt /requirements.txt
 # for mirrors in China
-COPY pip.conf /root/.pip/pip.conf
+# COPY pip.conf /root/.pip/pip.conf
 COPY source.list /etc/apt/sources.list
 
 RUN \ 
