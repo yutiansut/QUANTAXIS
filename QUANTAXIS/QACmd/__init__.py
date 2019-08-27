@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -241,8 +241,8 @@ class CLI(cmd.Cmd):
             命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
             命令格式：save financialfiles : 保存高级财务数据(自1996年开始) \n\
             命令格式：save option_contract_list 保存上市的期权合约信息（不包括已经过期摘牌的合约数据）\n\
-            命令格式：save option_day : 保存50ETF期权日线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save option_min : 保存50ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
+            命令格式：save 50etf_option_day : 保存50ETF期权日线数据（不包括已经过期摘牌的数据） \n\
+            命令格式：save 50etf_option_min : 保存50ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_commodity_day : 保存商品期权日线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_commodity_min : 保存商品期权分钟线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_day_all : 保存所有期权日线数据（不包括已经过期摘牌的数据） \n\
@@ -388,6 +388,16 @@ class CLI(cmd.Cmd):
                 QA_SU_save_future_min_all('tdx')
                 QA_SU_save_future_list('tdx')
 
+            elif len(arg) == 1 and arg[0] == '50etf_option_day':
+                QA_SU_save_option_50etf_day('tdx')
+
+            elif len(arg) == 1 and arg[0] == '50etf_option_min':
+                QA_SU_save_option_50etf_min('tdx')
+
+            elif len(arg) == 1 and arg[0] == 'option_commodity_day':
+                QA_SU_save_option_commodity_day('tdx')
+            elif len(arg) == 1 and arg[0] == 'option_commodity_min':
+                QA_SU_save_option_commodity_min('tdx')
             elif len(arg) == 1 and arg[0] in ['ox', 'OX', 'oX', 'Ox']:
                 QA_SU_save_option_contract_list('tdx')
                 QA_SU_save_option_50etf_day('tdx')

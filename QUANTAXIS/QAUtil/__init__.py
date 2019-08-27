@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,7 @@ from QUANTAXIS.QAUtil.QADate import (QA_util_calc_time, QA_util_date_int2str,
                                      QA_util_date_today, QA_util_date_valid,
                                      QA_util_datetime_to_strdate,
                                      QA_util_get_date_index,
+                                     QA_util_tdxtimestamp,
                                      QA_util_get_index_date, QA_util_id2date,
                                      QA_util_is_trade, QA_util_ms_stamp,
                                      QA_util_realtime, QA_util_select_hours,
@@ -144,25 +145,44 @@ from QUANTAXIS.QAUtil.QADateTools import (
 from QUANTAXIS.QAUtil.Parallelism import Parallelism, Parallelism_Thread
 from QUANTAXIS.QAUtil.QACache import QA_util_cache
 from QUANTAXIS.QAUtil.QASingleton import singleton
-# from resource import getrusage as resource_usage, RUSAGE_SELF
-from time import time as timestamp
+
+import platform
 from functools import wraps
+platform_flag = platform.system() == 'Windows'
+
+if not platform_flag:
+    from resource import getrusage as resource_usage, RUSAGE_SELF
+    from time import time as timestamp
 
 
-# def print_used_time(func):
-#     ''' 打印运行时间
+    def print_used_time(func):
+        ''' 打印运行时间
 
-#     :param func: 运行的函数名称
-#     :return:
-#     '''
+        :param func: 运行的函数名称
+        :return:
+        '''
 
-#     @wraps(func)
-#     def wrapper(*args, **kwargs):
-#         start_time, start_resources = timestamp(), resource_usage(RUSAGE_SELF)
-#         func(*args, **kwargs)
-#         end_resources, end_time = resource_usage(RUSAGE_SELF), timestamp()
-#         print({'消耗时间':{'real': end_time - start_time,
-#                 'sys': end_resources.ru_stime - start_resources.ru_stime,
-#                 'user': end_resources.ru_utime - start_resources.ru_utime}})
-#         return True
-#     return wrapper
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            start_time, start_resources = timestamp(), resource_usage(RUSAGE_SELF)
+            func(*args, **kwargs)
+            end_resources, end_time = resource_usage(RUSAGE_SELF), timestamp()
+            print({'消耗时间':{'real': end_time - start_time,
+                    'sys': end_resources.ru_stime - start_resources.ru_stime,
+                    'user': end_resources.ru_utime - start_resources.ru_utime}})
+            return True
+        return wrapper
+else:
+    def print_used_time(func):
+        ''' 打印运行时间
+
+        :param func: 运行的函数名称
+        :return:
+        '''
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            func(*args, **kwargs)
+            return True
+
+        return wrapper

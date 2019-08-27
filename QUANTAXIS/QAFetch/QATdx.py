@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,7 @@ from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_str2int, QA_util_date_valid,
                               QA_util_get_real_date, QA_util_get_real_datelist,
-                              QA_util_future_to_realdatetime,
+                              QA_util_future_to_realdatetime, QA_util_tdxtimestamp,
                               QA_util_future_to_tradedatetime,
                               QA_util_get_trade_gap, QA_util_log_info,
                               QA_util_time_stamp, QA_util_web_ping,
@@ -356,7 +356,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00',
             data = data.drop(
                 ['year', 'month', 'day', 'hour', 'minute', 'datetime'],
                 axis=1)[
-                   start_date:end_date]
+                start_date:end_date]
             if if_fq in ['00', 'bfq']:
                 return data
             else:
@@ -409,21 +409,21 @@ def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None,
                 api.get_security_bars(
                     frequence, _select_market_code(
                         str(code)),
-                        str(code),
-                        (int(lens / 800) - i) * 800, 800)) for i
-                            in range(int(lens / 800) + 1)], axis=0)
+                    str(code),
+                    (int(lens / 800) - i) * 800, 800)) for i
+             in range(int(lens / 800) + 1)], axis=0)
         data = data \
-                   .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
-                         inplace=False) \
-                   .assign(datetime=pd.to_datetime(data['datetime']),
-                           code=str(code),
-                           date=data['datetime'].apply(lambda x: str(x)[0:10]),
-                           date_stamp=data['datetime'].apply(
-                               lambda x: QA_util_date_stamp(x)),
-                           time_stamp=data['datetime'].apply(
-                               lambda x: QA_util_time_stamp(x)),
-                           type=type_).set_index('datetime', drop=False,
-                                                 inplace=False)[start:end]
+            .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
+                  inplace=False) \
+            .assign(datetime=pd.to_datetime(data['datetime']),
+                    code=str(code),
+                    date=data['datetime'].apply(lambda x: str(x)[0:10]),
+                    date_stamp=data['datetime'].apply(
+                lambda x: QA_util_date_stamp(x)),
+                time_stamp=data['datetime'].apply(
+                lambda x: QA_util_time_stamp(x)),
+                type=type_).set_index('datetime', drop=False,
+                                      inplace=False)[start:end]
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
@@ -488,9 +488,10 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
             __data = __data.append(api.to_df(api.get_security_quotes(
                 [(_select_market_code(x), x) for x in
                  code[80 * id_:80 * (id_ + 1)]])))
-            __data['datetime'] = datetime.datetime.now()
+            __data = __data.assign(datetime=datetime.datetime.now(), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
+            #__data['rev']
         data = __data[
-            ['datetime', 'active1', 'active2', 'last_close', 'code', 'open',
+            ['datetime', 'servertime', 'active1', 'active2', 'last_close', 'code', 'open',
              'high', 'low', 'price', 'cur_vol',
              's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1',
              'ask2', 'ask_vol2',
@@ -760,12 +761,12 @@ def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None,
         data = data.assign(
             date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(
             code=str(code)) \
-                   .assign(date_stamp=data['datetime'].apply(
-            lambda x: QA_util_date_stamp(str(x)[0:10]))) \
-                   .set_index('date', drop=False, inplace=False) \
-                   .assign(code=code) \
-                   .drop(['year', 'month', 'day', 'hour',
-                          'minute', 'datetime'], axis=1)[start_date:end_date]
+            .assign(date_stamp=data['datetime'].apply(
+                lambda x: QA_util_date_stamp(str(x)[0:10]))) \
+            .set_index('date', drop=False, inplace=False) \
+            .assign(code=code) \
+            .drop(['year', 'month', 'day', 'hour',
+                   'minute', 'datetime'], axis=1)[start_date:end_date]
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
@@ -819,12 +820,12 @@ def QA_fetch_get_index_day(code, start_date, end_date, frequence='day',
         data = data.assign(
             date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(
             code=str(code)) \
-                   .assign(date_stamp=data['datetime'].apply(
-            lambda x: QA_util_date_stamp(str(x)[0:10]))) \
-                   .set_index('date', drop=False, inplace=False) \
-                   .assign(code=code) \
-                   .drop(['year', 'month', 'day', 'hour',
-                          'minute', 'datetime'], axis=1)[start_date:end_date]
+            .assign(date_stamp=data['datetime'].apply(
+                lambda x: QA_util_date_stamp(str(x)[0:10]))) \
+            .set_index('date', drop=False, inplace=False) \
+            .assign(code=code) \
+            .drop(['year', 'month', 'day', 'hour',
+                   'minute', 'datetime'], axis=1)[start_date:end_date]
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
@@ -870,18 +871,18 @@ def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None,
                 code, (int(lens / 800) - i) * 800, 800))
                 for i in range(int(lens / 800) + 1)], axis=0)
         data = data \
-                   .assign(datetime=pd.to_datetime(data['datetime']),
-                           code=str(code)) \
-                   .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
-                         inplace=False) \
-                   .assign(code=code) \
-                   .assign(date=data['datetime'].apply(lambda x: str(x)[0:10])) \
-                   .assign(
-            date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x))) \
-                   .assign(
-            time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x))) \
-                   .assign(type=type_).set_index('datetime', drop=False,
-                                                 inplace=False)[start:end]
+            .assign(datetime=pd.to_datetime(data['datetime']),
+                    code=str(code)) \
+            .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
+                  inplace=False) \
+            .assign(code=code) \
+            .assign(date=data['datetime'].apply(lambda x: str(x)[0:10])) \
+            .assign(
+                date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x))) \
+            .assign(
+                time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x))) \
+            .assign(type=type_).set_index('datetime', drop=False,
+                                          inplace=False)[start:end]
         # data
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
@@ -919,8 +920,8 @@ def QA_fetch_get_index_latest(code, frequence='day', ip=None, port=None):
             if str(item)[0] in ['5', '1']:  # ETF
                 data.append(api.to_df(api.get_security_bars(frequence,
                                                             1 if str(item)[
-                                                                     0] in [
-                                                                     '0', '8',
+                                                                0] in [
+                                                                '0', '8',
                                                                      '9',
                                                                      '5'] else 0,
                                                             item, 0,
@@ -1063,7 +1064,7 @@ def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
                 .assign(date=pd.to_datetime(data[['year', 'month', 'day']])) \
                 .drop(['year', 'month', 'day'], axis=1) \
                 .assign(category_meaning=data['category'].apply(
-                lambda x: category[str(x)])) \
+                    lambda x: category[str(x)])) \
                 .assign(code=str(code)) \
                 .rename(index=str, columns={'panhouliutong': 'liquidity_after',
                                             'panqianliutong': 'liquidity_before',
@@ -1094,12 +1095,12 @@ def QA_fetch_get_stock_block(ip=None, port=None):
 
         data = pd.concat([api.to_df(
             api.get_and_parse_block_info("block_gn.dat")).assign(type='gn'),
-                          api.to_df(api.get_and_parse_block_info(
-                              "block.dat")).assign(type='yb'),
-                          api.to_df(api.get_and_parse_block_info(
-                              "block_zs.dat")).assign(type='zs'),
-                          api.to_df(api.get_and_parse_block_info(
-                              "block_fg.dat")).assign(type='fg')])
+            api.to_df(api.get_and_parse_block_info(
+                "block.dat")).assign(type='yb'),
+            api.to_df(api.get_and_parse_block_info(
+                "block_zs.dat")).assign(type='zs'),
+            api.to_df(api.get_and_parse_block_info(
+                "block_fg.dat")).assign(type='fg')])
 
         if len(data) > 10:
             return data.assign(source='tdx').drop(['block_type', 'code_index'],
@@ -1599,7 +1600,7 @@ def QA_fetch_get_option_all_contract_time_to_market():
 
             pass
         elif strName.startswith("C") and strName[1] != 'F' and strName[
-            1] != 'U':
+                1] != 'U':
             # print("M")
             # print(strName)
             ##
@@ -1628,12 +1629,11 @@ def QA_fetch_get_option_all_contract_time_to_market():
             row = result.loc[idx]
             rows.append(row)
 
-
     return rows
 
 
 ###############################################################
-#期权合约分类
+# 期权合约分类
 ###############################################################
 
 
@@ -1659,17 +1659,17 @@ def QA_fetch_get_option_list(ip=None, port=None):
 
 
 ###############################################################
-#期权合约分类
-#50ETF
-#棉花
-#天然橡胶
-#铜
-#玉米
-#豆粕
-#白糖
-#红枣
+# 期权合约分类
+# 50ETF
+# 棉花
+# 天然橡胶
+# 铜
+# 玉米
+# 豆粕
+# 白糖
+# 红枣
 ###############################################################
-#50ETF
+# 50ETF
 ###############################################################
 def QA_fetch_get_option_50etf_contract_time_to_market():
     '''
@@ -1756,7 +1756,7 @@ def QA_fetch_get_option_50etf_contract_time_to_market():
 
 
 ###############################################################
-#棉花
+# 棉花
 ###############################################################
 def QA_fetch_get_commodity_option_CF_contract_time_to_market():
     '''
@@ -1793,8 +1793,10 @@ def QA_fetch_get_commodity_option_CF_contract_time_to_market():
     pass
 
 ###############################################################
-#天然橡胶
+# 天然橡胶
 ###############################################################
+
+
 def QA_fetch_get_commodity_option_RU_contract_time_to_market():
     '''
     铜期权  CU 开头   上期证
@@ -1830,8 +1832,10 @@ def QA_fetch_get_commodity_option_RU_contract_time_to_market():
     pass
 
 ###############################################################
-#玉米
+# 玉米
 ###############################################################
+
+
 def QA_fetch_get_commodity_option_C_contract_time_to_market():
     '''
     铜期权  CU 开头   上期证
@@ -1867,8 +1871,10 @@ def QA_fetch_get_commodity_option_C_contract_time_to_market():
     pass
 
 ###############################################################
-#铜
+# 铜
 ###############################################################
+
+
 def QA_fetch_get_commodity_option_CU_contract_time_to_market():
     '''
     #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
@@ -1900,7 +1906,7 @@ def QA_fetch_get_commodity_option_CU_contract_time_to_market():
 
 
 ###############################################################
-#豆粕
+# 豆粕
 ###############################################################
 def QA_fetch_get_commodity_option_M_contract_time_to_market():
     '''
@@ -1937,7 +1943,7 @@ def QA_fetch_get_commodity_option_M_contract_time_to_market():
 
 
 ###############################################################
-#白糖
+# 白糖
 ###############################################################
 def QA_fetch_get_commodity_option_SR_contract_time_to_market():
     '''
@@ -1973,6 +1979,7 @@ def QA_fetch_get_commodity_option_SR_contract_time_to_market():
     return rows
 
 #########################################################################################
+
 
 def QA_fetch_get_exchangerate_list(ip=None, port=None):
     """汇率列表
@@ -2023,9 +2030,9 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day',
                 date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(
                 code=str(code)) \
                 .assign(date_stamp=data['datetime'].apply(
-                lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date',
-                                                                       drop=False,
-                                                                       inplace=False)
+                    lambda x: QA_util_date_stamp(str(x)[0:10]))).set_index('date',
+                                                                           drop=False,
+                                                                           inplace=False)
 
         except Exception as exp:
             print("code is ", code)
@@ -2034,7 +2041,7 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day',
 
         return data.drop(
             ['year', 'month', 'day', 'hour', 'minute', 'datetime'], axis=1)[
-               start_date:end_date].assign(
+            start_date:end_date].assign(
             date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
@@ -2083,18 +2090,18 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None,
         data = data \
             .assign(tradetime=data['datetime'].apply(str), code=str(code)) \
             .assign(datetime=pd.to_datetime(
-            data['datetime'].apply(QA_util_future_to_realdatetime, 1))) \
+                data['datetime'].apply(QA_util_future_to_realdatetime, 1))) \
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                   inplace=False) \
             .assign(date=data['datetime'].apply(lambda x: str(x)[0:10])) \
             .assign(
-            date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x))) \
+                date_stamp=data['datetime'].apply(lambda x: QA_util_date_stamp(x))) \
             .assign(
-            time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x))) \
+                time_stamp=data['datetime'].apply(lambda x: QA_util_time_stamp(x))) \
             .assign(type=type_).set_index('datetime', drop=False,
                                           inplace=False)
         return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))[
-               start:end].sort_index()
+            start:end].sort_index()
 
 
 def __QA_fetch_get_future_transaction(code, day, retry, code_market, apix):
@@ -2248,8 +2255,8 @@ def QA_fetch_get_wholemarket_list():
         type_='all').loc[:, ['code', 'name']].set_index(['code', 'name'],
                                                         drop=False)
     kz_codelist = QA_fetch_get_extensionmarket_list().loc[:,
-                  ['code', 'name']].set_index([
-        'code', 'name'], drop=False)
+                                                          ['code', 'name']].set_index([
+                                                              'code', 'name'], drop=False)
 
     return pd.concat([hq_codelist, kz_codelist]).sort_index()
 

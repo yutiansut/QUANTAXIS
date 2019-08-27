@@ -1,8 +1,8 @@
-# coding=utf-8
+# coding:utf-8
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,17 +22,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-class Calendar(firstweekday=0):
-    pass
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE
 
 
-class TRADE_TIME():
-    def __init__(self, *args, **kwargs):
-        self.trading_days = None
+class QA_MultiLevel(self):
+    def __ini__(self, data):
+        self.data = data
+        self.level_data = {
+            FREQUENCE.TICK: None,
+            FREQUENCE.REALTIME_MIN: None
+            FREQUENCE.REALTIME: None,
+            FREQUENCE.ONE_MIN: None,
+            FREQUENCE.FIVE_MIN: None,
+            FREQUENCE.FIFTEEN_MIN: None,
+            FREQUENCE.THIRTY_MIN: None,
+            FREQUENCE.HOUR: None,
+            FREQUENCE.DAY: None,
+            FREQUENCE.WEEK: None,
+            FREQUENCE.MONTH: None,
+            FREQUENCE.YEAR: None
+        }
 
-    def get_trading_day(self):
-        raise NotImplementedError
-
-    def get_trading_time(self):
-        raise NotImplementedError
+    def resample(self):
+        pass

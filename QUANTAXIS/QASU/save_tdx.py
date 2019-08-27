@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -1251,6 +1251,22 @@ def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
             ui_progress_int_value=10000
         )
 
+        coll.insert_many(
+            QA_util_to_json_from_pandas(QA_fetch_get_stock_block('QA'))
+        )
+        QA_util_log_info(
+            'QA_Select Block ====',
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=8000
+        )
+
+        QA_util_log_info(
+            '完成股票板块获取=',
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=10000
+        )
     except Exception as e:
         QA_util_log_info(e, ui_log=ui_log)
         print(" Error save_tdx.QA_SU_save_stock_block exception!")

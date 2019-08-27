@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -160,23 +160,23 @@ def QA_save_stock_day_pg(start_date='19901219'):
         except Exception as e:
             print(e)
 if __name__ == '__main__':          
-#储存股票列表 包含ts_pro中股票列表所有信息
-QA_save_stock_list_pg() 
-#储存日线数据  包含ts_pro中"daily" "daily_basic" "adj_factor"所有内容 
-#由于采用日期对比机制进行储存，可以增量储存之前数据
-QA_save_stock_day_pg()  #A_save_stock_day_pg('20180101')储存起始日期
+    #储存股票列表 包含ts_pro中股票列表所有信息
+    QA_save_stock_list_pg() 
+    #储存日线数据  包含ts_pro中"daily" "daily_basic" "adj_factor"所有内容 
+    #由于采用日期对比机制进行储存，可以增量储存之前数据
+    QA_save_stock_day_pg()  #A_save_stock_day_pg('20180101')储存起始日期
 
-##获取股票代码
-#stock_code=QA_fetch_stock_list_pg()['symbol'][:30].tolist()
-##获取日线数据
-#start_date='20190101'
-#end_date='20190120'
-#data='trade_date,code,open,close,high,low,change,vol,amount,adj_factor,turnover_rate_f,pe' #提取部分项目
-##获取代码所有日线数据
-#stock_data1=QA_fetch_stock_day_pg(stock_code) 
-##获取固定日期代码所有日线数据 
-#stock_data2=QA_fetch_stock_day_pg(code=stock_code,start_date=start_date,end_date=end_data)  
-# #获取固定日期代码部分日线数据 
-#stock_data3=QA_fetch_stock_day_pg(code=stock_code,start_date=start_date,end_date=end_date,data=data) 
+    ##获取股票代码
+    #stock_code=QA_fetch_stock_list_pg()['symbol'][:30].tolist()
+    ##获取日线数据
+    #start_date='20190101'
+    #end_date='20190120'
+    #data='trade_date,code,open,close,high,low,change,vol,amount,adj_factor,turnover_rate_f,pe' #提取部分项目
+    ##获取代码所有日线数据
+    #stock_data1=QA_fetch_stock_day_pg(stock_code) 
+    ##获取固定日期代码所有日线数据 
+    #stock_data2=QA_fetch_stock_day_pg(code=stock_code,start_date=start_date,end_date=end_data)  
+    # #获取固定日期代码部分日线数据 
+    #stock_data3=QA_fetch_stock_day_pg(code=stock_code,start_date=start_date,end_date=end_date,data=data) 
 
 
