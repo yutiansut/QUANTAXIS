@@ -17,6 +17,7 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
 	&& rm ta-lib-0.4.0-src.tar.gz \
   && pip install -r /requirements.txt \
   && pip install prompt-toolkit \
+  && pip install quantaxis -U \
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
 RUN chmod +x /entrypoint.sh

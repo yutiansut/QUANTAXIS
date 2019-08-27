@@ -6,6 +6,7 @@ WORKDIR home
 
 RUN pip install git+https://github.com/yutiansut/tornado_http2 \
 	&& pip install quantaxis_webserver \
+	&& pip install quantaxis -U \
 	&& pip install tornado==5.1.0 \
 	&& chmod +x /entrypoint.sh \
 	&& chmod +x /QUANTAXIS/QUANTAXIS/QAUtil/QASetting.py

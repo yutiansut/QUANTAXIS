@@ -16,6 +16,7 @@ FROM daocloud.io/quantaxis/qawebserver:latest
 RUN \
 git clone https://github.com/yutiansut/QAPUBSUB \
 && cd QAPUBSUB && pip install -e . && cd ..\
+&& pip install quantaxis -U \
 && git clone https://github.com/yutiansut/QUANTAXIS_RUN \
 && cd QUANTAXIS_RUN && pip install -e . && pip install eventlet
 
