@@ -17,13 +17,14 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
 	&& rm ta-lib-0.4.0-src.tar.gz \
   && pip install -r /requirements.txt \
   && pip install prompt-toolkit \
+  && pip install quantaxis -U \
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
 RUN chmod +x /entrypoint.sh
 EXPOSE 8888 
 
 COPY runpy.sh /root/
-RUN chmod +x /QUANTAXIS/QUANTAXIS/QAUtil/QASetting.py
+RUN chmod +x /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py
 
 RUN chmod +x /root/runpy.sh
 CMD ["bash", "/root/runpy.sh"]

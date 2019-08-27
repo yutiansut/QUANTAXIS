@@ -22,7 +22,7 @@ RUN \
   && cd QUANTAXIS \
   && pip install -r /QUANTAXIS/requirements.txt \
   && pip install -r /requirements.txt \
-  && pip install -e . \
+  && pip install quantaxis -U \
 	&& apt-get clean -y --force-yes\
 	&& apt-get autoclean -y --force-yes\
 	&& apt-get autoremove -y --force-yes\
