@@ -66,11 +66,6 @@ This project exists thanks to all the people who contribute. [[Contribute](https
 
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
 
-> 欢迎关注我们的收益互换私募产品 -- 波粒二象春雨1号私募证券投资基金
-
-https://dc.simuwang.com/product/HF00005GF5.html
-
-![](http://data.yutiansut.com/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20190828143047.png)
 
 QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化分析解决方案. 我们通过高度解耦的模块化以及标准化协议,可以快速的实现面向场景的定制化解决方案.QUANTAXIS是一个渐进式的开放式框架,你可以根据自己的需要,引入自己的数据,分析方案,可视化过程等,也可以通过RESTful接口,快速实现多人局域网/广域网内的协作.
 
