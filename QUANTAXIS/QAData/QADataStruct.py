@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -43,13 +43,14 @@ from functools import lru_cache, partial, reduce
 import numpy as np
 import pandas as pd
 try:
-  from pyecharts import Kline
+    from pyecharts import Kline
 except:
-  from pyecharts.charts import Kline
+    from pyecharts.charts import Kline
 
 from QUANTAXIS.QAData.base_datastruct import _quotation_base
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
-from QUANTAXIS.QAData.data_resample import QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample
+from QUANTAXIS.QAData.data_resample import (QA_data_tick_resample, QA_data_day_resample,
+                                            QA_data_min_resample, QA_data_futuremin_resample)
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic,
@@ -267,7 +268,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
     def resample(self, level):
         try:
-            return self.add_func(QA_data_min_resample, level).sort_index()
+            return self.add_funcx(QA_data_min_resample, level).sort_index()
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None
@@ -440,7 +441,7 @@ class QA_DataStruct_Future_min(_quotation_base):
 
     def resample(self, level):
         try:
-            return self.add_func(QA_data_min_resample, level).sort_index()
+            return self.add_funcx(QA_data_futuremin_resample, level).sort_index()
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None

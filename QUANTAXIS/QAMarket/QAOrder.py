@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -379,7 +379,7 @@ class QA_Order():
                     )
                     self.trade_amount += trade_amount
                     self.trade_time.append(trade_time)
-                    self.callback(
+                    res = self.callback(
                         self.code,
                         trade_id,
                         self.order_id,
@@ -389,12 +389,15 @@ class QA_Order():
                         self.towards,
                         trade_time
                     )
-                    return self.trade_message(
-                        trade_id,
-                        trade_price,
-                        trade_amount,
-                        trade_time
-                    )
+                    if res == 0:
+                        return self.trade_message(
+                            trade_id,
+                            trade_price,
+                            trade_amount,
+                            trade_time
+                        )
+                    else:
+                        return False
                 else:
                     return False
         else:

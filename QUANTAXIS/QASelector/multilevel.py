@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
-"""QUANTAXIS访问获取QAWEB的行情
-
-233333 结果变成自己访问自己了
-"""
-import requests
-import tornado
+from QUANTAXIS.QAUtil.QAParameter import FREQUENCE
 
 
+class QA_MultiLevel(self):
+    def __ini__(self, data):
+        self.data = data
+        self.level_data = {
+            FREQUENCE.TICK: None,
+            FREQUENCE.REALTIME_MIN: None
+            FREQUENCE.REALTIME: None,
+            FREQUENCE.ONE_MIN: None,
+            FREQUENCE.FIVE_MIN: None,
+            FREQUENCE.FIFTEEN_MIN: None,
+            FREQUENCE.THIRTY_MIN: None,
+            FREQUENCE.HOUR: None,
+            FREQUENCE.DAY: None,
+            FREQUENCE.WEEK: None,
+            FREQUENCE.MONTH: None,
+            FREQUENCE.YEAR: None
+        }
 
-def QA_fetch_get_stock_day(code,start,end,ip='192.168.0.1',port='8010'):
-    pass
-    #requests.get(
+    def resample(self):
+        pass

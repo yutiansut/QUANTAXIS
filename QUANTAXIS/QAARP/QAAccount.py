@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -317,7 +317,8 @@ class QA_Account(QA_Worker):
             'tax',  # 税
             'message',  # 备注
             'frozen',  # 冻结资金.
-            'direction'  # 方向
+            'direction',  # 方向,
+            'total_frozen'
         ]
         ########################################################################
         # 信息类:
@@ -873,7 +874,7 @@ class QA_Account(QA_Worker):
         '每日交易结算时的持仓表'
         res_ = self.history_table.assign(
             date=pd.to_datetime(self.history_table.datetime)
-        ).set_index('date').resample('D').frozen.last().fillna(method='pad')
+        ).set_index('date').resample('D').total_frozen.last().fillna(method='pad')
         res_ = res_[res_.index.isin(self.trade_range)]
         return res_
 
@@ -1164,7 +1165,7 @@ class QA_Account(QA_Worker):
                         (
                             self.frozen[code][str(trade_towards)]['avg_price'] *
                             self.frozen[code][str(trade_towards)]['amount']
-                        ) + abs(raw_trade_money)
+                        ) + abs(trade_money)
                     ) / (
                         self.frozen[code][str(trade_towards)]['amount'] +
                         trade_amount
@@ -1272,6 +1273,12 @@ class QA_Account(QA_Worker):
                 ORDER_DIRECTION.BUY_OPEN,
                 ORDER_DIRECTION.SELL_OPEN
             ] else 0
+
+            try:
+                total_frozen = sum([itex.get('avg_price',0)* itex.get('amount',0) for item in self.frozen.values() for itex in item.values()])
+            except Exception as e:
+                print(e)
+                total_frozen = 0
             self.history.append(
                 [
                     str(trade_time),
@@ -1287,14 +1294,17 @@ class QA_Account(QA_Worker):
                     tax_fee,
                     message,
                     frozen_money,
-                    trade_towards
+                    trade_towards,
+                    total_frozen
                 ]
             )
+            return 0
 
         else:
             print('ALERT MONEY NOT ENOUGH!!!')
             print(self.cash[-1])
             self.cash_available = self.cash[-1]
+            return -1
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
 
     @property
@@ -1347,21 +1357,38 @@ class QA_Account(QA_Worker):
 
         market_towards = 1 if trade_towards > 0 else -1
         """2019/01/03 直接使用快速撮合接口了
-        2333 这两个接口现在也没啥区别了....
-        太绝望了
-        """
+        
 
-        self.receive_simpledeal(
-            code,
-            trade_price,
-            trade_amount,
-            trade_towards,
-            trade_time,
-            message=message,
-            order_id=order_id,
-            trade_id=trade_id,
-            realorder_id=realorder_id
-        )
+        2019/07/25 在此函数中增加账户的可买可卖可平逻辑
+        flag 是用于控制可平的
+
+        res是用于接收从receive_simpledeal的返回值
+        如果返回值是0  则表明交易撮合成功
+        如果是是-1 则表明未进行撮合
+
+        """
+        flag = True
+        res = -1
+        if trade_towards in [ORDER_DIRECTION.BUY_CLOSE, ORDER_DIRECTION.BUY_CLOSETODAY]:
+            if self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN)]['amount'] < trade_amount:
+                flag = False
+        elif trade_towards in [ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL_CLOSETODAY]:
+            if self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN)]['amount'] < trade_amount:
+                flag = False
+        
+        if flag:
+            res = self.receive_simpledeal(
+                code,
+                trade_price,
+                trade_amount,
+                trade_towards,
+                trade_time,
+                message=message,
+                order_id=order_id,
+                trade_id=trade_id,
+                realorder_id=realorder_id
+            )
+        return res
 
     def send_order(
             self,
