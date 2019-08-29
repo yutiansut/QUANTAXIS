@@ -1,18 +1,18 @@
-version: '2'
+version: "2"
 services:
     qa:
         image: daocloud.io/quantaxis/qacommunity:latest
         container_name: qacommunity
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.3
         ports:
             - "8888:8888"
             - "81:80"
         environment:
-          - TZ=Asia/Shanghai
-          - MONGODB=mgdb
-          - QARUN=qaweb
+            - TZ=Asia/Shanghai
+            - MONGODB=mgdb
+            - QARUN=qaweb
         volumes:
             - qacode:/home
         restart: always
@@ -26,23 +26,22 @@ services:
     qaweb_run:
         image: daocloud.io/quantaxis/qarun:latest
         container_name: qarun
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.4
         ports:
             - "8010:8010"
         environment:
-          - MONGODB=mgdb
-          - QAPUBSUB_IP=qaeventmq
-          - QAPUBSUB_PORT=5672
-          - QAPUBSUB_USER=admin
-          - QAPUBSUB_PWD=admin
-          - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
-          - TZ=Asia/Shanghai
+            - MONGODB=mgdb
+            - QAPUBSUB_IP=qaeventmq
+            - QAPUBSUB_PORT=5672
+            - QAPUBSUB_USER=admin
+            - QAPUBSUB_PWD=admin
+            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
+            - TZ=Asia/Shanghai
         restart: always
         depends_on:
-          - qaeventmq
-
+            - qaeventmq
 
     mgdb:
         image: daocloud.io/quantaxis/qamongo_single:latest
@@ -53,21 +52,20 @@ services:
             - MONGO_INITDB_DATABASE=quantaxis
         volumes:
             - qamg:/data/db
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.2
         restart: always
 
-
     qaeventmq:
         image: daocloud.io/quantaxis/qaeventmq:latest
-        ports: 
+        ports:
             - "15672:15672"
             - "5672:5672"
             - "4369:4369"
         environment:
             - TZ=Asia/Shanghai
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.5
         restart: always
@@ -77,13 +75,21 @@ services:
         ports:
             - "61209:61209"
             - "61208:61208"
-        pid: 'host'
-        networks: 
+        pid: "host"
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.6
-                
+
         restart: always
-        
+
+    qactpbeebroker:
+        image: daocloud.io/quantaxis/qactpbeebroker:latest
+        ports:
+            - "5000:5000"
+        networks:
+            qanetwork:
+                ipv4_address: 172.19.0.7
+
     qamarketcollector:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
         ports:
@@ -94,6 +100,7 @@ services:
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.8
+
 volumes:
     qamg:
         external:
@@ -105,5 +112,5 @@ networks:
     qanetwork:
         ipam:
             config:
-            - subnet: 172.19.0.0/24
-              gateway: 172.19.0.1
+                - subnet: 172.19.0.0/24
+                  gateway: 172.19.0.1
