@@ -594,7 +594,7 @@ class QA_Account(QA_Worker):
         Returns:
             [type] -- [description]
         """
-        if self.start_ == None:
+        if self.end_ == None:
             if len(self.time_index_max) > 0:
                 return str(max(self.time_index_max))[0:10]
             else:
