@@ -94,6 +94,9 @@ services:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
         ports:
             - "8011: 8011"
+        environment:
+            - MONGODB: mgdb
+            - EventMQ_IP: qaeventmq
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.8
