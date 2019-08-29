@@ -28,8 +28,10 @@ from QUANTAXIS.QAUtil.QAParameter import (
     FREQUENCE,
     MARKET_TYPE,
     ORDER_DIRECTION,
-    ORDER_MODEL
+    ORDER_MODEL,
+    AMOUNT_MODEL
 )
+
 
 class QA_Strategy(QA_Account):
     """account
@@ -41,6 +43,8 @@ class QA_Strategy(QA_Account):
         super().__init__(*args, **kwargs)
         self.frequence = FREQUENCE.FIFTEEN_MIN
         self.market_type = MARKET_TYPE.STOCK_CN
+        self._market_data = []
+        self._subscribe_list = []
 
     def on_bar(self, event):
         try:
@@ -76,3 +80,30 @@ class QA_Strategy(QA_Account):
                     )
         except:
             pass
+
+    def subscribe(self, code):
+        pass
+
+    def unsubscribe(self, code):
+        pass
+
+    def buy(self, code, price, order):
+        pass
+
+    def sell(self):
+        pass
+
+    def buy_open(self):
+        pass
+
+    def sell_close(self):
+        pass
+
+    def sell_open(self):
+        pass
+
+    def buy_close(self):
+        pass
+
+    def settle(self):
+        pass
