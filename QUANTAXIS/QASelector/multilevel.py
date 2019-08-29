@@ -30,7 +30,7 @@ class QA_MultiLevel(self):
         self.data = data
         self.level_data = {
             FREQUENCE.TICK: None,
-            FREQUENCE.REALTIME_MIN: None
+            FREQUENCE.REALTIME_MIN: None,
             FREQUENCE.REALTIME: None,
             FREQUENCE.ONE_MIN: None,
             FREQUENCE.FIVE_MIN: None,
