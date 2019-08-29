@@ -111,7 +111,7 @@ class QA_User():
             ],
             unique=True
         )
-        self.portfolio_list = {}
+        self.portfolio_list = []
 
         # ==============================
         self.phone = phone
