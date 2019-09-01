@@ -195,6 +195,27 @@ def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=False):
     engine.QA_SU_save_stock_day(client=client)
 
 
+def QA_SU_save_single_stock_day(code, engine, client=DATABASE, paralleled=False):
+    """save stock_day
+
+    Arguments:
+        code: stock code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_single_stock_day(code=code, client=client)
+
+
+
+
+
+
 def QA_SU_save_option_contract_list(engine, client=DATABASE):
     '''
 
@@ -300,6 +321,24 @@ def QA_SU_save_index_day(engine, client=DATABASE, paralleled=False):
     engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_index_day(client=client)
 
+def QA_SU_save_single_index_day(code, engine, client=DATABASE, paralleled=False):
+    """save index_day
+
+    Arguments:
+        code: index code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_single_index_day(code=code, client=client)
+
+
+
 
 def QA_SU_save_index_min(engine, client=DATABASE):
     """save index_min
@@ -328,6 +367,21 @@ def QA_SU_save_etf_day(engine, client=DATABASE, paralleled=False):
 
     engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_etf_day(client=client)
+
+def QA_SU_save_single_etf_day(code, engine, client=DATABASE, paralleled=False):
+    """save etf_day
+
+    Arguments:
+        code: etf code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_single_etf_day(code = code, client=client)
+
 
 
 def QA_SU_save_etf_min(engine, client=DATABASE):
