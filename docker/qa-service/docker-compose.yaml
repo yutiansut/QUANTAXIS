@@ -53,6 +53,7 @@ services:
         depends_on:
           - qaeventmq
           - mgdb
+        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', 'mgdb:27017', '--' , "/root/runcelery.sh"]
 
 
     mgdb:

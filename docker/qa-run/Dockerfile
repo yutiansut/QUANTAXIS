@@ -22,6 +22,9 @@ git clone https://github.com/yutiansut/QAPUBSUB \
 && pip install quantaxis-servicedetect
 
 COPY runcelery.sh /root/
-RUN chmod +x /root/runcelery.sh
+COPY wait_for_it.sh /root/
+
+RUN chmod +x /root/runcelery.sh && chmod +x /root/wait_for_it.sh
+
 
 CMD ["bash", "/root/runcelery.sh"]
