@@ -43,12 +43,15 @@ from QUANTAXIS.QASU.main import (
     QA_SU_save_stock_info,
     QA_SU_save_stock_info_tushare,
     QA_SU_save_stock_day,
+    QA_SU_save_single_stock_day,
     QA_SU_save_index_day,
+    QA_SU_save_single_index_day,
     QA_SU_save_index_min,
     QA_SU_save_future_list,
     QA_SU_save_index_list,
     QA_SU_save_etf_list,
     QA_SU_save_etf_day,
+    QA_SU_save_single_etf_day,
     QA_SU_save_etf_min,
     QA_SU_save_financialfiles,
     QA_SU_save_option_50etf_day,
@@ -228,6 +231,7 @@ class CLI(cmd.Cmd):
             命令格式: save ox: save option_contract_list/option_day/option_min/option_commodity_day/option_commodity_min \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_day  : 保存日线数据 \n\
+            命令格式：save single_stock_day  : 保存日线数据 \n\
             命令格式：save stock_xdxr : 保存日除权除息数据 \n\
             命令格式：save stock_min  : 保存分钟线数据 \n\
             命令格式：save index_day  : 保存指数日线数据 \n\
@@ -404,7 +408,12 @@ class CLI(cmd.Cmd):
                 QA_SU_save_option_50etf_min('tdx')
                 QA_SU_save_option_commodity_day('tdx')
                 QA_SU_save_option_commodity_min('tdx')
-
+            elif len(arg) == 2 and arg[0] == 'single_stock_day':
+                QA_SU_save_single_stock_day(arg[1], 'tdx')
+            elif len(arg) == 2 and arg[0] == 'single_index_day':
+                QA_SU_save_single_index_day(arg[1], 'tdx')
+            elif len(arg) == 2 and arg[0] == 'single_etf_day':
+                QA_SU_save_single_etf_day(arg[1], 'tdx')
             else:
                 for i in arg:
                     if i == 'insert_user':
