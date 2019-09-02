@@ -78,6 +78,95 @@ def now_time():
            ' 17:00:00' if datetime.datetime.now().hour < 15 else str(QA_util_get_real_date(
         str(datetime.date.today()), trade_date_sse, -1)) + ' 15:00:00'
 
+def QA_SU_save_single_stock_day(code : str, client= DATABASE, ui_log=None):
+    '''
+     save single stock_day
+    保存单个股票日线数据
+    :param code: 要保存数据的股票代码
+    :param client:
+    :param ui_log:  给GUI qt 界面使用
+    :param ui_progress: 给GUI qt 界面使用
+    '''
+    #stock_list = QA_fetch_get_stock_list().code.unique().tolist()
+    coll_stock_day = client.stock_day
+    coll_stock_day.create_index(
+        [("code",
+          pymongo.ASCENDING),
+         ("date_stamp",
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll_stock_day):
+        try:
+            QA_util_log_info(
+                '##JOB01 Now Saving STOCK_DAY==== {}'.format(str(code)),
+                ui_log
+            )
+
+            # 首选查找数据库 是否 有 这个代码的数据
+            ref = coll_stock_day.find({'code': str(code)[0:6]})
+            end_date = str(now_time())[0:10]
+
+            # 当前数据库已经包含了这个代码的数据， 继续增量更新
+            # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
+            if ref.count() > 0:
+
+                # 接着上次获取的日期继续更新
+                start_date = ref[ref.count() - 1]['date']
+
+                QA_util_log_info(
+                    'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
+                    .format(code,
+                            start_date,
+                            end_date),
+                    ui_log
+                )
+                if start_date != end_date:
+                    coll_stock_day.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_stock_day(
+                                str(code),
+                                QA_util_get_next_day(start_date),
+                                end_date,
+                                '00'
+                            )
+                        )
+                    )
+
+            # 当前数据库中没有这个代码的股票数据， 从1990-01-01 开始下载所有的数据
+            else:
+                start_date = '1990-01-01'
+                QA_util_log_info(
+                    'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
+                    .format(code,
+                            start_date,
+                            end_date),
+                    ui_log
+                )
+                if start_date != end_date:
+                    coll_stock_day.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_stock_day(
+                                str(code),
+                                start_date,
+                                end_date,
+                                '00'
+                            )
+                        )
+                    )
+        except Exception as error0:
+            print(error0)
+            err.append(str(code))
+
+    __saving_work(code, coll_stock_day)
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS save stock day ^_^', ui_log)
+    else:
+        QA_util_log_info('ERROR CODE \n ', ui_log)
+        QA_util_log_info(err, ui_log)
+
 
 def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     '''
@@ -182,6 +271,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     else:
         QA_util_log_info('ERROR CODE \n ', ui_log)
         QA_util_log_info(err, ui_log)
+
 
 def gen_param(codelist, start_date=None, end_date=None, if_fq='00', frequence='day', IPList=[]):
     # 生成QA.QAFetch.QATdx.QQA_fetch_get_stock_day多进程处理的参数
@@ -678,6 +768,99 @@ def QA_SU_save_stock_min(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
         QA_util_log_info(err, ui_log=ui_log)
 
+def QA_SU_save_single_index_day(code : str, client=DATABASE, ui_log=None):
+    """save index_day
+
+    Keyword Arguments:
+        code : single index code
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    #__index_list = QA_fetch_get_stock_list('index')
+    coll = client.index_day
+    coll.create_index(
+        [('code',
+          pymongo.ASCENDING),
+         ('date_stamp',
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        try:
+            ref_ = coll.find({'code': str(code)[0:6]})
+            end_time = str(now_time())[0:10]
+            if ref_.count() > 0:
+                start_time = ref_[ref_.count() - 1]['date']
+
+                QA_util_log_info(
+                    '##JOB04 Now Saving INDEX_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_index_day(
+                                str(code),
+                                QA_util_get_next_day(start_time),
+                                end_time
+                            )
+                        )
+                    )
+            else:
+                try:
+                    start_time = '1990-01-01'
+                    QA_util_log_info(
+                        '##JOB04 Now Saving INDEX_DAY==== \n Trying updating {} from {} to {}'
+                            .format(code,
+                                    start_time,
+                                    end_time),
+                        ui_log=ui_log
+                    )
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_index_day(
+                                str(code),
+                                start_time,
+                                end_time
+                            )
+                        )
+                    )
+                except:
+                    start_time = '2009-01-01'
+                    QA_util_log_info(
+                        '##JOB04 Now Saving INDEX_DAY==== \n Trying updating {} from {} to {}'
+                            .format(code,
+                                    start_time,
+                                    end_time),
+                        ui_log=ui_log
+                    )
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_index_day(
+                                str(code),
+                                start_time,
+                                end_time
+                            )
+                        )
+                    )
+        except Exception as e:
+            QA_util_log_info(e, ui_log=ui_log)
+            err.append(str(code))
+            QA_util_log_info(err, ui_log=ui_log)
+
+
+    __saving_work(code, coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
 
 def QA_SU_save_index_day(client=DATABASE, ui_log=None, ui_progress=None):
     """save index_day
@@ -915,6 +1098,81 @@ def QA_SU_save_index_min(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
         QA_util_log_info(err, ui_log=ui_log)
 
+
+def QA_SU_save_single_etf_day(code : str, client=DATABASE, ui_log=None):
+    """save etf_day
+
+    Keyword Arguments:
+        code : single etf code
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    #__index_list = QA_fetch_get_stock_list('etf')
+    coll = client.index_day
+    coll.create_index(
+        [('code',
+          pymongo.ASCENDING),
+         ('date_stamp',
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        try:
+
+            ref_ = coll.find({'code': str(code)[0:6]})
+            end_time = str(now_time())[0:10]
+            if ref_.count() > 0:
+                start_time = ref_[ref_.count() - 1]['date']
+
+                QA_util_log_info(
+                    '##JOB06 Now Saving ETF_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_index_day(
+                                str(code),
+                                QA_util_get_next_day(start_time),
+                                end_time
+                            )
+                        )
+                    )
+            else:
+                start_time = '1990-01-01'
+                QA_util_log_info(
+                    '##JOB06 Now Saving ETF_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_index_day(
+                                str(code),
+                                start_time,
+                                end_time
+                            )
+                        )
+                    )
+        except:
+            err.append(str(code))
+
+    __saving_work(code, coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
 
 def QA_SU_save_etf_day(client=DATABASE, ui_log=None, ui_progress=None):
     """save etf_day
