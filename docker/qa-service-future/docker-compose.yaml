@@ -3,6 +3,9 @@ services:
     qa:
         image: daocloud.io/quantaxis/qacommunity:latest
         container_name: qacommunity
+        depends_on:
+            - mgdb
+            - qaeventmq
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.3
@@ -29,6 +32,9 @@ services:
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.4
+        depends_on:
+            - mgdb
+            - qaeventmq
         ports:
             - "8010:8010"
         environment:
@@ -94,6 +100,9 @@ services:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
         ports:
             - "8011:8011"
+        depends_on:
+            - mgdb
+            - qaeventmq
         environment:
             - MONGODB=mgdb
             - EventMQ_IP=qaeventmq
