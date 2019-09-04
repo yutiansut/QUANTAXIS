@@ -53,7 +53,7 @@ services:
         depends_on:
           - qaeventmq
           - mgdb
-        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', 'mgdb:27017', '--' , "/root/runcelery.sh"]
+        command: ['/root/wait_for_it.sh', 'qaeventmq:5672', '--' , "/root/runcelery.sh"]
 
 
     mgdb:
@@ -110,7 +110,7 @@ services:
             qanetwork:
                 ipv4_address: 172.19.0.8
         command:
-            ['/root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh','qaeventmq:15672', 'mgdb:27017', '--' ,'/root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh']
+            ['/root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'/root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh']
 volumes:
     qamg:
         external:
