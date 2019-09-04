@@ -75,7 +75,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
         try:
             res = res.assign(volume=res.vol, date=pd.to_datetime(
                 res.date)).drop_duplicates((['date', 'code'])).query('volume>1').set_index('date', drop=False)
-            res = res.ix[:, ['code', 'open', 'high', 'low',
+            res = res.loc[:, ['code', 'open', 'high', 'low',
                              'close', 'volume', 'amount', 'date']]
         except:
             res = None
@@ -763,26 +763,14 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
 
                 cndict = dict(zip(num_columns, CH_columns))
 
-                cndict['283'] = '283'
-                try:
-                    cndict['284'] = '284'
-                    cndict['285'] = '285'
-                    cndict['286'] = '286'
-                except:
-                    pass
+
 
                 cndict['code'] = 'code'
                 cndict['report_date'] = 'report_date'
                 res_pd.columns = res_pd.columns.map(lambda x: cndict[x])
             elif ltype is 'EN':
                 endict = dict(zip(num_columns, EN_columns))
-                endict['283'] = '283'
-                try:
-                    endict['284'] = '284'
-                    endict['285'] = '285'
-                    endict['286'] = '286'
-                except:
-                    pass
+
 
                 endict['code'] = 'code'
                 endict['report_date'] = 'report_date'
@@ -820,7 +808,7 @@ def QA_fetch_stock_financial_calendar(code, start, end=None, format='pd', collec
         try:
             res = res.drop_duplicates(
                 (['report_date', 'code']))
-            res = res.ix[:, ['code', 'name', 'pre_date', 'first_date', 'second_date',
+            res = res.loc[:, ['code', 'name', 'pre_date', 'first_date', 'second_date',
                              'third_date', 'real_date', 'codes', 'report_date', 'crawl_date']]
         except:
             res = None
@@ -860,7 +848,7 @@ def QA_fetch_stock_divyield(code, start, end=None, format='pd', collections=DATA
         try:
             res = res.drop_duplicates(
                 (['dir_dcl_date', 'a_stockcode']))
-            res = res.ix[:, ['a_stockcode', 'a_stocksname', 'div_info', 'div_type_code', 'bonus_shr',
+            res = res.loc[:, ['a_stockcode', 'a_stocksname', 'div_info', 'div_type_code', 'bonus_shr',
                              'cash_bt', 'cap_shr', 'epsp', 'ps_cr', 'ps_up', 'reg_date', 'dir_dcl_date',
                              'a_stockcode1', 'ex_divi_date', 'prg']]
         except:

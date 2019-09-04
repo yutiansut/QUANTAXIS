@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 COPY requirements.txt /requirements.txt
 # for mirrors in China
-COPY pip.conf /root/.pip/pip.conf
+# COPY pip.conf /root/.pip/pip.conf
 COPY source.list /etc/apt/sources.list
 
 RUN \ 
@@ -24,7 +24,8 @@ RUN \
   && cd QUANTAXIS \
   && pip install -r /QUANTAXIS/requirements.txt \
   && pip install -r /requirements.txt \
-  && pip install -e . \
+  && pip install quantaxis-servicedetect \
+  && pip install quantaxis -U \
 	&& apt-get clean -y --force-yes\
 	&& apt-get autoclean -y --force-yes\
 	&& apt-get autoremove -y --force-yes\
