@@ -28,7 +28,19 @@ import QUANTAXIS as QA
 
 # load data function
 def load_data(stock, seq_len):
-    # stock 是一个input的dataframe
+    """
+    定义RNN的输入数据，stock是一个时间序列数据。
+    把stock的输入数据定义为一个序列块block
+    一个输入块block=6*row（6个时间连续的时间系列行）
+      1 block视为：x=5*row， y=1*row
+      row={open，high，close}
+      block数量（6）=(window+1)
+    Args:
+        stock 是一个input的dataframe
+        seq_len 是一个整数。
+    Return:
+        返回包括了x_train, y_train, x_test, y_test的list。
+    """
     amount_of_features = len(stock.columns)
     data = stock.as_matrix()  # pd.DataFrame(stock)
     sequence_length = seq_len + 1
