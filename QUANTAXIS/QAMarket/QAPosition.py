@@ -70,7 +70,7 @@ class QA_Position():
                  code='000001',
                  account_cookie='quantaxis',
                  portfolio_cookie='portfolio',
-                 user_cookie='quantaxis',
+                 username='quantaxis',
                  moneypreset=100000,  # 初始分配资金
                  frozen=None,
                  moneypresetLeft=None,
@@ -116,7 +116,7 @@ class QA_Position():
         self.code = code
         self.account_cookie = account_cookie
         self.portfolio_cookie = portfolio_cookie
-        self.user_cookie = user_cookie
+        self.username = username
         self.time = ''
         self.market_preset = MARKET_PRESET().get_code(self.code)
         self.position_id = str(
@@ -319,7 +319,7 @@ class QA_Position():
             'instrument_id': self.code,
             'user_id': self.account_cookie,
             'portfolio_cookie': self.portfolio_cookie,
-            'user_cookie': self.user_cookie,
+            'username': self.username,
             'position_id': self.position_id,
             'account_cookie': self.account_cookie,
             'frozen': self.frozen,
@@ -685,7 +685,7 @@ class QA_Position():
         res = DATABASE.positions.find_one({
             'account_cookie': self.account_cookie,
             'portfolio_cookie': self.portfolio_cookie,
-            'user_cookie': self.user_cookie,
+            'username': self.username,
             'position_id': self.position_id
         })
         if res is None:
@@ -699,7 +699,7 @@ class QA_Position():
             account_cookie=message['account_cookie'],
             frozen=message['frozen'],
             portfolio_cookie=message['portfolio_cookie'],
-            user_cookie=message['user_cookie'],
+            username=message['username'],
             moneypreset=message['moneypreset'],  # 初始分配资金
             moneypresetLeft=message['moneypresetLeft'],
             volume_long_today=message['volume_long_today'],

@@ -74,8 +74,13 @@ PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMa
 
 DESCRIPTION = "QUANTAXIS:Quantitative Financial Strategy Framework"
 
-with open("README_ENG.md", "r") as fh:
-    LONG_DESCRIPTION = fh.read()
+
+try:
+    import pypandoc
+    LONG_DESCRIPTION = pypandoc.convert_file('README.md', 'rst')
+except Exception:
+    with open("README_ENG.md", "r") as fh:
+        LONG_DESCRIPTION = fh.read()
 
 """
 
