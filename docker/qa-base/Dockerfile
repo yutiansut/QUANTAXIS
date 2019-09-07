@@ -24,6 +24,7 @@ RUN \
   && cd QUANTAXIS \
   && pip install -r /QUANTAXIS/requirements.txt \
   && pip install -r /requirements.txt \
+  && pip install quantaxis-servicedetect \
   && pip install quantaxis -U \
 	&& apt-get clean -y --force-yes\
 	&& apt-get autoclean -y --force-yes\

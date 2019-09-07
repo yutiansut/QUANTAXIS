@@ -1112,7 +1112,7 @@ class QA_Account(QA_Worker):
                     # 开仓单占用现金 计算avg
                     # 初始化
                     if code in self.frozen.keys():
-                        if trade_towards in self.frozen[code].keys():
+                        if str(trade_towards) in self.frozen[code].keys():
                             pass
                         else:
                             self.frozen[code][str(trade_towards)] = {

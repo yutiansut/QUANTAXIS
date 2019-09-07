@@ -8,7 +8,7 @@ import json
 import os
 import urllib
 
-import future
+
 import pandas as pd
 import requests
 from cryptography.hazmat.backends import default_backend

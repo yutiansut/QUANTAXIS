@@ -3,6 +3,9 @@ services:
     qa:
         image: daocloud.io/quantaxis/qacommunity:latest
         container_name: qacommunity
+        depends_on:
+            - mgdb
+            - qaeventmq
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.3
@@ -29,6 +32,9 @@ services:
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.4
+        depends_on:
+            - mgdb
+            - qaeventmq
         ports:
             - "8010:8010"
         environment:
@@ -41,7 +47,9 @@ services:
             - TZ=Asia/Shanghai
         restart: always
         depends_on:
-            - qaeventmq
+          - qaeventmq
+          - mgdb
+        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "/root/runcelery.sh"]
 
     mgdb:
         image: daocloud.io/quantaxis/qamongo_single:latest
@@ -94,12 +102,17 @@ services:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
         ports:
             - "8011:8011"
+        depends_on:
+            - mgdb
+            - qaeventmq
         environment:
             - MONGODB=mgdb
             - EventMQ_IP=qaeventmq
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.8
+        command:
+            ['/root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'/root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh']
 
 volumes:
     qamg:
