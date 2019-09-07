@@ -359,6 +359,14 @@ class QA_Portfolio(QA_Account):
                 else:
                     return self.get_account_by_cookie(account_cookie)
 
+    def create_stockaccount(self, account_cookie, init_cash, init_hold):
+        return self.new_account(account_cookie= account_cookie, init_cash=init_cash, init_hold=init_hold,
+            market_type=MARKET_TYPE.STOCK_CN,allow_t0=False,)
+
+    def create_futureaccount(self, account_cookie, init_cash, init_hold, reload):
+        return self.new_account(account_cookie= account_cookie, init_cash=init_cash, init_hold=init_hold,
+            market_type=MARKET_TYPE.FUTURE_CN,allow_t0=False,)
+
     def get_account_by_cookie(self, cookie):
         '''
         'give the account_cookie and return the account/strategy back'
