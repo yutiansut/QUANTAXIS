@@ -6,6 +6,14 @@
 
 -------------------------------------------------------------
 
+2019-09-07 STU02 第二次直播录像现已上传
+
+[![](https://yutiansut.oss-cn-shenzhen.aliyuncs.com/QASTU02.png)](https://www.bilibili.com/video/av67022443)
+
+[哔哩哔哩 传送门](https://www.bilibili.com/video/av67022443)
+
+-------------------------------------------------------------
+
 Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
