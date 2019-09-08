@@ -210,16 +210,13 @@ wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/install
 sudo bash install_docker.sh
 ```
 
-win/mac 安装
+win/mac 安装 一般是 19.03.2 版本的docker 可以去官网下载docker-ce
 
-非常简单 去docker网站下载win/mac的docker_desktop
+https://www.docker.com/products/docker-desktop
+
 
 文件较大, 我在群文件也共享了
 
-或者你可以使用国内镜像站
-
-- win [https://download.daocloud.io/d/Docker_Mirror/Docker_for_Windows_Mac/17.03.1-ce/docker-for-windows-stable.msi]
-- mac [https://download.daocloud.io/d/Docker_Mirror/Docker_for_Windows_Mac/17.03.1-ce/docker-for-mac-stable.dmg]
 
 ps: quantaxis强烈推荐不要使用win10以下的系统...(好吧忽略我)
 
