@@ -72,6 +72,8 @@ This project exists thanks to all the people who contribute. [[Contribute](https
 
 > 欢迎关注公众号: ![公众号](http://pic.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
 
+QAPRO公共号免费提供了下单推送接口, 关注公共号回复trade即可使用
+
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
 
 
