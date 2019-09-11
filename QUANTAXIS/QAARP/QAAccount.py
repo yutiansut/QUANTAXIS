@@ -621,7 +621,7 @@ class QA_Account(QA_Worker):
         else:
 
             return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], 
-                                           str(max(max(self.time_index_max),self.end_date))[0:10])
+                                           str(max(str(max(self.time_index_max)),self.end_date))[0:10])
 
     @property
     def total_commission(self):
