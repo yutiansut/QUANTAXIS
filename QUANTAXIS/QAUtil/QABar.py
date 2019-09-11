@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,8 +37,8 @@ from QUANTAXIS.QAUtil.QADate_trade import (
 )
 
 
-def QA_util_make_futuremin_index(day, type_='1min'):
-    """创建股票分钟线的index
+def QA_util_make_future_min_index(day, type_='1min'):
+    """创建期货分钟线的index
 
     Arguments:
         day {[type]} -- [description]
@@ -233,17 +233,20 @@ def QA_util_time_gap(time, gap, methods, type_):
  
 集合竞价申报时间：20：55—20：59
 集合竞价撮合时间：20：59—21：00
-正常开盘交易时间：21：00－02：30 （黄金、白银）
-21：00－01：00 （铜、铝、铅、锌、镍、锡）
-21：00－23：00（螺纹钢、热轧卷板、石油沥青、天然橡胶）
+正常开盘交易时间：21：00－02：30 （黄金、白银、原油）
+21：00－01：00 （铜、铝、锌、铅、镍、锡）
+21：00－23：00（天然橡胶、螺纹钢、热轧卷板、石油沥青、燃料油、纸浆）
 
 提示：法定节假日的前一日没有夜盘交易。
 
 （三）大商所夜盘
- 
+19.03.29开始大商所夜盘交易品种和交易时间都有所更改
+http://www.dce.com.cn/dalianshangpin/yw/fw/jystz/ywtz/6156940/index.html
+
 集合竞价申报时间：20：55—20：59
 集合竞价撮合时间：20：59—21：00
-正常开盘交易时间：21：00—23：30 （豆一、豆二、豆油、豆粕、焦煤、焦炭、棕榈油、铁矿石）
+正常开盘交易时间：21：00—23：00 （豆一、豆二、豆油、豆粕、焦煤、焦炭、棕榈油、铁矿石、
+                                线型低密度聚乙烯、聚氯乙烯、聚丙烯、乙二醇、玉米、玉米淀粉和玉米期权）
 
 提示：法定节假日的前一日没有夜盘交易。
  
@@ -251,7 +254,7 @@ def QA_util_time_gap(time, gap, methods, type_):
  
 集合竞价申报时间：20：55—20：59
 集合竞价撮合时间：20：59—21：00
-正常开盘交易时间：21：00－23：30 （白糖、棉花、菜粕、甲醇、PTA、菜籽油、玻璃、动力煤）
+正常开盘交易时间：21：00－23：30 （白糖、棉花、菜粕、甲醇、PTA、动力煤、玻璃、菜籽油、棉纱）
 
 提示：法定节假日的前一日没有夜盘交易。
  

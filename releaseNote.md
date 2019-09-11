@@ -26,12 +26,12 @@ portfolio =  user.new_portfolio('qatestportfolio')
 account = portfolio.new_account(account_cookie='test_a', init_cash= 200000, ....)
 
 ```
-2. 在你退出这个程序的时候 如果你想保存这个过程, 使用 ```QA_User.save()```
+2. 在你退出这个程序的时候 如果你想保存这个过程, 使用 ```account.save()```
 
 ```python
 ###
 
-user.save()
+account.save()
 ```
 
 3. 从组合中删除一个 QA_Account的过程:

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 import time
 from functools import lru_cache
 
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_stock_min_adv
@@ -213,7 +213,7 @@ class QA_Backtest():
                 print(ac.hold)
 
                 print(ac.history_table)
-        self.user.save()
+                ac.save()
         self.stop()
 
     def stop(self):

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QASetting import QA_Setting, DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day, QA_util_get_real_date
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, FREQUENCE
 
 
 class QA_User():
@@ -110,7 +111,7 @@ class QA_User():
             ],
             unique=True
         )
-        self.portfolio_list = {}
+        self.portfolio_list = []
 
         # ==============================
         self.phone = phone
@@ -143,13 +144,35 @@ class QA_User():
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins # 积分
-        self.money = money # 钱
+        self.coins = coins  # 积分
+        self.money = money  # 钱
 
         # ==============================
         self._subscribed_strategy = {}
-        self._subscribed_code = []
-        self._signals = [] # 预期收到的信号
+
+        """
+        self._subscribed_code: {
+            'stock_cn': {
+                '000001': ['1min','5min'],
+                '600010': ['tick']
+            },
+            'future_cn': {
+                'rb1910.SHFE':['tick','60min'],
+                'IF1909.IFFEX':['tick','1min']
+            },
+            'index_cn': {
+                '000300': ['1min']
+            }
+        }
+
+        """
+        self._subscribed_code = {
+            MARKET_TYPE.STOCK_CN: [],
+            MARKET_TYPE.FUTURE_CN: [],
+            MARKET_TYPE.INDEX_CN: [],
+            MARKET_TYPE.OPTION_CN: []
+        }
+        self._signals = []  # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -169,7 +192,7 @@ class QA_User():
     def __repr__(self):
         return '< QA_USER {} with {} portfolio: {} >'.format(
             self.user_cookie,
-            len(self.portfolio_list.keys()),
+            len(self.portfolio_list),
             self.portfolio_list
         )
 
@@ -184,14 +207,14 @@ class QA_User():
         """
 
         try:
-            return self.portfolio_list[portfolio_cookie]
+            return self.get_portfolio(portfolio_cookie)
         except:
             return None
 
     @property
     def table(self):
         return pd.concat(
-            [po.table for po in self.portfolio_list.values()],
+            [self.get_portfolio(po).table for po in self.portfolio_list],
             axis=1
         )
 
@@ -329,10 +352,22 @@ class QA_User():
 
         self.wechat_id = id
 
-    def sub_code(self, code):
-        """关注的品种
+    def sub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
+        """订阅某个品种
         """
-        self._subscribed_code.append(code)
+        if code not in self._subscribed_code[market_type]:
+            self._subscribed_code[market_type].append(code)
+
+    def unsub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
+        """取消订阅品种
+
+        Arguments:
+            code {[type]} -- [description]
+        """
+        try:
+            self._subscribed_code[market_type].remove(code)
+        except:
+            pass
 
     @property
     def subscribed_code(self):
@@ -342,7 +377,7 @@ class QA_User():
             [type] -- [description]
         """
 
-        return list(set(self._subscribed_code))
+        return self._subscribed_code
 
     def new_portfolio(self, portfolio_cookie=None):
         '''
@@ -351,20 +386,20 @@ class QA_User():
         如果存在 返回 新建的 QA_Portfolio
         如果已经存在 返回 这个portfolio
         '''
-        _portfolio = QA_Portfolio(
-            user_cookie=self.user_cookie,
-            portfolio_cookie=portfolio_cookie
-        )
-        if _portfolio.portfolio_cookie not in self.portfolio_list.keys():
-            self.portfolio_list[_portfolio.portfolio_cookie] = _portfolio
-            return _portfolio
+
+        if portfolio_cookie not in self.portfolio_list:
+            self.portfolio_list.append(portfolio_cookie)
+            return QA_Portfolio(
+                user_cookie=self.user_cookie,
+                portfolio_cookie=portfolio_cookie
+            )
         else:
             print(
                 " prortfolio with user_cookie ",
                 self.user_cookie,
                 " already exist!!"
             )
-            return self.portfolio_list[portfolio_cookie]
+            return self.get_portfolio(portfolio_cookie)
 
     def get_account(self, portfolio_cookie: str, account_cookie: str):
         """直接从二级目录拿到account
@@ -376,10 +411,12 @@ class QA_User():
         Returns:
             [type] -- [description]
         """
-
+        #                 QA_Portfolio(
+        #                     user_cookie=self.user_cookie,
+        #                     portfolio_cookie=item
+        #                 )
         try:
-            return self.portfolio_list[portfolio_cookie].accounts[account_cookie
-                                                                 ]
+            return self.get_portfolio(portfolio_cookie).get_account(account_cookie)
         except:
             return None
 
@@ -392,17 +429,17 @@ class QA_User():
         '''
         # return self.portfolio_list[portfolio]
         # fix here use cookie as key to find value in dict
-        return self.portfolio_list[portfolio_cookie]
+        return QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie=portfolio_cookie)
 
     def generate_simpleaccount(self):
         """make a simple account with a easier way
         如果当前user中没有创建portfolio, 则创建一个portfolio,并用此portfolio创建一个account
         如果已有一个或多个portfolio,则使用第一个portfolio来创建一个account
         """
-        if len(self.portfolio_list.keys()) < 1:
+        if len(self.portfolio_list) < 1:
             po = self.new_portfolio()
         else:
-            po = list(self.portfolio_list.values())[0]
+            po = self.get_portfolio(self.portfolio_list[0])
         ac = po.new_account()
         return ac, po
 
@@ -414,12 +451,12 @@ class QA_User():
         :return:
         '''
         # 查找 portfolio
-        if len(self.portfolio_list.keys()) < 1:
+        if len(self.portfolio_list) < 1:
             po = self.new_portfolio()
         elif portfolio_cookie is not None:
-            po = self.portfolio_list[portfolio_cookie]
+            po = self.get_portfolio(portfolio_cookie)
         else:
-            po = list(self.portfolio_list.values())[0]
+            po = self.get_portfolio(self.portfolio_list[0])
         # 把account 添加到 portfolio中去
         po.add_account(account)
         return (po, account)
@@ -439,7 +476,7 @@ class QA_User():
             'money': self.money,
             'subuscribed_strategy': self._subscribed_strategy,
             'subscribed_code': self.subscribed_code,
-            'portfolio_list': list(self.portfolio_list.keys()),
+            'portfolio_list': self.portfolio_list,
             'lastupdatetime': str(datetime.datetime.now())
         }
 
@@ -470,13 +507,14 @@ class QA_User():
 
         # user ==> portfolio 的存储
         # account的存储在  portfolio.save ==> account.save 中
-        for portfolio in list(self.portfolio_list.values()):
-            portfolio.save()
+        # for portfolio in list(self.portfolio_list.values()):
+        #     portfolio.save()
 
     def sync(self):
         """基于账户/密码去sync数据库
         """
         if self.wechat_id is not None:
+
             res = self.client.find_one({'wechat_id': self.wechat_id})
         else:
             res = self.client.find_one(
@@ -498,44 +536,44 @@ class QA_User():
 
             return self
 
-    @property
-    def node_view(self):
+    # @property
+    # def node_view(self):
 
-        links = [
-            {
-                'source': self.username,
-                'target': item
-            } for item in self.portfolio_list.keys()
-        ]
-        data = [{'name': self.username, 'symbolSize': 100, 'value': 1}]
-        for port in self.portfolio_list.values():
-            links.extend(port.node_view['links'])
-            data.append(
-                {
-                    'name': port.portfolio_cookie,
-                    'symbolSize': 80,
-                    'value': 2
-                }
-            )
-            for acc in port.accounts.values():
-                data.append(
-                    {
-                        'name': acc.account_cookie,
-                        'symbolSize': 50,
-                        'value': 3
-                    }
-                )
+    #     links = [
+    #         {
+    #             'source': self.username,
+    #             'target': item
+    #         } for item in self.portfolio_list.keys()
+    #     ]
+    #     data = [{'name': self.username, 'symbolSize': 100, 'value': 1}]
+    #     for port in self.portfolio_list.values():
+    #         links.extend(port.node_view['links'])
+    #         data.append(
+    #             {
+    #                 'name': port.portfolio_cookie,
+    #                 'symbolSize': 80,
+    #                 'value': 2
+    #             }
+    #         )
+    #         for acc in port.accounts.values():
+    #             data.append(
+    #                 {
+    #                     'name': acc.account_cookie,
+    #                     'symbolSize': 50,
+    #                     'value': 3
+    #                 }
+    #             )
 
-        return {
-            'node_name':
-            self.username,
-            'sub_node':
-            [portfolio.node_view for portfolio in self.portfolio_list.values()],
-            'links':
-            links,
-            'data':
-            data
-        }
+    #     return {
+    #         'node_name':
+    #         self.username,
+    #         'sub_node':
+    #         [portfolio.node_view for portfolio in self.portfolio_list.values()],
+    #         'links':
+    #         links,
+    #         'data':
+    #         data
+    #     }
 
     def reload(self, message):
         """恢复方法
@@ -552,27 +590,40 @@ class QA_User():
         self.coins_history = message.get('coins_history')
         self.money = message.get('money')
         self._subscribed_strategy = message.get('subuscribed_strategy')
-        self._subscribed_code = message.get('subscribed_code')
+        subscribed_code = message.get('subscribed_code')
+        if isinstance(subscribed_code, list):
+            pass
+        else:
+            self._subscribed_code = subscribed_code
         self.username = message.get('username')
         self.password = message.get('password')
         self.user_cookie = message.get('user_cookie')
         #
-
-        portfolio_list = message.get('portfolio_list')
-        if len(portfolio_list) > 0:
-            self.portfolio_list = dict(
-                zip(
-                    portfolio_list,
-                    [
-                        QA_Portfolio(
-                            user_cookie=self.user_cookie,
-                            portfolio_cookie=item
-                        ) for item in portfolio_list
-                    ]
-                )
+        self.portfolio_list = list(set([
+            item['portfolio_cookie'] for item in DATABASE.portfolio.find(
+                {'user_cookie': self.user_cookie},
+                {
+                    'portfolio_cookie': 1,
+                    '_id': 0
+                }
             )
-        else:
-            self.portfolio_list = {}
+        ]))
+
+        # portfolio_list = message.get('portfolio_list')
+        # if len(portfolio_list) > 0:
+        #     self.portfolio_list = dict(
+        #         zip(
+        #             portfolio_list,
+        #             [
+        #                 QA_Portfolio(
+        #                     user_cookie=self.user_cookie,
+        #                     portfolio_cookie=item
+        #                 ) for item in portfolio_list
+        #             ]
+        #         )
+        #     )
+        # else:
+        #     self.portfolio_list = {}
 
 
 if __name__ == '__main__':

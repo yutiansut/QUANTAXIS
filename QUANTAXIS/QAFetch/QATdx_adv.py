@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,14 @@
 import datetime
 import queue
 import time
+import click
 from concurrent.futures import ThreadPoolExecutor
 from threading import Thread, Timer
 
 import pandas as pd
 from pytdx.hq import TdxHq_API
 
+from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_if_tradetime
 from QUANTAXIS.QAUtil.QASetting import DATABASE, stock_ip_list
 from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_sort_ASCENDING
@@ -44,16 +46,18 @@ from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 """
 
 
-class QA_Tdx_Executor():
-    def __init__(self, thread_num=2, *args, **kwargs):
+class QA_Tdx_Executor(QA_Thread):
+    def __init__(self, thread_num=2, timeout=1, sleep_time=1, *args, **kwargs):
+        super().__init__(name='QATdxExecutor')
         self.thread_num = thread_num
         self._queue = queue.Queue(maxsize=200)
         self.api_no_connection = TdxHq_API()
         self._api_worker = Thread(
             target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
-
+        self.timeout = timeout
         self.executor = ThreadPoolExecutor(self.thread_num)
+        self.sleep_time = sleep_time
 
     def __getattr__(self, item):
         try:
@@ -75,8 +79,12 @@ class QA_Tdx_Executor():
 
         api = TdxHq_API(raise_exception=True, auto_retry=False)
         _time = datetime.datetime.now()
+        # print(self.timeout)
         try:
-            with api.connect(ip, port, time_out=0.05):
+            with api.connect(ip, port, time_out=1):
+                res = api.get_security_list(0, 1)
+                # print(res)
+                # print(len(res))
                 if len(api.get_security_list(0, 1)) > 800:
                     return (datetime.datetime.now() - _time).total_seconds()
                 else:
@@ -134,11 +142,13 @@ class QA_Tdx_Executor():
         data = []
         if self._queue.qsize() < 80:
             for item in stock_ip_list:
+                if self._queue.full():
+                    break
                 _sec = self._test_speed(ip=item['ip'], port=item['port'])
-                if _sec < 0.1:
+                if _sec < self.timeout*3:
                     try:
                         self._queue.put(TdxHq_API(heartbeat=False).connect(
-                            ip=item['ip'], port=item['port'], time_out=0.05))
+                            ip=item['ip'], port=item['port'], time_out=self.timeout*2))
                     except:
                         pass
         else:
@@ -146,7 +156,7 @@ class QA_Tdx_Executor():
             Timer(0, self.api_worker).start()
         Timer(300, self.api_worker).start()
 
-    def _singal_job(self, context, id_, time_out=0.5):
+    def _singal_job(self, context, id_, time_out=0.7):
         try:
             _api = self.get_available()
 
@@ -224,14 +234,45 @@ class QA_Tdx_Executor():
 
         database.insert_many(QA_util_to_json_from_pandas(data))
 
+    def run(self):
 
-def get_bar():
+        sleep = int(self.sleep_time)
+        _time1 = datetime.datetime.now()
+        database = DATABASE.get_collection(
+            'realtime_{}'.format(datetime.date.today()))
+        database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING)])
+        database.create_index([('datetime', QA_util_sql_mongo_sort_ASCENDING)])
 
+        from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
+        code = QA_fetch_stock_block_adv().code
+
+        while True:
+            _time = datetime.datetime.now()
+            if QA_util_if_tradetime(_time):  # 如果在交易时间
+                data = self.get_realtime_concurrent(code)
+                
+                data[0]['datetime'] = data[1]
+                self.save_mongo(data[0])
+
+                print('Time {}'.format(
+                    (datetime.datetime.now() - _time).total_seconds()))
+                time.sleep(sleep)
+                print('Connection Pool NOW LEFT {} Available IP'.format(
+                    self._queue.qsize()))
+                print('Program Last Time {}'.format(
+                    (datetime.datetime.now() - _time1).total_seconds()))
+            else:
+                print('Not Trading time {}'.format(_time))
+                time.sleep(sleep)
+
+
+def get_bar(timeout=1, sleep=1):
+    sleep = int(sleep)
     _time1 = datetime.datetime.now()
     from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
     code = QA_fetch_stock_block_adv().code
     print(len(code))
-    x = QA_Tdx_Executor()
+    x = QA_Tdx_Executor(timeout=float(timeout))
     print(x._queue.qsize())
     print(x.get_available())
 
@@ -242,7 +283,7 @@ def get_bar():
 
             print('Time {}'.format(
                 (datetime.datetime.now() - _time).total_seconds()))
-            time.sleep(1)
+            time.sleep(sleep)
             print('Connection Pool NOW LEFT {} Available IP'.format(
                 x._queue.qsize()))
             print('Program Last Time {}'.format(
@@ -251,7 +292,7 @@ def get_bar():
             return data
         else:
             print('Not Trading time {}'.format(_time))
-            time.sleep(1)
+            time.sleep(sleep)
 
 
 def get_day_once():
@@ -263,78 +304,12 @@ def get_day_once():
     return x.get_security_bar_concurrent(code, 'day', 1)
 
 
-def bat():
-
-    _time1 = datetime.datetime.now()
-    from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_block_adv
-    code = QA_fetch_stock_block_adv().code
-    print(len(code))
-    x = QA_Tdx_Executor()
-    print(x._queue.qsize())
-    print(x.get_available())
-
-    database = DATABASE.get_collection(
-        'realtime_{}'.format(datetime.date.today()))
-
-    print(database)
-    database.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-                           ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
-
-    for i in range(100000):
-        _time = datetime.datetime.now()
-        if QA_util_if_tradetime(_time):  # 如果在交易时间
-            data = x.get_realtime_concurrent(code)
-
-            data[0]['datetime'] = data[1]
-            x.save_mongo(data[0])
-
-            print('Time {}'.format(
-                (datetime.datetime.now() - _time).total_seconds()))
-            time.sleep(1)
-            print('Connection Pool NOW LEFT {} Available IP'.format(
-                x._queue.qsize()))
-            print('Program Last Time {}'.format(
-                (datetime.datetime.now() - _time1).total_seconds()))
-        else:
-            print('Not Trading time {}'.format(_time))
-            time.sleep(1)
+@click.command()
+@click.option('--timeout', default=0.2, help='timeout param')
+@click.option('--sleep', default=1, help='sleep step')
+def bat(timeout=0.2, sleep=1):
+    QA_Tdx_Executor(timeout=timeout, sleep_time=sleep).start()
 
 
 if __name__ == '__main__':
-    import time
-    _time1 = datetime.datetime.now()
-    from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_list_adv
-    code = QA_fetch_stock_list_adv().code.tolist()
-
-    # DATABASE.realtime.create_index([('code', QA_util_sql_mongo_sort_ASCENDING),
-    #                                 ('datetime', QA_util_sql_mongo_sort_ASCENDING)])
-
-    # print(len(code))
-    # x = QA_Tdx_Executor()
-    # print(x._queue.qsize())
-    # print(x.get_available())
-    # #data = x.get_security_bars(code[0], '15min', 20)
-    # # print(data)
-    # # for i in range(5):
-    # #     print(x.get_realtime_concurrent(code))
-
-    # for i in range(100000):
-    #     _time = datetime.datetime.now()
-    #     if QA_util_if_tradetime(_time):  # 如果在交易时间
-    #         #data = x.get_realtime(code)
-    #         data = x.get_realtime_concurrent(code)
-
-    #         data[0]['datetime'] = data[1]
-    #         x.save_mongo(data[0])
-    #         # print(code[0])
-    #         #data = x.get_security_bars(code, '15min', 20)
-    #         # if data is not None:
-    #         print(len(data[0]))
-    #         # print(data)
-    #         print('Time {}'.format((datetime.datetime.now() - _time).total_seconds()))
-    #         time.sleep(1)
-    #         print('Connection Pool NOW LEFT {} Available IP'.format(x._queue.qsize()))
-    #         print('Program Last Time {}'.format(
-    #             (datetime.datetime.now() - _time1).total_seconds()))
-    #         # print(threading.enumerate())
-    # #
+    QA_Tdx_Executor().start()

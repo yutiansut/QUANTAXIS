@@ -91,6 +91,7 @@ cn_en_compare = {'明细': 'id',
                  '证券中文名': 'CNname',
                  '出错信息': 'error',
                  '': 'other',
+                 '签署时间': 'trade_time',
                  '成交时间': 'trade_time'}
 
 

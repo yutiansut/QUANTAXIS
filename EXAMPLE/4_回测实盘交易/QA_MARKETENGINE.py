@@ -272,6 +272,6 @@ market.session[a_1.account_cookie].history
 
 
 #%%
-user.save()
+ac.save()
 
 

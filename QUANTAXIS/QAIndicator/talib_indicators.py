@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -496,4 +496,4 @@ def STOCH(DataFrame, fastk_period=5, slowk_period=3, slowk_matype=0, slowd_perio
 def STOCHF(DataFrame, fastk_period=5, fastd_period=3, fastd_matype=0):
     fastk, fastd = talib.STOCHF(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values,
                                fastk_period, fastd_period, fastd_matype)
-    return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': slowd}, index=DataFrame.index)
+    return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': fastd}, index=DataFrame.index)

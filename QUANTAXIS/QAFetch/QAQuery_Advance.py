@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -226,8 +226,9 @@ def QA_fetch_index_day_adv(
     if res is None:
         print("QA Error QA_fetch_index_day_adv parameter code=%s start=%s end=%s call QA_fetch_index_day return None" % (
             code, start, end))
+        return None
     else:
-        res_set_index = res.set_index(['date', 'code'])
+        res_set_index = res.set_index(['date', 'code'], drop=if_drop_index)
         # if res_set_index is None:
         #     print("QA Error QA_fetch_index_day_adv set index 'date, code' return None")
         #     return None

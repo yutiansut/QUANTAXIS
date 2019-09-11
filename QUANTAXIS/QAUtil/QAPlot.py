@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,10 @@
 import os
 import webbrowser
 
-from pyecharts import Kline
+try:
+  from pyecharts import Kline
+except:
+  from pyecharts.charts import Kline
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 

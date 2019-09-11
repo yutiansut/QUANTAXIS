@@ -98,7 +98,7 @@ class Backtest(QA_Backtest):
                        benchmark_type=MARKET_TYPE.INDEX_CN)
 
         print(risk().T)
-        self.user.save()
+        self.account.save()
         risk.save()
         risk.plot_assets_curve()
         print(risk.profit_construct)
