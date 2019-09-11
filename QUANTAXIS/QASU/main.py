@@ -315,6 +315,21 @@ def QA_SU_save_stock_transaction(engine, client=DATABASE):
     engine.QA_SU_save_stock_transaction(client=client)
 
 
+def QA_SU_save_index_transaction(engine, client=DATABASE):
+    """save index_transaction
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_index_transaction(client=client)
+
+
+
 def QA_SU_save_single_stock_min(code, engine, client=DATABASE):
     """save stock_min
 

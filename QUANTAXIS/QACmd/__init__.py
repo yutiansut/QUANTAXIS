@@ -39,6 +39,7 @@ from QUANTAXIS.QASU.main import (
     QA_SU_save_stock_list,
     QA_SU_save_stock_min,
     QA_SU_save_stock_transaction,
+    QA_SU_save_index_transaction,
     QA_SU_save_single_stock_min,
     QA_SU_save_stock_xdxr,
     QA_SU_save_stock_block,
@@ -233,7 +234,7 @@ class CLI(cmd.Cmd):
             命令格式：save min  : save stock_min/xdxr index_min etf_min stock_list/index_list \n\
             命令格式: save future: save future_day/min/list \n\
             命令格式: save ox: save option_contract_list/option_day/option_min/option_commodity_day/option_commodity_min \n\
-            命令格式: save transaction: save stock_transaction (Warning: Large Disk Space Required) \n\
+            命令格式: save transaction: save stock_transaction and index_transaction (Warning: Large Disk Space Required) \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_day  : 保存日线数据 \n\
             命令格式：save single_stock_day  : 保存单个股票日线数据 \n\
@@ -358,6 +359,7 @@ class CLI(cmd.Cmd):
                             'password': 'admin'
                         }
                     )
+                QA_SU_save_index_transaction('tdx')
                 QA_SU_save_stock_transaction('tdx')
                 # QA_SU_save_stock_day('tdx')
                 # QA_SU_save_stock_xdxr('tdx')

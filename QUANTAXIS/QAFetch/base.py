@@ -43,6 +43,17 @@ def _select_market_code(code):
         return 1
     return 0
 
+
+def _select_index_code(code):
+    """
+    1 - sh
+    0 - sz
+    """
+    code = str(code)
+    if code[0] == '3':
+        return 0
+    return 1
+
 def get_stock_market(code):
     return 'SH' if _select_market_code(code) == 1 else 'SZ'
 
