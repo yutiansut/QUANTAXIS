@@ -91,7 +91,8 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_stock_day, QA_fetch_get_stock_indicator,
     QA_fetch_get_stock_info, QA_fetch_get_stock_list, QA_fetch_get_stock_min,
     QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction,
-    QA_fetch_get_stock_transaction_realtime, QA_fetch_get_stock_xdxr,
+    QA_fetch_get_stock_transaction_realtime, QA_fetch_get_index_transaction, 
+    QA_fetch_get_stock_xdxr,
     QA_fetch_get_trade_date, QA_fetch_get_usstock_day,
     QA_fetch_get_usstock_list, QA_fetch_get_usstock_min, get_stock_market)
 # fetch methods
@@ -106,6 +107,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_index_min, QA_fetch_quotation, QA_fetch_quotations,
     QA_fetch_stock_block, QA_fetch_stock_day, QA_fetch_stock_full,
     QA_fetch_stock_info, QA_fetch_stock_list, QA_fetch_stock_min,
+    QA_fetch_stock_transaction, QA_fetch_index_transaction,
     QA_fetch_stock_name, QA_fetch_stock_xdxr, QA_fetch_trade_date)
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 from QUANTAXIS.QAIndicator import *

@@ -1984,7 +1984,7 @@ def QA_SU_save_stock_transaction(
                     # 🛠todo  str(stock_list[code]) 参数不对？
                     QA_fetch_get_stock_transaction(
                         str(code),
-                        '2000-01-01',
+                        '2013-01-01',
                         str(now_time())[0:10]
                     )
                 )
@@ -2018,6 +2018,66 @@ def QA_SU_save_stock_transaction(
         QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
         QA_util_log_info(err, ui_log=ui_log)
 
+
+def QA_SU_save_index_transaction(
+        client=DATABASE,
+        ui_log=None,
+        ui_progress=None
+):
+    """save stock_transaction
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    index_list = QA_fetch_get_index_list().code.unique().tolist()
+    coll = client.index_transaction
+    coll.create_index('code')
+    err = []
+
+    def __saving_work(code):
+        QA_util_log_info(
+            '##JOB11 Now Saving INDEX_TRANSACTION ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+            coll.insert_many(
+                QA_util_to_json_from_pandas(
+                    # 🛠todo  str(stock_list[code]) 参数不对？
+                    QA_fetch_get_index_transaction(
+                        str(code),
+                        '2013-01-01',
+                        str(now_time())[0:10]
+                    )
+                )
+            )
+        except:
+            err.append(str(code))
+
+    for i_ in range(len(index_list)):
+        # __saving_work('000001')
+        QA_util_log_info(
+            'The {} of Total {}'.format(i_,
+                                        len(index_list)),
+            ui_log=ui_log
+        )
+
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(i_ / len(index_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(i_ / len(index_list) * 10000.0))
+
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        __saving_work(index_list[i_])
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
 
 ########################################################################################################
 
