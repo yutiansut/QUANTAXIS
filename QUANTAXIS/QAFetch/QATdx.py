@@ -37,7 +37,7 @@ from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 from retrying import retry
 
-from QUANTAXIS.QAFetch.base import _select_market_code, _select_type
+from QUANTAXIS.QAFetch.base import _select_market_code, _select_index_code, _select_type
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_str2int, QA_util_date_valid,
                               QA_util_get_real_date, QA_util_get_real_datelist,
@@ -972,6 +972,34 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
                                                          inplace=False)
 
 
+def __QA_fetch_get_index_transaction(code, day, retry, api):
+    batch_size = 2000  # 800 or 2000 ? 2000 maybe also works
+    data_arr = []
+    max_offset = 21
+    cur_offset = 0
+    while cur_offset <= max_offset:
+        one_chunk = api.get_history_transaction_data(
+            _select_index_code(str(code)), str(code), cur_offset * batch_size,
+            batch_size, QA_util_date_str2int(day))
+        if one_chunk is None or one_chunk == []:
+            break
+        data_arr = one_chunk + data_arr
+        cur_offset += 1
+    data_ = api.to_df(data_arr)
+
+    for _ in range(retry):
+        if len(data_) < 2:
+            return __QA_fetch_get_index_transaction(code, day, 0, api)
+        else:
+            return data_.assign(date=day).assign(
+                datetime=pd.to_datetime(
+                    data_['time'].apply(lambda x: str(day) + ' ' + x))) \
+                .assign(code=str(code)).assign(
+                order=range(len(data_.index))).set_index('datetime',
+                                                         drop=False,
+                                                         inplace=False)
+
+
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None,
                                    port=None):
@@ -1017,6 +1045,54 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None,
                 datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
         else:
             return None
+
+
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_index_transaction(code, start, end, retry=2, ip=None,
+                                   port=None):
+    '''
+    :param code: 指数代码
+    :param start: 开始日期
+    :param end:  结束日期
+    :param retry: 重新尝试次数
+    :param ip: 地址
+    :param port: 端口
+    :return:
+    '''
+    '历史分笔成交 buyorsell 1--sell 0--buy 2--盘前'
+    ip, port = get_mainmarket_ip(ip, port)
+    api = TdxHq_API()
+
+    real_start, real_end = QA_util_get_real_datelist(start, end)
+    if real_start is None:
+        return None
+    real_id_range = []
+    with api.connect(ip, port):
+        data = pd.DataFrame()
+        for index_ in range(trade_date_sse.index(real_start),
+                            trade_date_sse.index(real_end) + 1):
+
+            try:
+                data_ = __QA_fetch_get_index_transaction(
+                    code, trade_date_sse[index_], retry, api)
+                if len(data_) < 1:
+                    return None
+            except:
+                QA_util_log_info(
+                    'Wrong in Getting {} history transaction data in day {}'.format(
+                        code, trade_date_sse[index_]))
+            else:
+                QA_util_log_info(
+                    'Successfully Getting {} history transaction data in day {}'.format(
+                        code, trade_date_sse[index_]))
+                data = data.append(data_)
+        if len(data) > 0:
+
+            return data.assign(
+                datetime=data['datetime'].apply(lambda x: str(x)[0:19]))
+        else:
+            return None
+
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
