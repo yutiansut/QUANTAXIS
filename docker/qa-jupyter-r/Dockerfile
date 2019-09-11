@@ -43,8 +43,6 @@ RUN apt-get update && \
 # Fix for devtools https://github.com/conda-forge/r-devtools-feedstock/issues/4
 RUN ln -s /bin/tar /bin/gtar
 
-USER $NB_UID
-
 # R packages
 RUN conda install --quiet --yes \
     'r-base=3.6.1' \
@@ -69,8 +67,7 @@ RUN conda install --quiet --yes \
     'r-tidyverse=1.2*' \
     'unixodbc=2.3.*' \
     && \
-    conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR
+    conda clean --all -f -y && 
 
 # Install e1071 R package (dependency of the caret R package)
 RUN conda install --quiet --yes r-e1071
