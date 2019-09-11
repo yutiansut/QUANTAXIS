@@ -1,2 +1,2 @@
 #!/bin/sh
-sed -i "s|localhost|$MONGODB|" /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py
+sed -i "s|localhost|$MONGODB|" /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py
