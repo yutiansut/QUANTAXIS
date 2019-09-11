@@ -63,17 +63,16 @@ RUN cd ~ && wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/t
     && pip install -r /requirements.txt \
     && pip install quantaxis-servicedetect \
     && pip install prompt-toolkit \
-    && pip install conda \
+    && pip install rpy2 \
     && pip install quantaxis -U \
     && jupyter nbextension enable --py widgetsnbextension \
     && jupyter serverextension enable --py jupyterlab
 RUN chmod +x /entrypoint.sh
-EXPOSE 8888 
-
 COPY runpy.sh /root/
-#RUN chmod +x /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py
-
-RUN chmod +x /root/runpy.sh
+RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py && chmod +x /root/runpy.sh
 
 
+
+EXPOSE 8888 
+RUN Rscript -e "install.packages(c(\"lars\", \"glmnet\", \"rugarch\"), repos = c(\"http://irkernel.github.io/\", \"http://cran.rstudio.com\"))"
 CMD ["bash", "/root/runpy.sh"]
