@@ -38,6 +38,7 @@ from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 from QUANTAXIS.QASU.main import (
     QA_SU_save_stock_list,
     QA_SU_save_stock_min,
+    QA_SU_save_stock_transaction,
     QA_SU_save_single_stock_min,
     QA_SU_save_stock_xdxr,
     QA_SU_save_stock_block,
@@ -232,6 +233,7 @@ class CLI(cmd.Cmd):
             命令格式：save min  : save stock_min/xdxr index_min etf_min stock_list/index_list \n\
             命令格式: save future: save future_day/min/list \n\
             命令格式: save ox: save option_contract_list/option_day/option_min/option_commodity_day/option_commodity_min \n\
+            命令格式: save transaction: save stock_transaction (Warning: Large Disk Space Required) \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_day  : 保存日线数据 \n\
             命令格式：save single_stock_day  : 保存单个股票日线数据 \n\
@@ -347,6 +349,28 @@ class CLI(cmd.Cmd):
                 QA_SU_save_stock_list('tdx')
                 QA_SU_save_index_list('tdx')
                 # QA_SU_save_stock_block('tdx')
+            elif len(arg) == 1 and arg[0] == 'transaction':
+                if QA_Setting().client.quantaxis.user_list.find(
+                    {'username': 'admin'}).count() == 0:
+                    QA_Setting().client.quantaxis.user_list.insert(
+                        {
+                            'username': 'admin',
+                            'password': 'admin'
+                        }
+                    )
+                QA_SU_save_stock_transaction('tdx')
+                # QA_SU_save_stock_day('tdx')
+                # QA_SU_save_stock_xdxr('tdx')
+                # QA_SU_save_stock_min('tdx')
+                # QA_SU_save_index_day('tdx')
+                # QA_SU_save_index_min('tdx')
+                # QA_SU_save_etf_list('tdx')
+                # QA_SU_save_etf_day('tdx')
+                # QA_SU_save_etf_min('tdx')
+                # QA_SU_save_stock_list('tdx')
+                # QA_SU_save_index_list('tdx')
+                # QA_SU_save_stock_block('tdx')
+
             elif len(arg) == 1 and arg[0] in ['X', 'x']:
                 if QA_Setting().client.quantaxis.user_list.find(
                     {'username': 'admin'}).count() == 0:

@@ -1984,7 +1984,7 @@ def QA_SU_save_stock_transaction(
                     # 🛠todo  str(stock_list[code]) 参数不对？
                     QA_fetch_get_stock_transaction(
                         str(code),
-                        '1990-01-01',
+                        '2000-01-01',
                         str(now_time())[0:10]
                     )
                 )
