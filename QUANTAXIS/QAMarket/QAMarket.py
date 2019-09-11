@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ import numpy as np
 import sched
 import threading
 
-from QUANTAXIS.QAARP.QAAccount import QA_Account
+# from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
@@ -38,6 +38,7 @@ from QUANTAXIS.QAMarket.QARandomBroker import QA_RandomBroker
 from QUANTAXIS.QAMarket.QARealBroker import QA_RealBroker
 from QUANTAXIS.QAMarket.QAShipaneBroker import QA_SPEBroker
 from QUANTAXIS.QAMarket.QASimulatedBroker import QA_SimulatedBroker
+from QUANTAXIS.QAMarket.QATTSBroker import QA_TTSBroker
 from QUANTAXIS.QAMarket.QATrade import QA_Trade
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QAParameter import (
@@ -84,7 +85,8 @@ class QA_Market(QA_Trade):
             BROKER_TYPE.RANDOM: QA_RandomBroker,
             BROKER_TYPE.REAL: QA_RealBroker,
             BROKER_TYPE.SIMULATION: QA_SimulatedBroker,
-            BROKER_TYPE.SHIPANE: QA_SPEBroker
+            BROKER_TYPE.SHIPANE: QA_SPEBroker,
+            BROKER_TYPE.TTS: QA_TTSBroker,
         }
         self.broker = {}
         self.running_time = None
@@ -105,10 +107,7 @@ class QA_Market(QA_Trade):
         data 是市场数据
         被 QABacktest 中run 方法调用 upcoming_data
         '''
-        # main thread'
-        # if self.running_time is not None and self.running_time!= data.datetime[0]:
-        #     for item in self.broker.keys():
-        #         self._settle(item)
+
         self.running_time = data.datetime[0]
         for account in self.session.values():
             account.run(QA_Event(
@@ -206,10 +205,11 @@ class QA_Market(QA_Trade):
         res = False
         if account is None:
             if account_cookie not in self.session.keys():
-                self.session[account_cookie] = QA_Account(
-                    account_cookie=account_cookie,
-                    broker=broker_name
-                )
+
+                # self.session[account_cookie] = QA_Account(
+                #     account_cookie=account_cookie,
+                #     broker=broker_name
+                # )
                 if self.sync_account(broker_name, account_cookie):
                     res = True
 
@@ -522,12 +522,14 @@ class QA_Market(QA_Trade):
         except Exception as e:
             print(e)
 
-    def query_order(self, account_cookie, realorder_id):
+    def query_orders(self, account_cookie):
+        return self.order_handler.order_status.xs(account_cookie)
 
+    def query_order(self, account_cookie, realorder_id):
         return self.order_handler.order_status.loc[account_cookie, realorder_id]
 
     def query_assets(self, account_cookie):
-        return self.get_account(account_cookie).assets
+        return self.get_account(account_cookie).init_assets
 
     def query_position(self, account_cookie):
         return self.get_account(account_cookie).hold

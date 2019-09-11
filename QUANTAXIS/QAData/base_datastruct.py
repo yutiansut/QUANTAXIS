@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,11 @@ from functools import lru_cache
 
 import numpy as np
 import pandas as pd
-from pyecharts import Kline, Bar, Grid
+
+try:
+    from pyecharts import Kline, Bar, Grid
+except:
+    from pyecharts.charts import Kline, Bar, Grid
 
 from QUANTAXIS.QAUtil import (
     QA_util_log_info,
@@ -62,7 +66,8 @@ class _quotation_base():
             DataFrame,
             dtype='undefined',
             if_fq='bfq',
-            marketdata_type='None'
+            marketdata_type='None',
+            frequence=None
     ):
         '''
         :param df: DataFrame 类型
@@ -84,7 +89,7 @@ class _quotation_base():
 
         self.type = dtype
         self.data_id = QA_util_random_with_topic('DATA', lens=3)
-
+        self.frequence = frequence
         # 默认是不复权
         self.if_fq = if_fq
         # dtype 参数 指定类 mongo 中 collection 的名字   ，
@@ -425,6 +430,7 @@ class _quotation_base():
     def max(self):
         res = self.price.groupby(level=1).apply(lambda x: x.max())
         res.name = 'max'
+        return res
 
     @property
     @lru_cache()
@@ -457,7 +463,7 @@ class _quotation_base():
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.pvariance(x))
+                                 ).apply(lambda x: statistics.pvariance(x))
         res.name = 'pvariance'
         return res
 
@@ -467,7 +473,7 @@ class _quotation_base():
     def variance(self):
         '返回DataStruct.price的方差 variance'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.variance(x))
+                                 ).apply(lambda x: statistics.variance(x))
         res.name = 'variance'
         return res
 
@@ -513,7 +519,7 @@ class _quotation_base():
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.harmonic_mean(x))
+                                 ).apply(lambda x: statistics.harmonic_mean(x))
         res.name = 'mean_harmonic'
         return res
 
@@ -524,7 +530,7 @@ class _quotation_base():
         '返回DataStruct.price的众数'
         try:
             res = self.price.groupby(level=1
-                                    ).apply(lambda x: statistics.mode(x))
+                                     ).apply(lambda x: statistics.mode(x))
             res.name = 'mode'
             return res
         except:
@@ -569,6 +575,13 @@ class _quotation_base():
         '返回DataStruct.price的百分比变化'
         res = self.price.groupby(level=1).apply(lambda x: x.pct_change())
         res.name = 'pct_change'
+        return res
+
+    @lru_cache()
+    def close_pct_change(self):
+        '返回DataStruct.close的百分比变化'
+        res = self.close.groupby(level=1).apply(lambda x: x.pct_change())
+        res.name = 'close_pct_change'
         return res
 
     # 平均绝对偏差
@@ -959,10 +972,10 @@ class _quotation_base():
         """
         转换DataStruct为json
         """
-        
+
         data = self.data
         if self.type[-3:] != 'min':
-            data = self.data.assign(datetime= self.datetime)
+            data = self.data.assign(datetime=self.datetime)
         return QA_util_to_json_from_pandas(data.reset_index())
 
     def to_string(self):
@@ -1031,6 +1044,15 @@ class _quotation_base():
 
         return self.groupby(level=1, sort=False).apply(func, *arg, **kwargs)
 
+    def add_funcx(self, func, *arg, **kwargs):
+        """QADATASTRUCT的指标/函数apply入口
+
+        add_funcx 和add_func 的区别是:
+
+        add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
+        """
+
+        return self.groupby(level=1, sort=False).apply(lambda x: func(x.reset_index(1), *arg, **kwargs))
     # def add_func_adv(self, func, *arg, **kwargs):
     #     """QADATASTRUCT的指标/函数apply入口
 

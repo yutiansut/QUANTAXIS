@@ -1,7 +1,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,3 +25,7 @@
 from QUANTAXIS.QAEngine.QAEvent import QA_Event, QA_Worker
 from QUANTAXIS.QAEngine.QATask import QA_Task
 from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread, QA_Engine
+from QUANTAXIS.QAEngine.QAAsyncThread import QA_AsyncThread, QA_AsyncQueue
+from QUANTAXIS.QAEngine.QAAsyncExec import QA_AsyncExec
+from QUANTAXIS.QAEngine.QAAsyncTask import QA_AsyncTask
+from QUANTAXIS.QAEngine.QAAsyncSchedule import QA_AsyncScheduler, create_QAAsyncScheduler

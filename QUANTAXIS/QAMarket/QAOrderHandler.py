@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -279,7 +279,8 @@ class QA_OrderHandler(QA_Worker):
             print('failled to unscribe {}'.format(account.account_cookie))
 
     def _trade(self, order=None, account=None):
-        if order is not None:
+        # 回测通过query_order加快速度，实盘只有query_orders方法
+        if order is not None and hasattr(self.monitor[account], 'query_order'):
             res = self.monitor[account].query_order(order.order_id)
             order.trade(str(res[14]), float(res[6]), int(res[10]), str(res[2]))
         else:

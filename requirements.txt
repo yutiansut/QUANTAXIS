@@ -1,6 +1,6 @@
 pymongo
 bs4
-pandas
+pandas<0.25.0
 lxml
 matplotlib
 requests
@@ -20,3 +20,6 @@ scrapy
 attrs>=17.4.0
 pyconvert>=0.6.3
 demjson>=2.2.4
+janus
+pyecharts_snapshot
+async_timeout
