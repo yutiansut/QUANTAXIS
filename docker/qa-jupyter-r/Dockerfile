@@ -26,10 +26,10 @@ RUN \
     && echo "LC_ALL=zh_CN.UTF-8" >> /etc/environment
 
 RUN \
-    git clone https://github.com/QUANTAXIS/QUANTAXIS \
+    cd ~ \
+    && git clone https://github.com/QUANTAXIS/QUANTAXIS \
     && cd QUANTAXIS \
-    && pip install -r /QUANTAXIS/requirements.txt \
-    && pip install -r /requirements.txt \
+    && pip install -r requirements.txt \
     && pip install quantaxis-servicedetect \
     && pip install quantaxis -U \
     && apt-get clean -y --force-yes\
@@ -51,7 +51,7 @@ COPY jupyter_notebook_config.py /root/.jupyter/
 
 WORKDIR home
 
-RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz \
+RUN cd ~ && wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz \
     && tar xvf ta-lib-0.4.0-src.tar.gz \
     && cd ta-lib \
     && ./configure --prefix=/usr \
