@@ -18,6 +18,7 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && pip install -r /requirements.txt \
   && pip install quantaxis-servicedetect \
   && pip install prompt-toolkit \
+  && pip install conda \
   && pip install quantaxis -U \
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
