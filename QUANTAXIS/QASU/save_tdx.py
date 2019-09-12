@@ -44,6 +44,7 @@ from QUANTAXIS.QAFetch.QATdx import (
     QA_fetch_get_future_min,
     QA_fetch_get_stock_min,
     QA_fetch_get_stock_transaction,
+    QA_fetch_get_index_transaction,
     QA_fetch_get_stock_xdxr,
     select_best_ip
 )
@@ -1970,7 +1971,16 @@ def QA_SU_save_stock_transaction(
 
     stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     coll = client.stock_transaction
-    coll.create_index('code')
+    coll.create_index(
+        [
+            ('code',
+             pymongo.ASCENDING),
+            ('time_stamp',
+             pymongo.ASCENDING),
+            ('date_stamp',
+             pymongo.ASCENDING)
+        ]
+    )
     err = []
 
     def __saving_work(code):
@@ -1984,7 +1994,7 @@ def QA_SU_save_stock_transaction(
                     # 🛠todo  str(stock_list[code]) 参数不对？
                     QA_fetch_get_stock_transaction(
                         str(code),
-                        '2013-01-01',
+                        '2019-01-01',
                         str(now_time())[0:10]
                     )
                 )
@@ -2024,14 +2034,23 @@ def QA_SU_save_index_transaction(
         ui_log=None,
         ui_progress=None
 ):
-    """save stock_transaction
+    """save index_transaction
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
 
     index_list = QA_fetch_get_index_list().code.unique().tolist()
     coll = client.index_transaction
-    coll.create_index('code')
+    coll.create_index(
+        [
+            ('code',
+             pymongo.ASCENDING),
+            ('time_stamp',
+             pymongo.ASCENDING),
+            ('date_stamp',
+             pymongo.ASCENDING)
+        ]
+    )
     err = []
 
     def __saving_work(code):
@@ -2045,7 +2064,7 @@ def QA_SU_save_index_transaction(
                     # 🛠todo  str(stock_list[code]) 参数不对？
                     QA_fetch_get_index_transaction(
                         str(code),
-                        '2013-01-01',
+                        '2019-01-01',
                         str(now_time())[0:10]
                     )
                 )

@@ -158,7 +158,7 @@ def QA_fetch_stock_transaction(code, start, end, format='numpy', frequence='tick
         'code': {'$in': code}, "time_stamp": {
             "$gte": QA_util_time_stamp(start),
             "$lte": QA_util_time_stamp(end)
-        }, 'type': frequence
+        }, "type": frequence
     }, {"_id": 0}, batch_size=10000)
 
     res = pd.DataFrame([item for item in cursor])
