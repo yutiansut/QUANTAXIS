@@ -1,4 +1,4 @@
-FROM barretthugh/qa-base
+FROM daocloud.io/quantaxis/qabase:latest
 
 COPY daily_update /etc/cron.d/daily_update
 COPY entrypoint.sh /entrypoint.sh
