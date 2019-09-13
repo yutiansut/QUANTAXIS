@@ -25,7 +25,7 @@ services:
         restart: always
 
     # qacron:
-    #     image: barretthugh/qa-cron
+    #     image: daocloud.io/quantaxis/qa-cron:latest
     #     environment:
     #         - MONGODB=mgdb
     #     restart: always
