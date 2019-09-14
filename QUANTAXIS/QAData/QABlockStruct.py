@@ -164,8 +164,10 @@ class QA_DataStruct_Stock_block():
 
         return self.new(self.data.loc[(slice(None), code), :])
 
-    def get_both_block(self, block_name):
-        pass
+    def get_both_block(self, block_list):
+        n = len(block_list)
+        count = self.get_block(block_list).data.assign(countx=1).groupby('code').countx.count()
+        return count[count==n].index.tolist()
 
     # def getdtype(self, dtype):
     #     """getdtype
