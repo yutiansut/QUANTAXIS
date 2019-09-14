@@ -106,6 +106,14 @@ def QA_fetch_get_stock_transaction(package, code, start, end, retry=2):
         return 'Unsupport packages'
 
 
+def QA_fetch_get_index_transaction(package, code, start, end, retry=2):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_index_transaction(code, start, end, retry)
+    else:
+        return 'Unsupport packages'
+
+
 def QA_fetch_get_stock_transaction_realtime(package, code):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
