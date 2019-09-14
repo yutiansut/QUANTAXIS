@@ -32,12 +32,16 @@ from QUANTAXIS.QAData import (QA_DataStruct_Index_day, QA_DataStruct_Index_min,
                               QA_DataStruct_Future_day, QA_DataStruct_Future_min,
                               QA_DataStruct_Stock_block, QA_DataStruct_Financial,
                               QA_DataStruct_Stock_day, QA_DataStruct_Stock_min,
-                              QA_DataStruct_Stock_transaction)
+                              QA_DataStruct_Stock_transaction,
+                              QA_DataStruct_Index_min, QA_DataStruct_Index_transaction
+                              )
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_index_day,
                                        QA_fetch_index_min,
+                                       QA_fetch_index_transaction,
                                        QA_fetch_stock_day,
                                        QA_fetch_stock_full,
                                        QA_fetch_stock_min,
+                                       QA_fetch_stock_transaction,
                                        QA_fetch_future_day,
                                        QA_fetch_future_min,
                                        QA_fetch_financial_report,
@@ -290,7 +294,7 @@ def QA_fetch_index_min_adv(
         return QA_DataStruct_Index_min(res_reset_index)
 
 
-def QA_fetch_stock_transaction_adv(code, start, end=None, if_drop_index=True, collections=DATABASE.stock_transaction):
+def QA_fetch_stock_transaction_adv(code, start, end=None, frequence='tick', if_drop_index=True, collections=DATABASE.stock_transaction):
     '''
 
     :param code:
@@ -301,19 +305,81 @@ def QA_fetch_stock_transaction_adv(code, start, end=None, if_drop_index=True, co
     :return:
     '''
     end = start if end is None else end
-    data = DataFrame([item for item in collections.find({
-        'code': str(code), "date": {
-            "$gte": start,
-            "$lte": end
-        }})])
+    if len(start) == 10:
+        start = '{} 09:30:00'.format(start)
 
-    data['datetime'] = pd.to_datetime(data['datetime'])
-    return QA_DataStruct_Stock_transaction(data.set_index('datetime', drop=if_drop_index))
+    if len(end) == 10:
+        end = '{} 15:00:00'.format(end)
+
+    if start == end:
+        # 🛠 todo 如果相等，根据 frequence 获取开始时间的 时间段 QA_fetch_stock_min， 不支持start end是相等的
+        print("QA Error QA_fetch_stock_transaction_adv parameter code=%s , start=%s, end=%s is equal, should have time span! " % (
+            code, start, end))
+        return None
+
+    # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
+
+    res = QA_fetch_stock_transaction(
+        code, start, end, format='pd', frequence=frequence)
+    if res is None:
+        print("QA Error QA_fetch_stock_transaction_adv parameter code=%s , start=%s, end=%s frequence=%s call QA_fetch_stock_transaction return None" % (
+            code, start, end, frequence))
+        return None
+    else:
+        res_set_index = res.set_index(['datetime', 'code'], drop=if_drop_index)
+        # if res_set_index is None:
+        #     print("QA Error QA_fetch_stock_min_adv set index 'datetime, code' return None")
+        #     return None
+        return QA_DataStruct_Stock_transaction(res_set_index)
 
 # 没有被使用， 和下面的QA_fetch_stock_list_adv函数是一致的
 # def QA_fetch_security_list_adv(collections=DATABASE.stock_list):
 #     '获取股票列表'
 #     return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False)
+
+def QA_fetch_index_transaction_adv(code, start, end=None, frequence='tick', if_drop_index=True, collections=DATABASE.index_transaction):
+    '''
+
+    :param code:
+    :param start:
+    :param end:
+    :param if_drop_index:
+    :param collections:
+    :return:
+    '''
+    end = start if end is None else end
+    if len(start) == 10:
+        start = '{} 09:30:00'.format(start)
+
+    if len(end) == 10:
+        end = '{} 15:00:00'.format(end)
+
+    if start == end:
+        # 🛠 todo 如果相等，根据 frequence 获取开始时间的 时间段 QA_fetch_stock_min， 不支持start end是相等的
+        print("QA Error QA_fetch_stock_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! " % (
+            code, start, end))
+        return None
+
+    # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
+
+    res = QA_fetch_index_transaction(
+        code, start, end, format='pd', frequence=frequence)
+    if res is None:
+        print("QA Error QA_fetch_index_transaction_adv parameter code=%s , start=%s, end=%s frequence=%s call QA_fetch_index_transaction return None" % (
+            code, start, end, frequence))
+        return None
+    else:
+        res_set_index = res.set_index(['datetime', 'code'], drop=if_drop_index)
+        # if res_set_index is None:
+        #     print("QA Error QA_fetch_stock_min_adv set index 'datetime, code' return None")
+        #     return None
+        return QA_DataStruct_Index_transaction(res_set_index)
+
+# 没有被使用， 和下面的QA_fetch_stock_list_adv函数是一致的
+# def QA_fetch_security_list_adv(collections=DATABASE.stock_list):
+#     '获取股票列表'
+#     return pd.DataFrame([item for item in collections.find()]).drop('_id', axis=1, inplace=False)
+
 
 
 def QA_fetch_stock_list_adv(collections=DATABASE.stock_list):

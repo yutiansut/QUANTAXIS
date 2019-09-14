@@ -4,15 +4,6 @@
 
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
 
--------------------------------------------------------------
-
-2019-09-07 STU02 第二次直播录像现已上传
-
-[![](https://yutiansut.oss-cn-shenzhen.aliyuncs.com/QASTU02.png)](https://www.bilibili.com/video/av67022443)
-
-[哔哩哔哩 传送门](https://www.bilibili.com/video/av67022443)
-
--------------------------------------------------------------
 
 Quantitative Financial FrameWork
 
@@ -70,7 +61,7 @@ This project exists thanks to all the people who contribute. [[Contribute](https
 
 > QUANTAXIS 开发群: 773602202 (如果想要贡献代码 请加这个群 需要备注你的GITHUB ID)
 
-> 欢迎关注公众号: ![公众号](http://pic.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
+> 欢迎关注公众号: ![公众号](http://data.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258.jpg)
 
 QAPRO公共号免费提供了下单推送接口, 关注公共号回复trade即可使用
 
@@ -108,6 +99,9 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QUANTAXIS CTPBEEBROKER](https://github.com/QUANTAXIS/QACTPBeeBroker) 基于CTPBee的接口封装
 - [QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker) 基于海风at的接口封装
 - [QUANTAXIS TRADER](https://github.com/yutiansut/QATrader) 一个开源的websocket版本的期货交易实例
+
+> 策略相关 
+- [QASTRATEGY101](https://github.com/yutiansut/QAStrategy101) 101个基础策略[逐步更新中...]
 
 > 行情相关: 主推行情实现/ 基于OU过程的模拟行情
 - [QUNATAXIS MARKETCOLLECTOR](https://github.com/yutiansut/QUANTAXIS_RealtimeCollector) 全市场订阅分发的行情推送
@@ -150,6 +144,26 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ==========================================
 
+
+## 视频录播
+
+### (2019-03-23)QUANTAXIS 2019 支持多市场的面向场景解决方案
+
+
+![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
+[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
+
+
+### 2019-09-07 STU02 第二次直播录像现已上传
+
+[![](https://yutiansut.oss-cn-shenzhen.aliyuncs.com/QASTU02.png)](https://www.bilibili.com/video/av67022443)
+
+[哔哩哔哩 传送门](https://www.bilibili.com/video/av67022443)
+
+
+
+
+==========================================
 <!-- TOC -->
 
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
@@ -513,11 +527,6 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
 
 
-## 视频录播(2019-03-23)
-
-QUANTAXIS 2019 支持多市场的面向场景解决方案
-![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
-[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
 
 ==========================================
 
