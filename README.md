@@ -4,7 +4,6 @@
 
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
 
--------------------------------------------------------------
 
 Quantitative Financial FrameWork
 
@@ -62,7 +61,9 @@ This project exists thanks to all the people who contribute. [[Contribute](https
 
 > QUANTAXIS 开发群: 773602202 (如果想要贡献代码 请加这个群 需要备注你的GITHUB ID)
 
-> 欢迎关注公众号: ![公众号](http://pic.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
+> 欢迎关注公众号: ![公众号](http://data.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258.jpg)
+
+QAPRO公共号免费提供了下单推送接口, 关注公共号回复trade即可使用
 
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
 
@@ -98,6 +99,9 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QUANTAXIS CTPBEEBROKER](https://github.com/QUANTAXIS/QACTPBeeBroker) 基于CTPBee的接口封装
 - [QUANTAXIS_ATBROKER](https://github.com/QUANTAXIS/QA_AtBroker) 基于海风at的接口封装
 - [QUANTAXIS TRADER](https://github.com/yutiansut/QATrader) 一个开源的websocket版本的期货交易实例
+
+> 策略相关 
+- [QASTRATEGY101](https://github.com/yutiansut/QAStrategy101) 101个基础策略[逐步更新中...]
 
 > 行情相关: 主推行情实现/ 基于OU过程的模拟行情
 - [QUNATAXIS MARKETCOLLECTOR](https://github.com/yutiansut/QUANTAXIS_RealtimeCollector) 全市场订阅分发的行情推送
@@ -140,6 +144,26 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ==========================================
 
+
+## 视频录播
+
+### (2019-03-23)QUANTAXIS 2019 支持多市场的面向场景解决方案
+
+
+![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
+[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
+
+
+### 2019-09-07 STU02 第二次直播录像现已上传
+
+[![](https://yutiansut.oss-cn-shenzhen.aliyuncs.com/QASTU02.png)](https://www.bilibili.com/video/av67022443)
+
+[哔哩哔哩 传送门](https://www.bilibili.com/video/av67022443)
+
+
+
+
+==========================================
 <!-- TOC -->
 
 - [QUANTAXIS 量化金融策略框架](#quantaxis-量化金融策略框架)
@@ -202,16 +226,13 @@ wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/install
 sudo bash install_docker.sh
 ```
 
-win/mac 安装
+win/mac 安装 一般是 19.03.2 版本的docker 可以去官网下载docker-ce
 
-非常简单 去docker网站下载win/mac的docker_desktop
+https://www.docker.com/products/docker-desktop
+
 
 文件较大, 我在群文件也共享了
 
-或者你可以使用国内镜像站
-
-- win [https://download.daocloud.io/d/Docker_Mirror/Docker_for_Windows_Mac/17.03.1-ce/docker-for-windows-stable.msi]
-- mac [https://download.daocloud.io/d/Docker_Mirror/Docker_for_Windows_Mac/17.03.1-ce/docker-for-mac-stable.dmg]
 
 ps: quantaxis强烈推荐不要使用win10以下的系统...(好吧忽略我)
 
@@ -506,11 +527,6 @@ QUANTAXIS-Stardand-Protocol 版本号0.0.8
 
 
 
-## 视频录播(2019-03-23)
-
-QUANTAXIS 2019 支持多市场的面向场景解决方案
-![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
-[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
 
 ==========================================
 
