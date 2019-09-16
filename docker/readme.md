@@ -51,26 +51,8 @@ docker-compose up -d
 
 
 
-
-
-
-
-
-
-
-
-
-
-## 镜像说明：
-qa-base: QA 基础镜像  
-qa-cron: cron 镜像, 每周一到五19:00自动更新数据(update_all.py)，如需更改计划任务，请自行制作py文件并更新Dockerfile  
-qa-jupyter: jupyter lab 镜像，端口8888，没有登录密码，如需制定密码，请自行更改jupyter_notebook_config.py 文件  
-qa-web: websocket 服务镜像，端口8010  
-mgdb: mongodb 数据库镜像，端口27017  
-
-
 ## 第一次部署：
-1. 下载 [docker-compose.yaml](https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/docker-compose.yaml)
+1. 下载 [docker-compose.yaml](https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/qa-service/docker-compose.yaml)
 2. 创建 docker volume  
   ```
   docker volume create qamg
