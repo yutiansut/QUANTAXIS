@@ -1,5 +1,5 @@
 FROM daocloud.io/quantaxis/qajupyter-r:latest
-
+USER root
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
 
