@@ -1,7 +1,7 @@
 version: '2'
 services:
     qa:
-        image: daocloud.io/quantaxis/qacommunity_r:latest
+        image: daocloud.io/quantaxis/qacommunity:latest
         container_name: qacommunity
         depends_on:
             - mgdb
