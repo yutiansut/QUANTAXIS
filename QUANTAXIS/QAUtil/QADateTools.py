@@ -1,7 +1,7 @@
 import datetime
 import calendar
 from dateutil.relativedelta import relativedelta
-from QUANTAXIS.QAUtil import (DATABASE)
+from QUANTAXIS.QAUtil.QASetting import (DATABASE)
 import pymongo
 import pandas as pd
 def QA_util_getBetweenMonth(from_date, to_date):
