@@ -48,6 +48,8 @@ qaservice是一个帮你预装/预拉起好一切东西的一个docker environme
 
 你如果只是想使用(指的是 包括且不限于: 就想写个回测/ 就想实盘 / 就想看个可视化 / 这类) 的话, 只需要拉起这个qaservice环境即可, 你不需要不需要不需要学docker!! 注意 不需要会用docker!!!!
 
+
+
 如果你需要二次开发=> 对我说的就是特别喜欢魔改别人代码的你  或者 你需要和你现有的功能组合的话 ==>  也不建议用docker, 建议在本地调试本地部署完毕以后, 再学习怎么制作docker镜像==> 实现你的二次开发/分发需求
 
 
@@ -55,13 +57,20 @@ qaservice是一个帮你预装/预拉起好一切东西的一个docker environme
 
 
 1/  我们需要创建两个docker volume (1个是qamg 用来装数据库的数据文件 1个是qacode 用来存你写的代码)
+
 2/  在你对于docker volume的理解里 docker volume 就是在docker级别的可移动硬盘
+
 3/  docker volume仅需要创建一次
+
+
 
 4/  这个qaservice的environment  需要一个叫做docker-compose.yaml的文件
 
 4.1/ 你不需要理解docker-compose.yaml文件里的内容, 你只需要知道 这个yaml 是关于这个环境配置的设置文件
+
 4.2/ 你唯一需要做的就是 建一个文件夹(爱建在哪里建哪里) 下载这个docker-compose.yaml ==> 复制粘贴进去
+
+
 
 以上都是对win/mac的小白用户说的, 如果你已经是一个linux用户, 我默认你是一个精通百度搜索的男人...
 
@@ -69,6 +78,7 @@ qaservice是一个帮你预装/预拉起好一切东西的一个docker environme
 ### linux下的qa-service使用
 
 第一次使用
+
 ```
 wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/qaservice_docker.sh
 sudo bash qaservice_docker.sh
@@ -79,6 +89,7 @@ sudo bash qaservice_docker.sh
 ```
 docker-compose up -d
 ```
+
 ### mac/windows下的qa-service使用
 
 第一次使用
@@ -121,11 +132,17 @@ docker-compose up
 
 你需要知道的是  quantaxis致力于帮你把配置环境这些脏活干完以后, 他实现了
 
+
+
 ==> 帮你直接开启你需要的服务
 
 ==> 你可以直接访问html界面来写回测/ 看回测/ 上实盘等
 
 ==> 如果你本地有python环境 你可以在本地写, 并使用qaservice帮你开启的环境(比如数据库环境/ 比如mq环境)
+
+
+
+
 
 端口:
 
@@ -152,6 +169,7 @@ docker-compose up
 
 
 ### 查看每天数据更新日志：
+
 docker logs cron容器名  
 
 日志只输出到容器前台，如果日志对你很重要，建议用专业的日志收集工具，从cron容器收集日志
@@ -187,7 +205,7 @@ docker-compose pull
 ```  
 
 
-## 数据库备份(备份到宿主机当前目录，文件名：dbbackup.tar)：
+### 数据库备份(备份到宿主机当前目录，文件名：dbbackup.tar)：
 
 1. 停止服务  
 ```
@@ -201,7 +219,7 @@ docker run  --rm -v qamg:/data/db \
 tar zcvf /backup/dbbackup.tar /data/db
 ```
 
-## 数据库还原（宿主机当前目录下必要有以前备份过的文件，文件名：dbbackup.tar）：
+### 数据库还原（宿主机当前目录下必要有以前备份过的文件，文件名：dbbackup.tar）：
 1. 停止服务  
 ```
 docker-compose stop
