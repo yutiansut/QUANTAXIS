@@ -125,6 +125,8 @@ docker-compose pull (这里的意思是更新docker文件)
 docker-compose up
 ```
 
+![](https://data.yutiansut.com/dockerinstall.png)
+
 
 ## 3.怎么用docker?
 
