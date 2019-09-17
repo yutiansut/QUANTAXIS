@@ -3,24 +3,57 @@
 
 ## 安装docker 
 
-ubuntu 一键脚本
+### ubuntu 一键脚本(仅限linux!!!!! 看清楚!!!!)
 
 ```
 wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/install_docker.sh
 sudo bash install_docker.sh
 ```
-win/mac 安装
+### win/mac 安装
 
-非常简单 去docker网站下载win/mac的docker_desktop
+win/mac 下的docker  需要手动安装一个docker desktop
 
-文件较大, 我在群文件也共享了
-
-
+非常简单 去docker网站下载win/mac的docker_desktop 或者  文件较大, 我在群文件也共享了
 
 ps: quantaxis强烈推荐不要使用win10以下的系统...(好吧忽略我)
 
+> 注意在安装exe的时候 最后一步 关于在使用windows container的地方 一定不要勾选 !!!!!!
 
-### 使用QA_SERVICE
+
+```
+到此处 你应该已经装起来了一个docker 
+
+然后我们往下看
+```
+
+
+## 使用QA_SERVICE
+
+
+qaservice是一个帮你预装/预拉起好一切东西的一个docker environment  你需要理解的是 这个environment
+
+
+你如果只是想使用(指的是 包括且不限于: 就想写个回测/ 就想实盘 / 就想看个可视化 / 这类) 的话, 只需要拉起这个qaservice环境即可, 你不需要不需要不需要学docker!! 注意 不需要会用docker!!!!
+
+如果你需要二次开发=> 对我说的就是特别喜欢魔改别人代码的你  或者 你需要和你现有的功能组合的话 ==>  也不建议用docker, 建议在本地调试本地部署完毕以后, 再学习怎么制作docker镜像==> 实现你的二次开发/分发需求
+
+
+你需要注意的是 qaenvironment是需要做一些预处理的
+
+
+1/  我们需要创建两个docker volume (1个是qamg 用来装数据库的数据文件 1个是qacode 用来存你写的代码)
+2/  在你对于docker volume的理解里 docker volume 就是在docker级别的可移动硬盘
+3/  docker volume仅需要创建一次
+
+4/  这个qaservice的environment  需要一个叫做docker-compose.yaml的文件
+
+4.1/ 你不需要理解docker-compose.yaml文件里的内容, 你只需要知道 这个yaml 是关于这个环境配置的设置文件
+4.2/ 你唯一需要做的就是 建一个文件夹(爱建在哪里建哪里) 下载这个docker-compose.yaml ==> 复制粘贴进去
+
+以上都是对win/mac的小白用户说的, 如果你已经是一个linux用户, 我默认你是一个精通百度搜索的男人...
+
+
+### linux下的qa-service使用
 
 第一次使用
 ```
@@ -28,11 +61,58 @@ wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/qaservi
 sudo bash qaservice_docker.sh
 ```
 
-后续使用
+后续使用 ==> cd 到有docker-compose.yaml的文件夹
 
 ```
 docker-compose up -d
 ```
+### mac/windows下的qa-service使用
+
+第一次使用
+
+1. 打开你的命令行, 输入
+
+```
+
+docker volume create --name=qamg
+docker volume create --name=qacode
+```
+2. 下载docker-compose.yaml (https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/qa-service/docker-compose.yaml)
+
+如果你不知道咋下载 可以去qq群 群文件下载
+
+3. 找到你心爱的文件夹, 把这个宝贵的yaml放进去, 并记住你的文件夹目录(比如D:/qa/)
+
+4. 打开你的命令行继续输入
+
+```
+cd D:/qa  (此处就是你心爱的文件夹的目录)
+
+docker-compose up
+```
+
+后续使用
+
+```
+cd D:/qa  (此处就是你心爱的文件夹的目录)
+
+docker-compose pull (这里的意思是更新docker文件)
+
+docker-compose up
+```
+
+
+### 怎么用docker?
+
+
+
+你需要知道的是  quantaxis致力于帮你把配置环境这些脏活干完以后, 他实现了
+
+==> 帮你直接开启你需要的服务
+
+==> 你可以直接访问html界面来写回测/ 看回测/ 上实盘等
+
+==> 如果你本地有python环境 你可以在本地写, 并使用qaservice帮你开启的环境(比如数据库环境/ 比如mq环境)
 
 端口:
 
@@ -48,17 +128,9 @@ docker-compose up -d
 
 
 
-## 第一次部署：
-1. 下载 [docker-compose.yaml](https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/qa-service/docker-compose.yaml)
-2. 创建 docker volume  
-  ```
-  docker volume create qamg
-  docker volume create qacode
-  ```
-3. 启动 QUANTAXIS 服务 （包括 QUANTAXIS-jupyter，自动更新服务，数据库，web，每次启动docker，所有服务都会自动启动）  
-  ```
-  docker-compose up -d
-  ```
+
+## 后面内容为docker进阶部分(指的是 如果你看不懂且不愿意看 就不用看)
+
 
 ## 查看每天数据更新日志：
 docker logs cron容器名  
