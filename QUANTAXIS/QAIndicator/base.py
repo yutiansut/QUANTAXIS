@@ -127,11 +127,11 @@ def CROSS(A, B):
         index = A.index
     except:
         index = B.index
-    return (pd.Series(var, index=A.index).diff() < 0).apply(int)
+    return (pd.Series(var, index=index).diff() < 0).apply(int)
 
 
 def FILTER(COND, N):
-    
+
     k1 = pd.Series(np.where(COND, 1, 0), index=COND.index)
     idx = k1[k1 == 1].index.codes[0]
     needfilter = pd.Series(idx, index=idx)
