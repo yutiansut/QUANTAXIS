@@ -174,9 +174,8 @@ def IFOR(COND1, COND2, V1, V2):
 
 
 def REF(Series, N):
-    var = Series.diff(N)
-    var = Series - var
-    return var
+
+    return Series.shift(N)
 
 
 def LAST(COND, N1, N2):
