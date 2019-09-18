@@ -215,53 +215,11 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ## 0. QASERVICE
 
-docker 一键部署(无需任何环境! 最好是直接拿个新机器)
+qaservice是 quantaxis 面向(不想自己配环境的小白) / (有超级多服务器的网管大佬提供的) 一键配置环境
 
-### 安装docker 
+虽然qa-service一个命令就可以使用了 但是作者非常希望你可以读一下这个好不容易才写出来的文章
 
-ubuntu 一键脚本
-
-```
-wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/config/install_docker.sh
-sudo bash install_docker.sh
-```
-
-win/mac 安装 一般是 19.03.2 版本的docker 可以去官网下载docker-ce
-
-https://www.docker.com/products/docker-desktop
-
-
-文件较大, 我在群文件也共享了
-
-
-ps: quantaxis强烈推荐不要使用win10以下的系统...(好吧忽略我)
-
-
-### 使用QA_SERVICE
-
-第一次使用
-```
-wget https://raw.githubusercontent.com/QUANTAXIS/QUANTAXIS/master/docker/qaservice_docker.sh
-sudo bash qaservice_docker.sh
-```
-
-后续使用
-
-```
-docker-compose up -d
-```
-
-端口:
-
-- 27017 mongodb
-- 8888 jupyter
-- 8010 quantaxis_webserver
-- 81 quantaxis_community 社区版界面
-- 61208 系统监控
-- 15672 qa-eventmq
-
-
-然后就可以开始你的量化之路了骚年!
+文章链接 [关于docker 和 QASERVICE](docker/readme.md)
 
 
 
