@@ -1,8 +1,21 @@
 # 关于QUANTAXIS未来的发展方向 [ISSUE 1296](https://github.com/QUANTAXIS/QUANTAXIS/issues/1296)
 
-QUANTAXIS 目前开源2年有余 形成了一个较为活跃的社区, 也提供了一个较为完整(谈不上完善)的量化解决方案, 在下面的一年里, QUANTAXIS 准备逐步向一下方向发展
+
+```
+
+github 开源地址: https://github.com/QUANTAXIS/QUANTAXIS
+
+文档地址: http://doc.yutiansut.com
+
+```
 
 @yutiansut 2019-09-18
+
+
+QUANTAXIS 目前开源2年有余 在github上获得了约2700+的star和1186+的fork, quant字段下排名第5名, 并且形成了一个较为活跃的社区, 也提供了一个较为完整(谈不上完善)的量化解决方案
+
+在下面的一年里, QUANTAXIS 准备逐步向一下方向发展
+
 
 
 ## 1个基础 3个核心
