@@ -5,9 +5,14 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN cd ~ && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASIC \
 && pip install quantaxis-servicedetect \
-&& pip install quantaxis-pubsub
+&& pip install quantaxis-pubsub \
+&& pip install aioch \
+&& pip install redis \
+&& pip install dag-factory \
 COPY run-community.sh /root/
 RUN chmod +x /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py
+RUN  echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc && source ~/.vimrc
+
 
 RUN chmod +x /root/run-community.sh
 CMD ["bash", "/root/run-community.sh"]

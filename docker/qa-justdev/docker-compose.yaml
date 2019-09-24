@@ -7,8 +7,8 @@ services:
             - mgdb
             - qaeventmq
         networks:
-            qanetwork:
-                ipv4_address: 172.19.0.3
+            qanetwork_pro:
+                ipv4_address: 172.19.3.3
         ports:
             - "8888:8888"
             - "81:80"
@@ -19,19 +19,12 @@ services:
         volumes:
             - qacode:/home
         restart: always
-
-    # qacron:
-    #     image: barretthugh/qa-cron
-    #     environment:
-    #         - MONGODB=mgdb
-    #     restart: always
-
     qaweb_run:
         image: daocloud.io/quantaxis/qarun:latest
         container_name: qarun
         networks:
-            qanetwork:
-                ipv4_address: 172.19.0.4
+            qanetwork_pro:
+                ipv4_address: 172.19.3.4
         depends_on:
             - mgdb
             - qaeventmq
@@ -61,8 +54,8 @@ services:
         volumes:
             - qamg:/data/db
         networks:
-            qanetwork:
-                ipv4_address: 172.19.0.2
+            qanetwork_pro:
+                ipv4_address: 172.19.3.2
         restart: always
 
     qaeventmq:
@@ -74,10 +67,11 @@ services:
         environment:
             - TZ=Asia/Shanghai
         networks:
-            qanetwork:
-                ipv4_address: 172.19.0.5
+            qanetwork_pro:
+                ipv4_address: 172.19.3.5
         restart: always
 
+        restart: always
     qamonitor:
         image: daocloud.io/quantaxis/qa-monitor:latest
         ports:
@@ -85,35 +79,32 @@ services:
             - "61208:61208"
         pid: "host"
         networks:
-            qanetwork:
-                ipv4_address: 172.19.0.6
+            qanetwork_pro:
+                ipv4_address: 172.19.3.6
 
         restart: always
 
-    qactpbeebroker:
-        image: daocloud.io/quantaxis/qactpbeebroker:latest
-        ports:
-            - "5000:5000"
-        networks:
-            qanetwork:
-                ipv4_address: 172.19.0.7
-        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "QACTPBEE", "--userid", "133496", "--pwd", 'QCHL1234']
-
-    qamarketcollector:
-        image: daocloud.io/quantaxis/qarealtimecollector:latest
-        ports:
-            - "8011:8011"
-        depends_on:
-            - mgdb
-            - qaeventmq
+    qaredis:
+        image: daocloud.io/quantaxis/qaredis:latest
+        ports: 
+            - "6379:6379"
         environment:
-            - MONGODB=mgdb
-            - EventMQ_IP=qaeventmq
+            - TZ=Asia/Shanghai
         networks:
-            qanetwork:
-                ipv4_address: 172.19.0.8
-        command:
-            ['/root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'/root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh']
+            qanetwork_pro:
+                ipv4_address: 172.19.3.9
+
+    # qaclickhouse:
+    #     image: daocloud.io/quantaxis/qa-clickhouse
+    #     ports:
+    #         - "9000:9000"
+    #         - "8123:8123"
+    #         - "9009:9009"
+    #     environment:
+    #         - TZ=Asia/Shanghai
+    #     networks:
+    #         qanetwork_pro:
+    #             ipv4_address: 172.19.3.10
 
 volumes:
     qamg:
@@ -123,8 +114,8 @@ volumes:
         external:
             name: qacode
 networks:
-    qanetwork:
+    qanetwork_pro:
         ipam:
             config:
-                - subnet: 172.19.0.0/24
-                  gateway: 172.19.0.1
+                - subnet: 172.19.3.0/24
+                  gateway: 172.19.3.1
