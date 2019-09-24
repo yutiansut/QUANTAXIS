@@ -97,6 +97,7 @@ services:
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.7
+        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "QACTPBEE", "--userid", "133496", "--pwd", 'QCHL1234']
 
     qamarketcollector:
         image: daocloud.io/quantaxis/qarealtimecollector:latest

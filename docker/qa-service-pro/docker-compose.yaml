@@ -120,7 +120,7 @@ services:
         networks:
             qanetwork_pro:
                 ipv4_address: 172.19.3.7
-        command:  ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "/root/runcelery.sh"]
+        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "QACTPBEE", "--userid", "133496", "--pwd", 'QCHL1234']
 
     qamarketcollector:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
