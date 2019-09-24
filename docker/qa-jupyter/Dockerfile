@@ -21,7 +21,12 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && pip install quantaxis -U \
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
-RUN chmod +x /entrypoint.sh
+RUN pip install quantaxis-servicedetect \
+&& pip install quantaxis-pubsub \
+&& pip install aioch \
+&& pip install redis \
+&& pip install dag-factory \
+&& chmod +x /entrypoint.sh
 EXPOSE 8888 
 
 COPY runpy.sh /root/
