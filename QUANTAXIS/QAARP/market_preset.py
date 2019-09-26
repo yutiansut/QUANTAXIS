@@ -701,7 +701,7 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.0001,
                 'commission_coeff_today_pervol': 0
             },
-            'RR: {
+            'RR': {
                 'name': '粳米',
                 'unit_table': 10,
                 'price_tick': 1,
