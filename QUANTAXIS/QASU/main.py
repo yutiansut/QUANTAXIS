@@ -1,7 +1,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # SOFTWARE.
 
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list
-#from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
+# from QUANTAXIS.QASU import crawl_eastmoney as crawl_eastmoney_file
 from QUANTAXIS.QASU import save_tdx as stdx
 from QUANTAXIS.QASU import save_tdx_parallelism as stdx_parallelism
 from QUANTAXIS.QASU import save_tdx_file as tdx_file
@@ -30,7 +30,10 @@ from QUANTAXIS.QASU import save_gm as sgm
 from QUANTAXIS.QASU import save_jq as sjq
 from QUANTAXIS.QASU import save_tushare as sts
 from QUANTAXIS.QASU import save_financialfiles
-from QUANTAXIS.QAUtil import DATABASE
+from QUANTAXIS.QAUtil import DATABASE, print_used_time
+import time
+
+
 # from QUANTAXIS.QASU import crawl_jrj_financial_reportdate as save_financial_calendar
 # from QUANTAXIS.QASU import crawl_jrj_stock_divyield as save_stock_divyield
 
@@ -175,6 +178,7 @@ def QA_SU_save_future_min_all(engine, client=DATABASE):
     engine.QA_SU_save_future_min_all(client=client)
 
 
+@print_used_time
 def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=False):
     """save stock_day
 
@@ -183,10 +187,29 @@ def QA_SU_save_stock_day(engine, client=DATABASE, paralleled=False):
 
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
     """
 
     engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_stock_day(client=client)
+
+
+def QA_SU_save_single_stock_day(code, engine, client=DATABASE, paralleled=False):
+    """save stock_day
+
+    Arguments:
+        code: stock code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_single_stock_day(code=code, client=client)
 
 
 def QA_SU_save_option_contract_list(engine, client=DATABASE):
@@ -200,7 +223,7 @@ def QA_SU_save_option_contract_list(engine, client=DATABASE):
     engine.QA_SU_save_option_contract_list(client=client)
 
 
-def QA_SU_save_option_day(engine, client=DATABASE):
+def QA_SU_save_option_day_all(engine, client=DATABASE):
     '''
 
     :param engine:
@@ -208,10 +231,10 @@ def QA_SU_save_option_day(engine, client=DATABASE):
     :return:
     '''
     engine = select_save_engine(engine)
-    engine.QA_SU_save_option_day(client=client)
+    engine.QA_SU_save_option_day_all(client=client)
 
 
-def QA_SU_save_option_min(engine, client=DATABASE):
+def QA_SU_save_option_min_all(engine, client=DATABASE):
     '''
 
     :param engine:
@@ -219,7 +242,29 @@ def QA_SU_save_option_min(engine, client=DATABASE):
     :return:
     '''
     engine = select_save_engine(engine)
-    engine.QA_SU_save_option_min(client=client)
+    engine.QA_SU_save_option_min_all(client=client)
+
+
+def QA_SU_save_option_50etf_day(engine, client=DATABASE):
+    '''
+
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_50etf_day(client=client)
+
+
+def QA_SU_save_option_50etf_min(engine, client=DATABASE):
+    '''
+
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_50etf_min(client=client)
 
 
 def QA_SU_save_option_commodity_min(engine, client=DATABASE):
@@ -256,8 +301,8 @@ def QA_SU_save_stock_min(engine, client=DATABASE):
     engine.QA_SU_save_stock_min(client=client)
 
 
-def QA_SU_save_index_day(engine, client=DATABASE):
-    """save index_day
+def QA_SU_save_stock_transaction(engine, client=DATABASE):
+    """save stock_transaction
 
     Arguments:
         engine {[type]} -- [description]
@@ -267,7 +312,70 @@ def QA_SU_save_index_day(engine, client=DATABASE):
     """
 
     engine = select_save_engine(engine)
+    engine.QA_SU_save_stock_transaction(client=client)
+
+
+def QA_SU_save_index_transaction(engine, client=DATABASE):
+    """save index_transaction
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_index_transaction(client=client)
+
+
+
+def QA_SU_save_single_stock_min(code, engine, client=DATABASE):
+    """save stock_min
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_single_stock_min(code=code, client=client)
+
+
+@print_used_time
+def QA_SU_save_index_day(engine, client=DATABASE, paralleled=False):
+    """save index_day
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_index_day(client=client)
+
+
+def QA_SU_save_single_index_day(code, engine, client=DATABASE, paralleled=False):
+    """save index_day
+
+    Arguments:
+        code: index code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_single_index_day(code=code, client=client)
 
 
 def QA_SU_save_index_min(engine, client=DATABASE):
@@ -284,8 +392,8 @@ def QA_SU_save_index_min(engine, client=DATABASE):
     engine.QA_SU_save_index_min(client=client)
 
 
-def QA_SU_save_etf_day(engine, client=DATABASE):
-    """save etf_day
+def QA_SU_save_single_index_min(code, engine, client=DATABASE):
+    """save index_min
 
     Arguments:
         engine {[type]} -- [description]
@@ -295,7 +403,37 @@ def QA_SU_save_etf_day(engine, client=DATABASE):
     """
 
     engine = select_save_engine(engine)
+    engine.QA_SU_save_single_index_min(code=code, client=client)
+
+
+@print_used_time
+def QA_SU_save_etf_day(engine, client=DATABASE, paralleled=False):
+    """save etf_day
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_etf_day(client=client)
+
+
+def QA_SU_save_single_etf_day(code, engine, client=DATABASE, paralleled=False):
+    """save etf_day
+
+    Arguments:
+        code: etf code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_single_etf_day(code=code, client=client)
 
 
 def QA_SU_save_etf_min(engine, client=DATABASE):
@@ -310,6 +448,20 @@ def QA_SU_save_etf_min(engine, client=DATABASE):
 
     engine = select_save_engine(engine)
     engine.QA_SU_save_etf_min(client=client)
+
+
+def QA_SU_save_single_etf_min(code, engine, client=DATABASE):
+    """save etf_min
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_single_etf_min(code=code, client=client)
 
 
 def QA_SU_save_stock_xdxr(engine, client=DATABASE):
@@ -359,7 +511,10 @@ def select_save_engine(engine, paralleled=False):
     elif engine in ['jq', 'joinquant']:
         return sjq
     else:
-        print('QA Error QASU.main.py call select_save_engine with parameter %s is None of  thshare, ts, Thshare, or tdx', engine)
+        print(
+            'QA Error QASU.main.py call select_save_engine \
+                with parameter %s is None of  thshare, ts, Thshare, or tdx',
+            engine)
 
 
 def QA_SU_save_stock_min_5(file_dir, client=DATABASE):
@@ -390,7 +545,7 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
     if stockCode == "all":
         # 读取tushare股票列表代码
         print("💪 一共需要获取 %d 个股票的 资金流向 , 需要大概 %d 小时" %
-              (len(stockItems), (len(stockItems)*5)/60/60))
+              (len(stockItems), (len(stockItems) * 5) / 60 / 60))
 
         code_list = []
         for stock in stockItems:
@@ -406,7 +561,8 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
         # return crawl_eastmoney_file.QA_read_eastmoney_zjlx_web_page_to_sqllite(stockCode=stockCode)
         code_list = []
         code_list.append(stockCode)
-        return crawl_eastmoney_file.QA_request_eastmoney_zjlx(param_stock_code_list=code_list)
+        return crawl_eastmoney_file.QA_request_eastmoney_zjlx(
+            param_stock_code_list=code_list)
 
 
 def QA_SU_save_financialfiles():

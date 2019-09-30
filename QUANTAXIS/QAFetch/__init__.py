@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,6 +40,8 @@ from QUANTAXIS.QAFetch import QAEastMoney as QAEM
 from QUANTAXIS.QAFetch import QAHexun as QAHexun
 from QUANTAXIS.QAFetch import QAfinancial
 from QUANTAXIS.QAFetch.base import get_stock_market
+from QUANTAXIS.QAFetch import QAQAWEB as QAWEB
+
 
 def use(package):
     if package in ['wind']:
@@ -57,6 +59,8 @@ def use(package):
         return QAThs
     elif package in ['HEXUN', 'Hexun', 'hexun']:
         return QAHexun
+    elif package in ['QA']:
+        return QAWEB
 
 
 def QA_fetch_get_stock_day(package, code, start, end, if_fq='01', level='day', type_='pd'):
@@ -102,6 +106,14 @@ def QA_fetch_get_stock_transaction(package, code, start, end, retry=2):
         return 'Unsupport packages'
 
 
+def QA_fetch_get_index_transaction(package, code, start, end, retry=2):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_index_transaction(code, start, end, retry)
+    else:
+        return 'Unsupport packages'
+
+
 def QA_fetch_get_stock_transaction_realtime(package, code):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
@@ -136,7 +148,7 @@ def QA_fetch_get_index_min(package, code, start, end, level='1min'):
 
 def QA_fetch_get_stock_block(package):
     Engine = use(package)
-    if package in ['tdx', 'pytdx', 'ths']:
+    if package in ['tdx', 'pytdx', 'ths', 'QA']:
         return Engine.QA_fetch_get_stock_block()
     else:
         return 'Unsupport packages'
@@ -172,7 +184,7 @@ def QA_fetch_get_index_list(package):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_index_list()
-    else:   
+    else:
         return 'Unsupport packages'
 
 
@@ -239,12 +251,14 @@ def QA_fetch_get_macroindex_list(package,):
     else:
         return 'Unsupport packages'
 
+
 def QA_fetch_get_globalindex_list(package,):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_globalindex_list()
     else:
         return 'Unsupport packages'
+
 
 def QA_fetch_get_exchangerate_list(package,):
     Engine = use(package)
@@ -300,12 +314,14 @@ def QA_fetch_get_future_min(package, code, start, end, frequence='1min'):
     else:
         return 'Unsupport packages'
 
+
 def QA_fetch_get_chibor(package, frequence):
     Engine = use(package)
     if package in ['Hexun', 'hexun']:
         return Engine.QA_fetch_get_chibor(frequence)
     else:
         return 'Unsupport packages'
+
 
 QA_fetch_get_option_day = QA_fetch_get_future_day
 QA_fetch_get_option_min = QA_fetch_get_future_min

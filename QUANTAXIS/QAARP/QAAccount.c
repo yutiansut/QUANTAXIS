@@ -839,7 +839,7 @@ struct __pyx_opt_args_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_send_order {
   PyObject *order_model;
   PyObject *amount_model;
   PyObject *order_id;
-  PyObject *pms_id;
+  PyObject *position_id;
 };
 
 /* "QUANTAXIS/QAARP/QAAccount.pyx":35
@@ -1703,7 +1703,7 @@ static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_on_bar[] = "on_bar";
 static const char __pyx_k_pandas[] = "pandas";
 static const char __pyx_k_pickle[] = "pickle";
-static const char __pyx_k_pms_id[] = "pms_id";
+static const char __pyx_k_position_id[] = "position_id";
 static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_reload[] = "reload";
 static const char __pyx_k_settle[] = "settle";
@@ -2136,7 +2136,7 @@ static PyObject *__pyx_kp_u_param_str_strategy_name_param_s;
 static PyObject *__pyx_n_s_pd;
 static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_pivot_table;
-static PyObject *__pyx_n_s_pms_id;
+static PyObject *__pyx_n_s_position_id;
 static PyObject *__pyx_n_s_portfolio_cookie;
 static PyObject *__pyx_n_s_position_profit;
 static PyObject *__pyx_n_s_pre_balance;
@@ -2261,7 +2261,7 @@ static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_14reset_asse
 static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_16receive_simpledeal(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self, PyObject *__pyx_v_code, float __pyx_v_trade_price, int __pyx_v_trade_amount, int __pyx_v_trade_towards, PyObject *__pyx_v_trade_time, PyObject *__pyx_v_message, PyObject *__pyx_v_order_id, PyObject *__pyx_v_trade_id, PyObject *__pyx_v_realorder_id); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_9node_view___get__(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_18receive_deal(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self, PyObject *__pyx_v_code, PyObject *__pyx_v_trade_id, PyObject *__pyx_v_order_id, PyObject *__pyx_v_realorder_id, double __pyx_v_trade_price, PyObject *__pyx_v_trade_amount, PyObject *__pyx_v_trade_towards, PyObject *__pyx_v_trade_time, PyObject *__pyx_v_message); /* proto */
-static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_20send_order(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self, PyObject *__pyx_v_code, PyObject *__pyx_v_amount, PyObject *__pyx_v_time, PyObject *__pyx_v_towards, PyObject *__pyx_v_price, PyObject *__pyx_v_money, PyObject *__pyx_v_order_model, PyObject *__pyx_v_amount_model, PyObject *__pyx_v_order_id, PyObject *__pyx_v_pms_id); /* proto */
+static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_20send_order(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self, PyObject *__pyx_v_code, PyObject *__pyx_v_amount, PyObject *__pyx_v_time, PyObject *__pyx_v_towards, PyObject *__pyx_v_price, PyObject *__pyx_v_money, PyObject *__pyx_v_order_model, PyObject *__pyx_v_amount_model, PyObject *__pyx_v_order_id, PyObject *__pyx_v_position_id); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_22cancel_order(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self, PyObject *__pyx_v_order); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_21close_positions_order___get__(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_24settle(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_settle_data); /* proto */
@@ -16229,7 +16229,7 @@ PyObject *__pyx_v_order_model = ((PyObject *)Py_None);
  *             order_model=None,
  *             amount_model=None,             # <<<<<<<<<<<<<<
  *             order_id=None,
- *             pms_id=None,
+ *             position_id=None,
  */
 PyObject *__pyx_v_amount_model = ((PyObject *)Py_None);
 
@@ -16237,7 +16237,7 @@ PyObject *__pyx_v_amount_model = ((PyObject *)Py_None);
  *             order_model=None,
  *             amount_model=None,
  *             order_id=None,             # <<<<<<<<<<<<<<
- *             pms_id=None,
+ *             position_id=None,
  *     ):
  */
 PyObject *__pyx_v_order_id = ((PyObject *)Py_None);
@@ -16245,11 +16245,11 @@ PyObject *__pyx_v_order_id = ((PyObject *)Py_None);
 /* "QUANTAXIS/QAARP/QAAccount.pyx":1155
  *             amount_model=None,
  *             order_id=None,
- *             pms_id=None,             # <<<<<<<<<<<<<<
+ *             position_id=None,             # <<<<<<<<<<<<<<
  *     ):
  *         """
  */
-PyObject *__pyx_v_pms_id = ((PyObject *)Py_None);
+PyObject *__pyx_v_position_id = ((PyObject *)Py_None);
 PyObject *__pyx_v_date = 0;
 PyObject *__pyx_v_wrong_reason = 0;
 int __pyx_v_flag;
@@ -16291,7 +16291,7 @@ if (__pyx_optional_args) {
                   if (__pyx_optional_args->__pyx_n > 8) {
                     __pyx_v_order_id = __pyx_optional_args->order_id;
                     if (__pyx_optional_args->__pyx_n > 9) {
-                      __pyx_v_pms_id = __pyx_optional_args->pms_id;
+                      __pyx_v_position_id = __pyx_optional_args->position_id;
                     }
                   }
                 }
@@ -16342,7 +16342,7 @@ else if (unlikely((Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0) || (
       }
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_3)) {
-        PyObject *__pyx_temp[11] = {__pyx_t_4, __pyx_v_code, __pyx_v_amount, __pyx_v_time, __pyx_v_towards, __pyx_v_price, __pyx_v_money, __pyx_v_order_model, __pyx_v_amount_model, __pyx_v_order_id, __pyx_v_pms_id};
+        PyObject *__pyx_temp[11] = {__pyx_t_4, __pyx_v_code, __pyx_v_amount, __pyx_v_time, __pyx_v_towards, __pyx_v_price, __pyx_v_money, __pyx_v_order_model, __pyx_v_amount_model, __pyx_v_order_id, __pyx_v_position_id};
         __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 10+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1144, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_GOTREF(__pyx_t_2);
@@ -16350,7 +16350,7 @@ else if (unlikely((Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0) || (
       #endif
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
-        PyObject *__pyx_temp[11] = {__pyx_t_4, __pyx_v_code, __pyx_v_amount, __pyx_v_time, __pyx_v_towards, __pyx_v_price, __pyx_v_money, __pyx_v_order_model, __pyx_v_amount_model, __pyx_v_order_id, __pyx_v_pms_id};
+        PyObject *__pyx_temp[11] = {__pyx_t_4, __pyx_v_code, __pyx_v_amount, __pyx_v_time, __pyx_v_towards, __pyx_v_price, __pyx_v_money, __pyx_v_order_model, __pyx_v_amount_model, __pyx_v_order_id, __pyx_v_position_id};
         __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 10+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1144, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_GOTREF(__pyx_t_2);
@@ -16389,9 +16389,9 @@ else if (unlikely((Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0) || (
         __Pyx_INCREF(__pyx_v_order_id);
         __Pyx_GIVEREF(__pyx_v_order_id);
         PyTuple_SET_ITEM(__pyx_t_6, 8+__pyx_t_5, __pyx_v_order_id);
-        __Pyx_INCREF(__pyx_v_pms_id);
-        __Pyx_GIVEREF(__pyx_v_pms_id);
-        PyTuple_SET_ITEM(__pyx_t_6, 9+__pyx_t_5, __pyx_v_pms_id);
+        __Pyx_INCREF(__pyx_v_position_id);
+        __Pyx_GIVEREF(__pyx_v_position_id);
+        PyTuple_SET_ITEM(__pyx_t_6, 9+__pyx_t_5, __pyx_v_position_id);
         __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1144, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -18208,7 +18208,7 @@ if (__pyx_t_7) {
  *                 amount_model=amount_model,
  *                 commission_coeff=self.commission_coeff,             # <<<<<<<<<<<<<<
  *                 tax_coeff=self.tax_coeff,
- *                 pms_id = pms_id,
+ *                 position_id = position_id,
  */
   __pyx_t_6 = PyFloat_FromDouble(__pyx_v_self->commission_coeff); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1355, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
@@ -18219,7 +18219,7 @@ if (__pyx_t_7) {
  *                 amount_model=amount_model,
  *                 commission_coeff=self.commission_coeff,
  *                 tax_coeff=self.tax_coeff,             # <<<<<<<<<<<<<<
- *                 pms_id = pms_id,
+ *                 position_id = position_id,
  *                 order_id = order_id
  */
   __pyx_t_6 = PyFloat_FromDouble(__pyx_v_self->tax_coeff); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1356, __pyx_L1_error)
@@ -18230,15 +18230,15 @@ if (__pyx_t_7) {
   /* "QUANTAXIS/QAARP/QAAccount.pyx":1357
  *                 commission_coeff=self.commission_coeff,
  *                 tax_coeff=self.tax_coeff,
- *                 pms_id = pms_id,             # <<<<<<<<<<<<<<
+ *                 position_id = position_id,             # <<<<<<<<<<<<<<
  *                 order_id = order_id
  *             )                                                           # init
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_pms_id, __pyx_v_pms_id) < 0) __PYX_ERR(0, 1338, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_position_id, __pyx_v_position_id) < 0) __PYX_ERR(0, 1338, __pyx_L1_error)
 
   /* "QUANTAXIS/QAARP/QAAccount.pyx":1358
  *                 tax_coeff=self.tax_coeff,
- *                 pms_id = pms_id,
+ *                 position_id = position_id,
  *                 order_id = order_id             # <<<<<<<<<<<<<<
  *             )                                                           # init
  *                                                                         # order  QA_Order
@@ -18466,12 +18466,12 @@ PyObject *__pyx_v_money = 0;
 PyObject *__pyx_v_order_model = 0;
 PyObject *__pyx_v_amount_model = 0;
 PyObject *__pyx_v_order_id = 0;
-PyObject *__pyx_v_pms_id = 0;
+PyObject *__pyx_v_position_id = 0;
 PyObject *__pyx_r = 0;
 __Pyx_RefNannyDeclarations
 __Pyx_RefNannySetupContext("send_order (wrapper)", 0);
 {
-  static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_code,&__pyx_n_s_amount,&__pyx_n_s_time,&__pyx_n_s_towards,&__pyx_n_s_price,&__pyx_n_s_money,&__pyx_n_s_order_model,&__pyx_n_s_amount_model,&__pyx_n_s_order_id,&__pyx_n_s_pms_id,0};
+  static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_code,&__pyx_n_s_amount,&__pyx_n_s_time,&__pyx_n_s_towards,&__pyx_n_s_price,&__pyx_n_s_money,&__pyx_n_s_order_model,&__pyx_n_s_amount_model,&__pyx_n_s_order_id,&__pyx_n_s_position_id,0};
   PyObject* values[10] = {0,0,0,0,0,0,0,0,0,0};
 
   /* "QUANTAXIS/QAARP/QAAccount.pyx":1146
@@ -18542,7 +18542,7 @@ __Pyx_RefNannySetupContext("send_order (wrapper)", 0);
  *             order_model=None,
  *             amount_model=None,             # <<<<<<<<<<<<<<
  *             order_id=None,
- *             pms_id=None,
+ *             position_id=None,
  */
   values[7] = ((PyObject *)Py_None);
 
@@ -18550,7 +18550,7 @@ __Pyx_RefNannySetupContext("send_order (wrapper)", 0);
  *             order_model=None,
  *             amount_model=None,
  *             order_id=None,             # <<<<<<<<<<<<<<
- *             pms_id=None,
+ *             position_id=None,
  *     ):
  */
   values[8] = ((PyObject *)Py_None);
@@ -18558,7 +18558,7 @@ __Pyx_RefNannySetupContext("send_order (wrapper)", 0);
   /* "QUANTAXIS/QAARP/QAAccount.pyx":1155
  *             amount_model=None,
  *             order_id=None,
- *             pms_id=None,             # <<<<<<<<<<<<<<
+ *             position_id=None,             # <<<<<<<<<<<<<<
  *     ):
  *         """
  */
@@ -18648,7 +18648,7 @@ __Pyx_RefNannySetupContext("send_order (wrapper)", 0);
       CYTHON_FALLTHROUGH;
       case  9:
       if (kw_args > 0) {
-        PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pms_id);
+        PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_position_id);
         if (value) { values[9] = value; kw_args--; }
       }
     }
@@ -18690,7 +18690,7 @@ __Pyx_RefNannySetupContext("send_order (wrapper)", 0);
   __pyx_v_order_model = values[6];
   __pyx_v_amount_model = values[7];
   __pyx_v_order_id = values[8];
-  __pyx_v_pms_id = values[9];
+  __pyx_v_position_id = values[9];
 }
 goto __pyx_L4_argument_unpacking_done;
 __pyx_L5_argtuple_error:;
@@ -18700,7 +18700,7 @@ __Pyx_AddTraceback("QUANTAXIS.QAARP.QAAccount.QA_Account.send_order", __pyx_clin
 __Pyx_RefNannyFinishContext();
 return NULL;
 __pyx_L4_argument_unpacking_done:;
-__pyx_r = __pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_20send_order(((struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *)__pyx_v_self), __pyx_v_code, __pyx_v_amount, __pyx_v_time, __pyx_v_towards, __pyx_v_price, __pyx_v_money, __pyx_v_order_model, __pyx_v_amount_model, __pyx_v_order_id, __pyx_v_pms_id);
+__pyx_r = __pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_20send_order(((struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *)__pyx_v_self), __pyx_v_code, __pyx_v_amount, __pyx_v_time, __pyx_v_towards, __pyx_v_price, __pyx_v_money, __pyx_v_order_model, __pyx_v_amount_model, __pyx_v_order_id, __pyx_v_position_id);
 
 /* "QUANTAXIS/QAARP/QAAccount.pyx":1144
  *         )
@@ -18715,7 +18715,7 @@ __Pyx_RefNannyFinishContext();
 return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_20send_order(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self, PyObject *__pyx_v_code, PyObject *__pyx_v_amount, PyObject *__pyx_v_time, PyObject *__pyx_v_towards, PyObject *__pyx_v_price, PyObject *__pyx_v_money, PyObject *__pyx_v_order_model, PyObject *__pyx_v_amount_model, PyObject *__pyx_v_order_id, PyObject *__pyx_v_pms_id) {
+static PyObject *__pyx_pf_9QUANTAXIS_5QAARP_9QAAccount_10QA_Account_20send_order(struct __pyx_obj_9QUANTAXIS_5QAARP_9QAAccount_QA_Account *__pyx_v_self, PyObject *__pyx_v_code, PyObject *__pyx_v_amount, PyObject *__pyx_v_time, PyObject *__pyx_v_towards, PyObject *__pyx_v_price, PyObject *__pyx_v_money, PyObject *__pyx_v_order_model, PyObject *__pyx_v_amount_model, PyObject *__pyx_v_order_id, PyObject *__pyx_v_position_id) {
 PyObject *__pyx_r = NULL;
 __Pyx_RefNannyDeclarations
 PyObject *__pyx_t_1 = NULL;
@@ -18732,7 +18732,7 @@ __pyx_t_2.money = __pyx_v_money;
 __pyx_t_2.order_model = __pyx_v_order_model;
 __pyx_t_2.amount_model = __pyx_v_amount_model;
 __pyx_t_2.order_id = __pyx_v_order_id;
-__pyx_t_2.pms_id = __pyx_v_pms_id;
+__pyx_t_2.position_id = __pyx_v_position_id;
 __pyx_t_1 = __pyx_vtabptr_9QUANTAXIS_5QAARP_9QAAccount_QA_Account->send_order(__pyx_v_self, 1, &__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1144, __pyx_L1_error)
 __Pyx_GOTREF(__pyx_t_1);
 __pyx_r = __pyx_t_1;
@@ -31065,7 +31065,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pd, __pyx_k_pd, sizeof(__pyx_k_pd), 0, 0, 1, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
   {&__pyx_n_s_pivot_table, __pyx_k_pivot_table, sizeof(__pyx_k_pivot_table), 0, 0, 1, 1},
-  {&__pyx_n_s_pms_id, __pyx_k_pms_id, sizeof(__pyx_k_pms_id), 0, 0, 1, 1},
+  {&__pyx_n_s_position_id, __pyx_k_position_id, sizeof(__pyx_k_position_id), 0, 0, 1, 1},
   {&__pyx_n_s_portfolio_cookie, __pyx_k_portfolio_cookie, sizeof(__pyx_k_portfolio_cookie), 0, 0, 1, 1},
   {&__pyx_n_s_position_profit, __pyx_k_position_profit, sizeof(__pyx_k_position_profit), 0, 0, 1, 1},
   {&__pyx_n_s_pre_balance, __pyx_k_pre_balance, sizeof(__pyx_k_pre_balance), 0, 0, 1, 1},

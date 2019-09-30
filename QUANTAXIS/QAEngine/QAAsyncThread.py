@@ -5,7 +5,7 @@ from functools import wraps
 from janus import Queue as QA_AsyncQueue
 
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
-from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
+from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic, RUNNING_STATUS
 
 
 class QA_AsyncThread(threading.Thread):
@@ -21,6 +21,7 @@ class QA_AsyncThread(threading.Thread):
             topic='QA_AsyncThread',
             lens=3
         ) if name is None else name
+        self._status = RUNNING_STATUS.PENDING
 
     def __repr__(self):
         return '<QA_AsyncThread: {}  id={} ident {}>'.format(
@@ -34,7 +35,13 @@ class QA_AsyncThread(threading.Thread):
         return self._queue.async_q
 
     def run(self):
-        asyncio.new_event_loop().run_until_complete(self.main())
+        try:
+            asyncio.new_event_loop().run_until_complete(self.main())
+            self._status = RUNNING_STATUS.RUNNING
+        except Exception as e:
+            print('QAASYNCTHREAD ERROR: {}'.format(e))
+            self._status = RUNNING_STATUS.STOPED
+            raise Exception
 
     async def event_hadler(self, event):
         self.do(event)

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -107,10 +107,7 @@ class QA_Market(QA_Trade):
         data 是市场数据
         被 QABacktest 中run 方法调用 upcoming_data
         '''
-        # main thread'
-        # if self.running_time is not None and self.running_time!= data.datetime[0]:
-        #     for item in self.broker.keys():
-        #         self._settle(item)
+
         self.running_time = data.datetime[0]
         for account in self.session.values():
             account.run(QA_Event(

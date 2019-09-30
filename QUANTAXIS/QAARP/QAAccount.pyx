@@ -1152,7 +1152,7 @@ cdef class QA_Account:
             order_model=None,
             amount_model=None,
             order_id=None,
-            pms_id=None,
+            position_id=None,
     ):
         """
         ATTENTION CHANGELOG 1.0.28
@@ -1354,7 +1354,7 @@ cdef class QA_Account:
                 amount_model=amount_model,
                 commission_coeff=self.commission_coeff,
                 tax_coeff=self.tax_coeff,
-                pms_id = pms_id,
+                position_id = position_id,
                 order_id = order_id
             )                                                           # init
                                                                         # 历史委托order状态存储， 保存到 QA_Order 对象中的队列中

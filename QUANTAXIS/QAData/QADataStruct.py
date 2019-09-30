@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -42,11 +42,15 @@ from functools import lru_cache, partial, reduce
 
 import numpy as np
 import pandas as pd
-from pyecharts import Kline
+try:
+    from pyecharts import Kline
+except:
+    from pyecharts.charts import Kline
 
 from QUANTAXIS.QAData.base_datastruct import _quotation_base
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
-from QUANTAXIS.QAData.data_resample import QA_data_tick_resample, QA_data_day_resample, QA_data_min_resample
+from QUANTAXIS.QAData.data_resample import (QA_data_tick_resample, QA_data_day_resample,
+                                            QA_data_min_resample, QA_data_futuremin_resample)
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic,
@@ -264,7 +268,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
     def resample(self, level):
         try:
-            return self.add_func(QA_data_min_resample, level).sort_index()
+            return self.add_funcx(QA_data_min_resample, level).sort_index()
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None
@@ -288,6 +292,61 @@ class QA_DataStruct_Stock_min(_quotation_base):
     @lru_cache()
     def min60(self):
         return self.resample('60min')
+
+
+class QA_DataStruct_Index_min(_quotation_base):
+    def __init__(self, DataFrame, dtype='index_min'):
+        super().__init__(DataFrame, dtype, if_fq)
+
+        try:
+            if 'preclose' in DataFrame.columns:
+                self.data = DataFrame.loc[:, [
+                    'open', 'high', 'low', 'close', 'volume', 'amount', 'preclose', 'type']]
+            else:
+                self.data = DataFrame.loc[:, [
+                    'open', 'high', 'low', 'close', 'volume', 'amount', 'type']]
+        except Exception as e:
+            raise e
+
+        self.type = dtype
+
+        self.data = self.data.sort_index()
+
+    # 抽象类继承
+    def choose_db(self):
+        self.mongo_coll = DATABASE.index_min
+
+    def __repr__(self):
+        return '< QA_DataStruct_Index_Min with {} instruments>'.format(len(self.code))
+    __str__ = __repr__
+
+    def resample(self, level):
+        try:
+            return self.add_funcx(QA_data_min_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
+
+    @property
+    @lru_cache()
+    def min5(self):
+        return self.resample('5min')
+
+    @property
+    @lru_cache()
+    def min15(self):
+        return self.resample('15min')
+
+    @property
+    @lru_cache()
+    def min30(self):
+        return self.resample('30min')
+
+    @property
+    @lru_cache()
+    def min60(self):
+        return self.resample('60min')
+
 
 
 class QA_DataStruct_Future_day(_quotation_base):
@@ -437,7 +496,7 @@ class QA_DataStruct_Future_min(_quotation_base):
 
     def resample(self, level):
         try:
-            return self.add_func(QA_data_min_resample, level).sort_index()
+            return self.add_funcx(QA_data_futuremin_resample, level).sort_index()
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None
@@ -560,12 +619,15 @@ class QA_DataStruct_Stock_transaction():
 
         self.type = 'stock_transaction'
 
+
         self.data = DataFrame
         if 'amount' not in DataFrame.columns:
             if 'vol' in DataFrame.columns:
                 self.data['amount'] = self.data.vol * self.data.price * 100
             elif 'volume' in DataFrame.columns:
                 self.data['amount'] = self.data.volume * self.data.price * 100
+        if '_id' in DataFrame.columns:
+            self.data = self.data.drop(["_id"], axis=1)
         self.mongo_coll = DATABASE.stock_transaction
 
     @property
@@ -795,6 +857,253 @@ class QA_DataStruct_Stock_transaction():
         else:
             return self.data.loc[start:end]
 
+
+class QA_DataStruct_Index_transaction():
+    def __init__(self, DataFrame):
+        """Index Transaction
+
+        Arguments:
+            DataFrame {pd.Dataframe} -- [input is one/multi day transaction]
+        """
+
+        self.type = 'index_transaction'
+
+        self.data = DataFrame
+        if 'amount' not in DataFrame.columns:
+            if 'vol' in DataFrame.columns:
+                self.data['amount'] = self.data.vol * self.data.price * 100
+            elif 'volume' in DataFrame.columns:
+                self.data['amount'] = self.data.volume * self.data.price * 100
+        if '_id' in DataFrame.columns:
+            self.data = self.data.drop(["_id"], axis=1)
+        self.mongo_coll = DATABASE.index_transaction
+
+    @property
+    @lru_cache()
+    def buyorsell(self):
+        """return the buy or sell towards 0--buy 1--sell 2--none
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            [pd.Series] -- [description]
+        """
+
+        return self.data.buyorsell
+
+    @property
+    @lru_cache()
+    def price(self):
+        """return the deal price of tick transaction
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.data.price
+
+    @property
+    @lru_cache()
+    def vol(self):
+        """return the deal volume of tick
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            pd.Series -- volume of transaction
+        """
+
+        try:
+            return self.data.volume
+        except:
+            return self.data.vol
+
+    volume = vol
+
+    @property
+    @lru_cache()
+    def date(self):
+        """return the date of transaction
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            pd.Series -- date of transaction
+        """
+
+        return self.data.date
+
+    @property
+    @lru_cache()
+    def time(self):
+        """return the exact time of transaction(to minute level)
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            pd.Series -- till minute level
+        """
+
+        return self.data.time
+
+    @property
+    @lru_cache()
+    def datetime(self):
+        """return the datetime of transaction
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            pd.Series -- [description]
+        """
+
+        return self.data.datetime
+
+    @property
+    @lru_cache()
+    def order(self):
+        """return the order num of transaction/ for everyday change
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            pd.series -- [description]
+        """
+
+        return self.data.order
+
+    @property
+    @lru_cache()
+    def index(self):
+        """return the transaction index
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.data.index
+
+    @property
+    @lru_cache()
+    def amount(self):
+        """return current tick trading amount
+
+        Decorators:
+            lru_cache
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.data.amount
+    """
+    最新:IF(ISNULL(NEW),PRE,NEW);
+    IF (ISNULL(RANGE_AVG_PRICE) OR RANGE_AVG_PRICE <= 0)
+    {
+        IF (MARKETTYPE == 232 OR MARKETTYPE == 56 OR MARKETTYPE==64 OR MARKETTYPE==128 OR MARKETTYPE==168 OR MARKETTYPE==184 OR MARKETTYPE == 200 OR MARKETTYPE == 80 OR (VOL > 1 AND VOL<100))
+        {
+            b=SUBSAMEDAY(&VOL) ;
+            m=SUM(b*最新,0);
+            均价:IF(m>0,m/VOL,PRE);
+        }
+        ELSE IF(CODETYPE!=0 AND MONEY>0)
+        {
+            IF(ISNULL(MONEY) OR ISNULL(VOL) OR VOL==0 OR MONEY==0)
+                均价:PRE;
+            ELSE IF(VOL==VOL[1] OR MONEY==MONEY[1])
+                均价:均价[1];
+            ELSE
+                均价:MONEY/VOL;
+        }
+        ELSE IF (MARKETTYPE == 176)
+        {
+            b=SUBSAMEDAY(&MONEY);
+            m=SUM(b*最新,0);
+            IF(m>0)
+                均价:m/MONEY;
+        }
+    }
+    ELSE
+    {
+        均价:RANGE_AVG_PRICE;
+    }
+    DRAWGBK(MARKETTYPE==32 AND FORMATTIME(1)<10 AND TRADETIME>242),RGB(0,0,128);
+    RETURN;
+
+
+    hx_star;
+    hx_star_p;
+    """
+
+    def __repr__(self):
+        return '< QA_DataStruct_Index_Transaction >'
+
+    def __call__(self):
+        return self.data
+
+    def resample(self, type_='1min'):
+        """resample methods
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return QA_DataStruct_Index_min(QA_data_tick_resample(self.data, type_))
+
+    def get_big_orders(self, bigamount=1000000):
+        """return big order
+
+        Keyword Arguments:
+            bigamount {[type]} -- [description] (default: {1000000})
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.data.query('amount>={}'.format(bigamount))
+
+    def get_medium_order(self, lower=200000, higher=1000000):
+        """return medium
+
+        Keyword Arguments:
+            lower {[type]} -- [description] (default: {200000})
+            higher {[type]} -- [description] (default: {1000000})
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.data.query('amount>={}'.format(lower)).query('amount<={}'.format(higher))
+
+    def get_small_order(self, smallamount=200000):
+        """return small level order
+
+        Keyword Arguments:
+            smallamount {[type]} -- [description] (default: {200000})
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.data.query('amount<={}'.format(smallamount))
+
+    def get_time(self, start, end=None):
+        if end is None:
+            return self.data.loc[start]
+        else:
+            return self.data.loc[start:end]
 
 class QA_DataStruct_Day(_quotation_base):
     """这个类是个通用类 一般不使用  特定生成的时候可能会用到 只具备基类方法
