@@ -20,8 +20,30 @@ RUN wget https://studygolang.com/dl/golang/go1.13.1.linux-amd64.tar.gz && tar xv
 # # && mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake \
 # # && cmake -version
 # WORKDIR /
-RUN go install github.com/gopherdata/gophernotes \
-    && cp /root/go/bin/gophernotes /usr/local/bin/ \
+
+RUN mkdir /root/go && cd /root/go \
+    && apt-get install pkg-config\
+    # && go get -insecure gonum.org/v1/plot/... \
+    # && go get -insecure gonum.org/v1/gonum/... \
+    # && go get github.com/kniren/gota/... \
+    # && go get github.com/sajari/regression \
+    # && go get github.com/sjwhitworth/golearn/... \
+    # && go get -insecure go-hep.org/x/hep/csvutil/... \
+    # && go get -insecure go-hep.org/x/hep/fit \
+    # && go get -insecure go-hep.org/x/hep/hbook \
+    # && go get github.com/montanaflynn/stats \
+    # && go get github.com/boltdb/bolt \
+    # && go get github.com/patrickmn/go-cache \
+    # && go get github.com/chewxy/math32 \
+    # && go get github.com/chewxy/hm \
+    # && go get gorgonia.org/vecf64 \
+    # && go get gorgonia.org/vecf32 \
+    # && go get github.com/awalterschulze/gographviz \
+    # && go get github.com/leesper/go_rng \
+    # && go get github.com/pkg/errors \
+    # && go get github.com/stretchr/testify/assert \
+    && go get -u github.com/gopherdata/gophernotes
+RUN cp /root/go/bin/gophernotes /usr/local/bin/ \
     && mkdir -p ~/.local/share/jupyter/kernels/gophernotes \
     && cp -r /root/go/src/github.com/gopherdata/gophernotes/kernel/* ~/.local/share/jupyter/kernels/gophernotes
     ## clean
