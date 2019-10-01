@@ -50,8 +50,8 @@ RUN mkdir /root/go && cd /root/go \
 
 RUN go get -u github.com/gopherdata/gophernotes
 RUN cp /root/go/bin/gophernotes /usr/local/bin/ \
-    && mkdir -p ~/.local/share/jupyter/kernels/gophernotes \
-    && cd ~/.local/share/jupyter/kernels/gophernotes \
+    && mkdir -p /home/jovyan/.local/share/jupyter/kernels/gophernotes \
+    && cd /home/jovyan/.local/share/jupyter/kernels/gophernotes \
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json \
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png \
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
