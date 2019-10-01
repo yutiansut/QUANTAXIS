@@ -1,4 +1,4 @@
-FROM jdaocloud.io/quantaxis/qajupyter-r
+FROM daocloud.io/quantaxis/qajupyter-r
 
 RUN git clone https://github.com/gopherdata/gophernotes /go/src/github.com/gopherdata/gophernotes/
 RUN set -x \
