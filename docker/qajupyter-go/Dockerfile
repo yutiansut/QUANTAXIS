@@ -1,6 +1,8 @@
 FROM daocloud.io/quantaxis/qajupyter-r
 ENV GOPATH=/root/go
 ENV PATH=${GOPATH}/bin:/usr/lib/go-1.13/bin:/usr/local/cmake/bin:${PATH}
+ENV PKG_CONFIG_PATH = /usr/local/lib/pkgconfig
+ENV LD_LIBRARY_PATH=:${LD_LIBRARY_PATH}:/usr/local/bin:/usr/local/lib
 ENV GO111MODULE=on
 USER root
 RUN wget https://studygolang.com/dl/golang/go1.13.1.linux-amd64.tar.gz && tar xvf go1.13.1.linux-amd64.tar.gz \
@@ -22,7 +24,10 @@ RUN wget https://studygolang.com/dl/golang/go1.13.1.linux-amd64.tar.gz && tar xv
 # WORKDIR /
 
 RUN mkdir /root/go && cd /root/go \
-    && apt-get install pkg-config\
+    && apt install -y build-essential \
+    && apt update && apt upgrade \
+    && apt install -y pkg-config\
+    && apt-get install -y libzmq3-dev
     # && go get -insecure gonum.org/v1/plot/... \
     # && go get -insecure gonum.org/v1/gonum/... \
     # && go get github.com/kniren/gota/... \
@@ -42,11 +47,15 @@ RUN mkdir /root/go && cd /root/go \
     # && go get github.com/leesper/go_rng \
     # && go get github.com/pkg/errors \
     # && go get github.com/stretchr/testify/assert \
-    && go get -u github.com/gopherdata/gophernotes
+
+RUN go get -u github.com/gopherdata/gophernotes
 RUN cp /root/go/bin/gophernotes /usr/local/bin/ \
     && mkdir -p ~/.local/share/jupyter/kernels/gophernotes \
-    && cp -r /root/go/src/github.com/gopherdata/gophernotes/kernel/* ~/.local/share/jupyter/kernels/gophernotes
+    && cd ~/.local/share/jupyter/kernels/gophernotes \
+    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json \
+    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png \
+    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
     ## clean
 EXPOSE 8888 
-RUN Rscript -e "install.packages(c(\"lars\", \"glmnet\", \"rugarch\"), repos = c(\"http://irkernel.github.io/\", \"http://cran.rstudio.com\"))"
+
 CMD ["bash", "/root/runpy.sh"]
