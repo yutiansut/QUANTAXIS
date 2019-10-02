@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    kompose.cmd: E:\k8s-for-docker-desktop\kompose-windows-amd64.exe convert --replication-controller
+      --replicas 3
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qamonitor
+  name: qamonitor
+spec:
+  replicas: 3
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: qamonitor
+    spec:
+      containers:
+      - image: daocloud.io/quantaxis/qa-monitor:latest
+        name: qamonitor
+        ports:
+        - containerPort: 61209
+        - containerPort: 61208
+        resources: {}
+      hostPID: true
+      restartPolicy: Always
+      securityContext: {}
+status:
+  replicas: 0
