@@ -10,7 +10,7 @@ RUN cd ~ && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASI
 && pip install redis \
 && pip install dag-factory\
 && pip install quantaxis -U \
-&& pip uninstall pytdx \
+&& pip uninstall pytdx -y \
 && pip install pytdx
 
 COPY run-community.sh /root/
