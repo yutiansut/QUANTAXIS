@@ -7,7 +7,14 @@ RUN cd /root && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_
 && pip install quantaxis-servicedetect \
 && pip install quantaxis-pubsub
 COPY run-community.sh /root/
-RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py
+RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py\
+    && mkdir -p /home/jovyan/.local/share/jupyter/kernels/gophernotes \
+    && cd /home/jovyan/.local/share/jupyter/kernels/gophernotes \
+    && pip install quantaxis -U\
+    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json \
+    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png \
+    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
+    ## clean
 
 RUN chmod +x /root/run-community.sh
 CMD ["bash", "/root/run-community.sh"]
