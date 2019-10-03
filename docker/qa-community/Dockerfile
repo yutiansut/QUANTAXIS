@@ -8,7 +8,10 @@ RUN cd ~ && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASI
 && pip install quantaxis-pubsub \
 && pip install aioch \
 && pip install redis \
-&& pip install dag-factory
+&& pip install dag-factory\
+&& pip install quantaxis -U \
+&& pip uninstall pytdx \
+&& pip install pytdx
 
 COPY run-community.sh /root/
 RUN chmod +x /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py \
