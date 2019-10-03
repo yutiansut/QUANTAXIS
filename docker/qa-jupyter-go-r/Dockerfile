@@ -27,7 +27,10 @@ RUN mkdir /root/go && cd /root/go \
     && apt install -y build-essential \
     && apt update && apt upgrade \
     && apt install -y pkg-config\
-    && apt-get install -y libzmq3-dev
+    && apt-get install -y libzmq3-dev\
+    && pip install quantaxis -U \
+    && pip uninstall pytdx \
+    && pip install pytdx
     # && go get -insecure gonum.org/v1/plot/... \
     # && go get -insecure gonum.org/v1/gonum/... \
     # && go get github.com/kniren/gota/... \
