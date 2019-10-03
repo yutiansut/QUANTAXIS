@@ -11,7 +11,7 @@ RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.p
     && mkdir -p /home/jovyan/.local/share/jupyter/kernels/gophernotes \
     && cd /home/jovyan/.local/share/jupyter/kernels/gophernotes \
     && pip install quantaxis -U\
-    && pip uninstall pytdx \
+    && pip uninstall pytdx -y \
     && pip install pytdx \
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json \
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png \
