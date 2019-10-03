@@ -454,24 +454,34 @@ git clone https://github.com/你的账户名/quantaxis
 
 参见 [QUANTAXIS/QADESKTOP](https://github.com/quantaxis/qadesktop)
 
-![](http://pic.yutiansut.com/qad1.png)
-![](http://pic.yutiansut.com/qad2.png)
-![](http://pic.yutiansut.com/qad3.png)
-![](http://pic.yutiansut.com/qad4.png)
-![](http://pic.yutiansut.com/qad5.png)
-![](http://pic.yutiansut.com/qad6.png)
-![](http://pic.yutiansut.com/qad8.png)
+首页
+
+![image.png](http://pic.yutiansut.com/FnGCyLQ8nRLFOYX8elP4PhJ7IQuq)
+
+登陆
+
+![image.png](http://pic.yutiansut.com/FmDc4ZPxHeNncZICoMr9dqz46h78)
+
+行情/键盘精灵
+
+![image.png](http://pic.yutiansut.com/FhiN_asx158UobclVpCY00e61pjr)
+
+lab 投研
+
+![image.png](http://pic.yutiansut.com/FlkJTKu7iG-FD7Rz2DwUhvs2Cy3j)
+
+回测/组合
+
+![image.png](http://pic.yutiansut.com/FuB_dC5vX5Y1_Z8At0MiMRXcE5ZT)
+![image.png](http://pic.yutiansut.com/Fqvh8m1ka4jdmwYwBn8MAHixpZOm)
 
 模拟实盘多账户管理
-
+![image.png](http://pic.yutiansut.com/Fh0fZzqORNRmY5txaXYgHWJUCPqw)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015440.png)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015451.png)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
 
-手工定制版本 LAB
-
-![](http://pic.yutiansut.com/QADESK_LAB.png)
 
 ##  12. QUANTAXIS 标准化协议和未来协议
 
