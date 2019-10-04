@@ -3,6 +3,11 @@
 
 ------------------
 
+
+![QUANTAXIS 2019.png](http://pic.yutiansut.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
+
+------------------
+
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
 
 
