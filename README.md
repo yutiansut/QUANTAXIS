@@ -12,8 +12,7 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
-
-![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
+![QUANTAXIS_LOGO_LAST_small.jpg](http://pic.yutiansut.com/Fn0TPEcwu_uhraf58_93Ul5yfvAz)
 
 ![QUANTAXIS 2019.png](http://pic.yutiansut.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
 
@@ -122,6 +121,9 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QUNATAXIS MARKETCOLLECTOR](https://github.com/yutiansut/QUANTAXIS_RealtimeCollector) 全市场订阅分发的行情推送
 - [QUANTAXIS_RandomPrice](https://github.com/yutiansut/QUANTAXIS_RandomPrice) 基于OU过程的随机行情模拟
 
+> 账户协议
+
+- [QIFI](https://github.com/QUANTAXIS/QIFI) 一个基于快期DIFF协议的QA实时账户协议
 
 #### 未开源
 
@@ -134,6 +136,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QUANTAXIS_PBSystem](https://github.com/yutiansut/QAPBSystem) QUANTAXIS PB系统
 - [QUANTAXIS_QARISKPRO](https://github.com/yutiansut/QARISKPRO) QUANTAXIS 多市场多账户集成的实时风控系统
 - [QUANTAXIS QADESKPRO](https://github.com/yutiansut/qadeskpro) 新版本客户端网页(部分开源)
+- [QUANTAXIS PMS](https://github.com/yutiansut/QAPMS) 一个轻量级的纯python实现的  兼容QIFI协议的账户/仓位管理系统
 
 > tick回测
 
@@ -155,7 +158,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [portable_QA](https://github.com/QUANTAXIS/portable_QA) 一个独立的python环境,免配置
 - [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
 
-![qaresolution](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190815112455.png)
+
 
 ==========================================
 
