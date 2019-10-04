@@ -3,19 +3,7 @@
 
 ------------------
 
-QUANTAXIS 内测版 
 
-论坛 [QUANTAXISCLUB上线](http://www.yutiansut.com:3000)
-
-http://www.yutiansut.com:3000
-
-凡通过论坛进行提问的 均有最高的回复优先级
-
-全新文档界面 [QUANTAXISDocs](http://doc.yutiansut.com)
-
-http://doc.yutiansut.com
-
-------------------
 
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
 
@@ -24,10 +12,9 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
+![QUANTAXIS_LOGO_LAST_small.jpg](http://pic.yutiansut.com/Fn0TPEcwu_uhraf58_93Ul5yfvAz)
 
-![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
-
-
+![QUANTAXIS 2019.png](http://pic.yutiansut.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
@@ -83,6 +70,17 @@ QAPRO公共号免费提供了下单推送接口, 关注公共号回复trade即�
 
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
 
+> QUANTAXIS 内测版论坛 [QUANTAXISCLUB上线](http://www.yutiansut.com:3000)
+
+http://www.yutiansut.com:3000
+
+凡通过论坛进行提问的 均有最高的回复优先级
+
+> 全新文档界面 [QUANTAXISDocs](http://doc.yutiansut.com)
+
+http://doc.yutiansut.com
+
+
 
 QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化分析解决方案. 我们通过高度解耦的模块化以及标准化协议,可以快速的实现面向场景的定制化解决方案.QUANTAXIS是一个渐进式的开放式框架,你可以根据自己的需要,引入自己的数据,分析方案,可视化过程等,也可以通过RESTful接口,快速实现多人局域网/广域网内的协作.
 
@@ -123,6 +121,9 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QUNATAXIS MARKETCOLLECTOR](https://github.com/yutiansut/QUANTAXIS_RealtimeCollector) 全市场订阅分发的行情推送
 - [QUANTAXIS_RandomPrice](https://github.com/yutiansut/QUANTAXIS_RandomPrice) 基于OU过程的随机行情模拟
 
+> 账户协议
+
+- [QIFI](https://github.com/QUANTAXIS/QIFI) 一个基于快期DIFF协议的QA实时账户协议
 
 #### 未开源
 
@@ -135,6 +136,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QUANTAXIS_PBSystem](https://github.com/yutiansut/QAPBSystem) QUANTAXIS PB系统
 - [QUANTAXIS_QARISKPRO](https://github.com/yutiansut/QARISKPRO) QUANTAXIS 多市场多账户集成的实时风控系统
 - [QUANTAXIS QADESKPRO](https://github.com/yutiansut/qadeskpro) 新版本客户端网页(部分开源)
+- [QUANTAXIS PMS](https://github.com/yutiansut/QAPMS) 一个轻量级的纯python实现的  兼容QIFI协议的账户/仓位管理系统
 
 > tick回测
 
@@ -156,7 +158,7 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [portable_QA](https://github.com/QUANTAXIS/portable_QA) 一个独立的python环境,免配置
 - [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) 爬虫部分
 
-![qaresolution](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190815112455.png)
+
 
 ==========================================
 
@@ -165,18 +167,15 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ### (2019-03-23)QUANTAXIS 2019 支持多市场的面向场景解决方案
 
+[哔哩哔哩 传送门](https://www.bilibili.com/video/av47284727/)
 
-![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
-[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
-
-
-### 2019-09-07 STU02 第二次直播录像现已上传
-
-[![](https://yutiansut.oss-cn-shenzhen.aliyuncs.com/QASTU02.png)](https://www.bilibili.com/video/av67022443)
+### 2019-09-07 STU02 第二次录播 关于docker和流计算
 
 [哔哩哔哩 传送门](https://www.bilibili.com/video/av67022443)
 
+### 2019-09-14 STU03 第三次录播 关于期货模拟盘
 
+[哔哩哔哩 传送门](https://www.bilibili.com/video/av67817623)
 
 
 ==========================================
@@ -242,7 +241,7 @@ qaservice是 quantaxis 面向(不想自己配环境的小白) / (有超级多服
 ##  1. 功能
 ======
 
-![](http://pic.yutiansut.com/QUANTAXIS.png)
+![QUANTAXIS 2019.png](http://pic.yutiansut.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
 
 已经实现：
 
@@ -346,11 +345,6 @@ CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_
 参见 [QUANTAXIS WEB API说明](Documents/backendapi.md)
 
 
-
-![](http://pic.yutiansut.com/framework.png)
-
-
-- [QUANTAXIS 2018开发计划表](job_list.md)
 
 
 ##  2. 文档
