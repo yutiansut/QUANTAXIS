@@ -167,18 +167,15 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ### (2019-03-23)QUANTAXIS 2019 支持多市场的面向场景解决方案
 
+[哔哩哔哩 传送门](https://www.bilibili.com/video/av47284727/)
 
-![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
-[在哔哩哔哩观看录播](https://www.bilibili.com/video/av47284727/)
-
-
-### 2019-09-07 STU02 第二次直播录像现已上传
-
-[![](https://yutiansut.oss-cn-shenzhen.aliyuncs.com/QASTU02.png)](https://www.bilibili.com/video/av67022443)
+### 2019-09-07 STU02 第二次录播 关于docker和流计算
 
 [哔哩哔哩 传送门](https://www.bilibili.com/video/av67022443)
 
+### 2019-09-14 STU03 第三次录播 关于期货模拟盘
 
+[哔哩哔哩 传送门](https://www.bilibili.com/video/av67817623)
 
 
 ==========================================
@@ -244,7 +241,7 @@ qaservice是 quantaxis 面向(不想自己配环境的小白) / (有超级多服
 ##  1. 功能
 ======
 
-![](http://pic.yutiansut.com/QUANTAXIS.png)
+![QUANTAXIS 2019.png](http://pic.yutiansut.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
 
 已经实现：
 
@@ -348,11 +345,6 @@ CTP 的海风broker魔改封装:  [QA_AtBroker](https://github.com/QUANTAXIS/QA_
 参见 [QUANTAXIS WEB API说明](Documents/backendapi.md)
 
 
-
-![](http://pic.yutiansut.com/framework.png)
-
-
-- [QUANTAXIS 2018开发计划表](job_list.md)
 
 
 ##  2. 文档
