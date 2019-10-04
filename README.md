@@ -3,20 +3,6 @@
 
 ------------------
 
-QUANTAXIS 内测版 
-
-论坛 [QUANTAXISCLUB上线](http://www.yutiansut.com:3000)
-
-http://www.yutiansut.com:3000
-
-凡通过论坛进行提问的 均有最高的回复优先级
-
-全新文档界面 [QUANTAXISDocs](http://doc.yutiansut.com)
-
-http://doc.yutiansut.com
-
-------------------
-
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
 
 
@@ -82,6 +68,17 @@ This project exists thanks to all the people who contribute. [[Contribute](https
 QAPRO公共号免费提供了下单推送接口, 关注公共号回复trade即可使用
 
 > 许多问题 可以在 [GITHUB ISSUE](https://github.com/QUANTAXIS/QUANTAXIS/issues)中找到, 你可以提出新的issue
+
+> QUANTAXIS 内测版论坛 [QUANTAXISCLUB上线](http://www.yutiansut.com:3000)
+
+http://www.yutiansut.com:3000
+
+凡通过论坛进行提问的 均有最高的回复优先级
+
+> 全新文档界面 [QUANTAXISDocs](http://doc.yutiansut.com)
+
+http://doc.yutiansut.com
+
 
 
 QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化分析解决方案. 我们通过高度解耦的模块化以及标准化协议,可以快速的实现面向场景的定制化解决方案.QUANTAXIS是一个渐进式的开放式框架,你可以根据自己的需要,引入自己的数据,分析方案,可视化过程等,也可以通过RESTful接口,快速实现多人局域网/广域网内的协作.
