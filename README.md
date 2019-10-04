@@ -4,9 +4,6 @@
 ------------------
 
 
-![QUANTAXIS 2019.png](http://pic.yutiansut.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
-
-------------------
 
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
 
@@ -18,7 +15,7 @@ Quantitative Financial FrameWork
 
 ![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
 
-
+![QUANTAXIS 2019.png](http://pic.yutiansut.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
