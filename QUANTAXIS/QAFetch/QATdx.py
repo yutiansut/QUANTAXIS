@@ -799,7 +799,7 @@ def QA_fetch_get_bond_min(code, start, end, frequence='1min', ip=None,
                     str(code),
                     (int(lens / 800) - i) * 800, 800)) for i
              in range(int(lens / 800) + 1)], axis=0, sort=False)
-        print(data)
+        #print(data)
         data = data \
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                   inplace=False) \
