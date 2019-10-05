@@ -37,7 +37,7 @@ from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 from retrying import retry
 
-from QUANTAXIS.QAFetch.base import _select_market_code, _select_index_code, _select_type
+from QUANTAXIS.QAFetch.base import _select_market_code, _select_index_code, _select_type, _select_bond_market_code
 from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
                               QA_util_date_str2int, QA_util_date_valid,
                               QA_util_get_real_date, QA_util_get_real_datelist,
@@ -585,10 +585,16 @@ def for_sz(code):
         return 'index_cn'
     elif str(code)[0:2] in ['15']:
         return 'etf_cn'
-    elif str(code)[0:2] in ['10', '11', '12', '13']:
+    elif str(code)[0:3] in ['101', '104', '105', '106', '107', '108', '109',
+                            '111', '112', '114', '115', '116', '117', '118', '119',
+                            '123', '127', '128',
+                            '131', '139', ]:
         # 10xxxx 国债现货
         # 11xxxx 债券
         # 12xxxx 可转换债券
+
+            # 123
+            # 127
         # 12xxxx 国债回购
         return 'bond_cn'
 
@@ -607,7 +613,10 @@ def for_sh(code):
         return 'etf_cn'
     # 110×××120×××企业债券；
     # 129×××100×××可转换债券；
-    elif str(code)[0:3] in ['129', '100', '110', '120']:
+    # 113A股对应可转债 132
+    elif str(code)[0:3] in ['102', '110', '113', '120', '122', '124',
+                            '130', '132', '133', '134', '135', '136',
+                            '140', '141', '143', '144', '147', '148']:
         return 'bond_cn'
     else:
         return 'undefined'
@@ -714,7 +723,6 @@ def QA_fetch_get_bond_list(ip=None, port=None):
         return pd.concat([sz, sh], sort=False).query('sec=="bond_cn"').sort_index().assign(
             name=data['name'].apply(lambda x: str(x)[0:6]))
 
-
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None,
                           port=None):
@@ -737,28 +745,11 @@ def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None,
         today_ = datetime.date.today()
         lens = QA_util_get_trade_gap(start_date, today_)
 
-        # sh
-        # 110×××
-        # 120×××企业债券；
-        # 129×××
-        # 100×××可转换债券；
-
-        # sz
-        # 10xxxx 国债现货
-        # 11xxxx 债券
-        # 12xxxx 可转换债券
-        # 12xxxx 国债回购
-
-        if str(code)[0] in ['5', '1']:  # ETF
-            data = pd.concat([api.to_df(api.get_security_bars(
-                frequence, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0,
-                code, (int(lens / 800) - i) * 800, 800))
-                for i in range(int(lens / 800) + 1)], axis=0, sort=False)
-        else:
-            data = pd.concat([api.to_df(api.get_index_bars(
-                frequence, 1 if str(code)[0] in ['0', '8', '9', '5'] else 0,
-                code, (int(lens / 800) - i) * 800, 800))
-                for i in range(int(lens / 800) + 1)], axis=0, sort=False)
+        code = str(code)
+        data = pd.concat([api.to_df(api.get_security_bars(
+            frequence, _select_bond_market_code(code),
+            code, (int(lens / 800) - i) * 800, 800))
+            for i in range(int(lens / 800) + 1)], axis=0, sort=False)
         data = data.assign(
             date=data['datetime'].apply(lambda x: str(x[0:10]))).assign(
             code=str(code)) \
@@ -769,6 +760,59 @@ def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None,
             .drop(['year', 'month', 'day', 'hour',
                    'minute', 'datetime'], axis=1)[start_date:end_date]
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
+
+
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_bond_min(code, start, end, frequence='1min', ip=None,
+                          port=None):
+    ip, port = get_mainmarket_ip(ip, port)
+    api = TdxHq_API()
+    start_date = str(start)[0:10]
+    today_ = datetime.date.today()
+    lens = QA_util_get_trade_gap(start_date, today_)
+    if str(frequence) in ['5', '5m', '5min', 'five']:
+        frequence, type_ = 0, '5min'
+        lens = 48 * lens
+    elif str(frequence) in ['1', '1m', '1min', 'one']:
+        frequence, type_ = 8, '1min'
+        lens = 240 * lens
+    elif str(frequence) in ['15', '15m', '15min', 'fifteen']:
+        frequence, type_ = 1, '15min'
+        lens = 16 * lens
+    elif str(frequence) in ['30', '30m', '30min', 'half']:
+        frequence, type_ = 2, '30min'
+        lens = 8 * lens
+    elif str(frequence) in ['60', '60m', '60min', '1h']:
+        frequence, type_ = 3, '60min'
+        lens = 4 * lens
+
+    if lens > 20800:
+        lens = 20800#u
+    code = str(code)
+    with api.connect(ip, port):
+
+        data = pd.concat(
+            [api.to_df(
+                api.get_security_bars(
+                    frequence, _select_bond_market_code(
+                        str(code)),
+                    str(code),
+                    (int(lens / 800) - i) * 800, 800)) for i
+             in range(int(lens / 800) + 1)], axis=0, sort=False)
+        #print(data)
+        data = data \
+            .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
+                  inplace=False) \
+            .assign(datetime=pd.to_datetime(data['datetime']),
+                    code=str(code),
+                    date=data['datetime'].apply(lambda x: str(x)[0:10]),
+                    date_stamp=data['datetime'].apply(
+                lambda x: QA_util_date_stamp(x)),
+                time_stamp=data['datetime'].apply(
+                lambda x: QA_util_time_stamp(x)),
+                type=type_).set_index('datetime', drop=False,
+                                      inplace=False)[start:end]
+        return data.assign(datetime=data['datetime'].apply(lambda x: str(x)))
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)

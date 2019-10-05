@@ -449,6 +449,31 @@ def QA_data_stockmin_resample(min_data, period=5):
     return res.reset_index().set_index(["datetime", "code"]).sort_index()
 
 
+def QA_data_min_to_day(min_data, type_='1D'):
+    CONVERSION = {
+        'code': 'first',
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'vol': 'sum',
+        'amount': 'sum'
+    } if 'vol' in min_data.columns else {
+        'code': 'first',
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'volume': 'sum',
+        'amount': 'sum'
+    }
+
+    return data.reset_index(1).resample(
+            type_,
+            base=0,
+            closed='right'
+        ).agg(CONVERSION).dropna()
+
 def QA_data_futuremin_resample(min_data, type_='5min', exchange_id=EXCHANGE_ID.SHFE):
     """期货分钟线采样成大周期
 

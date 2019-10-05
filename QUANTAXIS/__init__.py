@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.5.24'
+__version__ = '1.5.25'
 __author__ = 'yutiansut'
 
 import argparse
@@ -71,9 +71,10 @@ from QUANTAXIS.QAEngine import (
     QA_AsyncExec, QA_AsyncQueue, QA_AsyncScheduler, QA_AsyncTask,
     QA_AsyncThread, QA_Engine, QA_Event, QA_Task, QA_Thread, QA_Worker)
 from QUANTAXIS.QAFetch import (
-    QA_fetch_get_bond_list, QA_fetch_get_chibor, QA_fetch_get_exchangerate_day,
+    QA_fetch_get_chibor, QA_fetch_get_exchangerate_day,
     QA_fetch_get_exchangerate_list, QA_fetch_get_exchangerate_min,
     QA_fetch_get_future_day, QA_fetch_get_future_list, QA_fetch_get_future_min,
+    QA_fetch_get_bond_day, QA_fetch_get_bond_min, QA_fetch_get_bond_list,
     QA_fetch_get_future_realtime, QA_fetch_get_future_transaction,
     QA_fetch_get_future_transaction_realtime, QA_fetch_get_globalfuture_day,
     QA_fetch_get_globalfuture_list, QA_fetch_get_globalfuture_min,
@@ -91,7 +92,7 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_stock_day, QA_fetch_get_stock_indicator,
     QA_fetch_get_stock_info, QA_fetch_get_stock_list, QA_fetch_get_stock_min,
     QA_fetch_get_stock_realtime, QA_fetch_get_stock_transaction,
-    QA_fetch_get_stock_transaction_realtime, QA_fetch_get_index_transaction, 
+    QA_fetch_get_stock_transaction_realtime, QA_fetch_get_index_transaction,
     QA_fetch_get_stock_xdxr,
     QA_fetch_get_trade_date, QA_fetch_get_usstock_day,
     QA_fetch_get_usstock_list, QA_fetch_get_usstock_min, get_stock_market)
