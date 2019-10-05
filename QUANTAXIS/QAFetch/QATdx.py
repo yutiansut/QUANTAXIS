@@ -782,12 +782,12 @@ def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None,
                         '123', '127', '128',
                         '131', '139',]:
             # 深圳
-            data = pd.concat([api.to_df(api.get_index_bars(
+            data = pd.concat([api.to_df(api.get_security_bars(
                 frequence, 0,
                 code, (int(lens / 800) - i) * 800, 800))
                 for i in range(int(lens / 800) + 1)], axis=0, sort=False)
         else:
-            data = pd.concat([api.to_df(api.get_index_bars(
+            data = pd.concat([api.to_df(api.get_security_bars(
                 frequence, 1,
                 code, (int(lens / 800) - i) * 800, 800))
                 for i in range(int(lens / 800) + 1)], axis=0, sort=False)
