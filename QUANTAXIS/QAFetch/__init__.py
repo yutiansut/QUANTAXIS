@@ -145,6 +145,21 @@ def QA_fetch_get_index_min(package, code, start, end, level='1min'):
     else:
         return 'Unsupport packages'
 
+def QA_fetch_get_bond_day(package, code, start, end, level='day'):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_bond_day(code, start, end, level)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_bond_min(package, code, start, end, level='1min'):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_bond_min(code, start, end, level)
+    else:
+        return 'Unsupport packages'
+
 
 def QA_fetch_get_stock_block(package):
     Engine = use(package)
