@@ -171,7 +171,7 @@ class QA_Risk():
                         self.account.end_date
                     )
             else:
-                self.market_data = market_data
+                self.market_data = market_data.select_time(self.account.start_date, self.account.end_date)
             self.if_fq = if_fq
             if self.account.market_type == MARKET_TYPE.FUTURE_CN:
                 self.if_fq = False  # 如果是期货， 默认设为FALSE
