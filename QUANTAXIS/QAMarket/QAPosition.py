@@ -1,4 +1,5 @@
 #
+import re
 import uuid
 import datetime
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
@@ -98,16 +99,17 @@ class QA_Position():
                  position_cost_short=0,
                  position_id=None,
 
-                 market_type=MARKET_TYPE.STOCK_CN,
-                 exchange_id=EXCHANGE_ID.SZSE,
+                 market_type=None,
+                 exchange_id=None,
                  trades=None,
                  orders=None,
                  name=None,
+                 commission=0,
                  auto_reload=False,
                  allow_exceed=False,
 
-                 spms_id =None,
-                 oms_id = None,
+                 spms_id=None,
+                 oms_id=None,
                  *args,
                  **kwargs
 
@@ -136,7 +138,11 @@ class QA_Position():
         """
         self.rule = 'FIFO'
         self.name = name
-        self.market_type = market_type
+
+        if market_type is None:
+
+            self.market_type = MARKET_TYPE.FUTURE_CN if re.search(
+                r'[a-zA-z]+', self.code) else MARKET_TYPE.STOCK_CN
         self.exchange_id = exchange_id
 
         self.volume_long_his = volume_long_his
@@ -168,6 +174,7 @@ class QA_Position():
             self.volume_short*self.market_preset.get('unit_table', 1)
 
         self.last_price = 0
+        self.commission = commission
         self.trades = [] if trades is None else trades
         self.orders = {} if orders is None else orders
         self.frozen = {} if frozen is None else frozen
@@ -393,6 +400,12 @@ class QA_Position():
             "position_profit": self.position_profit
         }
 
+    @property
+    def message(self):
+        msg = self.static_message
+        msg.update(self.realtime_message)
+        return msg
+
     def order_check(self, amount: float, price: float, towards: int, order_id: str) -> bool:
         res = False
         if towards == ORDER_DIRECTION.BUY_CLOSE:
@@ -498,25 +511,14 @@ class QA_Position():
             position_profit_long: 0
             position_profit_short: -200
         """
-
+        self.on_pirce_change(price)
         temp_cost = float(amount)*float(price) * \
             float(self.market_preset.get('unit_table', 1))
-
+        profit = 0
         if towards == ORDER_DIRECTION.BUY:
             # 股票模式/ 期货买入开仓
-            self.volume_long_today += amount
-        elif towards == ORDER_DIRECTION.SELL:
-            # 股票卖出模式:
-            # 今日买入仓位不能卖出
-            if self.volume_long_his > amount:
-                self.volume_long_his -= amount
-
-        elif towards == ORDER_DIRECTION.BUY_OPEN:
-
-            # 增加保证金
-            temp_margin = temp_cost * \
-                self.market_preset['buy_frozen_coeff']
-            self.margin_long += temp_margin
+            marginValue = temp_cost 
+            self.margin_long += marginValue
             # 重算开仓均价
             self.open_price_long = (
                 self.open_price_long * self.volume_long + amount * price
@@ -534,7 +536,50 @@ class QA_Position():
             #
             self.open_cost_long += temp_cost
             self.position_cost_long += temp_cost
-            self.moneypresetLeft -= temp_margin
+
+
+
+        elif towards == ORDER_DIRECTION.SELL:
+            # 股票卖出模式:
+            # 今日买入仓位不能卖出
+            if self.volume_long_his > amount:
+                
+                self.position_cost_long = self.position_cost_long * \
+                    (self.volume_long - amount)/self.volume_long
+                self.open_cost_long = self.open_cost_long * \
+                    (self.volume_long-amount)/self.volume_long
+
+                self.volume_long_his -= amount
+
+                self.volume_long_frozen_today -= amount
+                marginValue = -1*(self.position_price_long * amount)
+                profit = (price - self.position_price_long) * amount 
+                self.moneypresetLeft += (-marginValue + profit)
+
+        elif towards == ORDER_DIRECTION.BUY_OPEN:
+
+            # 增加保证金
+            marginValue = temp_cost * \
+                self.market_preset['buy_frozen_coeff']
+            self.margin_long += marginValue
+            # 重算开仓均价
+            self.open_price_long = (
+                self.open_price_long * self.volume_long + amount * price
+            ) / (
+                amount + self.volume_long
+            )
+            # 重算持仓均价
+            self.position_price_long = (
+                self.position_price_long * self.volume_long + amount * price
+            ) / (
+                amount + self.volume_long
+            )
+            # 增加今仓数量 ==> 会自动增加volume_long
+            self.volume_long_today += amount
+            #
+            self.open_cost_long += temp_cost
+            self.position_cost_long += temp_cost
+            self.moneypresetLeft -= marginValue
 
         elif towards == ORDER_DIRECTION.SELL_OPEN:
             # 增加保证金
@@ -546,9 +591,9 @@ class QA_Position():
             5. 增加持仓cost
             6. 增加空单仓位
             """
-            temp_margin = temp_cost * \
+            marginValue = temp_cost * \
                 self.market_preset['sell_frozen_coeff']
-            self.margin_short += temp_margin
+            self.margin_short += marginValue
             # 重新计算开仓/持仓成本
             self.open_price_short = (
                 self.open_price_short * self.volume_short + amount * price
@@ -563,7 +608,7 @@ class QA_Position():
             self.open_cost_short += temp_cost
             self.position_cost_short += temp_cost
             self.volume_short_today += amount
-            self.moneypresetLeft -= temp_margin
+            self.moneypresetLeft -= marginValue
 
         elif towards == ORDER_DIRECTION.BUY_CLOSETODAY:
             if self.volume_short_today > amount:
@@ -574,12 +619,13 @@ class QA_Position():
                 self.volume_short_today -= amount
                 self.volume_short_frozen_today += amount
                 # close_profit = (self.position_price_short - price) * volume * position->ins->volume_multiple;
-                marginValue = self.position_price_short * amount*self.market_preset.get('unit_table') *\
-                    self.market_preset['sell_frozen_coeff']
+                marginValue = -(self.position_price_short * amount*self.market_preset.get('unit_table') *\
+                    self.market_preset['sell_frozen_coeff'])
                 profit = (self.position_price_short - price
                           ) * amount * self.market_preset.get('unit_table')
 
-                self.moneypresetLeft += (marginValue + profit)
+                
+                self.moneypresetLeft += (-marginValue + profit)
 
                 # 释放保证金
                 # TODO
@@ -595,11 +641,11 @@ class QA_Position():
                 self.volume_long_today -= amount
                 self.volume_long_frozen_today += amount
 
-                marginValue = self.position_price_long * amount*self.market_preset.get('unit_table') *\
-                    self.market_preset['buy_frozen_coeff']
+                marginValue = -1*(self.position_price_long * amount*self.market_preset.get('unit_table') *\
+                    self.market_preset['buy_frozen_coeff'])
                 profit = (price - self.position_price_long) * \
                     amount * self.market_preset.get('unit_table')
-                self.moneypresetLeft += (marginValue + profit)
+                self.moneypresetLeft += (-marginValue + profit)
 
         elif towards == ORDER_DIRECTION.BUY_CLOSE:
             # 有昨仓先平昨仓
@@ -614,12 +660,12 @@ class QA_Position():
                 self.volume_short_his = 0
             self.volume_short_frozen_today -= amount
 
-            marginValue = self.position_price_short * amount*self.market_preset.get('unit_table') *\
-                self.market_preset['sell_frozen_coeff']
+            marginValue = -1*(self.position_price_short * amount*self.market_preset.get('unit_table') *\
+                self.market_preset['sell_frozen_coeff'])
             profit = (self.position_price_short - price
                       ) * amount * self.market_preset.get('unit_table')
 
-            self.moneypresetLeft += (marginValue + profit)
+            self.moneypresetLeft += (-marginValue + profit)
         elif towards == ORDER_DIRECTION.SELL_CLOSE:
             # 有昨仓先平昨仓
             self.position_cost_long = self.position_cost_long * \
@@ -632,12 +678,15 @@ class QA_Position():
                 self.volume_long_today -= (amount - self.volume_long_his)
                 self.volume_long_his = 0
             self.volume_long_frozen_today -= amount
-            marginValue = self.position_price_long * amount*self.market_preset.get('unit_table') *\
-                self.market_preset['buy_frozen_coeff']
+            marginValue = -1*(self.position_price_long * amount*self.market_preset.get('unit_table') *\
+                self.market_preset['buy_frozen_coeff'])
             profit = (price - self.position_price_long) * \
                 amount * self.market_preset.get('unit_table')
-            self.moneypresetLeft += (marginValue + profit)
+            self.moneypresetLeft += (-marginValue + profit)
         # 计算收益/成本
+
+        return marginValue, profit
+
 
     def settle(self):
         """收盘后的结算事件
@@ -693,6 +742,28 @@ class QA_Position():
         else:
             self.loadfrommessage(res)
 
+    def calc_commission(self, trade_price, trade_amount, trade_towards,):
+        if self.market_type == MARKET_TYPE.FUTURE_CN:
+                # 期货不收税
+                # 双边手续费 也没有最小手续费限制
+            value = trade_price * trade_amount * \
+                self.market_preset.get_unit(code)
+
+            commission_fee_preset = self.market_preset.get_code(code)
+            if trade_towards in [ORDER_DIRECTION.BUY_OPEN,
+                                ORDER_DIRECTION.BUY_CLOSE,
+                                ORDER_DIRECTION.SELL_CLOSE,
+                                ORDER_DIRECTION.SELL_OPEN]:
+                commission_fee = commission_fee_preset['commission_coeff_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_peramount'] * \
+                    abs(value)
+            elif trade_towards in [ORDER_DIRECTION.BUY_CLOSETODAY,
+                                ORDER_DIRECTION.SELL_CLOSETODAY]:
+                commission_fee = commission_fee_preset['commission_coeff_today_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_today_peramount'] * \
+                    abs(value)
+            return commission_fee
+
     def loadfrommessage(self, message):
         self.__init__(
             code=message['code'],
@@ -732,6 +803,7 @@ class QA_Position():
             exchange_id=message['exchange_id'],
             trades=message['trades'],
             orders=message['orders'],
+            commission=message['commission'],
             name=message['name'])
 
         return self
@@ -787,7 +859,7 @@ class QA_Position():
             self.trades.append(transaction)
         except Exception as e:
             raise e
-        
+
     def on_pirce_change(self, price):
         self.last_price = price
 
