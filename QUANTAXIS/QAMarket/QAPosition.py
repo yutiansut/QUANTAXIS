@@ -803,9 +803,10 @@ class QA_Position():
             exchange_id=message['exchange_id'],
             trades=message['trades'],
             orders=message['orders'],
-            commission=message['commission'],
+            #commission=message['commission'],
             name=message['name'])
 
+        self.last_price =( self.open_price_long*self.volume_long + self.open_price_short*self.volume_short)/(self.volume_long+ self.volume_short)
         return self
 
     def on_order(self, order: QA_Order):
