@@ -59,20 +59,20 @@ from QUANTAXIS.QAUtil.QASetting import DATABASE
 
 QARISK的更新策略:
 
-1. 如果遇到请求: 
+1. 如果遇到请求:
     1. 去数据库找到这个account的risk信息
     2. 检查交易是否出现更新
 
     ==>  更新>> 重新评估
     ==>  未更新>> 直接加载
-    
+
 
 """
 if platform.system() not in ['Windows',
                              'Darwin'] and os.environ.get('DISPLAY',
                                                           '') == '':
-    print('no display found. Using non-interactive Agg backend')
-    print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
+    # print('no display found. Using non-interactive Agg backend')
+    # print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
     # try:
     #     pass
     # except expression as identifier:
@@ -924,11 +924,11 @@ class QA_Performance():
     @property
     def message(self):
         """[summary]
-            2. 
-            3. 
-            4. 
-            5. 
-            6. 
+            2.
+            3.
+            4.
+            5.
+            6.
             7. 盈利手数
             8. 亏损手数
             9. 持平手数
