@@ -14,6 +14,7 @@ services:
             - "81:80"
         environment:
           - TZ=Asia/Shanghai
+          - LANG=C.UTF-8
           - MONGODB=mgdb
           - QARUN=qaweb
           - QAPUBSUB_IP=qaeventmq
