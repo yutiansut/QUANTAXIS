@@ -57,7 +57,8 @@ conda install -n base tensorflow-gpu keras-gpu py-xgboost-gpu jupyterlab jupyter
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 pip install TA-LIB tushare aioch redis dag-factory
 pip install pyecharts==0.5.11 quantaxis quantaxis-servicedetect quantaxis-pubsub jupyter_contrib_nbextensions
-
+pip install qifiaccount -U
+pip install QAStrategy -U
 
 mkdir ~/.jupyter/
 cat > ~/.jupyter/jupyter_notebook_config.py <<EOF

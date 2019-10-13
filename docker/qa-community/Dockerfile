@@ -11,7 +11,9 @@ RUN cd ~ && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASI
 && pip install dag-factory\
 && pip install quantaxis -U \
 && pip uninstall pytdx -y \
-&& pip install pytdx
+&& pip install pytdx\
+&& pip install qifiaccount -U \
+&& pip install QAStrategy -U \
 
 COPY run-community.sh /root/
 RUN chmod +x /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py \
