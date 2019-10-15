@@ -166,7 +166,7 @@ class QA_Risk():
                     )
                 elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
                     self.market_data = QA_fetch_future_day_adv(
-                        self.account.code,
+                        self.account.code.upper(),
                         self.account.start_date,
                         self.account.end_date
                     )
