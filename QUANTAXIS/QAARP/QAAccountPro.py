@@ -34,7 +34,7 @@ from QUANTAXIS import __version__
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAEvent import QA_Worker
 from QUANTAXIS.QAMarket.QAOrder import QA_Order, QA_OrderQueue
-from QUANTAXIS.QAMarket.QAPosition import QA_Position, QA_PMS
+from QUANTAXIS.QAMarket.QAPosition import QA_Position, QA_positions
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
@@ -128,7 +128,7 @@ class QA_AccountPRO(QA_Worker):
 
 
     @2019/05/07
-    # 关于PMS/close_available
+    # 关于positions/close_available
     在期货中, 我们需要account具有多空同时开仓对锁的功能, 而目前基于交易结算的并不满足
 
     引入 close_available 和 POSITION的概念
@@ -162,10 +162,6 @@ class QA_AccountPRO(QA_Worker):
                 - status: open
                 - instrument_id:
             - o2
-
-
-
-
 
     """
 
@@ -398,7 +394,7 @@ class QA_AccountPRO(QA_Worker):
         ########################################################################
         # 资产类
         self.orders = QA_OrderQueue() # 历史委托单
-        self.PMS = QA_PMS()
+        # self.positions = QA_positions()
                                       # self.risks = QA_RMS()
         self.init_cash = init_cash
 
@@ -426,7 +422,7 @@ class QA_AccountPRO(QA_Worker):
         }                        # 日结算
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
-        self.pms = {}
+        self.positions = {}
 
         ########################################################################
         # 规则类
@@ -533,7 +529,7 @@ class QA_AccountPRO(QA_Worker):
             'finished_id':
             self.finishedOrderid,
             'position_id':
-            list(self.pms.keys())
+            list(self.positions.keys())
         }
 
     @property
@@ -599,7 +595,7 @@ class QA_AccountPRO(QA_Worker):
             return None
 
     @property
-    def positions(self):
+    def position_msg(self):
         raise NotImplementedError
 
     @property
@@ -785,19 +781,23 @@ class QA_AccountPRO(QA_Worker):
                 结算后: init_hold
         """
 
-    def create_position(self, code, money_preset):
-        if self.cash_available > money_preset:
-            pos = QA_Position(code=code, money_preset=money_preset, user_cookie=self.user_cookie,
-                              portfolio_cookie=self.portfolio_cookie, account_cookie=self.account_cookie, auto_reload=True)
-            self.pms[pos.position_id] = pos
-            self.cash.append(self.cash[-1] - money_preset)
-            self.cash_available = self.cash[-1]
-            return pos
-        else:
-            return False
 
-    def get_position(self, position_id):
-        return self.pms.get(position_id, None)
+    def get_position(self, position_id: str) -> QA_Position:
+        """Get
+
+        获取position
+        same apis with QIFIAccount
+
+        return  <QA_Position>
+
+        """
+
+        pos  =  self.positions.get(position_id, QA_Position(code=code, user_cookie=self.user_cookie,
+                               portfolio_cookie=self.portfolio_cookie, account_cookie=self.account_cookie, auto_reload=True))
+
+        self.positions[position_id] = pos
+        return pos
+
 
     @property
     def hold(self):
@@ -818,10 +818,6 @@ class QA_AccountPRO(QA_Worker):
             np.nan
         ).dropna().sort_index()
 
-    # @property
-    # def order_table(self):
-    #     """return order trade list"""
-    #     return self.orders.trade_list
 
     @property
     def trade(self):
@@ -1413,7 +1409,7 @@ class QA_AccountPRO(QA_Worker):
         
         if flag:
 
-            self.pms[self.oms[order_id]['positon_id']].on_transaction(
+            self.positions[self.oms[order_id]['positon_id']].on_transaction(
                 {'towards': trade_towards,
                 'code': code,
                 'trade_id': trade_id,
@@ -1889,7 +1885,7 @@ class QA_AccountPRO(QA_Worker):
         self.finishedOrderid = message.get('finished_id', [])
         pos_id = message.get('position_id', [])
         print(pos_id)
-        self.pms = dict(zip(pos_id, [QA_Position(position_id=item,
+        self.positions = dict(zip(pos_id, [QA_Position(position_id=item,
                                                  account_cookie=self.account_cookie, portfolio_cookie=self.portfolio_cookie,
                                                  user_cookie=self.user_cookie, auto_reload=True) for item in pos_id]))
 
@@ -2010,16 +2006,16 @@ class QA_AccountPRO(QA_Worker):
 
     @property
     def positions_with_pos(self):
-        return pd.DataFrame([item.curpos for item in self.pms.values()],
-                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.pms.values()], names=['code', 'pos_id']))
+        return pd.DataFrame([item.curpos for item in self.positions.values()],
+                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.positions.values()], names=['code', 'pos_id']))
     @property
     def positions(self):
         return self.positions_with_pos.groupby('code').sum()
 
     @property
     def hold_detail_with_pos(self):
-        return pd.DataFrame([item.hold_detail for item in self.pms.values()],
-                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.pms.values()], names=['code', 'pos_id']))
+        return pd.DataFrame([item.hold_detail for item in self.positions.values()],
+                            index=pd.MultiIndex.from_tuples([(item.code, item.position_id) for item in self.positions.values()], names=['code', 'pos_id']))
     @property
     def hold_detail(self):
         return self.hold_detail_with_pos.groupby('code').sum()
