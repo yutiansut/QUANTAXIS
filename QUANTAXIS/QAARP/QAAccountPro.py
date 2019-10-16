@@ -134,6 +134,36 @@ class QA_AccountPRO(QA_Worker):
     引入 close_available 和 POSITION的概念
 
 
+    @2019/10/17/
+    QAAccountPro
+
+    我们为什么需要AccountPro::
+
+      -  基于QAPosition的仓位精细化管理
+      -  基于qifi协议的账户对接
+      -  基于QAAccount的历史回测体系
+
+    AccountPRO  (with QIFI) 
+        - accounts
+            - money
+            - frozen
+            - profit
+
+        - positions: 
+            - rb2001
+            - ag1912
+
+        - trades
+            - t1
+            - t2    
+
+        - orders
+            - o1
+                - status: open
+                - instrument_id:
+            - o2
+
+
 
 
 
