@@ -234,10 +234,6 @@ class QA_AccountPRO(QA_Worker):
             print('Current AccountPro {} is {} doesnot support {}'.format(
                 self.account_cookie, self.market_type, pos.market_type))
 
-
-
-
-
     @property
     def hold_available(self):
         pass
@@ -386,7 +382,7 @@ class QA_AccountPRO(QA_Worker):
                 date=date,
                 datetime=time,
                 sending_time=time,
-                #callback=self.receive_deal,
+                # callback=self.receive_deal,
                 amount=amount,
                 price=price,
                 order_model=order_model,
@@ -416,3 +412,99 @@ class QA_AccountPRO(QA_Worker):
             )
             print(wrong_reason)
             return False
+
+    def make_deal(self, order: dict):
+
+        self.receive_deal(order["instrument_id"], trade_price=order["limit_price"], trade_time=self.dtstr,
+                          trade_amount=order["volume_left"], trade_towards=order["towards"],
+                          order_id=order['order_id'], trade_id=str(uuid.uuid4()))
+
+    def receive_deal(self,
+                     code,
+                     trade_price,
+                     trade_amount,
+                     trade_towards,
+                     trade_time,
+                     message=None,
+                     order_id=None,
+                     trade_id=None,
+                     realorder_id=None):
+        # if order_id in self.orders.keys():
+
+        #     # update order
+        #     od = self.orders[order_id]
+        #     frozen = self.frozen.get(
+        #         order_id, {'order_id': order_id, 'money': 0, 'price': 0})
+        #     vl = od.get('volume_left', 0)
+        #     if trade_amount == vl:
+
+        #         self.money += frozen['money']
+        #         frozen['amount'] = 0
+        #         frozen['money'] = 0
+        #         od['last_msg'] = '全部成交'
+        #         od["status"] = 300
+        #         self.log('全部成交 {}'.format(order_id))
+
+        #     elif trade_amount < vl:
+        #         frozen['amount'] = vl - trade_amount
+        #         release_money = trade_amount * frozen['coeff']
+        #         self.money += release_money
+
+        #         frozen['money'] -= release_money
+
+        #         od['last_msg'] = '部分成交'
+        #         od["status"] = 200
+        #         self.log('部分成交 {}'.format(order_id))
+
+        #     od['volume_left'] -= trade_amount
+
+        #     self.orders[order_id] = od
+        #     self.frozen[order_id] = frozen
+        #     # update trade
+        #     self.event_id += 1
+        #     trade_id = str(uuid.uuid4()) if trade_id is None else trade_id
+
+        self.receive_simpledeal(
+            code,
+            trade_price,
+            trade_amount,
+            trade_towards,
+            trade_time,
+            message=None,
+            order_id=None,
+            trade_id=None,
+            realorder_id=None)
+
+    def receive_simpledeal(self,
+                           code,
+                           trade_price,
+                           trade_amount,
+                           trade_towards,
+                           trade_time,
+                           message=None,
+                           order_id=None,
+                           trade_id=None,
+                           realorder_id=None):
+
+        self.trades[trade_id] = {
+            "seqno": self.event_id,
+            "user_id":  self.user_id,
+            "trade_id": trade_id,
+            "exchange_id": od['exchange_id'],
+            "instrument_id": od['instrument_id'],
+            "order_id": order_id,
+            "exchange_trade_id": trade_id,
+            "direction": od['direction'],
+            "offset": od['offset'],
+            "volume": trade_amount,
+            "price": trade_price,
+            "trade_time": trade_time,
+            "trade_date_time": self.transform_dt(trade_time)}
+
+        # update accounts
+
+        margin, close_profit = self.get_position(code).update_pos(
+            trade_price, trade_amount, trade_towards)
+
+        self.cash_available -= margin
+        self.close_profit += close_profit
