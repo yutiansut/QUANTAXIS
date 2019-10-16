@@ -124,6 +124,8 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 > 账户协议
 
 - [QIFI](https://github.com/QUANTAXIS/QIFI) 一个基于快期DIFF协议的QA实时账户协议
+- [QIFIAccount](https://github.com/yutiansut/qifiaccount) 一个基于QIFI协议的多市场兼容的 实时账户实现
+- [QAStrategy](https://github.com/yutiansut/qastrategy) 一个完整的 支持 模拟/回测/实盘一键切换的策略基类
 
 #### 未开源
 
