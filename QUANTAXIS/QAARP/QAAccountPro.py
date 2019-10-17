@@ -415,7 +415,7 @@ class QA_AccountPRO(QA_Worker):
 
     def make_deal(self, order: dict):
 
-        self.receive_deal(order["instrument_id"], trade_price=order["limit_price"], trade_time=self.dtstr,
+        self.receive_deal(order["instrument_id"], trade_price=order["limit_price"], trade_time=self.datetime,
                           trade_amount=order["volume_left"], trade_towards=order["towards"],
                           order_id=order['order_id'], trade_id=str(uuid.uuid4()))
 
@@ -486,25 +486,261 @@ class QA_AccountPRO(QA_Worker):
                            trade_id=None,
                            realorder_id=None):
 
-        self.trades[trade_id] = {
-            "seqno": self.event_id,
-            "user_id":  self.user_id,
-            "trade_id": trade_id,
-            "exchange_id": od['exchange_id'],
-            "instrument_id": od['instrument_id'],
-            "order_id": order_id,
-            "exchange_trade_id": trade_id,
-            "direction": od['direction'],
-            "offset": od['offset'],
-            "volume": trade_amount,
-            "price": trade_price,
-            "trade_time": trade_time,
-            "trade_date_time": self.transform_dt(trade_time)}
 
-        # update accounts
+        self.datetime = trade_time
+        if realorder_id in self.finishedOrderid:
+            pass
+        else:
+            self.finishedOrderid.append(realorder_id)
 
-        margin, close_profit = self.get_position(code).update_pos(
-            trade_price, trade_amount, trade_towards)
+        market_towards = 1 if trade_towards > 0 else -1
+        # value 合约价值 unit 合约乘数
+        if self.allow_margin:
+            frozen = self.market_preset.get_frozen(code)                  # 保证金率
+            unit = self.market_preset.get_unit(code)                      # 合约乘数
+            raw_trade_money = trade_price * trade_amount * market_towards # 总市值
+            value = raw_trade_money * unit                                # 合约总价值
+            trade_money = value * frozen                                  # 交易保证金
+        else:
+            trade_money = trade_price * trade_amount * market_towards
+            raw_trade_money = trade_money
+            value = trade_money
+            unit = 1
+            frozen = 1
+                                                                          # 计算费用
+                                                                          # trade_price
 
-        self.cash_available -= margin
-        self.close_profit += close_profit
+        if self.market_type == MARKET_TYPE.FUTURE_CN:
+            # 期货不收税
+            # 双边手续费 也没有最小手续费限制
+
+            commission_fee_preset = self.market_preset.get_code(code)
+            if trade_towards in [ORDER_DIRECTION.BUY_OPEN,
+                                 ORDER_DIRECTION.BUY_CLOSE,
+                                 ORDER_DIRECTION.SELL_CLOSE,
+                                 ORDER_DIRECTION.SELL_OPEN]:
+                commission_fee = commission_fee_preset['commission_coeff_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_peramount'] * \
+                    abs(value)
+            elif trade_towards in [ORDER_DIRECTION.BUY_CLOSETODAY,
+                                   ORDER_DIRECTION.SELL_CLOSETODAY]:
+                commission_fee = commission_fee_preset['commission_coeff_today_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_today_peramount'] * \
+                    abs(value)
+
+            tax_fee = 0 # 买入不收印花税
+        elif self.market_type == MARKET_TYPE.STOCK_CN:
+
+            commission_fee = self.commission_coeff * \
+                abs(trade_money)
+
+            commission_fee = 5 if commission_fee < 5 else commission_fee
+            if int(trade_towards) > 0:
+                tax_fee = 0 # 买入不收印花税
+            else:
+                tax_fee = self.tax_coeff * abs(trade_money)
+
+        # 结算交易
+        if self.cash[-1] > trade_money + commission_fee + tax_fee:
+            self.time_index_max.append(trade_time)
+            # TODO: 目前还不支持期货的锁仓
+            if self.allow_sellopen:
+                if trade_towards in [ORDER_DIRECTION.BUY_OPEN,
+                                     ORDER_DIRECTION.SELL_OPEN]:
+                    # 开仓单占用现金 计算avg
+                    # 初始化
+                    if code in self.frozen.keys():
+                        if str(trade_towards) in self.frozen[code].keys():
+                            pass
+                        else:
+                            self.frozen[code][str(trade_towards)] = {
+                                'money': 0,
+                                'amount': 0,
+                                'avg_price': 0
+                            }
+                    else:
+                        self.frozen[code] = {
+                            str(ORDER_DIRECTION.BUY_OPEN): {
+                                'money': 0,
+                                'amount': 0,
+                                'avg_price': 0
+                            },
+                            str(ORDER_DIRECTION.SELL_OPEN): {
+                                'money': 0,
+                                'amount': 0,
+                                'avg_price': 0
+                            }
+                        }
+                    """[summary]
+                    # frozen的计算
+                    # money 冻结的资金
+                    # amount  冻结的数量
+
+                    2018-12-31
+
+                    多单冻结[money] 成本
+
+                    成交额
+                    raw_trade_money =  trade_price * trade_amount * market_towards
+                    成交金额(基于市值*杠杆系数*冻结系数)
+                    trade_money =  trade_price * trade_amount * market_towards* unit * frozen
+
+                    money = (money*amount + trade_money)/(amount+新的成交量)
+                    avg_price= (avgprice*amount+ raw_trade_money)/(amount+新的成交量)
+
+                    """
+
+                    self.frozen[code][str(trade_towards)]['money'] = (
+                        (
+                            self.frozen[code][str(trade_towards)]['money'] *
+                            self.frozen[code][str(trade_towards)]['amount']
+                        ) + abs(trade_money)
+                    ) / (
+                        self.frozen[code][str(trade_towards)]['amount'] +
+                        trade_amount
+                    )
+                    self.frozen[code][str(trade_towards)]['avg_price'] = (
+                        (
+                            self.frozen[code][str(trade_towards)]['avg_price'] *
+                            self.frozen[code][str(trade_towards)]['amount']
+                        ) + abs(trade_money)
+                    ) / (
+                        self.frozen[code][str(trade_towards)]['amount'] +
+                        trade_amount
+                    )
+                    self.frozen[code][str(trade_towards)
+                                     ]['amount'] += trade_amount
+
+                    self.cash.append(
+                        self.cash[-1] - abs(trade_money) - commission_fee -
+                        tax_fee
+                    )
+                elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE,
+                                       ORDER_DIRECTION.BUY_CLOSETODAY,
+                                       ORDER_DIRECTION.SELL_CLOSE,
+                                       ORDER_DIRECTION.SELL_CLOSETODAY]:
+                    # 平仓单释放现金
+                    # if trade_towards == ORDER_DIRECTION.BUY_CLOSE:
+                    # 卖空开仓 平仓买入
+                    # self.cash
+                    # 买入平仓  之前是空开
+                    if trade_towards in [ORDER_DIRECTION.BUY_CLOSE,
+                                         ORDER_DIRECTION.BUY_CLOSETODAY]:
+                        # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
+                        self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN
+                                             )]['amount'] -= trade_amount
+
+                        frozen_part = self.frozen[code][str(
+                            ORDER_DIRECTION.SELL_OPEN
+                        )]['money'] * trade_amount
+                        # 账户的现金+ 冻结的的释放 + 买卖价差* 杠杆 - 交易费用
+                        """
+                        + 释放的保证金 frozen_part 平仓手数* 对应的冻结保证金的均价
+                        + 释放的保证金和交易成本的价差对应的真实价值 (frozen_part - trade_money)/frozen
+                        - 手续费
+                        - 税费
+
+                        如:
+
+                        行情 3800
+                        买入冻结  3700
+
+                        平仓时行情: 3838
+
+                        + 释放: 3700
+                        + 价差: (-3700 + 3737)*手数/冻结系数 ==> 真实利润 [注意买卖关系: 买入开仓 -3700 卖出平仓 + 3737]
+                        - 手续费
+
+
+                        行情 3800
+                        卖出开仓 冻结 3700
+                        平仓时行情: 3838
+
+                        + 释放: 3700
+                        + 价差: (-3737 + 3700)*手数/冻结系数 ==> 真实利润 [注意这里的买卖关系: 卖出开仓=> 3700 买入平仓 -3737]
+                        - 手续费
+
+                        """
+                        self.cash.append(
+                            self.cash[-1] + frozen_part +
+                            (frozen_part - trade_money) / frozen -
+                            commission_fee - tax_fee
+                        )
+                        if self.frozen[code][str(
+                                ORDER_DIRECTION.SELL_OPEN)]['amount'] == 0:
+                            self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN
+                                                 )]['money'] = 0
+                            self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN
+                                                 )]['avg_price'] = 0
+
+                    # 卖出平仓  之前是多开
+                    elif trade_towards in [ORDER_DIRECTION.SELL_CLOSE,
+                                           ORDER_DIRECTION.SELL_CLOSETODAY]:
+                        # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
+                        self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN
+                                             )]['amount'] -= trade_amount
+
+                        frozen_part = self.frozen[code][str(
+                            ORDER_DIRECTION.BUY_OPEN
+                        )]['money'] * trade_amount
+                        self.cash.append(
+                            self.cash[-1] + frozen_part +
+                            (abs(trade_money) - frozen_part) / frozen -
+                            commission_fee - tax_fee
+                        )
+                        if self.frozen[code][str(
+                                ORDER_DIRECTION.BUY_OPEN)]['amount'] == 0:
+                            self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN
+                                                 )]['money'] = 0
+                            self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN
+                                                 )]['avg_price'] = 0
+            else: # 不允许卖空开仓的==> 股票
+
+                self.cash.append(
+                    self.cash[-1] - trade_money - tax_fee - commission_fee
+                )
+            if self.allow_t0 or trade_towards == ORDER_DIRECTION.SELL:
+                self.sell_available[code] = self.sell_available.get(
+                    code,
+                    0
+                ) + trade_amount * market_towards
+                self.buy_available = self.sell_available
+
+            self.cash_available = self.cash[-1]
+            frozen_money = abs(trade_money) if trade_towards in [
+                ORDER_DIRECTION.BUY_OPEN,
+                ORDER_DIRECTION.SELL_OPEN
+            ] else 0
+
+            try:
+                total_frozen = sum([itex.get('avg_price',0)* itex.get('amount',0) for item in self.frozen.values() for itex in item.values()])
+            except Exception as e:
+                print(e)
+                total_frozen = 0
+            self.history.append(
+                [
+                    str(trade_time),
+                    code,
+                    trade_price,
+                    market_towards * trade_amount,
+                    self.cash[-1],
+                    order_id,
+                    realorder_id,
+                    trade_id,
+                    self.account_cookie,
+                    commission_fee,
+                    tax_fee,
+                    message,
+                    frozen_money,
+                    trade_towards,
+                    total_frozen
+                ]
+            )
+            return 0
+
+        else:
+            print('ALERT MONEY NOT ENOUGH!!!')
+            print(self.cash[-1])
+            self.cash_available = self.cash[-1]
+            return -1
+            #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
