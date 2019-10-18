@@ -226,7 +226,9 @@ class QA_AccountPRO(QA_Worker):
         """
 
         pos = self.positions.get(code, QA_Position(code=code, user_cookie=self.user_cookie,
-                                                   portfolio_cookie=self.portfolio_cookie, account_cookie=self.account_cookie, auto_reload=False))
+                                                   portfolio_cookie=self.portfolio_cookie, 
+                                                   account_cookie=self.account_cookie, 
+                                                   auto_reload=False))
         if pos.market_type == self.market_type:
             self.positions[code] = pos
             return pos
@@ -237,6 +239,624 @@ class QA_AccountPRO(QA_Worker):
     @property
     def hold_available(self):
         pass
+
+
+    @property
+    def message(self):
+        'the standard message which can be transfer'
+        return {
+            'source':
+            'account',
+            'frequence':
+            self.frequence,
+            'account_cookie':
+            self.account_cookie,
+            'portfolio_cookie':
+            self.portfolio_cookie,
+            'user_cookie':
+            self.user_cookie,
+            'broker':
+            self.broker,
+            'market_type':
+            self.market_type,
+            'strategy_name':
+            self.strategy_name,
+            'current_time':
+            str(self._currenttime),
+            'allow_sellopen':
+            self.allow_sellopen,
+            'allow_margin':
+            self.allow_margin,
+            'allow_t0':
+            self.allow_t0,
+            'margin_level':
+            self.margin_level,
+            'init_assets':
+            self.init_assets,
+            'init_cash':
+            self.init_cash,
+            'init_hold':
+            self.init_hold.to_dict(),
+            'commission_coeff':
+            self.commission_coeff,
+            'tax_coeff':
+            self.tax_coeff,
+            'cash':
+            self.cash,
+            'history':
+            self.history,
+            'trade_index':
+            self.time_index_max,
+            'running_time':
+            str(datetime.datetime.now())
+            if self.running_time is None else str(self.running_time),
+            'quantaxis_version':
+            self.quantaxis_version,
+            'running_environment':
+            self.running_environment,
+            'start_date':
+            self.start_date,
+            'end_date':
+            self.end_date,
+            'frozen':
+            self.frozen,
+            'finished_id':
+            self.finishedOrderid
+        }
+
+    @property
+    def freecash_precent(self):
+        """剩余资金比例
+
+        Returns:
+            float
+        """
+
+        return self.cash_available / self.init_cash
+
+    def load_marketpreset(self):
+        """加载市场表
+        """
+
+        self.market_preset = MARKET_PRESET()
+
+    @property
+    def init_hold_with_account(self):
+        """带account_cookie的初始化持仓
+
+        Returns:
+            [type] -- [description]
+        """
+
+        return self.init_hold.reset_index().assign(
+            account_cookie=self.account_cookie
+        ).set_index(['code',
+                     'account_cookie'])
+
+    @property
+    def init_assets(self):
+        """初始化账户资产
+
+        Returns:
+            dict -- 2keys-cash,hold
+        """
+
+        return {'cash': self.init_cash, 'hold': self.init_hold.to_dict()}
+
+    @property
+    def code(self):
+        """
+        该账户曾交易代码 用set 去重
+        """
+        return list(set([item[1] for item in self.history]))
+
+    @property
+    def date(self):
+        """账户运行的日期
+
+        Arguments:
+            self {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+
+        if self.datetime is not None:
+            return str(self.datetime)[0:10]
+        else:
+            return None
+
+    @property
+    def positions(self):
+        raise NotImplementedError
+
+    @property
+    def start_date(self):
+        """账户的起始交易日期(只在回测中使用)
+
+        Raises:
+            RuntimeWarning -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        if self.start_ == None:
+            if len(self.time_index_max) > 0:
+                return str(min(self.time_index_max))[0:10]
+            else:
+                print(
+                    RuntimeWarning(
+                        'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE'
+                    )
+                )
+        else:
+            return self.start_
+
+    @property
+    def end_date(self):
+        """账户的交易结束日期(只在回测中使用)
+
+        Raises:
+            RuntimeWarning -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        if self.end_ == None:
+            if len(self.time_index_max) > 0:
+                return str(max(self.time_index_max))[0:10]
+            else:
+                print(
+                    RuntimeWarning(
+                        'QAACCOUNT: THIS ACCOUNT DOESNOT HAVE ANY TRADE'
+                    )
+                )
+        else:
+            return self.end_
+
+    @property
+    def market_data(self):
+        return self._market_data
+
+    @property
+    def trade_range(self):
+        return QA_util_get_trade_range(self.start_date, self.end_date)
+
+    @property
+    def trade_range_max(self):
+        if self.start_date < str(min(self.time_index_max))[0:10]:
+            return QA_util_get_trade_range(self.start_date, self.end_date)
+        else:
+
+            return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], 
+                                           str(max(str(max(self.time_index_max)),self.end_date))[0:10])
+
+    @property
+    def total_commission(self):
+        """
+        总手续费
+        """
+        try:
+            return np.asarray(self.history).T[9].sum()
+        except:
+            return 0
+
+    @property
+    def total_tax(self):
+        """
+        总印花税
+        """
+        try:
+            return np.asarray(self.history).T[10].sum()
+        except:
+            return 0
+
+    @property
+    def time_index(self):
+        if len(self.time_index_max):
+            res_ = pd.DataFrame(self.time_index_max)
+            res_.columns = (['datetime'])
+            res_['date'] = [i[0:10] for i in res_['datetime']]
+            res_ = res_[res_['date'].isin(self.trade_range)]
+            return list(res_['datetime'])
+        else:
+            return self.time_index_max
+#
+#        if self.start_date < str(min(self.time_index))[0:10] :
+#             return QA_util_get_trade_range(self.start_date, self.end_date)
+#        else:
+#            return QA_util_get_trade_range(str(min(self.time_index))[0:10], str(max(self.time_index))[0:10])
+
+    @property
+    def history_min(self):
+        if len(self.history):
+            res_ = pd.DataFrame(self.history)
+            res_['date'] = [i[0:10] for i in res_[0]]
+            res_ = res_[res_['date'].isin(self.trade_range)]
+            return np.array(res_.drop(['date'], axis=1)).tolist()
+        else:
+            return self.history
+
+    @property
+    def history_table_min(self):
+        '区间交易历史的table'
+        if len(self.history_min) > 0:
+            lens = len(self.history_min[0])
+        else:
+            lens = len(self._history_headers)
+
+        return pd.DataFrame(
+            data=self.history_min,
+            columns=self._history_headers[:lens]
+        ).sort_index()
+
+
+#    @property
+#    def history(self):
+#        if len(self.history_max):
+#            res_=pd.DataFrame(self.history_max)
+#            res_['date']=[ i[0:10]  for i in res_[0]]
+#            res_=res_[res_['date'].isin(self.trade_range)]
+#            return np.array(res_.drop(['date'],axis=1)).tolist()
+#        else:
+#            return self.history_max
+#        res_=pd.DataFrame(self.time_index_max)
+#        res_.columns=(['datetime'])
+#        res_['date']=[ i[0:10]  for i in res_['datetime']]
+#        res_=res_[res_['date'].isin(self.trade_range)]
+
+    @property
+    def trade_day(self):
+        return list(
+            pd.Series(self.time_index_max
+                     ).apply(lambda x: str(x)[0:10]).unique()
+        )
+
+    @property
+    def history_table(self):
+        '交易历史的table'
+        if len(self.history) > 0:
+            lens = len(self.history[0])
+        else:
+            lens = len(self._history_headers)
+
+        return pd.DataFrame(
+            data=self.history,
+            columns=self._history_headers[:lens]
+        ).sort_index()
+
+    @property
+    def today_trade_table(self):
+        return pd.DataFrame(
+            data=self.today_trade['current'],
+            columns=self._history_headers
+        ).sort_index()
+
+    @property
+    def cash_table(self):
+        '现金的table'
+        _cash = pd.DataFrame(
+            data=[self.cash[1::],
+                  self.time_index_max],
+            index=['cash',
+                   'datetime']
+        ).T
+        _cash = _cash.assign(
+            date=_cash.datetime.apply(lambda x: pd.to_datetime(str(x)[0:10]))
+        ).assign(account_cookie=self.account_cookie)                          # .sort_values('datetime')
+        return _cash.set_index(['datetime', 'account_cookie'], drop=False)
+        """
+        实验性质
+        @2018-06-09
+
+        # 对于账户持仓的分解
+
+        1. 真实持仓hold:
+
+        正常模式/TZero模式:
+            hold = 历史持仓(init_hold)+ 初始化账户后发生的所有交易导致的持仓(hold_available)
+
+        动态持仓(初始化账户后的持仓)hold_available:
+            self.history 计算而得
+
+        2. 账户的可卖额度(sell_available)
+
+        正常模式:
+            sell_available
+                结算前: init_hold+ 买卖交易(卖-)
+                结算后: init_hold+ 买卖交易(买+ 卖-)
+        TZero模式:
+            sell_available
+                结算前: init_hold - 买卖交易占用的额度(abs(买+ 卖-))
+                结算过程 是为了补平(等于让hold={})
+                结算后: init_hold
+        """
+
+    @property
+    def hold(self):
+        """真实持仓
+        """
+        return pd.concat(
+            [self.init_hold,
+             self.hold_available]
+        ).groupby('code').sum().replace(0,
+                                        np.nan).dropna().sort_index()
+
+    @property
+    def hold_available(self):
+        """可用持仓
+        """
+        return self.history_table.groupby('code').amount.sum().replace(
+            0,
+            np.nan
+        ).dropna().sort_index()
+
+    # @property
+    # def order_table(self):
+    #     """return order trade list"""
+    #     return self.orders.trade_list
+
+    @property
+    def trade(self):
+        """每次交易的pivot表
+
+        Returns:
+            pd.DataFrame
+
+            此处的pivot_table一定要用np.sum
+        """
+
+        return self.history_table.pivot_table(
+            index=['datetime',
+                   'account_cookie'],
+            columns='code',
+            values='amount',
+            aggfunc=np.sum
+        ).fillna(0).sort_index()
+
+    @property
+    def daily_cash(self):
+        '每日交易结算时的现金表'
+        res = self.cash_table.drop_duplicates(subset='date', keep='last')
+        le = pd.DataFrame(
+            pd.Series(
+                data=None,
+                index=pd.to_datetime(self.trade_range_max).set_names('date'),
+                name='predrop'
+            )
+        )
+        ri = res.set_index('date')
+        res_ = pd.merge(le, ri, how='left', left_index=True, right_index=True)
+        res_ = res_.ffill().fillna(
+            self.init_cash
+        ).drop(['predrop',
+                'datetime',
+                'account_cookie'],
+               axis=1).reset_index().set_index(['date'],
+                                               drop=False).sort_index()
+        res_ = res_[res_.index.isin(self.trade_range)]
+        return res_
+
+    @property
+    def daily_hold(self):
+        '每日交易结算时的持仓表'
+        data = self.trade.cumsum()
+        if len(data) < 1:
+            return None
+        else:
+            # print(data.index.levels[0])
+            data = data.assign(account_cookie=self.account_cookie).assign(
+                date=pd.to_datetime(data.index.levels[0]).date
+            )
+
+            data.date = pd.to_datetime(data.date)
+            data = data.set_index(['date', 'account_cookie'])
+            res = data[~data.index.duplicated(keep='last')].sort_index()
+            # 这里会导致股票停牌时的持仓也被计算 但是计算market_value的时候就没了
+            le = pd.DataFrame(
+                pd.Series(
+                    data=None,
+                    index=pd.to_datetime(self.trade_range_max
+                                        ).set_names('date'),
+                    name='predrop'
+                )
+            )
+            ri = res.reset_index().set_index('date')
+            res_ = pd.merge(
+                le,
+                ri,
+                how='left',
+                left_index=True,
+                right_index=True
+            )
+            res_ = res_.ffill().fillna(0).drop(
+                ['predrop',
+                 'account_cookie'],
+                axis=1
+            ).reset_index().set_index(['date']).sort_index()
+            res_ = res_[res_.index.isin(self.trade_range)]
+            return res_
+
+    @property
+    def daily_frozen(self):
+        '每日交易结算时的持仓表'
+        res_ = self.history_table.assign(
+            date=pd.to_datetime(self.history_table.datetime)
+        ).set_index('date').resample('D').total_frozen.last().fillna(method='pad')
+        res_ = res_[res_.index.isin(self.trade_range)]
+        return res_
+
+    @property
+    def latest_cash(self):
+        'return the lastest cash 可用资金'
+        return self.cash[-1]
+
+    @property
+    def current_time(self):
+        'return current time (in backtest/real environment)'
+        return self._currenttime
+
+    def hold_table(self, datetime=None):
+        "到某一个时刻的持仓 如果给的是日期,则返回当日开盘前的持仓"
+        if datetime is None:
+            hold_available = self.history_table.set_index(
+                'datetime'
+            ).sort_index().groupby('code').amount.sum().sort_index()
+        else:
+            hold_available = self.history_table.set_index(
+                'datetime'
+            ).sort_index().loc[:datetime].groupby('code'
+                                                 ).amount.sum().sort_index()
+
+        return pd.concat([self.init_hold,
+                          hold_available]).groupby('code').sum().sort_index(
+                          ).apply(lambda x: x if x > 0 else None).dropna()
+
+    def current_hold_price(self):
+        """计算目前持仓的成本  用于模拟盘和实盘查询
+
+        Returns:
+            [type] -- [description]
+        """
+
+        def weights(x):
+            n = len(x)
+            res = 1
+            while res > 0 or res < 0:
+                res = sum(x[:n]['amount'])
+                n = n - 1
+
+            x = x[n + 1:]
+
+            if sum(x['amount']) != 0:
+                return np.average(
+                    x['price'],
+                    weights=x['amount'],
+                    returned=True
+                )
+            else:
+                return np.nan
+
+        return self.history_table.set_index(
+            'datetime',
+            drop=False
+        ).sort_index().groupby('code').apply(weights).dropna()
+
+    def hold_price(self, datetime=None):
+        """计算持仓成本  如果给的是日期,则返回当日开盘前的持仓
+
+        Keyword Arguments:
+            datetime {[type]} -- [description] (default: {None})
+
+        Returns:
+            [type] -- [description]
+        """
+
+        def weights(x):
+            if sum(x['amount']) != 0:
+                return np.average(
+                    x['price'],
+                    weights=x['amount'],
+                    returned=True
+                )
+            else:
+                return np.nan
+
+        if datetime is None:
+            return self.history_table.set_index(
+                'datetime',
+                drop=False
+            ).sort_index().groupby('code').apply(weights).dropna()
+        else:
+            return self.history_table.set_index(
+                'datetime',
+                drop=False
+            ).sort_index().loc[:datetime].groupby('code').apply(weights
+                                                               ).dropna()
+
+    # @property
+    def hold_time(self, datetime=None):
+        """持仓时间
+
+        Keyword Arguments:
+            datetime {[type]} -- [description] (default: {None})
+        """
+
+        def weights(x):
+            if sum(x['amount']) != 0:
+                return pd.Timestamp(self.datetime
+                                   ) - pd.to_datetime(x.datetime.max())
+            else:
+                return np.nan
+
+        if datetime is None:
+            return self.history_table.set_index(
+                'datetime',
+                drop=False
+            ).sort_index().groupby('code').apply(weights).dropna()
+        else:
+            return self.history_table.set_index(
+                'datetime',
+                drop=False
+            ).sort_index().loc[:datetime].groupby('code').apply(weights
+                                                               ).dropna()
+
+    def reset_assets(self, init_cash=None):
+        'reset_history/cash/'
+        self.sell_available = copy.deepcopy(self.init_hold)
+        self.history = []
+        self.init_cash = init_cash
+        self.cash = [self.init_cash]
+        self.cash_available = self.cash[-1] # 在途资金
+
+    @property
+    def close_positions_order(self):
+        """平仓单
+
+        Raises:
+            RuntimeError -- if ACCOUNT.RUNNING_ENVIRONMENT is NOT TZERO
+
+        Returns:
+            list -- list with order
+        """
+
+        order_list = []
+        time = '{} 15:00:00'.format(self.date)
+        if self.running_environment == RUNNING_ENVIRONMENT.TZERO:
+            for code, amount in self.hold_available.iteritems():
+                order = False
+                if amount < 0:
+                    # 先卖出的单子 买平
+                    order = self.send_order(
+                        code=code,
+                        price=0,
+                        amount=abs(amount),
+                        time=time,
+                        towards=ORDER_DIRECTION.BUY,
+                        order_model=ORDER_MODEL.CLOSE,
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                    )
+                elif amount > 0:
+                    # 先买入的单子, 卖平
+                    order = self.send_order(
+                        code=code,
+                        price=0,
+                        amount=abs(amount),
+                        time=time,
+                        towards=ORDER_DIRECTION.SELL,
+                        order_model=ORDER_MODEL.CLOSE,
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT
+                    )
+                if order:
+                    order_list.append(order)
+            return order_list
+        else:
+            raise RuntimeError(
+                'QAACCOUNT with {} environments cannot use this methods'.format(
+                    self.running_environment
+                )
+            )
+
 
     def send_order(
             self,
@@ -486,7 +1106,7 @@ class QA_AccountPRO(QA_Worker):
                            trade_id=None,
                            realorder_id=None):
 
-
+        pos = self.get_position(code)
         self.datetime = trade_time
         if realorder_id in self.finishedOrderid:
             pass
@@ -615,6 +1235,7 @@ class QA_AccountPRO(QA_Worker):
                         self.cash[-1] - abs(trade_money) - commission_fee -
                         tax_fee
                     )
+                    #pos.update_pos(trade_price, trade_amount, trade_towards)
                 elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE,
                                        ORDER_DIRECTION.BUY_CLOSETODAY,
                                        ORDER_DIRECTION.SELL_CLOSE,
@@ -736,6 +1357,7 @@ class QA_AccountPRO(QA_Worker):
                     total_frozen
                 ]
             )
+            pos.update_pos(trade_price, trade_amount, trade_towards)
             return 0
 
         else:
@@ -744,3 +1366,224 @@ class QA_AccountPRO(QA_Worker):
             self.cash_available = self.cash[-1]
             return -1
             #print('NOT ENOUGH MONEY FOR {}'.format(order_id))
+
+    def settle(self, settle_data=None):
+        """
+        股票/期货的日结算
+
+        股票的结算:  结转股票可卖额度
+        T0的结算: 结转T0的额度
+
+        期货的结算: 结转静态资金
+
+
+        @2019-02-25 yutiansut
+        hold 在下面要进行大变化:
+
+        从 只计算数量 ==> 数量+成本+买入价 (携带更多信息)
+
+        基于history去计算hold ==> last_settle+ today_pos_change
+
+        """
+        #print('FROM QUANTAXIS QA_ACCOUNT: account settle')
+        if self.running_environment == RUNNING_ENVIRONMENT.TZERO and self.hold_available.sum(
+        ) != 0:
+            raise RuntimeError(
+                'QAACCOUNT: 该T0账户未当日仓位,请平仓 {}'.format(
+                    self.hold_available.to_dict()
+                )
+            )
+        if self.market_type == MARKET_TYPE.FUTURE_CN:
+            # 增加逐日盯市制度
+
+            self.static_balance['frozen'].append(
+                sum(
+                    [
+                        rx['money'] * rx['amount']
+                        for var in self.frozen.values()
+                        for rx in var.values()
+                    ]
+                )
+            )
+
+            self.static_balance['cash'].append(self.cash[-1])
+            self.static_balance['hold'].append(self.hold.to_dict())
+            self.static_balance['date'].append(self.date)
+            """静态权益的结算
+
+            只关心开仓价/ 不做盯市制度
+
+            动态权益的结算需要关心
+
+            """
+
+            self.static_balance['static_assets'].append(
+                self.static_balance['cash'][-1] +
+                self.static_balance['frozen'][-1]
+            )
+
+        self.sell_available = self.hold
+        self.buy_available = self.hold
+        self.cash_available = self.cash[-1]
+        self.datetime = '{} 09:30:00'.format(
+            QA_util_get_next_day(self.date)
+        ) if self.date is not None else None
+
+    def from_message(self, message):
+        """resume the account from standard message
+        这个是从数据库恢复账户时需要的"""
+        self.account_cookie = message.get('account_cookie', None)
+        self.portfolio_cookie = message.get('portfolio_cookie', None)
+        self.user_cookie = message.get('user_cookie', None)
+        self.broker = message.get('broker', None)
+        self.market_type = message.get('market_type', None)
+        self.strategy_name = message.get('strategy_name', None)
+        self._currenttime = message.get('current_time', None)
+        self.allow_sellopen = message.get('allow_sellopen', False)
+        self.allow_margin = message.get('allow_margin', False)
+        self.allow_t0 = message.get('allow_t0', False)
+        self.margin_level = message.get('margin_level', False)
+        self.frequence = message.get(
+            'frequence',
+            FREQUENCE.FIFTEEN_MIN
+        )                                       # 默认15min
+        self.init_cash = message.get(
+            'init_cash',
+            message.get('init_assets',
+                        1000000)
+        )                                       # 兼容修改
+        self.init_hold = pd.Series(message.get('init_hold', {}), name='amount')
+        self.init_hold.index.name = 'code'
+        self.commission_coeff = message.get('commission_coeff', 0.00015)
+        self.tax_coeff = message.get('tax_coeff', 0.0015)
+        self.history = message['history']
+        self.cash = message['cash']
+        self.time_index_max = message['trade_index']
+        self.running_time = message.get('running_time', None)
+        self.quantaxis_version = message.get('quantaxis_version', None)
+        self.running_environment = message.get(
+            'running_environment',
+            RUNNING_ENVIRONMENT.BACKETEST
+        )
+        self.frozen = message.get('frozen', {})
+        self.finishedOrderid = message.get('finished_id', [])
+        self.settle()
+        return self
+
+    def from_otgdict(self, message):
+        """[summary]
+        balance = static_balance + float_profit
+
+
+            "currency": "",  # "CNY" (币种)
+            "pre_balance": float("nan"),  # 9912934.78 (昨日账户权益)
+            "static_balance": float("nan"),  # (静态权益)
+            "balance": float("nan"),  # 9963216.55 (账户权益)
+            "available": float("nan"),  # 9480176.15 (可用资金)
+            "float_profit": float("nan"),  # 8910.0 (浮动盈亏)
+            "position_profit": float("nan"),  # 1120.0(持仓盈亏)
+            "close_profit": float("nan"),  # -11120.0 (本交易日内平仓盈亏)
+            "frozen_margin": float("nan"),  # 0.0(冻结保证金)
+            "margin": float("nan"),  # 11232.23 (保证金占用)
+            "frozen_commission": float("nan"),  # 0.0 (冻结手续费)
+            "commission": float("nan"),  # 123.0 (本交易日内交纳的手续费)
+            "frozen_premium": float("nan"),  # 0.0 (冻结权利金)
+            "premium": float("nan"),  # 0.0 (本交易日内交纳的权利金)
+            "deposit": float("nan"),  # 1234.0 (本交易日内的入金金额)
+            "withdraw": float("nan"),  # 890.0 (本交易日内的出金金额)
+            "risk_ratio": float("nan"),  # 0.048482375 (风险度)
+        """
+
+        self.allow_margin = True
+        self.allow_sellopen = True
+        self.allow_t0 = True
+
+        self.account_cookie = message['accounts']['user_id']
+        # 可用资金
+        self.cash_available = message['accounts']['available']
+        self.balance = message['accounts']['balance']
+
+        # 都是在结算的时候计算的
+        # 昨日权益/静态权益 ==> 这两个是一样的
+        self.static_balance = message['accounts']['static_balance']
+        self.pre_balance = message['accounts']['pre_balance']
+
+        # 平仓盈亏
+        self.close_profit = message['accounts']['close_profit']
+        # 持仓盈亏
+        self.position_profit = message['accounts']['position_profit']
+
+        # 动态权益
+        self.float_profit = message['accounts']['float_profit']
+
+        # 占用保证金
+        self.margin = message['accounts']['margin']
+
+        self.commission = message['accounts']['commission']
+    def save(self):
+        """
+        存储账户信息
+        """
+        save_account(self.message)
+
+    def reload(self):
+
+        message = self.client.find_one(
+            {
+                'account_cookie': self.account_cookie,
+                'portfolio_cookie': self.portfolio_cookie,
+                'user_cookie': self.user_cookie
+            }
+        )
+
+        if message is None:
+            self.client.insert(self.message)
+        else:
+            self.from_message(message)
+
+    def sync_account(self, sync_message):
+        """同步账户
+
+        Arguments:
+            sync_message {[type]} -- [description]
+        """
+
+        self.init_hold = sync_message['hold_available']
+        self.init_cash = sync_message['cash_available']
+
+        self.sell_available = copy.deepcopy(self.init_hold)
+        self.history = []
+        self.cash = [self.init_cash]
+        self.cash_available = self.cash[-1] # 在途资金
+
+    def change_cash(self, money):
+        """
+        外部操作|高危|
+        """
+        res = self.cash[-1] + money
+        if res >= 0:
+            # 高危操作
+            self.cash[-1] = res
+
+    def get_orders(self, if_today=True):
+        '''
+        返回当日委托/历史委托
+        :param if_today: true 只返回今天的订单
+        :return: QA_OrderQueue
+        '''
+        # 🛠todo 筛选其它不是今天的订单返回
+        return self.orders
+
+    def get_history(self, start, end):
+        """返回历史成交
+
+        Arguments:
+            start {str} -- [description]
+            end {str]} -- [description]
+        """
+        return self.history_table.set_index(
+            'datetime',
+            drop=False
+        ).loc[slice(pd.Timestamp(start),
+                    pd.Timestamp(end))]
+
