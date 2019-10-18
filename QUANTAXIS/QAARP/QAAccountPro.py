@@ -486,7 +486,7 @@ class QA_AccountPRO(QA_Worker):
                            trade_id=None,
                            realorder_id=None):
 
-
+        pos = self.get_position(code)
         self.datetime = trade_time
         if realorder_id in self.finishedOrderid:
             pass
@@ -615,6 +615,7 @@ class QA_AccountPRO(QA_Worker):
                         self.cash[-1] - abs(trade_money) - commission_fee -
                         tax_fee
                     )
+                    #pos.update_pos(trade_price, trade_amount, trade_towards)
                 elif trade_towards in [ORDER_DIRECTION.BUY_CLOSE,
                                        ORDER_DIRECTION.BUY_CLOSETODAY,
                                        ORDER_DIRECTION.SELL_CLOSE,
@@ -736,6 +737,7 @@ class QA_AccountPRO(QA_Worker):
                     total_frozen
                 ]
             )
+            pos.update_pos(trade_price, trade_amount, trade_towards)
             return 0
 
         else:
