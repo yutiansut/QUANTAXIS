@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, FREQUENCE, MARKET_TYPE,
-                                          ORDER_DIRECTION, ORDER_MODEL)
+from QUANTAXIS.QAUtil.QAParameter import (
+    AMOUNT_MODEL,
+    FREQUENCE,
+    MARKET_TYPE,
+    ORDER_DIRECTION,
+    ORDER_MODEL,
+    AMOUNT_MODEL
+)
 
 
 class QA_Strategy(QA_Account):
@@ -38,25 +43,67 @@ class QA_Strategy(QA_Account):
         super().__init__(*args, **kwargs)
         self.frequence = FREQUENCE.FIFTEEN_MIN
         self.market_type = MARKET_TYPE.STOCK_CN
+        self._market_data = []
+        self._subscribe_list = []
 
     def on_bar(self, event):
         try:
             for item in event.market_data.code:
 
                 if self.sell_available.get(item, 0) > 0:
-                    event.send_order(account_id=self.account_cookie,
-                                     amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                     time=self.current_time, code=item, price=0,
-                                     order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
-                                     market_type=self.market_type, frequence=self.frequence,
-                                     broker_name=self.broker
-                                     )
+                    event.send_order(
+                        account_cookie=self.account_cookie,
+                        amount=self.sell_available[item],
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                        time=self.current_time,
+                        code=item,
+                        price=0,
+                        order_model=ORDER_MODEL.MARKET,
+                        towards=ORDER_DIRECTION.SELL,
+                        market_type=self.market_type,
+                        frequence=self.frequence,
+                        broker_name=self.broker
+                    )
                 else:
-                    event.send_order(account_id=self.account_cookie,
-                                     amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
-                                     time=self.current_time, code=item, price=0,
-                                     order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
-                                     market_type=self.market_type, frequence=self.frequence,
-                                     broker_name=self.broker)
+                    event.send_order(
+                        account_cookie=self.account_cookie,
+                        amount=100,
+                        amount_model=AMOUNT_MODEL.BY_AMOUNT,
+                        time=self.current_time,
+                        code=item,
+                        price=0,
+                        order_model=ORDER_MODEL.MARKET,
+                        towards=ORDER_DIRECTION.BUY,
+                        market_type=self.market_type,
+                        frequence=self.frequence,
+                        broker_name=self.broker
+                    )
         except:
             pass
+
+    def subscribe(self, code):
+        pass
+
+    def unsubscribe(self, code):
+        pass
+
+    def buy(self, code, price, order):
+        pass
+
+    def sell(self):
+        pass
+
+    def buy_open(self):
+        pass
+
+    def sell_close(self):
+        pass
+
+    def sell_open(self):
+        pass
+
+    def buy_close(self):
+        pass
+
+    def settle(self):
+        pass

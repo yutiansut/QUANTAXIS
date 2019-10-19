@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_realtime
 
 
 class QA_DataStruct_Stock_block():
+
     def __init__(self, DataFrame):
         self.data = DataFrame
         assert isinstance(DataFrame.index, pd.MultiIndex)
@@ -97,7 +98,10 @@ class QA_DataStruct_Stock_block():
             [type] -- [description]
         """
 
-        return self.data.groupby(level=1).apply(lambda x: [item for item in x.index.remove_unused_levels().levels[0]])
+        return self.data.groupby(level=1).apply(
+            lambda x:
+            [item for item in x.index.remove_unused_levels().levels[0]]
+        )
 
     @property
     def view_block(self):
@@ -107,7 +111,10 @@ class QA_DataStruct_Stock_block():
             [type] -- [description]
         """
 
-        return self.data.groupby(level=0).apply(lambda x: [item for item in x.index.remove_unused_levels().levels[1]])
+        return self.data.groupby(level=0).apply(
+            lambda x:
+            [item for item in x.index.remove_unused_levels().levels[1]]
+        )
 
     def show(self):
         """展示DataStruct
@@ -145,8 +152,7 @@ class QA_DataStruct_Stock_block():
 
         return self.new(self.data.loc[(block_name, slice(None)), :])
 
-
-    def get_both_code(self,code):
+    def get_both_code(self, code):
         """get_both_code 获取几个股票相同的版块
         
         Arguments:
@@ -158,9 +164,11 @@ class QA_DataStruct_Stock_block():
 
         return self.new(self.data.loc[(slice(None), code), :])
 
+    def get_both_block(self, block_list):
+        n = len(block_list)
+        count = self.get_block(block_list).data.assign(countx=1).groupby('code').countx.count()
+        return count[count==n].index.tolist()
 
-    def get_both_block(self, block_name):
-        pass
     # def getdtype(self, dtype):
     #     """getdtype
 

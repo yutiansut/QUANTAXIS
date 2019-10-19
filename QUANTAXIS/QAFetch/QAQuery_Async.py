@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -47,7 +47,6 @@ async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', 
     '获取股票日线'
     start = str(start)[0:10]
     end = str(end)[0:10]
-    #code= [code] if isinstance(code,str) else code
 
     # code checking
     code = QA_util_code_tolist(code)
@@ -59,7 +58,6 @@ async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', 
             'code': {'$in': code}, "date_stamp": {
                 "$lte": QA_util_date_stamp(end),
                 "$gte": QA_util_date_stamp(start)}})
-        #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
         try:
             res = pd.DataFrame([item async for item in cursor])
         except SyntaxError:
@@ -150,7 +148,3 @@ if __name__ == "__main__":
     ))
 
     print(res)
-
-    # loop = asyncio.get_event_loop()
-    # print(id(loop))
-    # loop 内存地址一样 没有被销毁

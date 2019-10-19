@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 
 
 from functools import reduce
-
+import math
 import numpy as np
 import pandas as pd
 
@@ -113,17 +113,31 @@ def SINGLE_CROSS(A, B):
 
 def CROSS(A, B):
     """A<B then A>B  A上穿B B下穿A
-    
+
     Arguments:
         A {[type]} -- [description]
         B {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
 
-    var = np.where(A<B, 1, 0)
-    return (pd.Series(var, index=A.index).diff()<0).apply(int)
+    var = np.where(A < B, 1, 0)
+    try:
+        index = A.index
+    except:
+        index = B.index
+    return (pd.Series(var, index=index).diff() < 0).apply(int)
+
+
+def FILTER(COND, N):
+
+    k1 = pd.Series(np.where(COND, 1, 0), index=COND.index)
+    idx = k1[k1 == 1].index.codes[0]
+    needfilter = pd.Series(idx, index=idx)
+    afterfilter = needfilter.diff().apply(lambda x: False if x < N else True)
+    k1.iloc[afterfilter[afterfilter].index] = 2
+    return k1.apply(lambda x: 1 if x == 2 else 0)
 
 
 def COUNT(COND, N):
@@ -134,21 +148,39 @@ def COUNT(COND, N):
 
     现在返回的是series
     """
-    return pd.Series(np.where(COND,1,0),index=COND.index).rolling(N).sum()
+    return pd.Series(np.where(COND, 1, 0), index=COND.index).rolling(N).sum()
+
 
 def IF(COND, V1, V2):
     var = np.where(COND, V1, V2)
+    try:
+        try:
+            index = V1.index
+        except:
+            index = COND.index
+    except:
+        index = V2.index
+    return pd.Series(var, index=index)
+
+
+def IFAND(COND1, COND2, V1, V2):
+    var = np.where(np.logical_and(COND1, COND2), V1, V2)
+    return pd.Series(var, index=V1.index)
+
+
+def IFOR(COND1, COND2, V1, V2):
+    var = np.where(np.logical_or(COND1, COND2), V1, V2)
     return pd.Series(var, index=V1.index)
 
 
 def REF(Series, N):
-    var = Series.diff(N)
-    var = Series - var
-    return var
+
+    return Series.shift(N)
 
 
 def LAST(COND, N1, N2):
     """表达持续性
+    从前N1日到前N2日一直满足COND条件
 
     Arguments:
         COND {[type]} -- [description]
@@ -207,3 +239,20 @@ def BBI(Series, N1, N2, N3, N4):
     DICT = {'BBI': bbi}
     VAR = pd.DataFrame(DICT)
     return VAR
+
+
+def BARLAST(cond, yes=True):
+    """支持MultiIndex的cond和DateTimeIndex的cond
+    条件成立  yes= True 或者 yes=1 根据不同的指标自己定
+
+    Arguments:
+        cond {[type]} -- [description]
+    """
+    if isinstance(cond.index, pd.MultiIndex):
+        return len(cond)-cond.index.levels[0].tolist().index(cond[cond != yes].index[-1][0])-1
+    elif isinstance(cond.index, pd.DatetimeIndex):
+        return len(cond)-cond.index.tolist().index(cond[cond != yes].index[-1])-1
+
+
+def XARROUND(x, y): return np.round(
+    y*(round(x/y-math.floor(x/y)+0.00000000001) + math.floor(x/y)), 2)

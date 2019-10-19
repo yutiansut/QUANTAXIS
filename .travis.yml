@@ -3,10 +3,10 @@ language: python
 sudo: required
 matrix:
   include:
-    - python: 3.4
+
     - python: 3.5
     - python: 3.6
-
+    
 os: "ubuntu"
 # whitelist
 
@@ -17,10 +17,11 @@ os: "ubuntu"
 # command to install dependencies
 install: 
 
-
+- "pip install pandas==0.24.2"
 - "pip install git+https://github.com/yutiansut/pytdx"
 - "pip install -r requirements.txt"
 - "pip install git+https://github.com/yutiansut/tushare"
+- "pip install quantaxis"
 # command to build
 script: 
 

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,9 +27,9 @@ import pandas as pd
 import requests
 from lxml import etree
 from QUANTAXIS.QAFetch.base import headers
+from copy import deepcopy
 
-
-headers_ths = headers
+headers_ths = deepcopy(headers)
 headers_ths['Referer'] = 'http://www.10jqka.com.cn/'
 headers_ths['Host'] = 'q.10jqka.com.cn'
 headers_data = headers_ths
@@ -76,7 +76,7 @@ def QA_fetch_get_stock_block():
         [type] -- [description]
     """
 
-    url='https://gitee.com/yutiansut/QADATA/raw/master/ths_block.csv'
+    url='http://data.yutiansut.com/ths_block.csv'
     try:
         return pd.read_csv(url).set_index('code', drop=False)
     except:

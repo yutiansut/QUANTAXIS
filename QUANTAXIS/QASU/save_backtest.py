@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,12 +26,9 @@ import csv
 import os
 
 from QUANTAXIS.QAUtil import QA_util_log_expection
-
-
 """适用于老代码的回测
 现在已经废弃
 """
-
 """
 def QA_SU_save_account_message(message, client):
     coll = client.quantaxis.backtest_history

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,8 +26,11 @@
 import datetime
 import threading
 import time
+import pandas as pd
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+
+QATZInfo_CN = 'Asia/Shanghai'
 
 
 def QA_util_time_now():
@@ -112,7 +115,13 @@ def QA_util_datetime_to_strdatetime(dt):
     :return:  1999-02-01 09:30:91 string type
     """
     strdatetime = "%04d-%02d-%02d %02d:%02d:%02d" % (
-        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second)
+        dt.year,
+        dt.month,
+        dt.day,
+        dt.hour,
+        dt.minute,
+        dt.second
+    )
     return strdatetime
 
 
@@ -142,6 +151,34 @@ def QA_util_time_stamp(time_):
     else:
         timestr = str(time_)[0:19]
         return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
+
+
+def QA_util_tdxtimestamp(time_stamp):
+    """转换tdx的realtimeQuote数据
+    https://github.com/rainx/pytdx/issues/187#issuecomment-441270487
+    
+    Arguments:
+        timestamp {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    if time_stamp is not None:
+        time_stamp = str(time_stamp)
+        time = time_stamp[:-6] + ':'
+        if int(time_stamp[-6:-4]) < 60:
+            time += '%s:' % time_stamp[-6:-4]
+            time += '%06.3f' % (
+                int(time_stamp[-4:]) * 60 / 10000.0
+            )
+        else:
+            time += '%02d:' % (
+                int(time_stamp[-6:]) * 60 / 1000000
+            )
+            time += '%06.3f' % (
+                (int(time_stamp[-6:]) * 60 % 1000000) * 60 / 1000000.0
+            )
+        return time
 
 
 def QA_util_pands_timestamp_to_date(pandsTimestamp):
@@ -175,7 +212,14 @@ def QA_util_stamp2datetime(timestamp):
         return datetime.datetime.fromtimestamp(timestamp)
     except Exception as e:
         # it won't work ??
-        return datetime.datetime.fromtimestamp(timestamp / 1000)
+        try:
+            return datetime.datetime.fromtimestamp(timestamp / 1000)
+        except:
+            try:
+                return datetime.datetime.fromtimestamp(timestamp / 1000000)
+            except:
+                return datetime.datetime.fromtimestamp(timestamp / 1000000000)
+
     #
 
 
@@ -382,8 +426,10 @@ def QA_util_time_delay(time_=0):
     :param time_:
     :return:
     """
+
     def _exec(func):
         threading.Timer(time_, func)
+
     return _exec
 
 
@@ -401,35 +447,11 @@ def QA_util_calc_time(func, *args, **kwargs):
     # return datetime.datetime.now() - _time
 
 
-month_data = ['1996-03-31', '1996-06-30', '1996-09-30', '1996-12-31',
-              '1997-03-31', '1997-06-30', '1997-09-30', '1997-12-31',
-              '1998-03-31', '1998-06-30', '1998-09-30', '1998-12-31',
-              '1999-03-31', '1999-06-30', '1999-09-30', '1999-12-31',
-              '2000-03-31', '2000-06-30', '2000-09-30', '2000-12-31',
-              '2001-03-31', '2001-06-30', '2001-09-30', '2001-12-31',
-              '2002-03-31', '2002-06-30', '2002-09-30', '2002-12-31',
-              '2003-03-31', '2003-06-30', '2003-09-30', '2003-12-31',
-              '2004-03-31', '2004-06-30', '2004-09-30', '2004-12-31',
-              '2005-03-31', '2005-06-30', '2005-09-30', '2005-12-31',
-              '2006-03-31', '2006-06-30', '2006-09-30', '2006-12-31',
-              '2007-03-31', '2007-06-30', '2007-09-30', '2007-12-31',
-              '2008-03-31', '2008-06-30', '2008-09-30', '2008-12-31',
-              '2009-03-31', '2009-06-30', '2009-09-30', '2009-12-31',
-              '2010-03-31', '2010-06-30', '2010-09-30', '2010-12-31',
-              '2011-03-31', '2011-06-30', '2011-09-30', '2011-12-31',
-              '2012-03-31', '2012-06-30', '2012-09-30', '2012-12-31',
-              '2013-03-31', '2013-06-30', '2013-09-30', '2013-12-31',
-              '2014-03-31', '2014-06-30', '2014-09-30', '2014-12-31',
-              '2015-03-31', '2015-06-30', '2015-09-30', '2015-12-31',
-              '2016-03-31', '2016-06-30', '2016-09-30', '2016-12-31',
-              '2017-03-31', '2017-06-30', '2017-09-30', '2017-12-31',
-              '2018-03-31', '2018-06-30', '2018-09-30', '2018-12-31',
-              '2019-03-31', '2019-06-30', '2019-09-30', '2019-12-31',
-              '2020-03-31', '2020-06-30', '2020-09-30', '2020-12-31',
-              '2021-03-31', '2021-06-30', '2021-09-30', '2021-12-31',
-              '2022-03-31', '2022-06-30', '2022-09-30', '2022-12-31',
-              '2023-03-31', '2023-06-30', '2023-09-30', '2023-12-31']
-
+month_data = pd.date_range(
+    '1/1/1996',
+    '12/31/2023',
+    freq='Q-MAR'
+).astype(str).tolist()
 
 if __name__ == '__main__':
     print(QA_util_time_stamp('2017-01-01 10:25:08'))

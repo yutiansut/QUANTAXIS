@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 from abc import abstractmethod
 """QUANTAXIS EVENT
 EVENT 是会被推送进QUEUE的任务class
@@ -41,7 +40,7 @@ class QA_Worker(object):
         self.type = None
 
     def __repr__(self):
-        return '< QA_Worker {} id = {} >'.format(self.type,id(self))
+        return '< QA_Worker {} id = {} >'.format(self.type, id(self))
 
     @abstractmethod
     def run(self, event):
@@ -57,7 +56,16 @@ class QA_Event(object):
     '''
     QA_Event 事件
     '''
-    def __init__(self, event_type=None, func=None, message=None, callback=False, *args, **kwargs):
+
+    def __init__(
+            self,
+            event_type=None,
+            func=None,
+            message=None,
+            callback=False,
+            *args,
+            **kwargs
+    ):
         self.event_type = event_type
         self.func = func
         self.message = message
@@ -68,4 +76,9 @@ class QA_Event(object):
 
     #for debug purpose
     def __repr__(self):
-        return "< QA_Event {} {} {} , id = {} >".format(self.event_type , self.message, self.callback, id(self))
+        return "< QA_Event {} {} {} , id = {} >".format(
+            self.event_type,
+            self.message,
+            self.callback,
+            id(self)
+        )

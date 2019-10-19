@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, download_path
 参见PYTDX 1.65
 """
 
-FINANCIAL_URL = 'http://down.tdx.com.cn:8001/fin/gpcw.txt'
+FINANCIAL_URL = 'http://data.yutiansut.com/content.txt'
 
 
 class QAHistoryFinancialCrawler(HistoryFinancialCrawler):
@@ -79,12 +79,12 @@ def get_filename():
     """
     get_filename
     """
-    return [(l[0],l[1]) for l in [line.strip().split(",") for line in requests.get(FINANCIAL_URL).text.strip().split('\n')]]
-
+    return [(l[0], l[1]) for l in [line.strip().split(",") for line in requests.get(FINANCIAL_URL).text.strip().split('\n')]]
 
 
 def get_md5():
     return [l[1] for l in [line.strip().split(",") for line in requests.get(FINANCIAL_URL).text.strip().split('\n')]]
+
 
 def download_financialzip():
     """
@@ -93,13 +93,12 @@ def download_financialzip():
     result = get_filename()
     res = []
     for item, md5 in result:
-        if item in os.listdir(download_path) and md5==QA_util_file_md5('{}{}{}'.format(download_path,os.sep,item)):
-            
+        if item in os.listdir(download_path) and md5 == QA_util_file_md5('{}{}{}'.format(download_path, os.sep, item)):
+
             print('FILE {} is already in {}'.format(item, download_path))
         else:
             print('CURRENTLY GET/UPDATE {}'.format(item[0:12]))
-            r = requests.get('http://down.tdx.com.cn:8001/fin/{}'.format(item))
-
+            r = requests.get('http://data.yutiansut.com/{}'.format(item))
             file = '{}{}{}'.format(download_path, os.sep, item)
 
             with open(file, "wb") as code:
@@ -121,7 +120,7 @@ def parse_all():
     """
     解析目录下的所有文件
     """
-    #filepath = '{}{}{}{}'.format(qa_path, os.sep, 'downloads', os.sep)
+    # filepath = '{}{}{}{}'.format(qa_path, os.sep, 'downloads', os.sep)
     filename = os.listdir(download_path)
 
     return parse_filelist(filename)

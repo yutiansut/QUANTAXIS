@@ -3,6 +3,7 @@
 _data_/
 _notebooks_/
 *.pyc
+*.pyd
 node_modules/
 .vscode/
 *.7z
@@ -22,7 +23,9 @@ node_modules/
 QA_*.html
 test/
 *lock.json
-
+docs
+record.txt
+build/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
@@ -164,3 +167,5 @@ kernel*.json
 
 selenium_driver/*
 QUANTAXIS_WEBDRIVER/*
+
+celerybeat*

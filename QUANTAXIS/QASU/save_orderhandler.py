@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,12 @@ def QA_SU_save_order(orderlist, client=DATABASE):
 
         collection = client.order
         collection.create_index(
-            [('account_cookie', ASCENDING), ('realorder_id', ASCENDING)], unique=True)
+            [('account_cookie',
+              ASCENDING),
+             ('realorder_id',
+              ASCENDING)],
+            unique=True
+        )
         try:
 
             orderlist = QA_util_to_json_from_pandas(orderlist.reset_index())
@@ -49,8 +54,14 @@ def QA_SU_save_order(orderlist, client=DATABASE):
             for item in orderlist:
                 if item:
                     #item['date']= QA_util_get_order_day()
-                    collection.update_one({'account_cookie': item.get('account_cookie'), 'realorder_id': item.get('realorder_id')},
-                                          {'$set': item}, upsert=True)
+                    collection.update_one(
+                        {
+                            'account_cookie': item.get('account_cookie'),
+                            'realorder_id': item.get('realorder_id')
+                        },
+                        {'$set': item},
+                        upsert=True
+                    )
         except Exception as e:
             print(e)
             pass
@@ -71,7 +82,12 @@ def QA_SU_save_deal(dealist, client=DATABASE):
         collection = client.deal
 
         collection.create_index(
-            [('account_cookie', ASCENDING), ('trade_id', ASCENDING)], unique=True)
+            [('account_cookie',
+              ASCENDING),
+             ('trade_id',
+              ASCENDING)],
+            unique=True
+        )
         try:
             dealist = QA_util_to_json_from_pandas(dealist.reset_index())
             collection.insert_many(dealist, ordered=False)
@@ -91,11 +107,22 @@ def QA_SU_save_order_queue(order_queue, client=DATABASE):
     """
     collection = client.order_queue
     collection.create_index(
-        [('account_cookie', ASCENDING), ('order_id', ASCENDING)], unique=True)
+        [('account_cookie',
+          ASCENDING),
+         ('order_id',
+          ASCENDING)],
+        unique=True
+    )
     for order in order_queue.values():
         order_json = order.to_dict()
         try:
-            collection.update_one({'account_cookie': order_json.get('account_cookie'), 'order_id': order_json.get('order_id')},
-                                  {'$set': order_json}, upsert=True)
+            collection.update_one(
+                {
+                    'account_cookie': order_json.get('account_cookie'),
+                    'order_id': order_json.get('order_id')
+                },
+                {'$set': order_json},
+                upsert=True
+            )
         except Exception as e:
             print(e)

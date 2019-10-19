@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,6 @@ import pandas as pd
 
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, TRADE_STATUS
-
-
 """撮合类
 
 一个无状态的 Serverless Dealer
@@ -54,7 +52,6 @@ class commission():
 
 
 class QA_Dealer():
-
     """[summary]
 
 
@@ -87,8 +84,23 @@ class QA_Dealer():
         self.trade_time = None
         self.status = None
         self.trade_money = 0
-        self.dealheader = ['account_cookie', 'order_time', 'trade_time', 'code', 'name', 'towards', 'trade_price', 'order_price',
-                           'status', 'order_amount', 'trade_amount', 'trade_money', 'cancel_amount', 'realorder_id', 'trade_id']
+        self.dealheader = [
+            'account_cookie',
+            'order_time',
+            'trade_time',
+            'code',
+            'name',
+            'towards',
+            'trade_price',
+            'order_price',
+            'status',
+            'order_amount',
+            'trade_amount',
+            'trade_money',
+            'cancel_amount',
+            'realorder_id',
+            'trade_id'
+        ]
         self.deal_message = {}
 
     def deal(self, order, market_data):
@@ -97,18 +109,18 @@ class QA_Dealer():
         self.deal_price = 0
         self.deal_amount = 0
         self.order.tax_coeff = order.tax_coeff
-        # if order.market_type == MARKET_TYPE.STOCK_CN:
+        self.order.realorder_id = self.order.order_id
 
         res = self.backtest_dealer()
-        # print(res)
-        self.deal_message[self.order.order_id] = res
+        self.deal_message[self.order.realorder_id] = res
 
-        # elif order.market_type == MARKET_TYPE.FUTURE_CN:
-        #     return self.backtest_future_dealer()
 
     @property
     def deal_df(self):
-        return pd.DataFrame(data=list(self.deal_message.values()), columns=self.dealheader)
+        return pd.DataFrame(
+            data=list(self.deal_message.values()),
+            columns=self.dealheader
+        )
 
     def settle(self):
         """撮合部分settle事件
@@ -120,9 +132,23 @@ class QA_Dealer():
     def callback_message(self):
         # 这是标准的return back message
 
-        return [self.order.account_cookie, self.order.sending_time, self.trade_time, self.order.code, None, self.order.towards, float("%.2f" % float(self.deal_price)),
-                self.order.price, self.status, self.order.amount, self.deal_amount, self.trade_money, 0,  self.order.order_id, QA_util_random_with_topic('Trade')]
-        # self.order.
+        return [
+            self.order.account_cookie,
+            self.order.sending_time,
+            self.trade_time,
+            self.order.code,
+            None,
+            self.order.towards,
+            float("%.2f" % float(self.deal_price)),
+            self.order.price,
+            self.status,
+            self.order.amount,
+            self.deal_amount,
+            self.trade_money,
+            0,
+            self.order.order_id,
+            QA_util_random_with_topic('Trade')
+        ]
 
     def cal_fee(self):
         if self.order.market_type == MARKET_TYPE.STOCK_CN:
@@ -131,7 +157,7 @@ class QA_Dealer():
                     float(self.deal_price) * float(self.order.amount)
                 self.commission_fee = 5 if commission_fee < 5 else commission_fee
 
-                self.tax = 0  # 买入不收印花税
+                self.tax = 0                                     # 买入不收印花税
             else:
                 commission_fee = self.order.commission_coeff * \
                     float(self.deal_price) * float(self.order.amount)
@@ -150,7 +176,7 @@ class QA_Dealer():
                 float(self.deal_price) * float(self.order.amount)
             #self.commission_fee = 5 if commission_fee < 5 else commission_fee
 
-            self.tax = 0  # 买入不收印花税
+            self.tax = 0 # 买入不收印花税
 
     def backtest_dealer(self):
         # 新增一个__commission_fee_coeff 手续费系数
@@ -173,12 +199,17 @@ class QA_Dealer():
                 self.deal_price = 0
                 self.deal_amount = 0
 
-            elif ((float(self.order.price) < float(self.market_data.get('high')) and
-                    float(self.order.price) > float(self.market_data.get('low'))) or
-                    float(self.order.price) == float(self.market_data.get('low')) or
-                    float(self.order.price) == float(self.market_data.get('high'))):
+            elif ((float(self.order.price) < float(self.market_data.get('high'))
+                   and
+                   float(self.order.price) > float(self.market_data.get('low')))
+                  or float(self.order.price) == float(
+                      self.market_data.get('low'))
+                  or float(self.order.price) == float(
+                      self.market_data.get('high'))):
                 '能成功交易的情况 有滑点调整'
-                if float(self.order.amount) < float(self.market_data.get('volume',self.market_data.get('position'))) * 100 / 16:
+                if float(self.order.amount) < float(self.market_data.get(
+                        'volume',
+                        self.market_data.get('position'))) * 100 / 16:
                     self.deal_price = self.order.price
                     self.deal_amount = self.order.amount
                 elif float(self.order.amount) >= float(self.market_data.get('volume',self.market_data.get('position'))) * 100 / 16 and \
@@ -190,16 +221,27 @@ class QA_Dealer():
                     sell_price=mean(min{open,close},low)
                     """
                     if int(self.order.towards) > 0:
-                        self.deal_price = (max(float(self.market_data.get('open')), float(
-                            self.market_data.get('close'))) + float(self.market_data.get('high'))) * 0.5
+                        self.deal_price = (
+                            max(
+                                float(self.market_data.get('open')),
+                                float(self.market_data.get('close'))
+                            ) + float(self.market_data.get('high'))
+                        ) * 0.5
                     else:
-                        self.deal_price = (min(float(self.market_data.get('open')), float(
-                            self.market_data.get('close'))) + float(self.market_data.get('low'))) * 0.5
+                        self.deal_price = (
+                            min(
+                                float(self.market_data.get('open')),
+                                float(self.market_data.get('close'))
+                            ) + float(self.market_data.get('low'))
+                        ) * 0.5
                     self.deal_amount = self.order.amount
 
                 else:
                     self.deal_amount = float(
-                        self.market_data.get('volume',self.market_data.get('position'))) / 8
+                        self.market_data
+                        .get('volume',
+                             self.market_data.get('position'))
+                    ) / 8
                     if int(self.order.towards) > 0:
                         self.deal_price = float(self.market_data.get('high'))
                     else:
@@ -207,7 +249,10 @@ class QA_Dealer():
                 self.status = TRADE_STATUS.SUCCESS
                 # print(self.market_data)
                 self.trade_time = self.market_data.get(
-                    'datetime', self.market_data.get('date', None))
+                    'datetime',
+                    self.market_data.get('date',
+                                         None)
+                )
             else:
                 print('failed to deal this order')
                 print(self.order.price)
@@ -217,13 +262,13 @@ class QA_Dealer():
                 self.deal_amount = 0
 
             self.cal_fee()
-            # print(self.callback_message)
             return self.callback_message
 
         except Exception as e:
             QA_util_log_info('MARKET ENGINE ERROR: {}'.format(e))
             self.status = TRADE_STATUS.NO_MARKET_DATA
             return self.callback_message
+
 
 if __name__ == '__main__':
     pass

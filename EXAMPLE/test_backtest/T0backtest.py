@@ -18,20 +18,20 @@ import random
 
 
 class MAMINT0Strategy(QA_Account):
-    def __init__(self, init_hold={'000001': 10000}):
-        super().__init__(init_hold=init_hold)
+    def __init__(self, user_cookie='default', portfolio_cookie='default', init_hold={'000001': 10000}):
+        super().__init__(user_cookie, portfolio_cookie, init_hold=init_hold)
         self.account_cookie = 'T0BACKTEST'
         self.running_environment = RUNNING_ENVIRONMENT.TZERO
         self.frequence = FREQUENCE.ONE_MIN
         self.market_type = MARKET_TYPE.STOCK_CN
 
-        self.result= {}
+        self.result = {}
 
     def on_bar(self, event):
 
         # min5= self.market_data.min5
         # min15= self.market_data.min15
-        
+
         # min5macd=QA.QA_indicator_MACD(min5)
         # min15macd=QA.QA_indicator_MACD(min15)
         # self.result['min5macd']=min5macd
@@ -46,10 +46,6 @@ class MAMINT0Strategy(QA_Account):
         # self.allow_t0       # 账户是否允许t0
         # self.commission_coeff  # 账户的手续费(可自行调整)
 
-
-
-
-        
         try:
             for item in event.market_data.code:
 
@@ -58,7 +54,7 @@ class MAMINT0Strategy(QA_Account):
                 print('================')
                 print(self.hold_available)
                 if self.sell_available.get(item, 0) > 0:
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=self.sell_available[item], amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.SELL,
@@ -66,7 +62,7 @@ class MAMINT0Strategy(QA_Account):
                                      broker_name=self.broker
                                      )
                 else:
-                    event.send_order(account_id=self.account_cookie,
+                    event.send_order(account_cookie=self.account_cookie,
                                      amount=100, amount_model=AMOUNT_MODEL.BY_AMOUNT,
                                      time=self.current_time, code=item, price=0,
                                      order_model=ORDER_MODEL.MARKET, towards=ORDER_DIRECTION.BUY,
@@ -94,13 +90,7 @@ class Backtest(QA_Backtest):
 
     def __init__(self, market_type, frequence, start, end, code_list, commission_fee):
         super().__init__(market_type,  frequence, start, end, code_list, commission_fee)
-        self.user = QA_User()
-        t0strategy = MAMINT0Strategy()
-        # maminstrategy.reset_assets(1000)
-        # self.portfolio, self.account = self.user.register_account(mastrategy)
-        self.user = QA_User(user_cookie='user_admin')
-        self.portfolio = self.user.new_portfolio('folio_admin')
-        self.portfolio, self.account = self.user.register_account(t0strategy)
+        self.account = self.portfolio.add_account( MAMINT0Strategy(user_cookie=self.user.user_cookie, portfolio_cookie= self.portfolio.portfolio_cookie))
 
     def after_success(self):
         QA_util_log_info(self.account.history_table)
@@ -108,7 +98,6 @@ class Backtest(QA_Backtest):
                        benchmark_type=MARKET_TYPE.INDEX_CN)
 
         print(risk().T)
-
         self.account.save()
         risk.save()
         risk.plot_assets_curve()
@@ -121,8 +110,8 @@ class Backtest(QA_Backtest):
 import QUANTAXIS as QA
 backtest = Backtest(market_type=MARKET_TYPE.STOCK_CN,
                     frequence=FREQUENCE.FIFTEEN_MIN,
-                    start='2017-11-01',
-                    end='2017-12-10',
+                    start='2018-11-01',
+                    end='2018-12-10',
                     code_list=['000001'],
                     commission_fee=0.00015)
 backtest.start_market()
@@ -134,4 +123,4 @@ backtest.stop()
 # In[5]:
 
 
-backtest.account.history_table
+print(backtest.account.history_table)

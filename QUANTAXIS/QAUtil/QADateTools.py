@@ -1,8 +1,9 @@
 import datetime
 import calendar
 from dateutil.relativedelta import relativedelta
-
-
+from QUANTAXIS.QAUtil.QASetting import (DATABASE)
+import pymongo
+import pandas as pd
 def QA_util_getBetweenMonth(from_date, to_date):
     """
     #返回所有月份，以及每月的起始日期、结束日期，字典格式
@@ -62,3 +63,48 @@ def QA_util_getBetweenQuarter(begin_date, end_date):
         elif tempvalue[1] in ['10', '11', '12']:
             quarter_list[year + "Q4"] = ['%s-10-01' % year, '%s-12-31' % year]
     return(quarter_list)
+
+
+def QA_util_firstDayTrading(codelist: list):
+    """
+    取得交易品种的第一个上市日期，或第一个交易日。支持混合股票,index,etf
+
+    Args:
+        codelist (list): The list of stcok/index/etf codes
+
+    Return:
+        pandas.DataFrame: the code with its first trading date
+
+    Example:
+        QA_util_firstDayTrading(['600066','510050','000300'])
+    """
+    coll_stock_day = DATABASE.stock_day
+    coll_index_day = DATABASE.index_day
+    coll_stock_day.create_index(
+    [("code",
+      pymongo.ASCENDING),
+     ("date_stamp",
+      pymongo.ASCENDING)]
+    )
+    coll_index_day.create_index(
+    [("code",
+      pymongo.ASCENDING),
+     ("date_stamp",
+      pymongo.ASCENDING)]
+    )
+
+    dates = []
+    for code in codelist:
+        ref = coll_stock_day.find({"code": code})
+        ref2 = coll_index_day.find({'code': code})
+        #print('{} is ref is {}, ref2 is {}'.format(code, ref.count(), ref2.count()))
+        if ref.count() > 0:
+            start_date = ref[0]['date']
+            dates.append(start_date)
+        elif ref2.count() > 0:
+            start_date = ref2[0]['date']
+            dates.append(start_date)
+        else:
+            raise ValueError('{} 没有数据'.format(code))
+
+    return pd.DataFrame({'code':codelist, 'date': dates} )

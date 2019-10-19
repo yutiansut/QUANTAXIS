@@ -1,8 +1,10 @@
+#!/usr/local/bin/python
+
 #coding :utf-8
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,12 +42,6 @@ from QUANTAXIS.QASU.save_binance import (QA_SU_save_binance,
                                          QA_SU_save_binance_1hour,
                                          QA_SU_save_binance_1min,
                                          QA_SU_save_binance_symbol)
-from QUANTAXIS.QAUtil.QAMySQL import (QA_etl_stock_list, QA_etl_stock_info,
-                                      QA_etl_stock_xdxr, QA_etl_stock_day,
-                                      QA_etl_stock_financial, QA_etl_stock_calendar,
-                                      QA_etl_stock_block, QA_etl_stock_divyield,
-                                      QA_etl_process_financial_day)
-
 
 
 QA_SU_save_stock_day('tdx')
@@ -60,4 +56,3 @@ QA_SU_save_stock_block('tdx')
 QA_SU_save_stock_info('tdx')
 # QA_SU_save_stock_divyield_day()
 # QA_SU_save_report_calendar_day()
-

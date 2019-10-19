@@ -3,7 +3,17 @@
 <!-- TOC -->
 
 - [QUANTAXIS 更新纪要](#quantaxis-更新纪要)
-    - [1.2.0(unreleased)](#120unreleased)
+    - [1.3.0 ](#130)
+    - [1.2.9 ](#129)
+    - [1.2.8 ](#128)
+    - [1.2.7 ](#127)
+    - [1.2.6 ](#126)
+    - [1.2.5 ](#125)
+    - [1.2.4 ](#124)
+    - [1.2.3 ](#123)
+    - [1.2.2 ](#122)
+    - [1.2.1 ](#121)
+    - [1.2.0](#120)
     - [1.1.10](#1110)
     - [1.1.9](#119)
     - [1.1.8](#118)
@@ -67,11 +77,190 @@
     - [1.0.25](#1025)
 
 <!-- /TOC -->
+## 1.3.0
+
+1. QAUSER/ QAPORTFOLIO/ QAACCOUNT 的联动更新
+2. 账户/组合/用户的刷新与恢复
+
+```
+
+In [2]: import QUANTAXIS as QA
+
+In [3]: user1= QA.QA_User(username='yutiansut',password='940809')
+
+In [4]: user1
+Out[4]: < QA_USER USER_b87YCy3U with 1 portfolio: {'RB_PORTFOLIO': < QA_Portfolio RB_PORTFOLIO with 3 Accounts >} >
+
+In [5]: user1.portfolio_list
+Out[5]: {'RB_PORTFOLIO': < QA_Portfolio RB_PORTFOLIO with 3 Accounts >}
+
+In [6]: user1['RB_PORTFOLIO']
+Out[6]: < QA_Portfolio RB_PORTFOLIO with 3 Accounts >
+
+In [7]: user1['RB_PORTFOLIO'].accounts
+Out[7]:
+{'test1': < QA_Account test1 market: stock_cn>,
+ 'test2': < QA_Account test2 market: stock_cn>,
+ 'test3_future': < QA_Account test3_future market: stock_cn>}
+
+In [8]: user1['RB_PORTFOLIO']['test1']
+Out[8]: < QA_Account test1 market: stock_cn>
+
+```
 
 
-## 1.2.0(unreleased)
+
+## 1.2.9
+1. QAIndicator部分指标修正,base.py增加IFAND函数,indicator.py部分指标修正
+
+## 1.2.8
+
+1. market_preset 兼容 tdx的主连/指数获取 如JL8, JL9, RBL8 等
+2. base指标 增加 BARLAST
+3. market_preset 增加基础函数支持 get_exchange, get_name等
+4. QA_USER 完善, 增加订阅策略和积分系统
+5. 删除QADataStruct_min类中的 high_limit/low_limit, 修复daystruct的nextdayhighlimit字段
+6. 增加tusharepro部分数据到postgresql的储存和调取方式
+7. QATTSBroker发布
 
 
+## 1.2.7
+
+迁移目录:
+
+1. 拆分 QUANTAXIS_CRAWLY 至 https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY
+
+- 减少twisted安装问题
+- 模块解耦 功能分离
+
+2. 拆分 QUANTAXIS_MONITOR_GUI 至 https://github.com/QUANTAXIS/QUANTAXIS_Monitor_GUI
+
+- gui部分以插件形式提供
+
+3. 使用yapf 大量修正格式
+
+
+
+
+
+## 1.2.6
+
+1. 优化QADOCKER文档
+2. 增加QAORDER文档
+3. 优化了QALog模块在打印大量日志的时候无法知道其用途的问题
+
+现在的quantaxis log 会以这个模式作为name:
+```
+ 'quantaxis_{}-{}-.log'.format(get_config(), os.sep, os.path.basename(sys.argv[0]).split('.py')[0], str(datetime.datetime.now().strftime(
+        '%Y-%m-%d-%H-%M-%S')))
+```
+4. 修改了QAUser的注册模块逻辑
+5. 增加了 QA_DataStruct_Min 和 QA_DataStruct_Day两个基类模型
+6. 修复settle的一个bug
+
+
+
+## 1.2.5
+
+1. 对于QA.QA_util_code_tostr 增加 原先为list类型的支持 现在支持自动补全的  int/list/str 类型转 str
+2. QA_DataStruct增加bar_gen  返回迭代的dataframe
+3. 增加对于期货的日结算支持:
+
+在期货的保证金模型中:
+
+开仓会冻结保证金到frozen里面, 这时钱并未参与结算/  需要先在每日结算时结转冻结的保证金
+4. 增加了QA_Account的 history_table字段,增加了一个  frozen字段, 用于记录历史的保证金增加
+5. 大幅删减QA_Account的 receive_deal 精简代码  直接调用receive_simpledeal方法
+6. QADATASTRUCT 增加一个 kline_echarts 方法 直接返回 echarts.kline类 可以在jupyter notebook中直接显示
+7. QALog模块的默认输出为warning级别, 减少别的模块的无聊输出(点名: 尤其是macropy 疯狂输出)
+
+plot的图示例:
+
+- 可能需要先升级pyecharts 到最新版本 (```pip install pyecharts -U -i https://pypi.doubanio.com/simple```)
+
+![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720190103220819.png)
+
+
+## 1.2.4
+
+1. 修复保证金的bug
+
+PS: 真丢人 年末写个bug 2333
+
+
+## 1.2.3 
+
+1. 感谢@追梦, QA_Account的receive_simpledeal的成交方式中的 股票市场的印花税计算修正
+2. 改写@地下的地下铁, 修正QA_Risk中计算assets的一个停牌无数据的bug
+3. 感谢@风筝 修复了单标的多市场的获取bug
+4. 重大修改:  增加保证金账户的支持(期货)
+
+
+具体示例  参见: https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/TEST_%E4%BF%9D%E8%AF%81%E9%87%91%E8%B4%A6%E6%88%B7.ipynb
+
+```python
+#在QA_Account的初始化的时候带上 allow_margin=True
+
+acc=QA.QA_Account(allow_sellopen=True,init_cash=10000,allow_t0=True,allow_margin=True,account_cookie='future_test',market_type=QA.MARKET_TYPE.FUTURE_CN,frequence=QA.FREQUENCE.FIFTEEN_MIN)
+
+
+
+#快速撮合接口的测试
+
+acc.reset_assets(init_cash=10000)
+
+acc.receive_simpledeal(code='RB1901', trade_price=3420, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.BUY_OPEN, trade_time='2018-12-28 09:30:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3425, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.SELL_CLOSE, trade_time='2018-12-28 09:45:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3435, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.SELL_OPEN, trade_time='2018-12-28 09:55:00')
+
+acc.receive_simpledeal(code='RB1901', trade_price=3420, trade_amount=1, trade_towards=QA.ORDER_DIRECTION.BUY_CLOSE, trade_time='2018-12-28 10:45:00')
+
+acc.history_table
+"""
+datetime	code	price	amount	cash	order_id	realorder_id	trade_id	account_cookie	commission	tax	message
+0	2018-12-28 09:30:00	RB1901	3420	1	6918.580	None	None	None	future_test	3.420	0	None
+1	2018-12-28 09:45:00	RB1901	3425	-1	10038.155	None	None	None	future_test	3.425	0	None
+2	2018-12-28 09:55:00	RB1901	3435	-1	6943.220	None	None	None	future_test	3.435	0	None
+3	2018-12-28 10:45:00	RB1901	3420	1	10166.300	None	None	None	future_test	3.420	0	None
+"""
+acc.frozen
+"""
+{'RB1901': {2: {'money': 0, 'amount': 0}, -2: {'money': 0, 'amount': 0}}}
+"""
+```
+
+## 1.2.2
+
+1. 重新构建docker compose，把主镜像拆分jupyter, cron和web三个镜像
+2. 修改了QAFetch的mongo查询语句(感谢几何大佬) 优雅的在查询中去掉了_id  
+3. 修正期货的DataStruct格式,统一volume字段
+4. 更新交易日历到2019-12-31
+
+```
+mongo文档参见 https://docs.mongodb.com/manual/tutorial/project-fields-from-query-results/#return-the-specified-fields-and-the-id-field-only
+```
+
+
+## 1.2.1
+
+1. 修改回测的时候的账户结算(终于算对了不容易...) @CODE-ORANGE
+具体看 [期货冻结-释放资金示例](https://github.com/QUANTAXIS/QUANTAXIS/blob/master/EXAMPLE/test_backtest/FUTURE/%E6%9C%9F%E8%B4%A7TEST.ipynb)
+2. 增加 对于单月合约的存储  save future_all/ future_day_all / future_min_all
+3. 增加对于future_data 的获取的去重处理
+4. @barretthugh 修改了复权部分的代码
+5. 优化了docker部分的使用
+6. 增加对于jqdata的使用示例
+7. 增加了1min的股票采样
+8. 增加CTPtick的获取和采样
+
+## 1.2.0
+
+1. 增加对期货保证金冻结的修改
+2. 增加对于TALIB的支持, 在talib_indicators中调用
+3. 增加对于50ETF的支持
+4. 优化cirrusCI的支持
 
 
 ## 1.1.10

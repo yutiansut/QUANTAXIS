@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -105,8 +105,8 @@ def QA_indicator_DMI(DataFrame, M1=14, M2=6):
                  ABS(LOW-REF(CLOSE, 1))), M1)
     HD = HIGH-REF(HIGH, 1)
     LD = REF(LOW, 1)-LOW
-    DMP = SUM(IF(HD > 0 and HD > LD, HD, 0), M1)
-    DMM = SUM(IF(LD > 0 and LD > HD, LD, 0), M1)
+    DMP = SUM(IFAND(HD>0,HD>LD,HD,0), M1)
+    DMM = SUM(IFAND(LD>0,LD>HD,LD,0), M1)
     DI1 = DMP*100/TR
     DI2 = DMM*100/TR
     ADX = MA(ABS(DI2-DI1)/(DI1+DI2)*100, M2)
@@ -295,13 +295,12 @@ def QA_indicator_ADTM(DataFrame, N=23, M=8):
     HIGH = DataFrame.high
     LOW = DataFrame.low
     OPEN = DataFrame.open
-    DTM = IF(OPEN <= REF(OPEN, 1), 0, MAX(
-        (HIGH - OPEN), (OPEN - REF(OPEN, 1))))
-    DBM = IF(OPEN >= REF(OPEN, 1), 0, MAX((OPEN - LOW), (OPEN - REF(OPEN, 1))))
+    DTM = IF(OPEN > REF(OPEN, 1), MAX((HIGH - OPEN), (OPEN - REF(OPEN, 1))), 0)
+    DBM = IF(OPEN < REF(OPEN, 1), MAX((OPEN - LOW), (OPEN - REF(OPEN, 1))), 0)
     STM = SUM(DTM, N)
     SBM = SUM(DBM, N)
     ADTM1 = IF(STM > SBM, (STM - SBM) / STM,
-               IF(STM == SBM, 0, (STM - SBM) / SBM))
+               IF(STM != SBM, (STM - SBM) / SBM, 0))
     MAADTM = MA(ADTM1, M)
     DICT = {'ADTM': ADTM1, 'MAADTM': MAADTM}
 
@@ -409,8 +408,8 @@ def QA_indicator_ASI(DataFrame, M1=26, M2=10):
     CC = ABS(HIGH - REF(LOW, 1))
     DD = ABS(LC - REF(OPEN, 1))
 
-    R = IF(AA > BB and AA > CC, AA+BB/2+DD/4,
-           IF(BB > CC and BB > AA, BB+AA/2+DD/4, CC+DD/4))
+    R = IFAND(AA > BB, AA > CC, AA+BB/2+DD/4,
+           IFAND(BB > CC, BB > AA, BB+AA/2+DD/4, CC+DD/4))
     X = (CLOSE - LC + (CLOSE - OPEN) / 2 + LC - REF(OPEN, 1))
     SI = 16*X/R*MAX(AA, BB)
     ASI = SUM(SI, M1)
@@ -431,8 +430,8 @@ def QA_indicator_OBV(DataFrame):
     """能量潮"""
     VOL = DataFrame.volume
     CLOSE = DataFrame.close
-    pd.DataFrame({
-        'OBV': SUM(IF(CLOSE > REF(CLOSE, 1), VOL, IF(CLOSE < REF(CLOSE, 1), -VOL, 0)), 0)/10000
+    return pd.DataFrame({
+        'OBV': np.cumsum(IF(CLOSE > REF(CLOSE, 1), VOL, IF(CLOSE < REF(CLOSE, 1), -VOL, 0)))/10000
     })
 
 
@@ -570,10 +569,10 @@ def QA_indicator_DDI(DataFrame, N=13, N1=26, M=1, M1=5):
 
     H = DataFrame['high']
     L = DataFrame['low']
-    DMZ = IF((H + L) <= (REF(H, 1) + REF(L, 1)), 0,
-             MAX(ABS(H - REF(H, 1)), ABS(L - REF(L, 1))))
-    DMF = IF((H + L) >= (REF(H, 1) + REF(L, 1)), 0,
-             MAX(ABS(H - REF(H, 1)), ABS(L - REF(L, 1))))
+    DMZ = IF((H + L) > (REF(H, 1) + REF(L, 1)), 
+             MAX(ABS(H - REF(H, 1)), ABS(L - REF(L, 1))), 0)
+    DMF = IF((H + L) < (REF(H, 1) + REF(L, 1)),
+             MAX(ABS(H - REF(H, 1)), ABS(L - REF(L, 1))), 0)
     DIZ = SUM(DMZ, N) / (SUM(DMZ, N) + SUM(DMF, N))
     DIF = SUM(DMF, N) / (SUM(DMF, N) + SUM(DMZ, N))
     ddi = DIZ - DIF

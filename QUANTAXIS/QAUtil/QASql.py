@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,8 +25,6 @@
 import pymongo
 from motor.motor_asyncio import AsyncIOMotorClient
 from motor import MotorClient
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
-from sqlalchemy import create_engine
 import asyncio
 
 
@@ -61,74 +59,6 @@ def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
     return AsyncIOMotorClient(uri, io_loop=loop)
     # yield  client()
 
-
-try:
-    import pymssql
-    from influxdb import InfluxDBClient
-except:
-    pass
-
-
-def get_connect():
-    conn = create_engine(
-        'mysql+mysqlconnector://root:123456@localhost:3306/quantaxis', echo=False)
-    # engine 是 from sqlalchemy import create_engine
-    connection = conn.raw_connection()
-    cursor = connection.cursor()
-    # null value become ''
-    return cursor
-
-
-def chunks(l, n):
-    """Yield successive n-sized chunks from l."""
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-
-
-def QA_util_sql_store_mysql(data, table_name, host="localhost", user="root", passwd="123456", db="quantaxis", if_exists="fail"):
-    engine = create_engine(
-        'mssql+pyodbc://sa:123456@localhost:1433/quantaxis?driver=SQL+Server')
-
-    columns = list(data.columns)
-    for i in range(len(columns)):
-        if columns[i].isdigit():
-            columns[i] = "column_%s" % (columns[i]).strip(" ")
-        else:
-            columns[i] = columns[i].strip(" ")
-    columns = ",".join(columns).replace(
-        '-', '_').replace('/', '_').replace(';', '')
-    data.columns = columns.split(",")
-    columns = "["+"],[".join(data.columns)+"]"
-    try:
-        data[:0].to_sql(table_name, engine,
-                        if_exists=if_exists, index_label=False)
-    except Exception as e:
-        print("Table '%s' already exists." % (table_name))
-
-    #sql_start = "insert into {} ({}) values(%s,%s,%s)".format(table_name, columns)
-    sql_end = '%s,'*(data.shape[1]-1)+"%s"
-    sql = "insert into {} ({}) values({})".format(table_name, columns, sql_end)
-
-    conn = pymssql.connect(user="sa", password="123456",
-                           host="localhost", database="quantaxis", charset="utf8")
-    cursor = conn.cursor()
-
-    if data.shape[1] > 30:
-        break_num = 100000
-    else:
-        break_num = 1000000
-    try:
-        for i in chunks([tuple(x) for x in data.values], break_num):
-            cursor.executemany(sql, i)
-    except Exception as e:
-        conn.rollback()
-        print("执行MySQL: %s 时出错：%s" % (sql, e))
-    finally:
-        cursor.close()
-        conn.commit()
-        conn.close()
-    print("{} has been stored into Table {} Mysql DataBase ".format(
-        table_name, table_name))
 
 
 ASCENDING = pymongo.ASCENDING

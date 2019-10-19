@@ -672,3 +672,57 @@
 '281加权净资产收益率(每股指标)': 'weightedROE',
 
 '282扣非每股收益(单季度财务指标)': 'nonEPSSingle',
+
+'283最近一年营业收入（万元）': 'lastYearOperatingIncome'
+
+'284国家队持股数量（万股)': 'nationalTeamShareholding'
+
+"""#[注：本指标统计包含汇金公司、证金公司、外汇管理局旗下投资平台、国家队基金、国开、养老金以及中科汇通等国家队机构持股数量]"""
+
+'285业绩预告-本期净利润同比增幅下限%': 'PF_theLowerLimitoftheYearonyearGrowthofNetProfitForThePeriod',
+
+"""#[注：指标285至294展示未来一个报告期的数据。例，3月31日至6月29日这段时间内展示的是中报的数据；如果最新的财务报告后面有多个报告期的业绩预告/快报，只能展示最新的财务报告后面的一个报告期的业绩预告/快报]"""
+
+'286业绩预告-本期净利润同比增幅上限%': 'PF_theHigherLimitoftheYearonyearGrowthofNetProfitForThePeriod',
+
+'287业绩快报-归母净利润': 'PE_returningtotheMothersNetProfit',
+
+'288业绩快报-扣非净利润': 'PE_Non-netProfit',
+
+'289业绩快报-总资产': 'PE_TotalAssets',
+
+'290业绩快报-净资产': 'PE_NetAssets',
+
+'291业绩快报-每股收益': 'PE_EPS'
+
+'292业绩快报-摊薄净资产收益率': 'PE_DilutedROA',
+
+'293业绩快报-加权净资产收益率': 'PE_WeightedROE',
+
+'294业绩快报-每股净资产': 'PE_NetAssetsperShare',
+
+'295应付票据及应付账款(资产负债表)': 'BS_NotesPayableandAccountsPayable',
+
+'296应收票据及应收账款(资产负债表)': 'BS_NotesReceivableandAccountsReceivable',
+
+'297递延收益(资产负债表)': 'BS_DeferredIncome',
+
+'298其他综合收益(资产负债表)': 'BS_OtherComprehensiveIncome',
+
+'299其他权益工具(资产负债表)': 'BS_OtherEquityInstruments',
+
+'300其他收益(利润表)': 'IS_OtherIncome',
+
+'301资产处置收益(利润表)': 'IS_AssetDisposalIncome',
+
+'302持续经营净利润(利润表)': 'IS_NetProfitforContinuingOperations',
+
+'303终止经营净利润(利润表)': 'IS_NetProfitforTerminationOperations',
+
+'304研发费用(利润表)': 'IS_R&DExpense',
+
+'305其中:利息费用(利润表-财务费用)': 'IS_InterestExpense',
+
+'306其中:利息收入(利润表-财务费用)': 'IS_InterestIncome',
+
+'307近一年经营活动现金流净额': 'netCashFlowfromOperatingActivitiesinthepastyear'

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,7 @@ class QA_Trade():
     def get_client_id(self, *args, **kwargs):
         pass
 
-    def get_account_id(self, *args, **kwargs):
+    def get_account_cookie(self, *args, **kwargs):
         pass
 
     def subscribe_public_topic(self, *args, **kwargs):

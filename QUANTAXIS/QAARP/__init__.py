@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,3 +27,4 @@ from QUANTAXIS.QAARP.QARisk import QA_Risk, QA_Performance
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio, QA_PortfolioView
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
+from QUANTAXIS.QAARP.market_preset import MARKET_PRESET

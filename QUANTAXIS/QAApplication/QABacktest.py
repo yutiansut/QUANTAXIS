@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,21 +22,25 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import time
 from functools import lru_cache
 
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio
+
 from QUANTAXIS.QAARP.QAUser import QA_User
 from QUANTAXIS.QAEngine.QAEvent import QA_Event
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_day_adv, QA_fetch_stock_min_adv
 from QUANTAXIS.QAMarket.QABacktestBroker import QA_BacktestBroker
 from QUANTAXIS.QAMarket.QAMarket import QA_Market
-from QUANTAXIS.QAUtil.QAParameter import (AMOUNT_MODEL, BROKER_EVENT,
-                                          BROKER_TYPE, ENGINE_EVENT, FREQUENCE,
-                                          MARKET_TYPE, ORDER_DIRECTION,
-                                          ORDER_MODEL)
-
+from QUANTAXIS.QAUtil.QAParameter import (
+    AMOUNT_MODEL,
+    BROKER_EVENT,
+    BROKER_TYPE,
+    ENGINE_EVENT,
+    FREQUENCE,
+    MARKET_TYPE,
+    ORDER_DIRECTION,
+    ORDER_MODEL
+)
 
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 
@@ -67,7 +71,18 @@ class QA_Backtest():
 
     """
 
-    def __init__(self, market_type, frequence, start, end, code_list, commission_fee,):
+    def __init__(
+            self,
+            market_type,
+            frequence,
+            start,
+            end,
+            code_list,
+            commission_fee,
+            username='quantaxis',
+            password='quantaxis',
+            portfolio_cookie='qatestportfolio'
+    ):
         """
         :param market_type: 回测的市场 MARKET_TYPE.STOCK_CN ，
         :param frequence: 'day' '1min' '5min' '15min' '30min' '60min'
@@ -76,15 +91,13 @@ class QA_Backtest():
         :param code_list: 股票代码池
         :param commission_fee: 交易佣金
         """
-        self.user = QA_User()
+        self.user = QA_User(username=username, password=password)
         self.if_settled = False
         self.account = None
-        self.portfolio = None
-
+        self.portfolio = self.user.new_portfolio(portfolio_cookie)
         # 🛠todo market_type 应该放在 QA_Market对象里的一个属性
         self.market = QA_Market(if_start_orderthreading=True)
         self.market_type = market_type
-        
 
         self.frequence = frequence
         self.broker = QA_BacktestBroker(commission_fee)
@@ -101,11 +114,19 @@ class QA_Backtest():
         if self.market_type is MARKET_TYPE.STOCK_CN and self.frequence is FREQUENCE.DAY:
             # 获取日线级别的回测数据
             self.ingest_data = QA_fetch_stock_day_adv(
-                self.code_list, self.start, self.end).to_qfq().panel_gen
-        elif self.market_type is MARKET_TYPE.STOCK_CN and self.frequence[-3:] == 'min':
+                self.code_list,
+                self.start,
+                self.end
+            ).to_qfq().panel_gen
+        elif self.market_type is MARKET_TYPE.STOCK_CN and self.frequence[
+                -3:] == 'min':
             # 获取分钟级别的回测数据
             self.ingest_data = QA_fetch_stock_min_adv(
-                self.code_list, self.start, self.end, self.frequence).to_qfq().panel_gen
+                self.code_list,
+                self.start,
+                self.end,
+                self.frequence
+            ).to_qfq().panel_gen
 
         else:
             QA_util_log_info("{} 的市场类型没有实现！".format(market_type))
@@ -114,7 +135,7 @@ class QA_Backtest():
         """
         generate a simple account
         """
-        self.account, self.portfolio = self.user.generate_simpleaccount()
+        self.account = self.portfolio.new_account()
 
     def start_market(self):
         """
@@ -124,14 +145,16 @@ class QA_Backtest():
         # 启动 trade_engine 线程
         self.market.start()
         print('market start')
-        
 
         # 注册 backtest_broker ，并且启动和它关联线程QAThread 存放在 kernels 词典中， { 'broker_name': QAThread }
         self.market.register(self.broker_name, self.broker)
 
         # 通过 broke名字 新建立一个 QAAccount 放在的中 session字典中 session 是 { 'cookie' , QAAccount }
-        self.market.login(self.broker_name,
-                          self.account.account_cookie, self.account)
+        self.market.login(
+            self.broker_name,
+            self.account.account_cookie,
+            self.account
+        )
 
         self.market._sync_orders()
 
@@ -139,55 +162,58 @@ class QA_Backtest():
         """generator driven data flow
         """
         # 如果出现了日期的改变 才会进行结算的事件
+        print('start: running')
         _date = None
-        for data in self.ingest_data:  # 对于在ingest_data中的数据
-            # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
+        for data in self.ingest_data:                    # 对于在ingest_data中的数据
+                                                         # <class 'QUANTAXIS.QAData.QADataStruct.QA_DataStruct_Stock_day'>
             date = data.date[0]
-            if self.market_type is MARKET_TYPE.STOCK_CN:  # 如果是股票市场
-                if _date != date:  # 如果新的date
+            print('current date : {}'.format(date))
+            print('current time : {}'.format(data.datetime[0]))
+            if self.market_type is MARKET_TYPE.STOCK_CN: # 如果是股票市场
+                if _date != date:                        # 如果新的date
 
                     # 前一天的交易日已经过去
                     # 往 broker 和 account 发送 settle 事件
-                    try:
-                        self.market._settle(self.broker_name)
-                        self.market.trade_engine.join()
-                        
-                        # time.sleep(2)
-                        
 
+                    try:
+                        print('try to settle')
+                        self.market._settle(self.broker_name)
+                        self.market.next_tradeday()
                     except Exception as e:
                         raise e
             # 基金 指数 期货
-            elif self.market_type in [MARKET_TYPE.FUND_CN, MARKET_TYPE.INDEX_CN, MARKET_TYPE.FUTURE_CN]:
+            elif self.market_type in [MARKET_TYPE.FUND_CN,
+                                      MARKET_TYPE.INDEX_CN,
+                                      MARKET_TYPE.FUTURE_CN]:
+                                      
                 self.market._settle(self.broker_name)
 
             self.broker.run(
-                QA_Event(event_type=ENGINE_EVENT.UPCOMING_DATA, market_data=data))
+                QA_Event(
+                    event_type=ENGINE_EVENT.UPCOMING_DATA,
+                    market_data=data
+                )
+            )
             # 生成 UPCOMING_DATA 事件放到 队列中去执行
             self.market.upcoming_data(self.broker_name, data)
 
-            self.market.trade_engine.join()
-
             _date = date
 
-
+        # 最后收盘的平仓
         self.market._settle(self.broker_name)
-        self.market.trade_engine.join()
-        
         self.after_success()
 
     def after_success(self):
         """called when all trading fininshed, for performance analysis
         """
+        print('after success')
+        for po in self.user.portfolio_list.values():
+            for ac in po.accounts.values():
 
-        for po in self.user.portfolio_list.keys():
-            for ac in self.user.get_portfolio_by_cookie(po).accounts.keys():
-                accounts = self.user.get_portfolio_by_cookie(
-                    po).get_account_by_cookie(ac)
-                print(accounts.hold)
+                print(ac.hold)
 
-                print(accounts.history_table)
-
+                print(ac.history_table)
+                ac.save()
         self.stop()
 
     def stop(self):
@@ -198,17 +224,16 @@ class QA_Backtest():
         self.market.trade_engine.stop()
 
 
-class BACKTEST_FRAMEWORK():
-    pass
-
-
 if __name__ == '__main__':
-    backtest = QA_Backtest(market_type=MARKET_TYPE.STOCK_CN,
-                           frequence=FREQUENCE.DAY,
-                           start='2017-01-01',
-                           end='2017-01-31',
-                           code_list=['000001', '600010'],
-                           commission_fee=0.00015)
+    backtest = QA_Backtest(
+        market_type=MARKET_TYPE.STOCK_CN,
+        frequence=FREQUENCE.DAY,
+        start='2017-01-01',
+        end='2017-01-10',
+        code_list=['000001',
+                   '600010'],
+        commission_fee=0.00015
+    )
     backtest._generate_account()
     backtest.start_market()
     backtest.run()
