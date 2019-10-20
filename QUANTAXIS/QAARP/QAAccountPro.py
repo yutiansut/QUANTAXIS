@@ -367,10 +367,6 @@ class QA_AccountPRO(QA_Worker):
             return None
 
     @property
-    def positions(self):
-        raise NotImplementedError
-
-    @property
     def start_date(self):
         """账户的起始交易日期(只在回测中使用)
 
