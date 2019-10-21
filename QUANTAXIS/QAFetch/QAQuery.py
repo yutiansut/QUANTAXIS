@@ -143,6 +143,83 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
         return None
 
 
+def QA_fetch_stock_transaction(code, start, end, format='numpy', frequence='tick', collections=DATABASE.stock_transaction):
+    '获取股票分钟线'
+    if frequence in ['tick', 'TICK', 'transaction']:
+        frequence = 'tick'
+    else:
+        print("QA Error QA_fetch_stock_transaction parameter frequence=%s is none of tick Tick transaction" % frequence)
+
+    _data = []
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    cursor = collections.find({
+        'code': {'$in': code}, "time_stamp": {
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
+        }, "type": frequence
+    }, {"_id": 0}, batch_size=10000)
+
+    res = pd.DataFrame([item for item in cursor])
+    try:
+        res = res.assign(volume=res.vol, datetime=pd.to_datetime(
+            res.datetime)).query('volume>1').drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
+        # return res
+    except:
+        res = None
+    if format in ['P', 'p', 'pandas', 'pd']:
+        return res
+    elif format in ['json', 'dict']:
+        return QA_util_to_json_from_pandas(res)
+    # 多种数据格式
+    elif format in ['n', 'N', 'numpy']:
+        return numpy.asarray(res)
+    elif format in ['list', 'l', 'L']:
+        return numpy.asarray(res).tolist()
+    else:
+        print("QA Error QA_fetch_stock_transaction format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+        return None
+
+def QA_fetch_index_transaction(code, start, end, format='numpy', frequence='tick', collections=DATABASE.index_transaction):
+    '获取股票分钟线'
+    if frequence in ['tick', 'TICK', 'transaction']:
+        frequence = 'tick'
+    else:
+        print("QA Error QA_fetch_index_transaction parameter frequence=%s is none of tick Tick transaction" % frequence)
+
+    _data = []
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    cursor = collections.find({
+        'code': {'$in': code}, "time_stamp": {
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
+        }, 'type': frequence
+    }, {"_id": 0}, batch_size=10000)
+
+    res = pd.DataFrame([item for item in cursor])
+    try:
+        res = res.assign(volume=res.vol, datetime=pd.to_datetime(
+            res.datetime)).query('volume>1').drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
+        # return res
+    except:
+        res = None
+    if format in ['P', 'p', 'pandas', 'pd']:
+        return res
+    elif format in ['json', 'dict']:
+        return QA_util_to_json_from_pandas(res)
+    # 多种数据格式
+    elif format in ['n', 'N', 'numpy']:
+        return numpy.asarray(res)
+    elif format in ['list', 'l', 'L']:
+        return numpy.asarray(res).tolist()
+    else:
+        print("QA Error QA_fetch_index_transaction format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+        return None
+
+
 def QA_fetch_trade_date():
     '获取交易日期'
     return trade_date_sse

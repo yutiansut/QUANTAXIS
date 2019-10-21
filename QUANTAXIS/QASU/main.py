@@ -212,10 +212,6 @@ def QA_SU_save_single_stock_day(code, engine, client=DATABASE, paralleled=False)
     engine.QA_SU_save_single_stock_day(code=code, client=client)
 
 
-
-
-
-
 def QA_SU_save_option_contract_list(engine, client=DATABASE):
     '''
 
@@ -305,6 +301,49 @@ def QA_SU_save_stock_min(engine, client=DATABASE):
     engine.QA_SU_save_stock_min(client=client)
 
 
+def QA_SU_save_stock_transaction(engine, client=DATABASE):
+    """save stock_transaction
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_stock_transaction(client=client)
+
+
+def QA_SU_save_index_transaction(engine, client=DATABASE):
+    """save index_transaction
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_index_transaction(client=client)
+
+
+
+def QA_SU_save_single_stock_min(code, engine, client=DATABASE):
+    """save stock_min
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_single_stock_min(code=code, client=client)
+
+
 @print_used_time
 def QA_SU_save_index_day(engine, client=DATABASE, paralleled=False):
     """save index_day
@@ -320,6 +359,7 @@ def QA_SU_save_index_day(engine, client=DATABASE, paralleled=False):
 
     engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_index_day(client=client)
+
 
 def QA_SU_save_single_index_day(code, engine, client=DATABASE, paralleled=False):
     """save index_day
@@ -338,8 +378,6 @@ def QA_SU_save_single_index_day(code, engine, client=DATABASE, paralleled=False)
     engine.QA_SU_save_single_index_day(code=code, client=client)
 
 
-
-
 def QA_SU_save_index_min(engine, client=DATABASE):
     """save index_min
 
@@ -352,6 +390,20 @@ def QA_SU_save_index_min(engine, client=DATABASE):
 
     engine = select_save_engine(engine)
     engine.QA_SU_save_index_min(client=client)
+
+
+def QA_SU_save_single_index_min(code, engine, client=DATABASE):
+    """save index_min
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_single_index_min(code=code, client=client)
 
 
 @print_used_time
@@ -368,6 +420,7 @@ def QA_SU_save_etf_day(engine, client=DATABASE, paralleled=False):
     engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_etf_day(client=client)
 
+
 def QA_SU_save_single_etf_day(code, engine, client=DATABASE, paralleled=False):
     """save etf_day
 
@@ -380,8 +433,7 @@ def QA_SU_save_single_etf_day(code, engine, client=DATABASE, paralleled=False):
     """
 
     engine = select_save_engine(engine, paralleled=paralleled)
-    engine.QA_SU_save_single_etf_day(code = code, client=client)
-
+    engine.QA_SU_save_single_etf_day(code=code, client=client)
 
 
 def QA_SU_save_etf_min(engine, client=DATABASE):
@@ -396,6 +448,20 @@ def QA_SU_save_etf_min(engine, client=DATABASE):
 
     engine = select_save_engine(engine)
     engine.QA_SU_save_etf_min(client=client)
+
+
+def QA_SU_save_single_etf_min(code, engine, client=DATABASE):
+    """save etf_min
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_single_etf_min(code=code, client=client)
 
 
 def QA_SU_save_stock_xdxr(engine, client=DATABASE):

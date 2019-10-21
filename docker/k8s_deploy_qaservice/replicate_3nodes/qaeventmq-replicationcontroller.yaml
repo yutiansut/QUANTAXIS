@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    kompose.cmd: E:\k8s-for-docker-desktop\kompose-windows-amd64.exe convert --replication-controller
+      --replicas 3
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qaeventmq
+  name: qaeventmq
+spec:
+  replicas: 3
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: qaeventmq
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Asia/Shanghai
+        image: daocloud.io/quantaxis/qaeventmq:latest
+        name: qaeventmq
+        ports:
+        - containerPort: 15672
+        - containerPort: 5672
+        - containerPort: 4369
+        resources: {}
+      restartPolicy: Always
+status:
+  replicas: 0

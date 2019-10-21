@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: E:\k8s-for-docker-desktop\kompose-windows-amd64.exe convert -c
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qamarketcollector
+  name: qamarketcollector
+spec:
+  ports:
+  - name: "8011"
+    port: 8011
+    targetPort: 8011
+  selector:
+    io.kompose.service: qamarketcollector
+status:
+  loadBalancer: {}
