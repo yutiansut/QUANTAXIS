@@ -62,8 +62,13 @@ services:
             - "81:80"
         environment:
             - TZ=Asia/Shanghai
+            - LANG=C.UTF-8
             - MONGODB=mgdb
             - QARUN=qaweb
+            - QAPUBSUB_IP=qaeventmq
+            - QAPUBSUB_PORT=5672
+            - QAPUBSUB_USER=admin
+            - QAPUBSUB_PWD=admin
         volumes:
             - qacode:/home
             - qadag:/dag
@@ -159,6 +164,29 @@ services:
         networks:
             qanetwork_pro:
                 ipv4_address: 172.19.3.10
+
+    qatrader:
+        image: daocloud.io/quantaxis/qatrader:latest
+        ports:
+            - "8020:8020"
+        depends_on:
+            - mgdb
+            - qaeventmq
+        environment:
+            - MONGODB=mgdb
+            - QAPUBSUB_IP=qaeventmq
+            - QAPUBSUB_PORT=5672
+            - QAPUBSUB_USER=admin
+            - QAPUBSUB_PWD=admin
+            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
+            - TZ=Asia/Shanghai
+        command:
+            ['/root/QATrader/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'qatraderserver']
+
+        networks:
+            qanetwork_pro:
+                ipv4_address: 172.19.3.12
+
 
     webserver:
         image: puckel/docker-airflow
