@@ -139,7 +139,7 @@ services:
             ['/root/QATrader/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'qatraderserver']
 
         networks:
-            qanetwork_pro:
+            qanetwork:
                 ipv4_address: 172.19.0.9
 
 
