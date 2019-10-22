@@ -72,10 +72,11 @@ class VOLUME_CONDITION():
 class EXCHANGE_ID():
     SSE = 'sse'  # 上交所
     SZSE = 'szse'  # 深交所
-    SHFE = 'shfe'  # 上期所
-    DCE = 'dce'  # 大商所
-    CZCE = 'czce'  # 郑商所
-    CFFEX = 'cffex'  # 中金所
+    SHFE = 'SHFE'  # 上期所
+    DCE = 'DCE'  # 大商所
+    CZCE = 'CZCE'  # 郑商所
+    CFFEX = 'CFFEX'  # 中金所
+    INE = 'INE' # 能源中心
 
 
 class OFFSET():

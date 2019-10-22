@@ -17,10 +17,16 @@ RUN \
 git clone https://github.com/yutiansut/QAPUBSUB \
 && cd QAPUBSUB && pip install -e . && cd ..\
 && pip install quantaxis -U \
+&& pip uninstall pytdx -y \
+&& pip install pytdx \
 && git clone https://github.com/yutiansut/QUANTAXIS_RUN \
-&& cd QUANTAXIS_RUN && pip install -e . && pip install eventlet
+&& cd QUANTAXIS_RUN && pip install -e . && pip install eventlet \
+&& pip install quantaxis-servicedetect
 
 COPY runcelery.sh /root/
-RUN chmod +x /root/runcelery.sh
+COPY wait_for_it.sh /root/
+
+RUN chmod +x /root/runcelery.sh && chmod +x /root/wait_for_it.sh
+
 
 CMD ["bash", "/root/runcelery.sh"]

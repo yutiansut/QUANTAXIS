@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: E:\k8s-for-docker-desktop\kompose-windows-amd64.exe convert --replication-controller
+      --replicas 3
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qaeventmq
+  name: qaeventmq
+spec:
+  ports:
+  - name: "15672"
+    port: 15672
+    targetPort: 15672
+  - name: "5672"
+    port: 5672
+    targetPort: 5672
+  - name: "4369"
+    port: 4369
+    targetPort: 4369
+  selector:
+    io.kompose.service: qaeventmq
+status:
+  loadBalancer: {}

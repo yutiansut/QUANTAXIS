@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    kompose.cmd: E:\k8s-for-docker-desktop\kompose-windows-amd64.exe convert --replication-controller
+      --replicas 3
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qamarketcollector
+  name: qamarketcollector
+spec:
+  replicas: 3
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: qamarketcollector
+    spec:
+      containers:
+      - args:
+        - /root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh
+        - qaeventmq:5672
+        - --
+        - /root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh
+        env:
+        - name: EventMQ_IP
+          value: qaeventmq
+        - name: MONGODB
+          value: mgdb
+        image: daocloud.io/quantaxis/qarealtimecollector:latest
+        name: qamarketcollector
+        ports:
+        - containerPort: 8011
+        resources: {}
+      restartPolicy: Always
+status:
+  replicas: 0
