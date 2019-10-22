@@ -166,12 +166,12 @@ class QA_Risk():
                     )
                 elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
                     self.market_data = QA_fetch_future_day_adv(
-                        [item.upper() for item in self.account.code],
+                        self.account.code,
                         self.account.start_date,
                         self.account.end_date
                     )
             else:
-                self.market_data = market_data.select_time(self.account.start_date, self.account.end_date)
+                self.market_data = market_data
             self.if_fq = if_fq
             if self.account.market_type == MARKET_TYPE.FUTURE_CN:
                 self.if_fq = False  # 如果是期货， 默认设为FALSE

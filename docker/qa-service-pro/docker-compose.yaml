@@ -53,7 +53,14 @@ services:
         ports:
             - "8888:8888"
             - "81:80"
+<<<<<<< HEAD
         env_file: env.env
+=======
+        environment:
+            - TZ=Asia/Shanghai
+            - MONGODB=mgdb
+            - QARUN=qaweb
+>>>>>>> parent of 809e6b20... Merge pull request #8 from QUANTAXIS/master
         volumes:
             - qacode:/home
             - qadag:/dag
@@ -132,6 +139,7 @@ services:
             qanetwork_pro:
                 ipv4_address: 172.19.3.10
 
+<<<<<<< HEAD
     qatrader:
         image: daocloud.io/quantaxis/qatrader:latest
         ports:
@@ -148,6 +156,8 @@ services:
                 ipv4_address: 172.19.3.12
 
 
+=======
+>>>>>>> parent of 809e6b20... Merge pull request #8 from QUANTAXIS/master
     webserver:
         image: puckel/docker-airflow
         restart: always
