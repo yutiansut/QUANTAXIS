@@ -6,37 +6,21 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.3
         ports:
             - "8888:8888"
             - "81:80"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        env_file: env.env
-=======
-        environment:
-          - TZ=Asia/Shanghai
-=======
         environment:
           - TZ=Asia/Shanghai
           - LANG=C.UTF-8
->>>>>>> parent of e4c7df4b... update docker compose file
           - MONGODB=mgdb
           - QARUN=qaweb
           - QAPUBSUB_IP=qaeventmq
           - QAPUBSUB_PORT=5672
           - QAPUBSUB_USER=admin
           - QAPUBSUB_PWD=admin
-<<<<<<< HEAD
->>>>>>> parent of 809e6b20... Merge pull request #8 from QUANTAXIS/master
-=======
->>>>>>> parent of e4c7df4b... update docker compose file
-=======
-        env_file: env.env
->>>>>>> parent of ae5e8cd8... revert
         volumes:
             - qacode:/home
         restart: always
@@ -53,7 +37,7 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.4
         ports:
@@ -82,7 +66,7 @@ services:
             - MONGO_INITDB_DATABASE=quantaxis
         volumes:
             - qamg:/data/db
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.2
         restart: always
@@ -90,13 +74,13 @@ services:
 
     qaeventmq:
         image: daocloud.io/quantaxis/qaeventmq:latest
-        ports: 
+        ports:
             - "15672:15672"
             - "5672:5672"
             - "4369:4369"
         environment:
             - TZ=Asia/Shanghai
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.5
         restart: always
@@ -107,12 +91,12 @@ services:
             - "61209:61209"
             - "61208:61208"
         pid: 'host'
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.6
-                
+
         restart: always
-        
+
     qamarketcollector:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
         ports:
@@ -120,16 +104,6 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        env_file: env.env
-=======
-        environment:
-            - MONGODB=mgdb
-            - EventMQ_IP=qaeventmq
->>>>>>> parent of 809e6b20... Merge pull request #8 from QUANTAXIS/master
-=======
         environment:
             - MONGODB=mgdb
             - EventMQ_IP=qaeventmq
@@ -139,11 +113,7 @@ services:
             - QAPUBSUB_IP=qaeventmq
             - QAPUBSUB_PORT=5672
             - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin            
->>>>>>> parent of e4c7df4b... update docker compose file
-=======
-        env_file: env.env
->>>>>>> parent of ae5e8cd8... revert
+            - QAPUBSUB_PWD=admin
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.8
@@ -173,16 +143,7 @@ services:
                 ipv4_address: 172.19.0.9
 
 
-<<<<<<< HEAD
 
-<<<<<<< HEAD
-=======
->>>>>>> parent of 809e6b20... Merge pull request #8 from QUANTAXIS/master
-=======
-            
->>>>>>> parent of e4c7df4b... update docker compose file
-=======
->>>>>>> parent of ae5e8cd8... revert
 volumes:
     qamg:
         external:
