@@ -14,6 +14,7 @@ services:
             - "81:80"
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         env_file: env.env
 =======
         environment:
@@ -32,6 +33,9 @@ services:
             - QAPUBSUB_USER=admin
             - QAPUBSUB_PWD=admin
 >>>>>>> parent of e4c7df4b... update docker compose file
+=======
+        env_file: env.env
+>>>>>>> parent of ae5e8cd8... revert
         volumes:
             - qacode:/home
         restart: always
@@ -140,7 +144,6 @@ services:
         command:
             ['/root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'/root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh']
 
-<<<<<<< HEAD
 
     qatrader:
         image: daocloud.io/quantaxis/qatrader:latest
@@ -166,8 +169,6 @@ services:
 
 
 
-=======
->>>>>>> parent of 809e6b20... Merge pull request #8 from QUANTAXIS/master
 volumes:
     qamg:
         external:
