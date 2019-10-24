@@ -1,4 +1,4 @@
-version: "2"
+version: '3.7'
 services:
     qa:
         image: daocloud.io/quantaxis/qacommunity:latest
@@ -12,21 +12,13 @@ services:
         ports:
             - "8888:8888"
             - "81:80"
-        environment:
-            - TZ=Asia/Shanghai
-            - LANG=C.UTF-8
-            - MONGODB=mgdb
-            - QARUN=qaweb
-            - QAPUBSUB_IP=qaeventmq
-            - QAPUBSUB_PORT=5672
-            - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin
+        env_file: env.env
         volumes:
             - qacode:/home
         restart: always
 
     # qacron:
-    #     image: barretthugh/qa-cron
+    #     image: daocloud.io/quantaxis/qa-cron:latest
     #     environment:
     #         - MONGODB=mgdb
     #     restart: always
@@ -34,41 +26,34 @@ services:
     qaweb_run:
         image: daocloud.io/quantaxis/qarun:latest
         container_name: qarun
-        networks:
-            qanetwork:
-                ipv4_address: 172.19.0.4
         depends_on:
             - mgdb
             - qaeventmq
+        networks:
+            qanetwork:
+                ipv4_address: 172.19.0.4
         ports:
             - "8010:8010"
-        environment:
-            - MONGODB=mgdb
-            - QAPUBSUB_IP=qaeventmq
-            - QAPUBSUB_PORT=5672
-            - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin
-            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
-            - TZ=Asia/Shanghai
+        env_file: env.env
         restart: always
         depends_on:
           - qaeventmq
           - mgdb
-        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "/root/runcelery.sh"]
+        command: ['/root/wait_for_it.sh', 'qaeventmq:5672', '--' , "/root/runcelery.sh"]
+
 
     mgdb:
         image: daocloud.io/quantaxis/qamongo_single:latest
         ports:
             - "27017:27017"
-        environment:
-            - TZ=Asia/Shanghai
-            - MONGO_INITDB_DATABASE=quantaxis
+        env_file: env.env
         volumes:
             - qamg:/data/db
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.2
         restart: always
+
 
     qaeventmq:
         image: daocloud.io/quantaxis/qaeventmq:latest
@@ -88,30 +73,12 @@ services:
         ports:
             - "61209:61209"
             - "61208:61208"
-        pid: "host"
+        pid: 'host'
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.6
 
         restart: always
-
-    qactpbeebroker:
-        image: daocloud.io/quantaxis/qactpbeebroker:latest
-        ports:
-            - "5000:5000"
-        networks:
-            qanetwork:
-                ipv4_address: 172.19.0.7
-
-            # --userid TEXT
-            # --password TEXT
-            # --brokerid TEXT
-            # --mdaddr TEXT
-            # --tdaddr TEXT
-            # --appid TEXT
-            # --authcode TEXT
-
-        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "QACTPBEE", "--userid", "133496", "--password", 'QCHL1234']
 
     qamarketcollector:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
@@ -120,15 +87,12 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        environment:
-            - MONGODB=mgdb
-            - EventMQ_IP=qaeventmq
+        env_file: env.env
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.8
         command:
             ['/root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'/root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh']
-
 
     qatrader:
         image: daocloud.io/quantaxis/qatrader:latest
@@ -137,14 +101,7 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        environment:
-            - MONGODB=mgdb
-            - QAPUBSUB_IP=qaeventmq
-            - QAPUBSUB_PORT=5672
-            - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin
-            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
-            - TZ=Asia/Shanghai
+        env_file: env.env
         command:
             ['/root/QATrader/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'qatraderserver']
 
@@ -165,5 +122,4 @@ networks:
     qanetwork:
         ipam:
             config:
-                - subnet: 172.19.0.0/24
-                  gateway: 172.19.0.1
+            - subnet: 172.19.0.0/24
