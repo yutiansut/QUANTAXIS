@@ -759,10 +759,7 @@ class QA_Risk():
         end = self.account.end_date if end is None else end
         _, ax = plt.subplots(figsize=(20, 8))
         sns.heatmap(
-            self.account.daily_hold.reset_index().drop(
-                'account_cookie',
-                axis=1
-            ).set_index('date').loc[start:end],
+            self.account.daily_hold.reset_index().set_index('date').loc[start:end],
             cmap="YlGnBu",
             linewidths=0.05,
             ax=ax
