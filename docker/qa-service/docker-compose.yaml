@@ -6,7 +6,7 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.3
         ports:
@@ -14,6 +14,7 @@ services:
             - "81:80"
         environment:
           - TZ=Asia/Shanghai
+          - LANG=C.UTF-8
           - MONGODB=mgdb
           - QARUN=qaweb
           - QAPUBSUB_IP=qaeventmq
@@ -25,7 +26,7 @@ services:
         restart: always
 
     # qacron:
-    #     image: barretthugh/qa-cron
+    #     image: daocloud.io/quantaxis/qa-cron:latest
     #     environment:
     #         - MONGODB=mgdb
     #     restart: always
@@ -36,7 +37,7 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.4
         ports:
@@ -65,7 +66,7 @@ services:
             - MONGO_INITDB_DATABASE=quantaxis
         volumes:
             - qamg:/data/db
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.2
         restart: always
@@ -73,13 +74,13 @@ services:
 
     qaeventmq:
         image: daocloud.io/quantaxis/qaeventmq:latest
-        ports: 
+        ports:
             - "15672:15672"
             - "5672:5672"
             - "4369:4369"
         environment:
             - TZ=Asia/Shanghai
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.5
         restart: always
@@ -90,12 +91,12 @@ services:
             - "61209:61209"
             - "61208:61208"
         pid: 'host'
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.6
-                
+
         restart: always
-        
+
     qamarketcollector:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
         ports:
@@ -106,11 +107,43 @@ services:
         environment:
             - MONGODB=mgdb
             - EventMQ_IP=qaeventmq
+            - TZ=Asia/Shanghai
+            - LANG=C.UTF-8
+            - QARUN=qaweb
+            - QAPUBSUB_IP=qaeventmq
+            - QAPUBSUB_PORT=5672
+            - QAPUBSUB_USER=admin
+            - QAPUBSUB_PWD=admin
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.8
         command:
             ['/root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'/root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh']
+
+    qatrader:
+        image: daocloud.io/quantaxis/qatrader:latest
+        ports:
+            - "8020:8020"
+        depends_on:
+            - mgdb
+            - qaeventmq
+        environment:
+            - MONGODB=mgdb
+            - QAPUBSUB_IP=qaeventmq
+            - QAPUBSUB_PORT=5672
+            - QAPUBSUB_USER=admin
+            - QAPUBSUB_PWD=admin
+            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
+            - TZ=Asia/Shanghai
+        command:
+            ['/root/QATrader/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'qatraderserver']
+
+        networks:
+            qanetwork:
+                ipv4_address: 172.19.0.9
+
+
+
 volumes:
     qamg:
         external:

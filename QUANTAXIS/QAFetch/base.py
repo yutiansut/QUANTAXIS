@@ -32,6 +32,15 @@ headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,imag
            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36'}
 
 
+def _select_bond_market_code(code):
+
+    if code[0:3] in ['101', '104', '105', '106', '107', '108', '109',
+                        '111', '112', '114', '115', '116', '117', '118', '119',
+                        '123', '127', '128',
+                        '131', '139', ]:
+        return 0
+    else:
+        return 1
 
 def _select_market_code(code):
     """

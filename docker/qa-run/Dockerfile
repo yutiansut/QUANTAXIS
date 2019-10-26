@@ -17,6 +17,8 @@ RUN \
 git clone https://github.com/yutiansut/QAPUBSUB \
 && cd QAPUBSUB && pip install -e . && cd ..\
 && pip install quantaxis -U \
+&& pip uninstall pytdx -y \
+&& pip install pytdx \
 && git clone https://github.com/yutiansut/QUANTAXIS_RUN \
 && cd QUANTAXIS_RUN && pip install -e . && pip install eventlet \
 && pip install quantaxis-servicedetect
