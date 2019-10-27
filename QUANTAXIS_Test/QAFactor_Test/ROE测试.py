@@ -28,7 +28,7 @@ df_finance = QA.QA_fetch_financial_report_adv(
     end='2018-12-31'
 ).data
 
-if len(data) ==0:
+if len(df_finance) ==0:
     print('请先存储QUANTAXIS 财务数据 ==> 输入quantaxis进入cli后 输入save financialfiles')
 else:
     factor = df_finance['ROE']
