@@ -10,12 +10,17 @@ import re
 import warnings
 from functools import partial
 from typing import List, Tuple, Union
-
-import jqdatasdk
+try:
+    import jqdatasdk
+except ImportError:
+    print('QAFactor模块需要 jqdatasdk的支持 请使用pip install jqdatasdk 来安装')
 import pandas as pd
 
-import QUANTAXIS as QA
-import QUANTAXIS.QAFactor.utils as utils
+
+from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_index_day_adv, QA_fetch_stock_day_adv
+from QUANTAXIS.QAAnalysis.QAAnalysis_block import QAAnalysis_block
+
+from QUANTAXIS.QAFactor import utils
 from QUANTAXIS.QAFactor.parameters import (
     FQ_TYPE,
     FREQUENCE_TYPE,
@@ -165,12 +170,12 @@ class DataApi:
         start_time = str(pd.Timestamp(start_time))[:19]
         end_time = str(pd.Timestamp(end_time))[:19]
 
-        data = QA.QA_fetch_stock_day_adv(
+        data = QA_fetch_stock_day_adv(
             code=code_list,
             start=start_time,
             end=end_time
         )
-        index_data = QA.QA_fetch_index_day_adv(
+        index_data = QA_fetch_index_day_adv(
             code="000001",
             start=start_time,
             end=end_time
@@ -375,7 +380,7 @@ class DataApi:
                     columns=code_list
                 ).fillna(1.0)
                 return df_local.stack()
-            df_local = QA.QAAnalysis_block(
+            df_local = QAAnalysis_block(
                 code=code_list,
                 start=start_time,
                 end=end_time

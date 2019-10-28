@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from typing import Union, Tuple, List
 
-import QUANTAXIS.QAFactor.plotting as plotting
-import QUANTAXIS.QAFactor.performance as perf
-import QUANTAXIS.QAFactor.utils as utils
+from QUANTAXIS.QAFactor import plotting
+from QUANTAXIS.QAFactor import performance as perf
+from QUANTAXIS.QAFactor import utils
 from QUANTAXIS.QAFactor.plotting_utils import GridFigure, customize
 from QUANTAXIS.QAFactor.process import get_clean_factor_and_forward_returns
 

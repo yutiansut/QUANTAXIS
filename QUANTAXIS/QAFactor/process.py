@@ -4,8 +4,8 @@ from typing import List, Tuple, Union
 import numpy as np
 import pandas as pd
 
-import QUANTAXIS.QAFactor.utils as utils
-import QUANTAXIS.QAFactor.preprocess as preprocess
+from QUANTAXIS.QAFactor import utils
+from QUANTAXIS.QAFactor import preprocess
 from QUANTAXIS.QAFactor.utils import get_forward_returns_columns
 
 
