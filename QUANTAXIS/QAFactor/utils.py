@@ -232,8 +232,10 @@ def add_custom_calendar_timedelta(input, timedelta):
     return input + days + offset
 
 
-"""
+
 def diff_custom_calendar_timedeltas(start, end, freq):
+    raise NotImplementedError
+"""
     if not isinstance(freq, (Day, BusinessDay, CustomBusinessDay)):
         raise ValueError("freq must be Day, BusinessDay or CustomBusinessDay")
 

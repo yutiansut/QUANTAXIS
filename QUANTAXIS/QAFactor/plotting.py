@@ -279,7 +279,7 @@ def plot_quantile_returns_violin(return_by_q, ylim_percentiles=None, ax=None):
     return ax
 
 
-def plot_cummulative_returns(
+def plot_cumulative_returns(
         factor_returns: pd.DataFrame,
         period,
         freq,
@@ -289,7 +289,7 @@ def plot_cummulative_returns(
     if ax is None:
         f, ax = plt.subplots(1, 1, figsize=(18, 6))
 
-    factor_returns = perf.cummulative_returns(
+    factor_returns = perf.cumulative_returns(
         factor_returns=factor_returns,
         period=period,
     )
