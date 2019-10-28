@@ -15,7 +15,7 @@ RUN cd ~ && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASI
 && pip install qifiaccount -U \
 && pip install QAStrategy -U \
 
-COPY run-community.sh /root/
+COPY run-community.sh /root/run-community.sh
 RUN chmod +x /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py \
 && echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c "source ~/.vimrc"
 
