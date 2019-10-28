@@ -13,7 +13,6 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-import QUANTAXIS as QA
 from QUANTAXIS.QAFactor.parameters import (
     DAYS_PER_MONTH,
     DAYS_PER_QUARTER,

@@ -14,9 +14,9 @@ from typing import List, Tuple, Union
 import jqdatasdk
 import numpy as np
 import pandas as pd
-import QUANTAXIS as QA
-import statsmodels.api as sm
 
+import statsmodels.api as sm
+from QUANTAXIS.QAAnalysis.QAAnalysis_block import QAAnalysis_block
 from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
 
 
@@ -200,10 +200,11 @@ def QA_fetch_get_factor_groupby(
         # start_time = str(min(factor.index.get_level_values("datetime")))[:10]
         # end_time = str(max(factor.index.get_level_values("datetime")))[:10]
         # date_range = list(
-        #     map(pd.Timestamp, QA.QA_util_get_trade_range(start_time, end_time))
+        #     map(pd.Timestamp, QA_util_get_trade_range(start_time, end_time))
         # )
         date_range = (
-            factor.index.get_level_values("datetime").drop_duplicates().tolist()
+            factor.index.get_level_values(
+                "datetime").drop_duplicates().tolist()
         )
 
         df_local = pd.DataFrame()
@@ -250,8 +251,8 @@ def QA_fetch_get_factor_groupby(
              "code"]
         ).assign(group=ss_local).reset_index().set_index(["datetime",
                                                           "code"]
-                                                        ).drop("date",
-                                                               axis=1)
+                                                         ).drop("date",
+                                                                axis=1)
     )
     group = merged_data["group"].unstack().bfill().stack()
     merged_data["group"] = group
@@ -282,16 +283,18 @@ def QA_fetch_factor_weight(
     merged_data = pd.DataFrame(factor.copy().rename("factor"))
 
     # 股票代码格式化
-    code_list = factor.index.get_level_values("code").drop_duplicates().tolist()
+    code_list = factor.index.get_level_values(
+        "code").drop_duplicates().tolist()
     # 非详细模式， 加权数据采用当前日期
     if detailed:
         # start_time = str(min(factor.index.get_level_values("datetime")))[:10]
         # end_time = str(max(factor.index.get_level_values("datetime")))[:10]
         # date_range = list(
-        #     map(pd.Timestamp, QA.QA_util_get_trade_range(start_time, end_time))
+        #     map(pd.Timestamp, QA_util_get_trade_range(start_time, end_time))
         # )
         date_range = (
-            factor.index.get_level_values("datetime").drop_duplicates().tolist()
+            factor.index.get_level_values(
+                "datetime").drop_duplicates().tolist()
         )
 
     else:
@@ -301,7 +304,7 @@ def QA_fetch_factor_weight(
         merged_data["weight"] = 1.0
         return merged_data
 
-    df_local = QA.QAAnalysis_block(
+    df_local = QAAnalysis_block(
         code=code_list,
         start=date_range[0],
         end=date_range[-1]
@@ -360,9 +363,9 @@ def QA_fetch_factor_weight(
             ["date",
              "code"]
         ).assign(weight=df_local.stack()
-                ).reset_index().set_index(["datetime",
-                                           "code"]).drop("date",
-                                                         axis=1)
+                 ).reset_index().set_index(["datetime",
+                                            "code"]).drop("date",
+                                                          axis=1)
     )
 
     weight = merged_data["weight"].unstack().bfill().stack()
@@ -398,7 +401,7 @@ def QA_fetch_get_factor_start_date(factor: pd.Series) -> pd.DataFrame:
     # 拼接上市时间
     merged_data = merged_data.loc[(slice(None), list(ss.index)), :]
     merged_data["start_date"] = merged_data.index.map(lambda x: ss.loc[x[1]]
-                                                     ).tolist()
+                                                      ).tolist()
     return merged_data
 
 
@@ -422,7 +425,7 @@ def QA_neutralize_factor(
     """
     if type(mkt_cap) == pd.Series:
         LnMktCap = mkt_cap.apply(lambda x: math.log(x))
-        if industry: # 行业、市值
+        if industry:  # 行业、市值
             dummy_industry = get_industry_exposure(factor, date=date)
             x = pd.concat([LnMktCap, dummy_industry.T], axis=1)
         else:        # 仅市值

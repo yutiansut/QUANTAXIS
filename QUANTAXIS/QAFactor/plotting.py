@@ -12,9 +12,9 @@ import statsmodels.api
 from matplotlib.ticker import ScalarFormatter
 from scipy import stats
 
-import QUANTAXIS.QAFactor.performance as perf
-import QUANTAXIS.QAFactor.plotting_utils as plotting_utils
-import QUANTAXIS.QAFactor.utils as utils
+from QUANTAXIS.QAFactor import performance as perf
+from QUANTAXIS.QAFactor import plotting_utils
+from QUANTAXIS.QAFactor import utils
 from QUANTAXIS.QAFactor.parameters import DECIMAL_TO_BPS
 from QUANTAXIS.QAFactor.plotting_utils import GridFigure, customize
 

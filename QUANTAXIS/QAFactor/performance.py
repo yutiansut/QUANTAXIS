@@ -10,8 +10,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 from statsmodels.api import OLS, add_constant
-
-import QUANTAXIS.QAFactor.utils as utils
+from QUANTAXIS.QAFactor import utils
 from QUANTAXIS.QAFactor.parameters import DAYS_PER_MONTH, DAYS_PER_QUARTER, DAYS_PER_YEAR
 from QUANTAXIS.QAFactor.process import demean_forward_returns
 from QUANTAXIS.QAFactor.utils import get_forward_returns_columns
