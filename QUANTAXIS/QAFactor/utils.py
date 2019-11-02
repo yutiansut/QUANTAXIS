@@ -13,7 +13,6 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-import QUANTAXIS as QA
 from QUANTAXIS.QAFactor.parameters import (
     DAYS_PER_MONTH,
     DAYS_PER_QUARTER,
@@ -233,8 +232,10 @@ def add_custom_calendar_timedelta(input, timedelta):
     return input + days + offset
 
 
-"""
+
 def diff_custom_calendar_timedeltas(start, end, freq):
+    raise NotImplementedError
+"""
     if not isinstance(freq, (Day, BusinessDay, CustomBusinessDay)):
         raise ValueError("freq must be Day, BusinessDay or CustomBusinessDay")
 

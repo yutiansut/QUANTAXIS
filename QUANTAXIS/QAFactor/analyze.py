@@ -9,10 +9,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from fastcache import lru_cache
 
-import QUANTAXIS.QAFactor.performance as perf
-import QUANTAXIS.QAFactor.plotting as plotting
-import QUANTAXIS.QAFactor.preprocess as preprocess
-import QUANTAXIS.QAFactor.utils as utils
+from QUANTAXIS.QAFactor import performance as perf
+from QUANTAXIS.QAFactor import plotting, preprocess, utils
 from QUANTAXIS.QAFactor.parameters import FREQUENCE_TYPE
 from QUANTAXIS.QAFactor.plotting_utils import GridFigure, customize
 from QUANTAXIS.QAFactor.process import get_clean_factor_and_forward_returns
