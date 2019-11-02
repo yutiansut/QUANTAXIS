@@ -57,6 +57,22 @@ class FactorAnalyzer:
         """
         初始化输入
 
+        参数
+        ---
+        :param factor: 即经过我们处理过的单因子数据
+        :param prices: 价格数据
+        :param groupby: 行业数据
+        :param stock_start_date: 上市时间
+        :param weights: 因子加权数据
+        :param frequence: 因子频率，如果是季线，相应的为 `1q`, 日线，则为 `1d` 等
+        :param quantiles: 分位处理，既可以是 int 值，将因子等分，也可以是 0 到 1 之间的非等分区间
+        :param bins: 分位处理，与 `quantiles` 只能有一个为非空
+        :param periods: 用于计算因子远期收益的期数
+        :param binning_by_group: 是否按照行业分别进行分位处理
+        :param max_loss: 在单因子处理时，能够忍受的最大的因子损失 (丢弃的 NaN 值比例)
+        :param zero_aware: 是否按照因子正负值分别进行分位处理
+
+
         说明：
             - quantiles 与 bins 只能有一个为非空
         """
