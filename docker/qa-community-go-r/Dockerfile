@@ -20,6 +20,12 @@ RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.p
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
     ## clean
 
+RUN pip install qgrid\
+&& jupyter nbextension enable --py --sys-prefix qgrid\
+&& jupyter nbextension enable --py --sys-prefix widgetsnbextension\
+&& jupyter labextension install @jupyter-widgets/jupyterlab-manager\
+&& jupyter labextension install qgrid
+
 RUN chmod +x /root/run-community.sh
 CMD ["bash", "/root/run-community.sh"]
 
