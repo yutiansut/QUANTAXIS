@@ -14,6 +14,7 @@ import pandas as pd
 import statsmodels.api as sm
 
 from QUANTAXIS.QAFactor.parameters import (
+    DAYS_PER_WEEK,
     DAYS_PER_MONTH,
     DAYS_PER_QUARTER,
     DAYS_PER_YEAR,
@@ -91,7 +92,7 @@ def QA_fmt_code_list(
         else:
             return code
 
-    pattern = re.compile("\d+")
+    pattern = re.compile(r"\d+")
     if isinstance(code_list, str):
         return [_fmt_code(code_list, style)]
     else:
@@ -107,6 +108,7 @@ def get_period(period: str):
     ---
     :param period: 指定的时间间隔，'1H1min', '2D3H', '1Q3min' 等
     """
+    origin_period = period
     assert isinstance(period, str)
     pattern = re.compile(r"\d+")
     freqs = pattern.split(period)
@@ -114,6 +116,7 @@ def get_period(period: str):
         [
             freq.lower() in ["",
                              "y",
+                             "w",
                              "q",
                              "m",
                              "d",
@@ -129,12 +132,17 @@ def get_period(period: str):
         period = period.lower().replace(min_interval, "")
     hour_interval = re.findall("\d+h", period)
     day_interval = re.findall("\d+d", period)
+    week_interval = re.findall("\d+w", period)
     month_interval = re.findall("\d+m", period)
     quarter_interval = re.findall("\d+q", period)
     year_interval = re.findall("\d+y", period)
     day_count = 0
+    hour_count = 0
     if day_interval:
         day_count += int(re.findall("\d+", day_interval[0])[0])
+    if week_interval:
+        day_count += DAYS_PER_WEEK * \
+            int(re.findall("\d+", week_interval[0])[0])
     if month_interval:
         day_count += DAYS_PER_MONTH * int(
             re.findall("\d+",
@@ -146,9 +154,10 @@ def get_period(period: str):
                        quarter_interval[0])[0]
         )
     if year_interval:
-        day_count += DAYS_PER_YEAR * int(re.findall("\d+", year_interval[0])[0])
+        day_count += DAYS_PER_YEAR * \
+            int(re.findall("\d+", year_interval[0])[0])
     day_interval = str(day_count) + "d"
-    if "min" in period:
+    if "min" in origin_period:
         return "".join([day_interval] + hour_interval) + min_interval
     else:
         return "".join([day_interval] + hour_interval)
@@ -184,23 +193,23 @@ def rate_of_return(period_ret: pd.Series, base_period: str) -> pd.Series:
     """
     period_len = get_period(period_ret.name.replace("period_", ""))
     base_period = get_period(base_period.replace("period_", ""))
-    pattern = re.compile(r"\d+")
-    interval = pattern.findall(period_len)[0]
-    base_interval = pattern.findall(base_period)[0]
-    if (period_len.replace(interval,
-                           "") != "min") or (period_len.replace(interval,
-                                                                "") != "d"):
-        if period_len.replace(interval, "") == "m":
-            period_len = int(interval) * pd.Timedelta(days=DAYS_PER_MONTH)
-            base_period = int(base_interval) * pd.Timedelta(days=DAYS_PER_MONTH)
-        elif period_len.replace(interval, "") == "q":
-            period_len = int(interval) * pd.Timedelta(days=DAYS_PER_QUARTER)
-            base_period = int(base_interval) * pd.Timedelta(
-                days=DAYS_PER_QUARTER
-            )
-        elif period_len.replace(interval, "") == "y":
-            period_len = int(interval) * pd.Timedelta(days=DAYS_PER_YEAR)
-            base_period = int(base_interval) * pd.Timedelta(days=DAYS_PER_YEAR)
+    # pattern = re.compile(r"\d+")
+    # interval = pattern.findall(period_len)[0]
+    # base_interval = pattern.findall(base_period)[0]
+    # if (period_len.replace(interval,
+    #                        "") != "min") or (period_len.replace(interval,
+    #                                                             "") != "d"):
+    #     if period_len.replace(interval, "") == "m":
+    #         period_len = int(interval) * pd.Timedelta(days=DAYS_PER_MONTH)
+    #         base_period = int(base_interval) * pd.Timedelta(days=DAYS_PER_MONTH)
+    #     elif period_len.replace(interval, "") == "q":
+    #         period_len = int(interval) * pd.Timedelta(days=DAYS_PER_QUARTER)
+    #         base_period = int(base_interval) * pd.Timedelta(
+    #             days=DAYS_PER_QUARTER
+    #         )
+    #     elif period_len.replace(interval, "") == "y":
+    #         period_len = int(interval) * pd.Timedelta(days=DAYS_PER_YEAR)
+    #         base_period = int(base_interval) * pd.Timedelta(days=DAYS_PER_YEAR)
     conversion_factor = pd.Timedelta(base_period) / pd.Timedelta(period_len)
     return period_ret.add(1).pow(conversion_factor).sub(1.0)
 
@@ -232,9 +241,10 @@ def add_custom_calendar_timedelta(input, timedelta):
     return input + days + offset
 
 
-
 def diff_custom_calendar_timedeltas(start, end, freq):
     raise NotImplementedError
+
+
 """
     if not isinstance(freq, (Day, BusinessDay, CustomBusinessDay)):
         raise ValueError("freq must be Day, BusinessDay or CustomBusinessDay")

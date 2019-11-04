@@ -213,7 +213,7 @@ class DataApi:
         if not price_type:
             price_type = self.price_type
 
-        if price_type.lower() is "avg":
+        if price_type.lower() == "avg":
             avg = data["amount"] / data["volume"] / 100.0
             return avg.unstack()
         return data[price_type.lower()].unstack()
@@ -253,9 +253,9 @@ class DataApi:
 
         # 2. 日期处理
         if not detailed:
-            date_range = [pd.Timestamp(max(factor_time_range))]
+            date_range = [pd.Timestamp(max(factor_time_range)).date()]
         else:
-            date_range = factor_time_range
+            date_range = list(map(lambda x: x.date(), factor_time_range))
 
         # 3. 行业处理
         if not industry_cls:
@@ -264,7 +264,7 @@ class DataApi:
         if not industry_data:
             industry_data = self.industry_data
 
-        if (not industry_cls) and (not industry_data):
+        if (industry_cls is None) and (industry_data is None):
             warnings.warn("没有指定行业分类方式，也没有输入行业分类信息", UserWarning)
             return pd.Series(
                 index=pd.MultiIndex.from_product([date_range,
@@ -335,9 +335,9 @@ class DataApi:
 
         # 2. 日期处理
         if not detailed:
-            date_range = [pd.Timestamp(max(factor_time_range))]
+            date_range = [pd.Timestamp(max(factor_time_range)).date()]
         else:
-            date_range = factor_time_range
+            date_range = list(map(lambda x: x.date(), factor_time_range))
         start_time = str(min(factor_time_range))[:10]
         end_time = str(max(factor_time_range))[:10]
 
@@ -429,7 +429,7 @@ class DataApi:
         ss = df_local.loc[intersection]["start_date"]
         ss.index = ss.index.map(lambda x: x[:6])
         # 日期处理
-        date_range = factor_time_range
+        date_range = list(map(lambda x: x.date(), factor_time_range))
 
         multiindex = pd.MultiIndex.from_product(
             [date_range,

@@ -27,6 +27,17 @@ def QA_fmt_factor(factor: Union[pd.Series, pd.DataFrame]):
     # 索引设置
     if isinstance(factor, pd.DataFrame):
         factor = factor.stack(dropna=False)
+    level_0 = 'datetime'
+    try:
+        pd.Timestamp(factor.index.levels[0][0])
+    except:
+        try:
+            level_0 = 'code'
+            pd.Timestamp(factor.index.levels[1][0])
+        except:
+            raise ValueError("错误，索引格式不正确")
+    if level_0 == 'code':
+        factor = factor.swaplevel()
     factor.index.names = ["datetime", "code"]
     factor.index = factor.index.map(lambda x: (pd.Timestamp(x[0]), x[1]))
     return factor.sort_index()
@@ -288,7 +299,7 @@ def QA_fetch_factor_weight(
     # 非详细模式， 加权数据采用当前日期
     if detailed:
         # start_time = str(min(factor.index.get_level_values("datetime")))[:10]
-        # end_time = str(max(factor.index.get_level_values("datetime")))[:10]
+        end_time = str(max(factor.index.get_level_values("datetime")))[:10]
         # date_range = list(
         #     map(pd.Timestamp, QA_util_get_trade_range(start_time, end_time))
         # )
