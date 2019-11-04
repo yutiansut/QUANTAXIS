@@ -93,6 +93,8 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ### 核心工具链(生产环境在用)
 
+![QQ图片20191029223640.png](http://pic.yutiansut.com/FuVrzcbWJUBNrj4Wa0zlRl-YlBY_)
+
 #### 已开源
 
 > 数据存储/数据分析/回测
