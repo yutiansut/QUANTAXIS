@@ -127,7 +127,7 @@ class QA_AccountPRO(QA_Worker):
         self.datetime = None
         self.running_time = datetime.datetime.now()
         self.quantaxis_version = __version__
-        self.client = DATABASE.accountPro
+        self.client = DATABASE.account
         self.start_ = start
         self.end_ = end
         ### 下面是数据库创建index部分, 此部分可能导致部分代码和原先不兼容
@@ -206,8 +206,8 @@ class QA_AccountPRO(QA_Worker):
         self.frozen = {}  # 冻结资金(保证金)
         self.finishedOrderid = []
 
-        # if auto_reload:
-        #     self.reload()
+        if auto_reload:
+            self.reload()
 
     def __repr__(self):
         return '< QA_AccountPRO {} market: {}>'.format(
