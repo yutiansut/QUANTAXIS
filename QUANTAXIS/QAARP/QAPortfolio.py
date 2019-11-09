@@ -219,10 +219,22 @@ class QA_Portfolio(QA_Account):
 
         if account_cookie in self.account_list:
             res = self.account_list.remove(account_cookie)
+
+            try:
+                DATABASE.account.find_one_and_delete({
+                    'account_cookie': account_cookie,
+                    'portfolio_cookie': self.portfolio_cookie,
+                    'user_cookie': self.user_cookie
+                })
+            except:
+                pass
+
             self.cash.append(
                 self.cash[-1] + self.get_account_by_cookie(res).init_cash
             )
+            self.save()
             return True
+
         else:
             raise RuntimeError(
                 'account {} is not in the portfolio'.format(account_cookie)
@@ -293,6 +305,8 @@ class QA_Portfolio(QA_Account):
                         account_cookie=account_cookie,
                         user_cookie=self.user_cookie,
                         portfolio_cookie=self.portfolio_cookie,
+                        init_cash=init_cash,
+                        market_type=market_type,
                         auto_reload=True
                     )
 
@@ -360,12 +374,12 @@ class QA_Portfolio(QA_Account):
                     return self.get_account_by_cookie(account_cookie)
 
     def create_stockaccount(self, account_cookie, init_cash, init_hold):
-        return self.new_account(account_cookie= account_cookie, init_cash=init_cash, init_hold=init_hold,
-            market_type=MARKET_TYPE.STOCK_CN,allow_t0=False,)
+        return self.new_account(account_cookie=account_cookie, init_cash=init_cash, init_hold=init_hold,
+                                market_type=MARKET_TYPE.STOCK_CN, allow_t0=False,)
 
     def create_futureaccount(self, account_cookie, init_cash, init_hold, reload):
-        return self.new_account(account_cookie= account_cookie, init_cash=init_cash, init_hold=init_hold,
-            market_type=MARKET_TYPE.FUTURE_CN,allow_t0=False,)
+        return self.new_account(account_cookie=account_cookie, init_cash=init_cash, init_hold=init_hold,
+                                market_type=MARKET_TYPE.FUTURE_CN, allow_t0=False,)
 
     def get_account_by_cookie(self, cookie):
         '''
@@ -745,12 +759,12 @@ class QA_PortfolioView():
     @property
     def history_table(self):
         return pd.concat([item.history_table for item in self.accounts]
-                        ).sort_index()
+                         ).sort_index()
 
     @property
     def trade_day(self):
         return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
-                        ).drop_duplicates().sort_values().tolist()
+                         ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):
