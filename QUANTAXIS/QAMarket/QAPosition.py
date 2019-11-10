@@ -558,7 +558,7 @@ class QA_Position():
 
             # 增加保证金
             marginValue = temp_cost * \
-                self.market_preset['buy_frozen_coeff']
+                self.market_preset.get('buy_frozen_coeff',1)
             self.margin_long += marginValue
             # 重算开仓均价
             self.open_price_long = (
@@ -641,7 +641,7 @@ class QA_Position():
                 self.volume_long_frozen_today += amount
 
                 marginValue = -1*(self.position_price_long * amount*self.market_preset.get('unit_table') *\
-                    self.market_preset['buy_frozen_coeff'])
+                    self.market_preset.get('buy_frozen_coeff',1))
                 self.margin_long += marginValue     
                 profit = (price - self.position_price_long) * \
                     amount * self.market_preset.get('unit_table')
@@ -660,7 +660,7 @@ class QA_Position():
             #     self.volume_short_his = 0
             self.volume_short_frozen_today -= amount
 
-            marginValue = -1*(self.position_price_short * amount*self.market_preset.get('unit_table') *\
+            marginValue = -1*(self.position_price_short * amount*self.market_preset.get('unit_table',1) *\
                 self.market_preset['sell_frozen_coeff'])
             profit = (self.position_price_short - price
                       ) * amount * self.market_preset.get('unit_table')
@@ -680,10 +680,10 @@ class QA_Position():
             #     self.volume_long_today -= (amount - self.volume_long_his)
             #     self.volume_long_his = 0
             self.volume_long_frozen_today -= amount
-            marginValue = -1*(self.position_price_long * amount*self.market_preset.get('unit_table') *\
-                self.market_preset['buy_frozen_coeff'])
+            marginValue = -1*(self.position_price_long * amount*self.market_preset.get('unit_table',1) *\
+                self.market_preset.get('buy_frozen_coeff',1))
             profit = (price - self.position_price_long) * \
-                amount * self.market_preset.get('unit_table')
+                amount * self.market_preset.get('unit_table',1)
             self.margin_long += marginValue     
             self.moneypresetLeft += (-marginValue + profit)
         # 计算收益/成本
