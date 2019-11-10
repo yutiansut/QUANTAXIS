@@ -13,7 +13,7 @@ RUN cd ~ && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASI
 && pip uninstall pytdx -y \
 && pip install pytdx\
 && pip install qifiaccount -U \
-&& pip install QAStrategy -U \
+&& pip install QAStrategy -U
 
 
 RUN pip install qgrid\
