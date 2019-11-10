@@ -553,6 +553,8 @@ class QA_Position():
                 marginValue = -1*(self.position_price_long * amount)
                 profit = (price - self.position_price_long) * amount 
                 self.moneypresetLeft += (-marginValue + profit)
+            else:
+                return 0,0
 
         elif towards == ORDER_DIRECTION.BUY_OPEN:
 
