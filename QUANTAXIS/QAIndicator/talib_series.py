@@ -56,9 +56,9 @@ def DEMA(Series, timeperiod=30):
     return pd.Series(res, index=Series.index)
 
 
-def EMA(Series, timeperiod=30):
-    res = talib.EMA(Series.values, timeperiod)
-    return pd.Series(res, index=Series.index)
+# def EMA(Series, timeperiod=30):
+#     res = talib.EMA(Series.values, timeperiod)
+#     return pd.Series(res, index=Series.index)
 
 
 def HT_DCPERIOD(Series):

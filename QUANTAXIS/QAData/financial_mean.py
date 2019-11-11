@@ -347,6 +347,13 @@ financial_dict = {
     '304研发费用(利润表)': 'IS_R&DExpense',
     '305其中:利息费用(利润表-财务费用)': 'IS_InterestExpense',
     '306其中:利息收入(利润表-财务费用)': 'IS_InterestIncome',
-    '307近一年经营活动现金流净额': 'netCashFlowfromOperatingActivitiesinthepastyear'
-
+    '307近一年经营活动现金流净额': 'netCashFlowfromOperatingActivitiesinthepastyear',
+    '308未知308':'unknown308',
+    '309未知309':'unknown309',
+    '310未知310':'unknown310',
+    '311未知311':'unknown311',
+    '312未知312':'unknown312',
+    '313未知313':'unknown313',
+    '314未知314':'unknown314',
+    '315未知315':'unknown315',
 }

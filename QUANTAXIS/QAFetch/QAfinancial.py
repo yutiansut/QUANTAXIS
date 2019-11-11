@@ -34,7 +34,7 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, download_path
 参见PYTDX 1.65
 """
 
-FINANCIAL_URL = 'https://gitee.com/yutiansut/QADATA/raw/master/financial/content.txt'
+FINANCIAL_URL = 'http://data.yutiansut.com/content.txt'
 
 
 class QAHistoryFinancialCrawler(HistoryFinancialCrawler):

@@ -75,7 +75,7 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
         try:
             res = res.assign(volume=res.vol, date=pd.to_datetime(
                 res.date)).drop_duplicates((['date', 'code'])).query('volume>1').set_index('date', drop=False)
-            res = res.ix[:, ['code', 'open', 'high', 'low',
+            res = res.loc[:, ['code', 'open', 'high', 'low',
                              'close', 'volume', 'amount', 'date']]
         except:
             res = None
@@ -140,6 +140,83 @@ def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', colle
         return numpy.asarray(res).tolist()
     else:
         print("QA Error QA_fetch_stock_min format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+        return None
+
+
+def QA_fetch_stock_transaction(code, start, end, format='numpy', frequence='tick', collections=DATABASE.stock_transaction):
+    '获取股票分钟线'
+    if frequence in ['tick', 'TICK', 'transaction']:
+        frequence = 'tick'
+    else:
+        print("QA Error QA_fetch_stock_transaction parameter frequence=%s is none of tick Tick transaction" % frequence)
+
+    _data = []
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    cursor = collections.find({
+        'code': {'$in': code}, "time_stamp": {
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
+        }, "type": frequence
+    }, {"_id": 0}, batch_size=10000)
+
+    res = pd.DataFrame([item for item in cursor])
+    try:
+        res = res.assign(volume=res.vol, datetime=pd.to_datetime(
+            res.datetime)).query('volume>1').drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
+        # return res
+    except:
+        res = None
+    if format in ['P', 'p', 'pandas', 'pd']:
+        return res
+    elif format in ['json', 'dict']:
+        return QA_util_to_json_from_pandas(res)
+    # 多种数据格式
+    elif format in ['n', 'N', 'numpy']:
+        return numpy.asarray(res)
+    elif format in ['list', 'l', 'L']:
+        return numpy.asarray(res).tolist()
+    else:
+        print("QA Error QA_fetch_stock_transaction format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
+        return None
+
+def QA_fetch_index_transaction(code, start, end, format='numpy', frequence='tick', collections=DATABASE.index_transaction):
+    '获取股票分钟线'
+    if frequence in ['tick', 'TICK', 'transaction']:
+        frequence = 'tick'
+    else:
+        print("QA Error QA_fetch_index_transaction parameter frequence=%s is none of tick Tick transaction" % frequence)
+
+    _data = []
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    cursor = collections.find({
+        'code': {'$in': code}, "time_stamp": {
+            "$gte": QA_util_time_stamp(start),
+            "$lte": QA_util_time_stamp(end)
+        }, 'type': frequence
+    }, {"_id": 0}, batch_size=10000)
+
+    res = pd.DataFrame([item for item in cursor])
+    try:
+        res = res.assign(volume=res.vol, datetime=pd.to_datetime(
+            res.datetime)).query('volume>1').drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
+        # return res
+    except:
+        res = None
+    if format in ['P', 'p', 'pandas', 'pd']:
+        return res
+    elif format in ['json', 'dict']:
+        return QA_util_to_json_from_pandas(res)
+    # 多种数据格式
+    elif format in ['n', 'N', 'numpy']:
+        return numpy.asarray(res)
+    elif format in ['list', 'l', 'L']:
+        return numpy.asarray(res).tolist()
+    else:
+        print("QA Error QA_fetch_index_transaction format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" " % format)
         return None
 
 
@@ -808,7 +885,7 @@ def QA_fetch_stock_financial_calendar(code, start, end=None, format='pd', collec
         try:
             res = res.drop_duplicates(
                 (['report_date', 'code']))
-            res = res.ix[:, ['code', 'name', 'pre_date', 'first_date', 'second_date',
+            res = res.loc[:, ['code', 'name', 'pre_date', 'first_date', 'second_date',
                              'third_date', 'real_date', 'codes', 'report_date', 'crawl_date']]
         except:
             res = None
@@ -848,7 +925,7 @@ def QA_fetch_stock_divyield(code, start, end=None, format='pd', collections=DATA
         try:
             res = res.drop_duplicates(
                 (['dir_dcl_date', 'a_stockcode']))
-            res = res.ix[:, ['a_stockcode', 'a_stocksname', 'div_info', 'div_type_code', 'bonus_shr',
+            res = res.loc[:, ['a_stockcode', 'a_stocksname', 'div_info', 'div_type_code', 'bonus_shr',
                              'cash_bt', 'cap_shr', 'epsp', 'ps_cr', 'ps_up', 'reg_date', 'dir_dcl_date',
                              'a_stockcode1', 'ex_divi_date', 'prg']]
         except:

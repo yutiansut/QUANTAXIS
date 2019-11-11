@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  annotations:
+    kompose.cmd: E:\k8s-for-docker-desktop\kompose-windows-amd64.exe convert --replication-controller
+      --replicas 3
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qaweb-run
+  name: qaweb-run
+spec:
+  replicas: 3
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: qaweb-run
+    spec:
+      containers:
+      - args:
+        - /root/wait_for_it.sh
+        - qaeventmq:5672
+        - --
+        - /root/runcelery.sh
+        env:
+        - name: MONGODB
+          value: mgdb
+        - name: QAPUBSUB_IP
+          value: qaeventmq
+        - name: QAPUBSUB_PORT
+          value: "5672"
+        - name: QAPUBSUB_PWD
+          value: admin
+        - name: QAPUBSUB_USER
+          value: admin
+        - name: QARUN_AMQP
+          value: pyamqp://admin:admin@qaeventmq:5672//
+        - name: TZ
+          value: Asia/Shanghai
+        image: daocloud.io/quantaxis/qarun:latest
+        name: qarun
+        ports:
+        - containerPort: 8010
+        resources: {}
+      restartPolicy: Always
+status:
+  replicas: 0

@@ -594,7 +594,7 @@ class QA_Account(QA_Worker):
         Returns:
             [type] -- [description]
         """
-        if self.start_ == None:
+        if self.end_ == None:
             if len(self.time_index_max) > 0:
                 return str(max(self.time_index_max))[0:10]
             else:
@@ -621,7 +621,7 @@ class QA_Account(QA_Worker):
         else:
 
             return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], 
-                                           str(max(max(self.time_index_max),self.end_date))[0:10])
+                                           str(max(str(max(self.time_index_max)),self.end_date))[0:10])
 
     @property
     def total_commission(self):
@@ -1112,7 +1112,7 @@ class QA_Account(QA_Worker):
                     # 开仓单占用现金 计算avg
                     # 初始化
                     if code in self.frozen.keys():
-                        if trade_towards in self.frozen[code].keys():
+                        if str(trade_towards) in self.frozen[code].keys():
                             pass
                         else:
                             self.frozen[code][str(trade_towards)] = {

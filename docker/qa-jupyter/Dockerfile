@@ -16,11 +16,27 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
 	&& rm -rf ta-lib \
 	&& rm ta-lib-0.4.0-src.tar.gz \
   && pip install -r /requirements.txt \
+  && pip install quantaxis-servicedetect \
   && pip install prompt-toolkit \
   && pip install quantaxis -U \
+  && pip uninstall pytdx -y \
+  && pip install pytdx \
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
-RUN chmod +x /entrypoint.sh
+
+RUN pip install qgrid\
+&& jupyter nbextension enable --py --sys-prefix qgrid\
+&& jupyter nbextension enable --py --sys-prefix widgetsnbextension\
+&& jupyter labextension install @jupyter-widgets/jupyterlab-manager\
+&& jupyter labextension install qgrid
+
+
+RUN pip install quantaxis-servicedetect \
+&& pip install quantaxis-pubsub \
+&& pip install aioch \
+&& pip install redis \
+&& pip install dag-factory \
+&& chmod +x /entrypoint.sh
 EXPOSE 8888 
 
 COPY runpy.sh /root/
