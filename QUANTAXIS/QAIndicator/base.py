@@ -256,3 +256,40 @@ def BARLAST(cond, yes=True):
 
 def XARROUND(x, y): return np.round(
     y*(round(x/y-math.floor(x/y)+0.00000000001) + math.floor(x/y)), 2)
+
+
+def RENKO(Series, N, condensed=True):
+
+    last_price = Series[0]
+    chart = [last_price]
+    for price in Series:
+        bricks = math.floor(abs(price-last_price)/N)
+        if bricks == 0:
+            if condensed:
+                chart.append(chart[-1])
+            continue
+        sign = int(np.sign(price-last_price))
+        chart += [sign*(last_price+(sign*N*x)) for x in range(1, bricks+1)]
+        last_price = abs(chart[-1])
+
+    return pd.Series(chart)
+
+
+
+def RENKOP(Series, N, condensed=True):
+    last_price = Series[0]
+    chart = [last_price]
+    for price in Series:
+        inc = (price-last_price)/last_price
+        if abs(inc) < N:
+            if condensed:
+                chart.append(chart[-1])
+            continue
+
+        sign = int(np.sign(price-last_price))
+        bricks = math.floor(inc/N)
+        step = math.floor((N * (price-last_price)) / inc)
+        chart += [sign*(last_price+(sign*step*x))
+                  for x in range(1, abs(bricks)+1)]
+        last_price = abs(chart[-1])
+    return pd.Series(chart)
