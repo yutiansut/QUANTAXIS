@@ -33,8 +33,10 @@ def plot_renko(ax, bricks):
 
 
 if __name__ == "__main__":
-    data = QA.QA_fetch_stock_day_adv('600010', '2019-01-01', '2019-11-01')
-    bricks_fixed = QA.RENKO(data.close, N=0.02).tolist()
+    data = QA.QA_fetch_stock_day_adv('000001', '2019-01-01', '2019-11-01')
+    bricks_fixed = QA.RENKOP(data.close, N=0.05).tolist()
+
+    print(bricks_fixed)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     plot_renko(ax, bricks_fixed)

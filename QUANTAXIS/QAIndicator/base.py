@@ -281,14 +281,19 @@ def RENKOP(Series, N, condensed=True):
     chart = [last_price]
     for price in Series:
         inc = (price-last_price)/last_price
+        #print(inc)
         if abs(inc) < N:
-            if condensed:
-                chart.append(chart[-1])
+            # if condensed:
+            #     chart.append(chart[-1])
             continue
 
         sign = int(np.sign(price-last_price))
         bricks = math.floor(inc/N)
+        #print(bricks)
+        #print((N * (price-last_price)) / inc)
         step = math.floor((N * (price-last_price)) / inc)
+        print(step)
+        #print(sign)
         chart += [sign*(last_price+(sign*step*x))
                   for x in range(1, abs(bricks)+1)]
         last_price = abs(chart[-1])
