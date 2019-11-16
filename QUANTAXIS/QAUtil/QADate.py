@@ -32,6 +32,7 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 QATZInfo_CN = 'Asia/Shanghai'
 
+
 def QA_util_time_now():
     """
     返回当前时间
@@ -150,6 +151,34 @@ def QA_util_time_stamp(time_):
     else:
         timestr = str(time_)[0:19]
         return time.mktime(time.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
+
+
+def QA_util_tdxtimestamp(time_stamp):
+    """转换tdx的realtimeQuote数据
+    https://github.com/rainx/pytdx/issues/187#issuecomment-441270487
+    
+    Arguments:
+        timestamp {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+    if time_stamp is not None:
+        time_stamp = str(time_stamp)
+        time = time_stamp[:-6] + ':'
+        if int(time_stamp[-6:-4]) < 60:
+            time += '%s:' % time_stamp[-6:-4]
+            time += '%06.3f' % (
+                int(time_stamp[-4:]) * 60 / 10000.0
+            )
+        else:
+            time += '%02d:' % (
+                int(time_stamp[-6:]) * 60 / 1000000
+            )
+            time += '%06.3f' % (
+                (int(time_stamp[-6:]) * 60 % 1000000) * 60 / 1000000.0
+            )
+        return time
 
 
 def QA_util_pands_timestamp_to_date(pandsTimestamp):

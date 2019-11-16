@@ -30,6 +30,7 @@ from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 from QUANTAXIS.QAUtil.QASetting import QA_Setting, DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_next_day, QA_util_get_real_date
+from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, FREQUENCE
 
 
 class QA_User():
@@ -110,7 +111,7 @@ class QA_User():
             ],
             unique=True
         )
-        self.portfolio_list = {}
+        self.portfolio_list = []
 
         # ==============================
         self.phone = phone
@@ -143,13 +144,35 @@ class QA_User():
         self.user_cookie = QA_util_random_with_topic(
             'USER'
         ) if user_cookie is None else user_cookie
-        self.coins = coins # 积分
-        self.money = money # 钱
+        self.coins = coins  # 积分
+        self.money = money  # 钱
 
         # ==============================
         self._subscribed_strategy = {}
-        self._subscribed_code = []
-        self._signals = [] # 预期收到的信号
+
+        """
+        self._subscribed_code: {
+            'stock_cn': {
+                '000001': ['1min','5min'],
+                '600010': ['tick']
+            },
+            'future_cn': {
+                'rb1910.SHFE':['tick','60min'],
+                'IF1909.IFFEX':['tick','1min']
+            },
+            'index_cn': {
+                '000300': ['1min']
+            }
+        }
+
+        """
+        self._subscribed_code = {
+            MARKET_TYPE.STOCK_CN: [],
+            MARKET_TYPE.FUTURE_CN: [],
+            MARKET_TYPE.INDEX_CN: [],
+            MARKET_TYPE.OPTION_CN: []
+        }
+        self._signals = []  # 预期收到的信号
         self._cash = []
         self._history = []
 
@@ -329,10 +352,22 @@ class QA_User():
 
         self.wechat_id = id
 
-    def sub_code(self, code):
-        """关注的品种
+    def sub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
+        """订阅某个品种
         """
-        self._subscribed_code.append(code)
+        if code not in self._subscribed_code[market_type]:
+            self._subscribed_code[market_type].append(code)
+
+    def unsub_code(self, code, market_type=MARKET_TYPE.STOCK_CN):
+        """取消订阅品种
+
+        Arguments:
+            code {[type]} -- [description]
+        """
+        try:
+            self._subscribed_code[market_type].remove(code)
+        except:
+            pass
 
     @property
     def subscribed_code(self):
@@ -342,7 +377,7 @@ class QA_User():
             [type] -- [description]
         """
 
-        return list(set(self._subscribed_code))
+        return self._subscribed_code
 
     def new_portfolio(self, portfolio_cookie=None):
         '''
@@ -355,8 +390,8 @@ class QA_User():
         if portfolio_cookie not in self.portfolio_list:
             self.portfolio_list.append(portfolio_cookie)
             return QA_Portfolio(
-            user_cookie=self.user_cookie,
-            portfolio_cookie=portfolio_cookie
+                user_cookie=self.user_cookie,
+                portfolio_cookie=portfolio_cookie
             )
         else:
             print(
@@ -394,7 +429,7 @@ class QA_User():
         '''
         # return self.portfolio_list[portfolio]
         # fix here use cookie as key to find value in dict
-        return QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie= portfolio_cookie)
+        return QA_Portfolio(user_cookie=self.user_cookie, portfolio_cookie=portfolio_cookie)
 
     def generate_simpleaccount(self):
         """make a simple account with a easier way
@@ -555,7 +590,11 @@ class QA_User():
         self.coins_history = message.get('coins_history')
         self.money = message.get('money')
         self._subscribed_strategy = message.get('subuscribed_strategy')
-        self._subscribed_code = message.get('subscribed_code')
+        subscribed_code = message.get('subscribed_code')
+        if isinstance(subscribed_code, list):
+            pass
+        else:
+            self._subscribed_code = subscribed_code
         self.username = message.get('username')
         self.password = message.get('password')
         self.user_cookie = message.get('user_cookie')

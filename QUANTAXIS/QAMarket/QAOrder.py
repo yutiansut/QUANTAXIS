@@ -23,7 +23,7 @@
 # SOFTWARE.
 
 import threading
-
+import datetime
 import pandas as pd
 
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
@@ -161,9 +161,9 @@ class QA_Order():
             self.datetime = datetime
         else:
             pass
-        self.sending_time = self.datetime if sending_time is None else sending_time # 下单时间
+        self.sending_time = self.datetime if sending_time is None else sending_time  # 下单时间
 
-        self.trade_time = trade_time if trade_time else [] # 成交时间
+        self.trade_time = trade_time if trade_time else []  # 成交时间
         self.amount = amount                               # 委托数量
         self.trade_amount = 0                              # 成交数量
         self.cancel_amount = 0                             # 撤销数量
@@ -196,7 +196,7 @@ class QA_Order():
         self._status = _status
         self.exchange_code = exchange_code
         self.position_id = position_id
-                                                                   # 增加订单对于多账户以及多级别账户的支持 2018/11/12
+        # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
         ) else kwargs['mainacc_id']
         self.subacc_id = None if 'subacc_id' not in kwargs.keys(
@@ -271,6 +271,14 @@ class QA_Order():
             self.account_cookie,
             self.status
         )
+
+    def transform_dt(self, times):
+        if isinstance(times, str):
+            tradedt = datetime.datetime.strptime(times, '%Y-%m-%d %H:%M:%S') if len(
+                times) == 19 else datetime.datetime.strptime(times, '%Y-%m-%d %H:%M:%S.%f')
+            return tradedt.timestamp()*1000000000
+        elif isinstance(times, datetime.datetime):
+            return tradedt.timestamp()*1000000000
 
     @property
     def status(self):
@@ -551,6 +559,34 @@ class QA_Order():
             'order_id': self.order_id
         }
 
+    def to_qifi(self):
+
+        return {
+            "account_cookie": self.account_cookie,
+            "user_id": self.account_cookie,
+            "instrument_id": self.code,
+            "towards": self.towards,
+            "exchange_id": self.exchange_id,
+            "order_time": self.datetime,
+            "volume": self.amount,
+            "price": self.price,
+            "order_id": self.order_id,
+            "seqno": 1,
+            "direction": self.direction,                      # //
+            "offset": self.offset,  # //
+            "volume_orign": self.amount,
+            "price_type": self.order_model,
+            "limit_price": self.price,
+            "time_condition": "GFD",
+            "volume_condition": "ANY",
+            "insert_date_time": self.transform_dt(self.datetime),
+            "exchange_order_id": self.realorder_id,
+            "status": self.status,
+            "volume_left": self.pending_amount,
+            "last_msg": "",
+            "topic": "send_order"
+        }
+
     def from_otgformat(self, otgOrder):
         """[summary]
 
@@ -624,7 +660,7 @@ class QA_Order():
             self.price = order_dict['price']
             self.date = order_dict['date']
             self.datetime = order_dict['datetime']
-            self.sending_time = order_dict['sending_time'] # 下单时间
+            self.sending_time = order_dict['sending_time']  # 下单时间
             self.trade_time = order_dict['trade_time']
             self.amount = order_dict['amount']
             self.frequence = order_dict['frequence']
@@ -657,7 +693,7 @@ class QA_Order():
             QA_util_log_info('Failed to tran from dict {}'.format(e))
 
 
-class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
+class QA_OrderQueue():  # also the order tree ？？ what's the tree means?
     """
     一个待成交队列
     queue是一个dataframe
@@ -714,7 +750,7 @@ class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
             return True
         else:
             if self.order_list[order.order_id
-                              ].trade_amount != order.trade_amount:
+                               ].trade_amount != order.trade_amount:
                 slef.order_list[order.order_id] = order
                 return True
             else:
@@ -812,6 +848,10 @@ class QA_OrderQueue(): # also the order tree ？？ what's the tree means?
             return pd.concat([x.to_df() for x in self.order_list.values()])
         except:
             pass
+
+    @property
+    def order_qifi(self):
+        return dict(zip(self.order_list.keys(), [item.to_qifi() for item in self.order_list.values()]))
 
 
 if __name__ == '__main__':

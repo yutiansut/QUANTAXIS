@@ -76,7 +76,7 @@ def QA_fetch_get_stock_block():
         [type] -- [description]
     """
 
-    url='https://gitee.com/yutiansut/QADATA/raw/master/ths_block.csv'
+    url='http://data.yutiansut.com/ths_block.csv'
     try:
         return pd.read_csv(url).set_index('code', drop=False)
     except:

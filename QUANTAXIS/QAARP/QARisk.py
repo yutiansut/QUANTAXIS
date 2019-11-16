@@ -166,12 +166,12 @@ class QA_Risk():
                     )
                 elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
                     self.market_data = QA_fetch_future_day_adv(
-                        self.account.code,
+                        [item.upper() for item in self.account.code],
                         self.account.start_date,
                         self.account.end_date
                     )
             else:
-                self.market_data = market_data
+                self.market_data = market_data.select_time(self.account.start_date, self.account.end_date)
             self.if_fq = if_fq
             if self.account.market_type == MARKET_TYPE.FUTURE_CN:
                 self.if_fq = False  # 如果是期货， 默认设为FALSE
@@ -759,10 +759,7 @@ class QA_Risk():
         end = self.account.end_date if end is None else end
         _, ax = plt.subplots(figsize=(20, 8))
         sns.heatmap(
-            self.account.daily_hold.reset_index().drop(
-                'account_cookie',
-                axis=1
-            ).set_index('date').loc[start:end],
+            self.account.daily_hold.reset_index().set_index('date').loc[start:end],
             cmap="YlGnBu",
             linewidths=0.05,
             ax=ax
