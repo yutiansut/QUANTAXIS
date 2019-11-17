@@ -216,6 +216,8 @@ class QA_AccountPRO(QA_Worker):
         if auto_reload:
             self.reload()
 
+        print(self.positions)    
+
     def __repr__(self):
         return '< QA_AccountPRO {} market: {}>'.format(
             self.account_cookie,
@@ -1533,7 +1535,7 @@ class QA_AccountPRO(QA_Worker):
         save_account(self.message)
 
     def reload(self):
-
+        print('QAACCPRO: reload from DATABASE')
         message = self.client.find_one(
             {
                 'account_cookie': self.account_cookie,

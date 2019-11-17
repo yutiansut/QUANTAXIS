@@ -245,6 +245,7 @@ class QA_Portfolio(QA_Account):
             account_cookie=None,
             init_cash=1000000,
             market_type=MARKET_TYPE.STOCK_CN,
+            auto_reload=True,
             *args,
             **kwargs
     ):
@@ -271,6 +272,7 @@ class QA_Portfolio(QA_Account):
                     portfolio_cookie=self.portfolio_cookie,
                     init_cash=init_cash,
                     market_type=market_type,
+                    auto_reload=auto_reload,
                     *args,
                     **kwargs
                 )
@@ -293,6 +295,7 @@ class QA_Portfolio(QA_Account):
                         init_cash=init_cash,
                         market_type=market_type,
                         account_cookie=account_cookie,
+                        auto_reload=auto_reload,
                         *args,
                         **kwargs
                     )
@@ -307,7 +310,9 @@ class QA_Portfolio(QA_Account):
                         portfolio_cookie=self.portfolio_cookie,
                         init_cash=init_cash,
                         market_type=market_type,
-                        auto_reload=True
+                        auto_reload=auto_reload,
+                        *args,
+                        **kwargs
                     )
 
     def new_account(
@@ -315,6 +320,7 @@ class QA_Portfolio(QA_Account):
             account_cookie=None,
             init_cash=1000000,
             market_type=MARKET_TYPE.STOCK_CN,
+            auto_reload=True,
             *args,
             **kwargs
     ):
@@ -341,6 +347,7 @@ class QA_Portfolio(QA_Account):
                     portfolio_cookie=self.portfolio_cookie,
                     init_cash=init_cash,
                     market_type=market_type,
+                    auto_reload=auto_reload,
                     *args,
                     **kwargs
                 )
@@ -363,6 +370,7 @@ class QA_Portfolio(QA_Account):
                         init_cash=init_cash,
                         market_type=market_type,
                         account_cookie=account_cookie,
+                        auto_reload=auto_reload,
                         *args,
                         **kwargs
                     )
@@ -371,7 +379,7 @@ class QA_Portfolio(QA_Account):
                     self.cash.append(self.cash_available - init_cash)
                     return acc
                 else:
-                    return self.get_account_by_cookie(account_cookie)
+                    return self.get_account_by_cookie(account_cookie, auto_reload=auto_reload)
 
     def create_stockaccount(self, account_cookie, init_cash, init_hold):
         return self.new_account(account_cookie=account_cookie, init_cash=init_cash, init_hold=init_hold,
@@ -381,7 +389,7 @@ class QA_Portfolio(QA_Account):
         return self.new_account(account_cookie=account_cookie, init_cash=init_cash, init_hold=init_hold,
                                 market_type=MARKET_TYPE.FUTURE_CN, allow_t0=False,)
 
-    def get_account_by_cookie(self, cookie):
+    def get_account_by_cookie(self, cookie, auto_reload=True):
         '''
         'give the account_cookie and return the account/strategy back'
         :param cookie:
@@ -393,7 +401,7 @@ class QA_Portfolio(QA_Account):
                 account_cookie=cookie,
                 user_cookie=self.user_cookie,
                 portfolio_cookie=self.portfolio_cookie,
-                auto_reload=True
+                auto_reload=auto_reload
             )
         except:
             QA_util_log_info('Can not find this account')
