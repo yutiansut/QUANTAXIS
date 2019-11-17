@@ -216,7 +216,7 @@ class QA_AccountPRO(QA_Worker):
         if auto_reload:
             self.reload()
 
-        print(self.positions)    
+        print(self.positions)
 
     def __repr__(self):
         return '< QA_AccountPRO {} market: {}>'.format(
@@ -508,7 +508,6 @@ class QA_AccountPRO(QA_Worker):
 #        res_.columns=(['datetime'])
 #        res_['date']=[ i[0:10]  for i in res_['datetime']]
 #        res_=res_[res_['date'].isin(self.trade_range)]
-
 
     @property
     def trade_day(self):
@@ -902,6 +901,8 @@ class QA_AccountPRO(QA_Worker):
             money = amount * price * self.market_preset.get_unit(code)*self.market_preset.get_frozen(code) * \
                 (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
         else:
+            print(amount)
+            print(price)
             money = amount * price * \
                 (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
@@ -1006,7 +1007,7 @@ class QA_AccountPRO(QA_Worker):
                 date=date,
                 datetime=time,
                 sending_time=time,
-                # callback=self.receive_deal,
+                callback=self.receive_deal,
                 amount=amount,
                 price=price,
                 order_model=order_model,
@@ -1045,14 +1046,14 @@ class QA_AccountPRO(QA_Worker):
 
     def receive_deal(self,
                      code,
+                     trade_id: str,
+                     order_id: str,
+                     realorder_id: str,
                      trade_price,
                      trade_amount,
                      trade_towards,
                      trade_time,
-                     message=None,
-                     order_id=None,
-                     trade_id=None,
-                     realorder_id=None):
+                     message=None):
         # if order_id in self.orders.keys():
 
         #     # update order
@@ -1088,16 +1089,16 @@ class QA_AccountPRO(QA_Worker):
         #     self.event_id += 1
         #     trade_id = str(uuid.uuid4()) if trade_id is None else trade_id
 
-        self.receive_simpledeal(
+        return self.receive_simpledeal(
             code,
             trade_price,
             trade_amount,
             trade_towards,
             trade_time,
-            message=None,
-            order_id=None,
-            trade_id=None,
-            realorder_id=None)
+            message=message,
+            order_id=order_id,
+            trade_id=trade_id,
+            realorder_id=realorder_id)
 
     def receive_simpledeal(self,
                            code,
@@ -1116,7 +1117,6 @@ class QA_AccountPRO(QA_Worker):
             pass
         else:
             self.finishedOrderid.append(realorder_id)
-
         market_towards = 1 if trade_towards > 0 else -1
         # value 合约价值 unit 合约乘数
         if self.allow_margin:
@@ -1435,6 +1435,8 @@ class QA_AccountPRO(QA_Worker):
         self.datetime = '{} 09:30:00'.format(
             QA_util_get_next_day(self.date)
         ) if self.date is not None else None
+        for item in self.positions.values():
+            item.settle()
 
     def from_message(self, message):
         """resume the account from standard message
