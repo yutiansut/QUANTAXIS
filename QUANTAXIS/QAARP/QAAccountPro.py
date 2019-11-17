@@ -154,7 +154,7 @@ class QA_AccountPRO(QA_Worker):
         self.init_hold.index.name = 'code'
         self.positions = {}
         if len(self.init_hold) > 0:
-            for code in init_hold:
+            for code in init_hold.keys():
                 self.positions[code] = QA_Position(code=code, user_cookie=self.user_cookie,
                                                    volume_long_his=init_hold[code],
                                                    portfolio_cookie=self.portfolio_cookie,
