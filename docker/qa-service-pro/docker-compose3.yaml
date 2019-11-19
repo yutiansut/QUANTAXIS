@@ -1,20 +1,16 @@
-version: "2.1"
+version: "3.7"
 services:
 
     redis:
         image: 'daocloud.io/quantaxis/qaredis:latest'
         ports:
             - "6379:6379"
-        environment:
-            - TZ=Asia/Shanghai
+        env_file: env.env
         command: ['redis-server']
         restart: always
     postgres:
         image: postgres:11
-        environment:
-            - POSTGRES_USER=airflow
-            - POSTGRES_PASSWORD=airflow
-            - POSTGRES_DB=airflow
+        env_file: env.env
         volumes:
             - pg-data:/var/lib/postgresql/data
         ports:
@@ -24,9 +20,7 @@ services:
         image: daocloud.io/quantaxis/qamongo_single:latest
         ports:
             - "27017:27017"
-        environment:
-            - TZ=Asia/Shanghai
-            - MONGO_INITDB_DATABASE=quantaxis
+        env_file: env.env
         volumes:
             - qamg:/data/db
         networks:
@@ -40,8 +34,7 @@ services:
             - "15672:15672"
             - "5672:5672"
             - "4369:4369"
-        environment:
-            - TZ=Asia/Shanghai
+        env_file: env.env
         networks:
             qanetwork_pro:
                 ipv4_address: 172.19.3.5
@@ -60,15 +53,7 @@ services:
         ports:
             - "8888:8888"
             - "81:80"
-        environment:
-            - TZ=Asia/Shanghai
-            - LANG=C.UTF-8
-            - MONGODB=mgdb
-            - QARUN=qaweb
-            - QAPUBSUB_IP=qaeventmq
-            - QAPUBSUB_PORT=5672
-            - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin
+        env_file: env.env
         volumes:
             - qacode:/home
             - qadag:/dag
@@ -91,14 +76,7 @@ services:
             - qaeventmq
         ports:
             - "8010:8010"
-        environment:
-            - MONGODB=mgdb
-            - QAPUBSUB_IP=qaeventmq
-            - QAPUBSUB_PORT=5672
-            - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin
-            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
-            - TZ=Asia/Shanghai
+        env_file: env.env
         restart: always
         depends_on:
           - qaeventmq
@@ -125,16 +103,8 @@ services:
         networks:
             qanetwork_pro:
                 ipv4_address: 172.19.3.7
-
-            # --userid TEXT
-            # --password TEXT
-            # --brokerid TEXT
-            # --mdaddr TEXT
-            # --tdaddr TEXT
-            # --appid TEXT
-            # --authcode TEXT
-
-        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "QACTPBEE", "--userid", "133496", "--password", 'QCHL1234']
+        env_file: env.env
+        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "QACTPBEE", "--userid", "$${CTPBEEuserid}", "--password", '$${CTPBEEpassword}']
 
     qamarketcollector:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
@@ -143,9 +113,7 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        environment:
-            - MONGODB=mgdb
-            - EventMQ_IP=qaeventmq
+        env_file: env.env
         networks:
             qanetwork_pro:
                 ipv4_address: 172.19.3.8
@@ -159,8 +127,7 @@ services:
             - "9000:9000"
             - "8123:8123"
             - "9009:9009"
-        environment:
-            - TZ=Asia/Shanghai
+        env_file: env.env
         networks:
             qanetwork_pro:
                 ipv4_address: 172.19.3.10
@@ -172,14 +139,7 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        environment:
-            - MONGODB=mgdb
-            - QAPUBSUB_IP=qaeventmq
-            - QAPUBSUB_PORT=5672
-            - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin
-            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
-            - TZ=Asia/Shanghai
+        env_file: env.env
         command:
             ['/root/QATrader/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'qatraderserver']
 
@@ -194,14 +154,7 @@ services:
         depends_on:
             - postgres
             - redis
-        environment:
-            - LOAD_EX=n
-            - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
-            - EXECUTOR=Celery
-            # - POSTGRES_USER=airflow
-            # - POSTGRES_PASSWORD=airflow
-            # - POSTGRES_DB=airflow
-            # - REDIS_PASSWORD=redispass
+        env_file: env.env
         volumes:
             - qadag:/usr/local/airflow/dags
             # Uncomment to include custom plugins
@@ -220,9 +173,7 @@ services:
         restart: always
         depends_on:
             - redis
-        environment:
-            - EXECUTOR=Celery
-            # - REDIS_PASSWORD=redispass
+        env_file: env.env
         ports:
             - "5555:5555"
         command: flower
@@ -236,14 +187,7 @@ services:
             - qadag:/usr/local/airflow/dags
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
-        environment:
-            - LOAD_EX=n
-            - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
-            - EXECUTOR=Celery
-            # - POSTGRES_USER=airflow
-            # - POSTGRES_PASSWORD=airflow
-            # - POSTGRES_DB=airflow
-            # - REDIS_PASSWORD=redispass
+        env_file: env.env
         command: scheduler
 
     worker:
@@ -255,13 +199,7 @@ services:
             - qadag:/usr/local/airflow/dags
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
-        environment:
-            - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
-            - EXECUTOR=Celery
-            # - POSTGRES_USER=airflow
-            # - POSTGRES_PASSWORD=airflow
-            # - POSTGRES_DB=airflow
-            # - REDIS_PASSWORD=redispass
+        env_file: env.env
         command: worker
 
 
@@ -283,4 +221,3 @@ networks:
         ipam:
             config:
                 - subnet: 172.19.3.0/24
-                  gateway: 172.19.3.1

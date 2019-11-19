@@ -6,7 +6,7 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.3
         ports:
@@ -37,7 +37,7 @@ services:
         depends_on:
             - mgdb
             - qaeventmq
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.4
         ports:
@@ -66,7 +66,7 @@ services:
             - MONGO_INITDB_DATABASE=quantaxis
         volumes:
             - qamg:/data/db
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.2
         restart: always
@@ -74,13 +74,13 @@ services:
 
     qaeventmq:
         image: daocloud.io/quantaxis/qaeventmq:latest
-        ports: 
+        ports:
             - "15672:15672"
             - "5672:5672"
             - "4369:4369"
         environment:
             - TZ=Asia/Shanghai
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.5
         restart: always
@@ -91,12 +91,12 @@ services:
             - "61209:61209"
             - "61208:61208"
         pid: 'host'
-        networks: 
+        networks:
             qanetwork:
                 ipv4_address: 172.19.0.6
-                
+
         restart: always
-        
+
     qamarketcollector:
         image: daocloud.io/quantaxis/qarealtimecollector:latest
         ports:
@@ -113,7 +113,7 @@ services:
             - QAPUBSUB_IP=qaeventmq
             - QAPUBSUB_PORT=5672
             - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin            
+            - QAPUBSUB_PWD=admin
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.8
@@ -143,7 +143,7 @@ services:
                 ipv4_address: 172.19.0.9
 
 
-            
+
 volumes:
     qamg:
         external:

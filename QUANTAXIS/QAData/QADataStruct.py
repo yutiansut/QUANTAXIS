@@ -59,7 +59,6 @@ from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
 
-
 class QA_DataStruct_Stock_day(_quotation_base):
     '''
 

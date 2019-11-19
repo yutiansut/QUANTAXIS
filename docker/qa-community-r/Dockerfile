@@ -9,7 +9,14 @@ RUN cd /root && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_
 && pip install QAStrategy -U \
 && pip install quantaxis-pubsub
 
-COPY run-community.sh /root/
+
+RUN pip install qgrid\
+&& jupyter nbextension enable --py --sys-prefix qgrid\
+&& jupyter nbextension enable --py --sys-prefix widgetsnbextension\
+&& jupyter labextension install @jupyter-widgets/jupyterlab-manager\
+&& jupyter labextension install qgrid
+
+COPY run-community.sh /root/run-community.sh
 RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py
 
 RUN chmod +x /root/run-community.sh

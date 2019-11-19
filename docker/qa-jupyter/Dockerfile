@@ -23,6 +23,20 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && pip install pytdx \
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
+
+RUN apt install -y curl\
+&& curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+&& apt-get install -y nodejs \
+&& apt-get install npm \
+&& npm install npm -g 
+
+RUN pip install qgrid\
+&& jupyter nbextension enable --py --sys-prefix qgrid\
+&& jupyter nbextension enable --py --sys-prefix widgetsnbextension\
+&& jupyter labextension install @jupyter-widgets/jupyterlab-manager\
+&& jupyter labextension install qgrid
+
+
 RUN pip install quantaxis-servicedetect \
 && pip install quantaxis-pubsub \
 && pip install aioch \
