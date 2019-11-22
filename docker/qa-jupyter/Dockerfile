@@ -21,6 +21,8 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && pip install quantaxis -U \
   && pip uninstall pytdx -y \
   && pip install pytdx \
+  && pip install pandarallel \
+  && pip install apscheduler \
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
 
