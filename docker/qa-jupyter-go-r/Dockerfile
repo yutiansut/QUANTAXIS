@@ -13,6 +13,14 @@ ENV RUSTUP_HOME=/usr/local/rustup \
     PATH=/usr/local/cargo/bin:$PATH \
     RUST_VERSION=1.39.0
 
+ARG CMAKE_VERSION=3.12.0
+WORKDIR /tmp
+RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
+&& tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
+&& mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake \
+&& cmake -version
+
+
 RUN set -eux; \
     dpkgArch="$(dpkg --print-architecture)"; \
     case "${dpkgArch##*-}" in \
