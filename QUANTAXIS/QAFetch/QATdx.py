@@ -2323,8 +2323,8 @@ def QA_fetch_get_future_transaction_realtime(code, ip=None, port=None):
     with apix.connect(ip, port):
         data = pd.DataFrame()
         data = pd.concat([apix.to_df(apix.get_transaction_data(
-            int(code_market.market), code, (30 - i) * 1800), sort=True) for i in
-            range(31)], axis=0)
+            int(code_market.market), code, (30 - i) * 1800), ) for i in
+            range(31)], axis=0,sort=True)
         return data.assign(datetime=pd.to_datetime(data['date'])).assign(
             date=lambda x: str(x)[0:10]) \
             .assign(code=str(code)).assign(
