@@ -34,6 +34,7 @@ RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cm
 && mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake \
 && cmake -version
 
+RUN apt-get install pkg-config zlib1g=1:1.2.8.dfsg-2ubuntu4.1 && apt-get install pkg-config libssl-dev -y
 
 RUN set -eux; \
     dpkgArch="$(dpkg --print-architecture)"; \
