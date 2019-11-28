@@ -7259,7 +7259,7 @@ def QA_util_if_tradetime(
                 [13, 0, 15, 15]
             ]
         
-        if 0<=_time.weekday<=4:
+        if 0<=_time.weekday()<=4:
             for i in range(len(period)):
                 p = period[i]
                 if ((_time.hour > p[0] or (_time.hour == p[0] and _time.minute >= p[1])) and (_time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3]))):
@@ -7297,10 +7297,10 @@ def QA_util_if_tradetime(
                     condB = _time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3])
                     # in one day
                     if p[2] >= p[0]:
-                        if ((_time.weekday >= 0 and _time.weekday <= 4) and condA and condB):
+                        if ((_time.weekday() >= 0 and _time.weekday() <= 4) and condA and condB):
                             return True
                     else:
-                        if (((_time.weekday >= 0 and _time.weekday <= 4) and condA) or ((_time.weekday >= 1 and _time.weekday <= 5) and condB)):
+                        if (((_time.weekday() >= 0 and _time.weekday() <= 4) and condA) or ((_time.weekday() >= 1 and _time.weekday() <= 5) and condB)):
                             return True
                     return False
         return False

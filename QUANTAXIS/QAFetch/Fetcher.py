@@ -163,7 +163,7 @@ def QA_quotation(code, start, end, frequence, market, source=DATASOURCE.TDX, out
                     res = QAQueryAdv.QA_fetch_future_day_adv(code, start, end)
                 except:
                     res = None
-            if source == DATASOURCE.TDX or res == None:
+            if source == DATASOURCE.TDX or res is None:
                 res = QATdx.QA_fetch_get_future_day(code, start, end)
                 res = QA_DataStruct_Future_day(res.set_index(['date', 'code']))
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
@@ -173,7 +173,7 @@ def QA_quotation(code, start, end, frequence, market, source=DATASOURCE.TDX, out
                         code, start, end, frequence=frequence)
                 except:
                     res = None
-            if source == DATASOURCE.TDX or res == None:
+            if source == DATASOURCE.TDX or res is None:
                 res = QATdx.QA_fetch_get_future_min(
                     code, start, end, frequence=frequence)
                 res = QA_DataStruct_Future_min(
