@@ -105,6 +105,15 @@ services:
           - mgdb
         command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "/root/runcelery.sh"]
 
+      open-trade-gateway:
+        image: daocloud.io/quantaxis/opentradegateway:latest
+        volumes:
+          - ./docker/conf:/etc/open-trade-gateway
+          - ./docker/user:/var/local/lib/open-trade-gateway
+          - ./docker/log:/var/log/open-trade-gateway
+        ports:
+          - "7788:7788"
+        command: ['bin/sh', '-ecx', 'open-trade-gateway']
 
     qamonitor:
         image: daocloud.io/quantaxis/qa-monitor:latest
