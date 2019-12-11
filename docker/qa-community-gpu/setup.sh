@@ -55,8 +55,8 @@ conda install -n base tensorflow-gpu==1.15.0 plotly cython pyinstaller simplejso
 
 
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-pip install TA-LIB tushare aioch redis dag-factory jupyter_contrib_nbextensions cufflinks tqsdk
-pip install pyecharts==0.5.11 quantaxis quantaxis-servicedetect quantaxis-pubsub qastrategy 
+pip install TA-LIB pytdx aioch redis dag-factory jupyter_contrib_nbextensions cufflinks
+pip install pyecharts==0.5.11 quantaxis quantaxis-servicedetect quantaxis-pubsub qastrategy qifiaccount tqsdk tushare 
 
 
 mkdir ~/.jupyter/
@@ -193,7 +193,7 @@ git clone https://gitee.com/yutiansut/QADESK_BASIC /var/www/html
 nginx
 
 PATH="/usr/local/conda/bin:\$PATH"
-pip install -U tushare quantaxis quantaxis-servicedetect quantaxis-pubsub qastrategy
+pip install -U quantaxis quantaxis-servicedetect quantaxis-pubsub qastrategy qifiaccount tqsdk tushare 
 jupyter lab --allow-root
 EOF
 chmod u+x /entrypoint.sh
