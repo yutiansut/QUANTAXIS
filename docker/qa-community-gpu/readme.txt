@@ -1,10 +1,10 @@
-GPU°æ±¾µÄqa-community£¬Ô¤°²×°¸÷ÖÖml/dl¿â
+GPUç‰ˆæœ¬çš„qa-communityï¼Œé¢„å®‰è£…å„ç§ml/dlåº“
 
-gpu°æ½ö¿ÉÓÃÓÚlinux£¬Ê¹ÓÃgpu°æ±¾ÒªÇóÒÑ¾­ÕÆÎÕnvidia/dockerµÄ°²×°ºÍÊ¹ÓÃÎª»ù´¡¡£
-gpu°æ±¾Ê¹ÓÃcuda10ºÍcudnn7£¬Ä¬ÈÏ°²×°ºÃtf¡¢keras¡¢xgboostÈı¸ö¿ò¼ÜµÄgpu°æ¼°ÆäËûml/dl¿â£¬¿ª´ü¼´Ê³
+gpuç‰ˆä»…å¯ç”¨äºlinuxï¼Œä½¿ç”¨gpuç‰ˆæœ¬è¦æ±‚å·²ç»æŒæ¡nvidia/dockerçš„å®‰è£…å’Œä½¿ç”¨ä¸ºåŸºç¡€ã€‚
+gpuç‰ˆæœ¬ä½¿ç”¨cuda10å’Œcudnn7ï¼Œé»˜è®¤å®‰è£…å¥½tfã€kerasã€xgboostä¸‰ä¸ªæ¡†æ¶çš„gpuç‰ˆåŠå…¶ä»–ml/dlåº“ï¼Œå¼€è¢‹å³é£Ÿ
 
-ÆäËû£º
-webºÍjupyter¶¼Ìí¼ÓhttpÑéÖ¤·ÀÖ¹ÍøÂçÉ¨ÃèÆ÷£¬ÓÃ»§ÃûÃÜÂë¶¼ÊÇquantaxis£¬È·ÈÏÍøÂç»·¾³°²È«µÄÍ¬Ñ§Çë×Ô¼º×¢ÊÍµôauth_basicºÍauth_basic_user_file
-jupyterÊ¹ÓÃQAPUBSUB_PWD×÷ÎªÃÜÂë
-¾µÏñÒÑ¾­°²×°ºÃpyecharts 0.5£¬ÔÚnotebookÄ£Ê½ÏÂ¿ÉÕı³£Ê¹ÓÃ£¬jupyterlabÄ£Ê½¹Ù·½Î´ÊÊÅä¡£
-pltÖ§³ÖÖĞÎÄ×ÖÌå
+å…¶ä»–ï¼š
+webå’Œjupyteréƒ½æ·»åŠ httpéªŒè¯é˜²æ­¢ç½‘ç»œæ‰«æå™¨ï¼Œç”¨æˆ·åå¯†ç éƒ½æ˜¯quantaxisï¼Œç¡®è®¤ç½‘ç»œç¯å¢ƒå®‰å…¨çš„åŒå­¦è¯·è‡ªå·±æ³¨é‡Šæ‰auth_basicå’Œauth_basic_user_file
+jupyterä½¿ç”¨QAPUBSUB_PWDä½œä¸ºå¯†ç 
+é•œåƒå·²ç»å®‰è£…å¥½pyecharts 0.5ï¼Œåœ¨notebookæ¨¡å¼ä¸‹å¯æ­£å¸¸ä½¿ç”¨ï¼Œjupyterlabæ¨¡å¼å®˜æ–¹æœªé€‚é…ã€‚
+pltæ”¯æŒä¸­æ–‡å­—ä½“
