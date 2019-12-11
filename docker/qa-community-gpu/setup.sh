@@ -51,12 +51,12 @@ EOF
 
 conda install -n base python==3.6.9 -y
 conda update -n base conda -y
-conda install -n base tensorflow-gpu keras-gpu py-xgboost-gpu jupyterlab jupyter_console jupyter pillow seaborn pandas==0.24.2 marshmallow==2.18.0 tzlocal=1.5.1 numpy scikit-learn -y
+conda install -n base tensorflow-gpu==1.15.0 plotly cython pyinstaller simplejson lxml click six cryptography pylint pytest pypandoc gitpython requests aiohttp matplotlib pymongo gevent-websocket apscheduler protobuf retrying selenium scrapy attrs jinja2 future python-socketio SQLAlchemy appdirs ply keras-gpu py-xgboost-gpu jupyterlab jupyter_console jupyter pillow seaborn pandas==0.24.2 marshmallow==2.18.0 tzlocal=1.5.1 numpy scikit-learn -y
 
 
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-pip install TA-LIB tushare aioch redis dag-factory
-pip install pyecharts==0.5.11 quantaxis quantaxis-servicedetect quantaxis-pubsub jupyter_contrib_nbextensions qastrategy
+pip install TA-LIB tushare aioch redis dag-factory jupyter_contrib_nbextensions cufflinks tqsdk
+pip install pyecharts==0.5.11 quantaxis quantaxis-servicedetect quantaxis-pubsub qastrategy 
 
 
 mkdir ~/.jupyter/
@@ -197,3 +197,5 @@ pip install -U tushare quantaxis quantaxis-servicedetect quantaxis-pubsub qastra
 jupyter lab --allow-root
 EOF
 chmod u+x /entrypoint.sh
+
+
