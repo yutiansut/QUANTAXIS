@@ -93,13 +93,19 @@ class QA_Setting():
             [type] -- [description]
         """
 
+        try:
+            config = configparser.ConfigParser()
+            config.read(CONFIGFILE_PATH)
+            return config.get(section, option)
+        except:
+            res = self.client.quantaxis.usersetting.find_one({'section': section})
+            if res:
+                return res.get(option, default_value)
+            else:
+                self.set_config(section, option, default_value)
+                return default_value
 
-        res = self.client.quantaxis.usersetting.find_one({'section': section})
-        if res:
-            return res.get(option, default_value)
-        else:
-            self.set_config(section, option, default_value)
-            return default_value
+
 
     def set_config(
             self,
