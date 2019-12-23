@@ -199,8 +199,7 @@ class QA_Dealer():
                 self.deal_price = 0
                 self.deal_amount = 0
 
-            elif float(self.order.price) <= float(self.market_data.get('high'))
-                   and
+            elif float(self.order.price) <= float(self.market_data.get('high')) and \
                    float(self.order.price) >= float(self.market_data.get('low')):
                 '能成功交易的情况 有滑点调整'
                 if float(self.order.amount) < float(self.market_data.get(
