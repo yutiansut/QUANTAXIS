@@ -1,4 +1,5 @@
 import hashlib
+import os
 
 
 def QA_util_file_md5(filename):
@@ -11,3 +12,7 @@ def QA_util_file_md5(filename):
                 break
             d.update(buf)
         return d.hexdigest()
+
+
+def QA_util_file_size(filename):
+    return os.path.getsize(file)

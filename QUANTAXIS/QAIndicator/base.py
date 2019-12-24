@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -123,7 +123,21 @@ def CROSS(A, B):
     """
 
     var = np.where(A < B, 1, 0)
-    return (pd.Series(var, index=A.index).diff() < 0).apply(int)
+    try:
+        index = A.index
+    except:
+        index = B.index
+    return (pd.Series(var, index=index).diff() < 0).apply(int)
+
+
+def FILTER(COND, N):
+
+    k1 = pd.Series(np.where(COND, 1, 0), index=COND.index)
+    idx = k1[k1 == 1].index.codes[0]
+    needfilter = pd.Series(idx, index=idx)
+    afterfilter = needfilter.diff().apply(lambda x: False if x < N else True)
+    k1.iloc[afterfilter[afterfilter].index] = 2
+    return k1.apply(lambda x: 1 if x == 2 else 0)
 
 
 def COUNT(COND, N):
@@ -139,22 +153,29 @@ def COUNT(COND, N):
 
 def IF(COND, V1, V2):
     var = np.where(COND, V1, V2)
-    return pd.Series(var, index=V1.index)
+    try:
+        try:
+            index = V1.index
+        except:
+            index = COND.index
+    except:
+        index = V2.index
+    return pd.Series(var, index=index)
 
 
 def IFAND(COND1, COND2, V1, V2):
-    var = np.where(np.logical_and(COND1,COND2), V1, V2)
+    var = np.where(np.logical_and(COND1, COND2), V1, V2)
     return pd.Series(var, index=V1.index)
-    
+
+
 def IFOR(COND1, COND2, V1, V2):
-    var = np.where(np.logical_or(COND1,COND2), V1, V2)
+    var = np.where(np.logical_or(COND1, COND2), V1, V2)
     return pd.Series(var, index=V1.index)
 
 
 def REF(Series, N):
-    var = Series.diff(N)
-    var = Series - var
-    return var
+
+    return Series.shift(N)
 
 
 def LAST(COND, N1, N2):
@@ -233,5 +254,47 @@ def BARLAST(cond, yes=True):
         return len(cond)-cond.index.tolist().index(cond[cond != yes].index[-1])-1
 
 
-XARROUND =  lambda x,y:np.round(y*(round(x/y-math.floor(x/y)+0.00000000001)+ math.floor(x/y)),2)
+def XARROUND(x, y): return np.round(
+    y*(round(x/y-math.floor(x/y)+0.00000000001) + math.floor(x/y)), 2)
 
+
+def RENKO(Series, N, condensed=True):
+
+    last_price = Series[0]
+    chart = [last_price]
+    for price in Series:
+        bricks = math.floor(abs(price-last_price)/N)
+        if bricks == 0:
+            if condensed:
+                chart.append(chart[-1])
+            continue
+        sign = int(np.sign(price-last_price))
+        chart += [sign*(last_price+(sign*N*x)) for x in range(1, bricks+1)]
+        last_price = abs(chart[-1])
+
+    return pd.Series(chart)
+
+
+
+def RENKOP(Series, N, condensed=True):
+    last_price = Series[0]
+    chart = [last_price]
+    for price in Series:
+        inc = (price-last_price)/last_price
+        #print(inc)
+        if abs(inc) < N:
+            # if condensed:
+            #     chart.append(chart[-1])
+            continue
+
+        sign = int(np.sign(price-last_price))
+        bricks = math.floor(inc/N)
+        #print(bricks)
+        #print((N * (price-last_price)) / inc)
+        step = math.floor((N * (price-last_price)) / inc)
+        print(step)
+        #print(sign)
+        chart += [sign*(last_price+(sign*step*x))
+                  for x in range(1, abs(bricks)+1)]
+        last_price = abs(chart[-1])
+    return pd.Series(chart)
