@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.pythonPath": "${workspaceFolder}/quantaxis_env/bin/python",
+		"git.ignoreLimitWarning": true
+	}
+}
