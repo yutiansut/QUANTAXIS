@@ -516,6 +516,7 @@ class QA_Position():
         if towards == ORDER_DIRECTION.BUY:
             # 股票模式/ 期货买入开仓
             marginValue = temp_cost 
+            
             self.margin_long += marginValue
             # 重算开仓均价
             self.open_price_long = (
@@ -534,13 +535,14 @@ class QA_Position():
             #
             self.open_cost_long += temp_cost
             self.position_cost_long += temp_cost
+            self.moneypresetLeft -= marginValue
 
 
 
         elif towards == ORDER_DIRECTION.SELL:
             # 股票卖出模式:
             # 今日买入仓位不能卖出
-            if self.volume_long_his > amount:
+            if self.volume_long_his >= amount:
                 
                 self.position_cost_long = self.position_cost_long * \
                     (self.volume_long - amount)/self.volume_long
@@ -549,8 +551,9 @@ class QA_Position():
 
                 self.volume_long_his -= amount
 
-                self.volume_long_frozen_today -= amount
+                #self.volume_long_frozen_today -= amount
                 marginValue = -1*(self.position_price_long * amount)
+                self.margin_long += marginValue
                 profit = (price - self.position_price_long) * amount 
                 self.moneypresetLeft += (-marginValue + profit)
             else:

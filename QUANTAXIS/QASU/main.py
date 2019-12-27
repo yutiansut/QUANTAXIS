@@ -267,6 +267,29 @@ def QA_SU_save_option_50etf_min(engine, client=DATABASE):
     engine.QA_SU_save_option_50etf_min(client=client)
 
 
+
+def QA_SU_save_option_300etf_day(engine, client=DATABASE):
+    '''
+
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_300etf_day(client=client)
+
+
+def QA_SU_save_option_300etf_min(engine, client=DATABASE):
+    '''
+
+    :param engine:
+    :param client:
+    :return:
+    '''
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_option_300etf_min(client=client)
+
+
 def QA_SU_save_option_commodity_min(engine, client=DATABASE):
     '''
     :param engine:

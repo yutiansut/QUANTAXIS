@@ -152,6 +152,14 @@ class QA_AccountPRO(QA_Worker):
         ) if isinstance(init_hold,
                         dict) else init_hold
         self.init_hold.index.name = 'code'
+        self.positions = {}
+        if len(self.init_hold) > 0:
+            for code in init_hold.keys():
+                self.positions[code] = QA_Position(code=code, user_cookie=self.user_cookie,
+                                                   volume_long_his=init_hold[code],
+                                                   portfolio_cookie=self.portfolio_cookie,
+                                                   account_cookie=self.account_cookie,
+                                                   auto_reload=False)
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1]  # 可用资金
         self.sell_available = copy.deepcopy(self.init_hold)
@@ -170,7 +178,6 @@ class QA_AccountPRO(QA_Worker):
         }                        # 日结算
         self.today_trade = {'last': [], 'current': []}
         self.today_orders = {'last': [], 'current': []}
-        self.positions = {}
 
         ########################################################################
         # 规则类
@@ -209,6 +216,8 @@ class QA_AccountPRO(QA_Worker):
         if auto_reload:
             self.reload()
 
+        print(self.positions)
+
     def __repr__(self):
         return '< QA_AccountPRO {} market: {}>'.format(
             self.account_cookie,
@@ -226,8 +235,8 @@ class QA_AccountPRO(QA_Worker):
         """
 
         pos = self.positions.get(code, QA_Position(code=code, user_cookie=self.user_cookie,
-                                                   portfolio_cookie=self.portfolio_cookie, 
-                                                   account_cookie=self.account_cookie, 
+                                                   portfolio_cookie=self.portfolio_cookie,
+                                                   account_cookie=self.account_cookie,
                                                    auto_reload=False))
         if pos.market_type == self.market_type:
             self.positions[code] = pos
@@ -239,7 +248,6 @@ class QA_AccountPRO(QA_Worker):
     @property
     def hold_available(self):
         pass
-
 
     @property
     def message(self):
@@ -424,8 +432,8 @@ class QA_AccountPRO(QA_Worker):
             return QA_util_get_trade_range(self.start_date, self.end_date)
         else:
 
-            return QA_util_get_trade_range(str(min(self.time_index_max))[0:10], 
-                                           str(max(str(max(self.time_index_max)),self.end_date))[0:10])
+            return QA_util_get_trade_range(str(min(self.time_index_max))[0:10],
+                                           str(max(str(max(self.time_index_max)), self.end_date))[0:10])
 
     @property
     def total_commission(self):
@@ -505,7 +513,7 @@ class QA_AccountPRO(QA_Worker):
     def trade_day(self):
         return list(
             pd.Series(self.time_index_max
-                     ).apply(lambda x: str(x)[0:10]).unique()
+                      ).apply(lambda x: str(x)[0:10]).unique()
         )
 
     @property
@@ -653,7 +661,7 @@ class QA_AccountPRO(QA_Worker):
                 pd.Series(
                     data=None,
                     index=pd.to_datetime(self.trade_range_max
-                                        ).set_names('date'),
+                                         ).set_names('date'),
                     name='predrop'
                 )
             )
@@ -702,11 +710,11 @@ class QA_AccountPRO(QA_Worker):
             hold_available = self.history_table.set_index(
                 'datetime'
             ).sort_index().loc[:datetime].groupby('code'
-                                                 ).amount.sum().sort_index()
+                                                  ).amount.sum().sort_index()
 
         return pd.concat([self.init_hold,
                           hold_available]).groupby('code').sum().sort_index(
-                          ).apply(lambda x: x if x > 0 else None).dropna()
+        ).apply(lambda x: x if x > 0 else None).dropna()
 
     def current_hold_price(self):
         """计算目前持仓的成本  用于模拟盘和实盘查询
@@ -768,7 +776,7 @@ class QA_AccountPRO(QA_Worker):
                 'datetime',
                 drop=False
             ).sort_index().loc[:datetime].groupby('code').apply(weights
-                                                               ).dropna()
+                                                                ).dropna()
 
     # @property
     def hold_time(self, datetime=None):
@@ -781,7 +789,7 @@ class QA_AccountPRO(QA_Worker):
         def weights(x):
             if sum(x['amount']) != 0:
                 return pd.Timestamp(self.datetime
-                                   ) - pd.to_datetime(x.datetime.max())
+                                    ) - pd.to_datetime(x.datetime.max())
             else:
                 return np.nan
 
@@ -795,7 +803,7 @@ class QA_AccountPRO(QA_Worker):
                 'datetime',
                 drop=False
             ).sort_index().loc[:datetime].groupby('code').apply(weights
-                                                               ).dropna()
+                                                                ).dropna()
 
     def reset_assets(self, init_cash=None):
         'reset_history/cash/'
@@ -803,7 +811,7 @@ class QA_AccountPRO(QA_Worker):
         self.history = []
         self.init_cash = init_cash
         self.cash = [self.init_cash]
-        self.cash_available = self.cash[-1] # 在途资金
+        self.cash_available = self.cash[-1]  # 在途资金
 
     @property
     def close_positions_order(self):
@@ -853,7 +861,6 @@ class QA_AccountPRO(QA_Worker):
                 )
             )
 
-
     def send_order(
             self,
             code=None,
@@ -894,6 +901,8 @@ class QA_AccountPRO(QA_Worker):
             money = amount * price * self.market_preset.get_unit(code)*self.market_preset.get_frozen(code) * \
                 (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
         else:
+            print(amount)
+            print(price)
             money = amount * price * \
                 (1+self.commission_coeff) if amount_model is AMOUNT_MODEL.BY_AMOUNT else money
 
@@ -998,7 +1007,7 @@ class QA_AccountPRO(QA_Worker):
                 date=date,
                 datetime=time,
                 sending_time=time,
-                # callback=self.receive_deal,
+                callback=self.receive_deal,
                 amount=amount,
                 price=price,
                 order_model=order_model,
@@ -1037,14 +1046,14 @@ class QA_AccountPRO(QA_Worker):
 
     def receive_deal(self,
                      code,
+                     trade_id: str,
+                     order_id: str,
+                     realorder_id: str,
                      trade_price,
                      trade_amount,
                      trade_towards,
                      trade_time,
-                     message=None,
-                     order_id=None,
-                     trade_id=None,
-                     realorder_id=None):
+                     message=None):
         # if order_id in self.orders.keys():
 
         #     # update order
@@ -1080,16 +1089,16 @@ class QA_AccountPRO(QA_Worker):
         #     self.event_id += 1
         #     trade_id = str(uuid.uuid4()) if trade_id is None else trade_id
 
-        self.receive_simpledeal(
+        return self.receive_simpledeal(
             code,
             trade_price,
             trade_amount,
             trade_towards,
             trade_time,
-            message=None,
-            order_id=None,
-            trade_id=None,
-            realorder_id=None)
+            message=message,
+            order_id=order_id,
+            trade_id=trade_id,
+            realorder_id=realorder_id)
 
     def receive_simpledeal(self,
                            code,
@@ -1108,13 +1117,14 @@ class QA_AccountPRO(QA_Worker):
             pass
         else:
             self.finishedOrderid.append(realorder_id)
-
         market_towards = 1 if trade_towards > 0 else -1
         # value 合约价值 unit 合约乘数
         if self.allow_margin:
-            frozen = self.market_preset.get_frozen(code)                  # 保证金率
-            unit = self.market_preset.get_unit(code)                      # 合约乘数
-            raw_trade_money = trade_price * trade_amount * market_towards # 总市值
+            frozen = self.market_preset.get_frozen(
+                code)                  # 保证金率
+            unit = self.market_preset.get_unit(
+                code)                      # 合约乘数
+            raw_trade_money = trade_price * trade_amount * market_towards  # 总市值
             value = raw_trade_money * unit                                # 合约总价值
             trade_money = value * frozen                                  # 交易保证金
         else:
@@ -1123,8 +1133,8 @@ class QA_AccountPRO(QA_Worker):
             value = trade_money
             unit = 1
             frozen = 1
-                                                                          # 计算费用
-                                                                          # trade_price
+            # 计算费用
+            # trade_price
 
         if self.market_type == MARKET_TYPE.FUTURE_CN:
             # 期货不收税
@@ -1144,7 +1154,7 @@ class QA_AccountPRO(QA_Worker):
                     commission_fee_preset['commission_coeff_today_peramount'] * \
                     abs(value)
 
-            tax_fee = 0 # 买入不收印花税
+            tax_fee = 0  # 买入不收印花税
         elif self.market_type == MARKET_TYPE.STOCK_CN:
 
             commission_fee = self.commission_coeff * \
@@ -1152,7 +1162,7 @@ class QA_AccountPRO(QA_Worker):
 
             commission_fee = 5 if commission_fee < 5 else commission_fee
             if int(trade_towards) > 0:
-                tax_fee = 0 # 买入不收印花税
+                tax_fee = 0  # 买入不收印花税
             else:
                 tax_fee = self.tax_coeff * abs(trade_money)
 
@@ -1225,7 +1235,7 @@ class QA_AccountPRO(QA_Worker):
                         trade_amount
                     )
                     self.frozen[code][str(trade_towards)
-                                     ]['amount'] += trade_amount
+                                      ]['amount'] += trade_amount
 
                     self.cash.append(
                         self.cash[-1] - abs(trade_money) - commission_fee -
@@ -1245,7 +1255,7 @@ class QA_AccountPRO(QA_Worker):
                                          ORDER_DIRECTION.BUY_CLOSETODAY]:
                         # self.frozen[code][ORDER_DIRECTION.SELL_OPEN]['money'] -= trade_money
                         self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN
-                                             )]['amount'] -= trade_amount
+                                              )]['amount'] -= trade_amount
 
                         frozen_part = self.frozen[code][str(
                             ORDER_DIRECTION.SELL_OPEN
@@ -1286,16 +1296,16 @@ class QA_AccountPRO(QA_Worker):
                         if self.frozen[code][str(
                                 ORDER_DIRECTION.SELL_OPEN)]['amount'] == 0:
                             self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN
-                                                 )]['money'] = 0
+                                                  )]['money'] = 0
                             self.frozen[code][str(ORDER_DIRECTION.SELL_OPEN
-                                                 )]['avg_price'] = 0
+                                                  )]['avg_price'] = 0
 
                     # 卖出平仓  之前是多开
                     elif trade_towards in [ORDER_DIRECTION.SELL_CLOSE,
                                            ORDER_DIRECTION.SELL_CLOSETODAY]:
                         # self.frozen[code][ORDER_DIRECTION.BUY_OPEN]['money'] -= trade_money
                         self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN
-                                             )]['amount'] -= trade_amount
+                                              )]['amount'] -= trade_amount
 
                         frozen_part = self.frozen[code][str(
                             ORDER_DIRECTION.BUY_OPEN
@@ -1308,10 +1318,10 @@ class QA_AccountPRO(QA_Worker):
                         if self.frozen[code][str(
                                 ORDER_DIRECTION.BUY_OPEN)]['amount'] == 0:
                             self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN
-                                                 )]['money'] = 0
+                                                  )]['money'] = 0
                             self.frozen[code][str(ORDER_DIRECTION.BUY_OPEN
-                                                 )]['avg_price'] = 0
-            else: # 不允许卖空开仓的==> 股票
+                                                  )]['avg_price'] = 0
+            else:  # 不允许卖空开仓的==> 股票
 
                 self.cash.append(
                     self.cash[-1] - trade_money - tax_fee - commission_fee
@@ -1330,7 +1340,8 @@ class QA_AccountPRO(QA_Worker):
             ] else 0
 
             try:
-                total_frozen = sum([itex.get('avg_price',0)* itex.get('amount',0) for item in self.frozen.values() for itex in item.values()])
+                total_frozen = sum([itex.get('avg_price', 0) * itex.get('amount', 0)
+                                    for item in self.frozen.values() for itex in item.values()])
             except Exception as e:
                 print(e)
                 total_frozen = 0
@@ -1424,6 +1435,8 @@ class QA_AccountPRO(QA_Worker):
         self.datetime = '{} 09:30:00'.format(
             QA_util_get_next_day(self.date)
         ) if self.date is not None else None
+        for item in self.positions.values():
+            item.settle()
 
     def from_message(self, message):
         """resume the account from standard message
@@ -1516,6 +1529,7 @@ class QA_AccountPRO(QA_Worker):
         self.margin = message['accounts']['margin']
 
         self.commission = message['accounts']['commission']
+
     def save(self):
         """
         存储账户信息
@@ -1523,7 +1537,7 @@ class QA_AccountPRO(QA_Worker):
         save_account(self.message)
 
     def reload(self):
-
+        print('QAACCPRO: reload from DATABASE')
         message = self.client.find_one(
             {
                 'account_cookie': self.account_cookie,
@@ -1550,7 +1564,7 @@ class QA_AccountPRO(QA_Worker):
         self.sell_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.cash = [self.init_cash]
-        self.cash_available = self.cash[-1] # 在途资金
+        self.cash_available = self.cash[-1]  # 在途资金
 
     def change_cash(self, money):
         """
@@ -1582,4 +1596,3 @@ class QA_AccountPRO(QA_Worker):
             drop=False
         ).loc[slice(pd.Timestamp(start),
                     pd.Timestamp(end))]
-

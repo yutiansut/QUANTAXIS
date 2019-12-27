@@ -63,7 +63,7 @@ def use(package):
         return QAWEB
 
 
-def QA_fetch_get_stock_day(package, code, start, end, if_fq='01', level='day', type_='pd'):
+def QA_fetch_get_stock_day(package, code, start, end, if_fq='00', level='day', type_='pd'):
     Engine = use(package)
     if package in ['ths', 'THS', 'wind']:
         return Engine.QA_fetch_get_stock_day(code, start, end, if_fq)
@@ -145,6 +145,12 @@ def QA_fetch_get_index_min(package, code, start, end, level='1min'):
     else:
         return 'Unsupport packages'
 
+
+def QA_fetch_get_index_realtime(package, code):
+    Engine = use(package)
+    return Engine.QA_fetch_get_index_realtime(code)
+
+
 def QA_fetch_get_bond_day(package, code, start, end, level='day'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
@@ -160,6 +166,9 @@ def QA_fetch_get_bond_min(package, code, start, end, level='1min'):
     else:
         return 'Unsupport packages'
 
+def QA_fetch_get_bond_realtime(package, code):
+    Engine = use(package)
+    return Engine.QA_fetch_get_bond_realtime(code)
 
 def QA_fetch_get_stock_block(package):
     Engine = use(package)
