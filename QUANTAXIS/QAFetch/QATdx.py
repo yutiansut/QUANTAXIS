@@ -502,7 +502,78 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
              'bid_vol5']]
         return data.set_index(['datetime', 'code'])
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_index_realtime(code=['000001'], ip=None, port=None):
+    ip, port = get_mainmarket_ip(ip, port)
+    # reversed_bytes9 --> 涨速
+    # active1,active2 --> 活跃度
+    # reversed_bytes1 --> -价格*100
+    # vol 总量 cur_vol 现量
+    # amount 总金额
+    # s_vol 内盘 b_vol 外盘
+    # reversed_bytes2 市场
+    # # reversed_bytes0 时间
 
+    api = TdxHq_API()
+    __data = pd.DataFrame()
+    with api.connect(ip, port):
+        code = [code] if isinstance(code, str) else code
+        for id_ in range(int(len(code) / 80) + 1):
+            __data = __data.append(api.to_df(api.get_security_quotes(
+                [(_select_index_code(x), x) for x in
+                 code[80 * id_:80 * (id_ + 1)]])))
+            __data = __data.assign(datetime=datetime.datetime.now(
+            ), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
+            # __data['rev']
+        data = __data[
+            ['datetime', 'servertime', 'active1', 'active2', 'last_close', 'code', 'open',
+             'high', 'low', 'price', 'cur_vol',
+             's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1',
+             'ask2', 'ask_vol2',
+             'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3',
+             'ask4',
+             'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5',
+             'bid_vol5']]
+        return data.set_index(['datetime', 'code'])
+
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_bond_realtime(code=['010107'], ip=None, port=None):
+    ip, port = get_mainmarket_ip(ip, port)
+    # reversed_bytes9 --> 涨速
+    # active1,active2 --> 活跃度
+    # reversed_bytes1 --> -价格*100
+    # vol 总量 cur_vol 现量
+    # amount 总金额
+    # s_vol 内盘 b_vol 外盘
+    # reversed_bytes2 市场
+    # # reversed_bytes0 时间
+
+    api = TdxHq_API()
+    __data = pd.DataFrame()
+    with api.connect(ip, port):
+        code = [code] if isinstance(code, str) else code
+        for id_ in range(int(len(code) / 80) + 1):
+            __data = __data.append(api.to_df(api.get_security_quotes(
+                [(_select_bond_market_code(x), x) for x in
+                 code[80 * id_:80 * (id_ + 1)]])))
+            __data = __data.assign(datetime=datetime.datetime.now(
+            ), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
+            # __data['rev']
+        data = __data[
+            ['datetime', 'servertime', 'active1', 'active2', 'last_close', 'code', 'open',
+             'high', 'low', 'price', 'cur_vol',
+             's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1',
+             'ask2', 'ask_vol2',
+             'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3',
+             'ask4',
+             'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5',
+             'bid_vol5']]
+        data = data.assign(last_close=data.last_close/10, open=data.open/10, high=data.high/10, low=data.low/10,
+                        price= data.price/10,  
+                        ask1=data.ask1/10, ask2=data.ask2/10, ask3=data.ask3/10, ask4=data.ask4/10, ask5=data.ask5/10,
+                        bid1=data.bid1/10, bid2=data.bid2/10, bid3=data.bid3/10, bid4=data.bid4/10, bid5=data.bid5/10)
+
+        return data.set_index(['datetime', 'code'])
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)

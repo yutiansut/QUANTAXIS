@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.6.14'
+__version__ = '1.7.0'
 __author__ = 'yutiansut'
 
 import argparse
@@ -110,6 +110,7 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_bond_day,
     QA_fetch_get_bond_min,
     QA_fetch_get_bond_list,
+    QA_fetch_get_bond_realtime,
     QA_fetch_get_future_realtime,
     QA_fetch_get_future_transaction,
     QA_fetch_get_future_transaction_realtime,
@@ -131,6 +132,7 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_index_day,
     QA_fetch_get_index_list,
     QA_fetch_get_index_min,
+    QA_fetch_get_index_realtime,
     QA_fetch_get_macroindex_day,
     QA_fetch_get_macroindex_list,
     QA_fetch_get_macroindex_min,
