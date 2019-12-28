@@ -67,7 +67,7 @@ class QA_DataStruct_Indicators():
         获取某一段时间的某一只股票的指标
         """
         try:
-            return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
+            return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), code), :]
         except:
             return ValueError('CANNOT FOUND THIS TIME RANGE')
 
