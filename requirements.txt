@@ -23,3 +23,7 @@ demjson>=2.2.4
 janus
 pyecharts_snapshot
 async_timeout
+IPython
+jqdatasdk
+fastcache
+statsmodels
