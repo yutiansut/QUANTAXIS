@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.7.0'
+__version__ = '1.7.1'
 __author__ = 'yutiansut'
 
 import argparse
@@ -242,6 +242,7 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     OUTPUT_FORMAT, RUNNING_ENVIRONMENT, RUNNING_STATUS, TRADE_STATUS,
     QA_Setting, QA_util_calc_time, QA_util_cfg_initial, QA_util_code_tolist,
     QA_util_code_tostr, QA_util_date_gap, QA_util_date_int2str,
+    QA_util_code_adjust_ctp,
     QA_util_date_stamp, QA_util_date_str2int, QA_util_date_today,
     QA_util_date_valid, QA_util_dict_remove_key, QA_util_diff_list,
     QA_util_file_md5, QA_util_format_date2str, QA_util_get_cfg,
