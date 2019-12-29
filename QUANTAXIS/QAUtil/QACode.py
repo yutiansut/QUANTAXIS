@@ -80,3 +80,33 @@ def QA_util_code_tolist(code, auto_fill=True):
             return [QA_util_code_tostr(item) for item in code]
         else:
             return [item for item in code]
+
+
+
+def QA_util_code_adjust_ctp(code, source):
+    """
+    此函数用于在ctp和通达信之间来回转换
+
+    QA_util_code_adjust_ctp('AP001', source='ctp')
+    'AP2001'
+    
+    QA_util_code_adjust_ctp('AP2001', source = 'tdx')
+    'AP001'
+
+    QA_util_code_adjust_ctp('RB2001', source = 'tdx')
+    'rb2001'
+
+    QA_util_code_adjust_ctp('rb2001', source = 'ctp')
+    'RB2001'
+    
+    """
+    if source == 'ctp':
+        if len(re.search(r'[0-9]+', code)[0]) <4:
+            return re.search(r'[a-zA-z]+', code)[0] + '2' + re.search(r'[0-9]+', code)[0]
+        else:
+            return code.upper()
+    else:
+        if re.search(r'[a-zA-z]+', code)[0].upper() in ['RM', 'CJ', 'OI', 'CY', 'AP', 'SF', 'SA', 'UR', 'FG', 'LR', 'CF', 'WH', 'IPS', 'ZC', 'SPD', 'MA', 'TA', 'JR', 'SM', 'PM', 'RS', 'SR', 'RI']:
+            return re.search(r'[a-zA-z]+', code)[0] + re.search(r'[0-9]+', code)[0][1:]
+        else:
+            return re.search(r'[a-zA-z]+', code)[0].lower() + re.search(r'[0-9]+', code)[0]
