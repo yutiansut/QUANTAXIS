@@ -129,7 +129,16 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QIFIAccount](https://github.com/yutiansut/qifiaccount) 一个基于QIFI协议的多市场兼容的 实时账户实现
 - [QAStrategy](https://github.com/yutiansut/qastrategy) 一个完整的 支持 模拟/回测/实盘一键切换的策略基类
 
+> 多语言实现
+
+- [qatrader-rs](https://github.com/yutiansut/qatrader-rs) 一个rust实现的qatrader
+- [qamarket-rs](https://github.com/yutiansut/qamarket-rs)  一个rust实现的期货全市场行情多周期采样分发
+
+
+
 #### 未开源
+
+未开源部分为 目前私募自用部分, 因此暂时不开源 一些相关的项目会经过选取和完善后逐步开源
 
 > 实时交易解决方案/ 无人值守/状态汇报/实时账户评估/多账户/策略账户拆分/事件流风控/PB系统/CEP引擎/多系统终端
 
