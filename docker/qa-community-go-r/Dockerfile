@@ -5,7 +5,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN cd /root && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASIC \
 && pip install quantaxis-servicedetect \
-&& pip install quantaxis-pubsub
+&& pip install quantaxis-pubsub\
+&& apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32  40976EAF437D05B5
 COPY run-community.sh /root/run-community.sh
 RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py\
     && mkdir -p /home/jovyan/.local/share/jupyter/kernels/gophernotes \
