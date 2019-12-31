@@ -10,11 +10,13 @@ RUN cd /root && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_
 && pip install quantaxis-pubsub
 
 
-RUN pip install qgrid\
-&& jupyter nbextension enable --py --sys-prefix qgrid\
-&& jupyter nbextension enable --py --sys-prefix widgetsnbextension\
-&& jupyter labextension install @jupyter-widgets/jupyterlab-manager\
-&& jupyter labextension install qgrid
+# RUN pip install qgrid\
+# && jupyter nbextension enable --py --sys-prefix qgrid\
+# && jupyter nbextension enable --py --sys-prefix widgetsnbextension\
+# && jupyter labextension install @jupyter-widgets/jupyterlab-manager\
+# && jupyter labextension install qgrid
+
+RUN pip install qgrid && pip install "dask[complete]"
 
 COPY run-community.sh /root/run-community.sh
 RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py
