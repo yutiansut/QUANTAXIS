@@ -61,7 +61,7 @@ RUN set -eux; \
     apt-get install -y build-essential libzmq3-dev pkg-config;
 
 RUN set -eux; \
-    cargo install evcxr_jupyter; \
+    cargo install evcxr_jupyter --force; \
     evcxr_jupyter --install;
 
 
