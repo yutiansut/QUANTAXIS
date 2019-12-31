@@ -20,7 +20,7 @@ RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.p
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
     ## clean
 
-RUN pip install qgrid
+RUN pip install qgrid && pip install "dask[complete]"
 
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
