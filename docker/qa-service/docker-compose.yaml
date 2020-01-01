@@ -142,7 +142,7 @@ services:
             qanetwork:
                 ipv4_address: 172.19.0.9
     editer:
-        image: theiaide/theia:next
+        image: daocloud.io/quantaxis/qavscode:master-ffc912f
         container_name: qaeditor
         networks: 
             qanetwork:
