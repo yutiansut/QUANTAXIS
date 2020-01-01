@@ -125,8 +125,9 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
 
 #Python 3
 RUN apt-get update && apt-get install -y python3 python3-pip && \
-    pip3 install python-language-server && \
-    pip3 install QUANTAXIS -U && \
+    pip3 install python-language-server
+
+RUN pip3 install QUANTAXIS && \
     pip3 install quantaxis_webserver && \
     pip3 install quantaxis_pubsub && \
     pip3 install quantaxis-randomprice && \
