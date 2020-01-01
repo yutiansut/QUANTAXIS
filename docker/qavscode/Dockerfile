@@ -124,10 +124,18 @@ RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - && \
     ln -s /usr/bin/clang-tidy-10 /usr/bin/clang-tidy
 
 #Python 3
-RUN apt-get update && apt-get install -y python3 python3-pip && \
+RUN apt-get update && apt-get install -y python3 python3-dev python3-pip && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
     pip3 install python-language-server
 
-RUN pip3 install QUANTAXIS && \
+RUN pip3 install QUANTAXIS \
+    flake8 \
+    autopep8 \
+    futures \
+    configparser \
+    rope \
+    pydocstyle \
+    yapf && \
     pip3 install quantaxis_webserver && \
     pip3 install quantaxis_pubsub && \
     pip3 install quantaxis-randomprice && \
