@@ -28,7 +28,7 @@ RUN \
 
 RUN \
     cd ~ \
-    && git clone https://github.com/QUANTAXIS/QUANTAXIS \
+    git clone https://github.com/QUANTAXIS/QUANTAXIS \
     && cd QUANTAXIS \
     && pip install -r requirements.txt \
     && pip install quantaxis-servicedetect \
