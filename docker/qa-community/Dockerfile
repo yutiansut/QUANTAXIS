@@ -16,11 +16,11 @@ RUN cd ~ && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASI
 && pip install QAStrategy -U
 
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32  40976EAF437D05B5\
+&& apt update \
 && apt install -y curl\
-&& apt install aptitude \
 && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-&& aptitude install -y nodejs \
-&& aptitude install npm \
+&& apt install -y nodejs \
+&& apt install npm \
 && npm install npm -g 
 
 # RUN pip install qgrid\
