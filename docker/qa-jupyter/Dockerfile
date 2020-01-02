@@ -21,10 +21,13 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && pip install quantaxis -U \
   && pip uninstall pytdx -y \
   && pip install pytdx \
+  && pip install pandarallel \
+  && pip install apscheduler \
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
 
-RUN apt install -y curl\
+RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32  40976EAF437D05B5\
+&& apt install -y curl\
 && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
 && apt-get install -y nodejs \
 && apt-get install npm \

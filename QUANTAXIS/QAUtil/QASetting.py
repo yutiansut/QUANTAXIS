@@ -93,13 +93,19 @@ class QA_Setting():
             [type] -- [description]
         """
 
+        try:
+            config = configparser.ConfigParser()
+            config.read(CONFIGFILE_PATH)
+            return config.get(section, option)
+        except:
+            res = self.client.quantaxis.usersetting.find_one({'section': section})
+            if res:
+                return res.get(option, default_value)
+            else:
+                self.set_config(section, option, default_value)
+                return default_value
 
-        res = self.client.quantaxis.usersetting.find_one({'section': section})
-        if res:
-            return res.get(option, default_value)
-        else:
-            self.set_config(section, option, default_value)
-            return default_value
+
 
     def set_config(
             self,
@@ -352,6 +358,8 @@ else:
         {"ip": "119.97.185.5", "port": 7727, "name": "扩展市场武汉主站1"},
         {"ip": "120.24.0.77", "port": 7727, "name": "扩展市场深圳双线2"},
         {"ip": "124.74.236.94", "port": 7721},
+        {"ip": "14.215.128.18","port": 7721, "name": "华泰证券深圳电信"},
+        {"ip": "139.219.103.190", "port": 7721, "name": "华泰证券云行情"},
         {"ip": "202.103.36.71", "port": 443, "name": "扩展市场武汉主站2"},
         {"ip": "47.92.127.181", "port": 7727, "name": "扩展市场北京主站"},
         {"ip": "59.175.238.38", "port": 7727, "name": "扩展市场武汉主站3"},
