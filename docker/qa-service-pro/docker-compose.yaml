@@ -60,6 +60,7 @@ services:
         ports:
             - "8888:8888"
             - "81:80"
+            - "8787:8787"
         environment:
             - TZ=Asia/Shanghai
             - LANG=C.UTF-8
