@@ -71,5 +71,7 @@ RUN echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c
 RUN chmod +x /root/run-community.sh
 CMD ["bash", "/root/run-community.sh"]
 
+WORKDIR /home
+
 EXPOSE 80
 EXPOSE 8787
