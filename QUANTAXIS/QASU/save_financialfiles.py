@@ -52,19 +52,23 @@ def QA_SU_save_financial_files():
         date = int(item.split('.')[0][-8:])
         print('QUANTAXIS NOW SAVING {}'.format(date))
         print('在数据库中的条数 {}'.format(coll.find({'report_date': date}).count()))
-        data = QA_util_to_json_from_pandas(parse_filelist([item]).reset_index(
-        ).drop_duplicates(subset=['code', 'report_date']).sort_index())
-        print('即将更新的条数 {}'.format(len(data)))
-        # data["crawl_date"] = str(datetime.date.today())
         try:
-            for d in data:
-                coll.update_one({'code': d['code'], 'report_date': d['report_date']}, {'$set': d}, upsert=True)
+            data = QA_util_to_json_from_pandas(parse_filelist([item]).reset_index(
+            ).drop_duplicates(subset=['code', 'report_date']).sort_index())
+            print('即将更新的条数 {}'.format(len(data)))
+            # data["crawl_date"] = str(datetime.date.today())
+            try:
+                for d in data:
+                    coll.update_one({'code': d['code'], 'report_date': d['report_date']}, {'$set': d}, upsert=True)
 
+            except Exception as e:
+                if isinstance(e, MemoryError):
+                    coll.insert_many(data, ordered=True)
+                elif isinstance(e, pymongo.bulk.BulkWriteError):
+                    pass
         except Exception as e:
-            if isinstance(e, MemoryError):
-                coll.insert_many(data, ordered=True)
-            elif isinstance(e, pymongo.bulk.BulkWriteError):
-                pass
+            print('似乎没有数据')
+
 
 
     print('SUCCESSFULLY SAVE/UPDATE FINANCIAL DATA')
