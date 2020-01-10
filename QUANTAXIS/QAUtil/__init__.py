@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +34,7 @@ from QUANTAXIS.QAUtil.QACache import QA_util_cache
 # config
 from QUANTAXIS.QAUtil.QACfg import QA_util_cfg_initial, QA_util_get_cfg
 # code function
-from QUANTAXIS.QAUtil.QACode import QA_util_code_tolist, QA_util_code_tostr
+from QUANTAXIS.QAUtil.QACode import QA_util_code_tolist, QA_util_code_tostr, QA_util_code_adjust_ctp
 # csv
 from QUANTAXIS.QAUtil.QACsv import QA_util_save_csv
 # date
@@ -43,6 +43,7 @@ from QUANTAXIS.QAUtil.QADate import (QA_util_calc_time, QA_util_date_int2str,
                                      QA_util_date_today, QA_util_date_valid,
                                      QA_util_datetime_to_strdate,
                                      QA_util_get_date_index,
+                                     QA_util_tdxtimestamp,
                                      QA_util_get_index_date, QA_util_id2date,
                                      QA_util_is_trade, QA_util_ms_stamp,
                                      QA_util_realtime, QA_util_select_hours,

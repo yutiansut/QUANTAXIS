@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -54,7 +54,7 @@ def QA_util_random_with_zh_stock_code(stockNumber=10):
             iCode = random.randint(300000, 300999)
             aCode = "%06d" % iCode
 
-        elif pt == 4:
+        else:
             #print("random 00XXXX")
             iCode = random.randint(2000, 2999)
             aCode = "%06d" % iCode

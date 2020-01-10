@@ -3,10 +3,11 @@
 * [关于QUANTAXIS](README.md)
 * [捐赠感谢](CONTRIBUTING.md)
 * [版本更新记录](CHANGELOG.md)
+* [关于QUANTAXIS未来的发展方向](future.md)
 
 * [STU 课程01](STU/P0_Head.md)
 * [STU 课程02](STU/P1_Prepare.md)
-
+* [STU 课程03](STU/P2_DataFlow.md)
 
 * [小白上手教程WIN](Documents/install_for_new_to_coding.md)
 * [部署](Documents/install.md)

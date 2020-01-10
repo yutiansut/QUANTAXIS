@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,9 @@ from QUANTAXIS.QAData.QADataStruct import (QA_DataStruct_Future_day,
                                            QA_DataStruct_Future_realtime,
                                            QA_DataStruct_Stock_day,
                                            QA_DataStruct_Stock_min,
-                                           QA_DataStruct_Stock_realtime)
+                                           QA_DataStruct_Stock_realtime,
+                                           QA_DataStruct_Index_day,
+                                           QA_DataStruct_Index_min)
 from QUANTAXIS.QAFetch import QAEastMoney as QAEM
 from QUANTAXIS.QAFetch import QAQuery
 from QUANTAXIS.QAFetch import QAQuery_Advance as QAQueryAdv
@@ -52,7 +54,7 @@ from QUANTAXIS.QAUtil.QASql import QA_util_sql_mongo_setting
 
 
 class QA_Fetcher():
-    def __init__(self, uri='mongodb://192.168.4.248:27017/quantaxis', username='', password=''):
+    def __init__(self, uri='mongodb://127.0.0.1:27017/quantaxis', username='', password=''):
         """
         初始化的时候 会初始化
         """
@@ -161,7 +163,7 @@ def QA_quotation(code, start, end, frequence, market, source=DATASOURCE.TDX, out
                     res = QAQueryAdv.QA_fetch_future_day_adv(code, start, end)
                 except:
                     res = None
-            if source == DATASOURCE.TDX or res == None:
+            if source == DATASOURCE.TDX or res is None:
                 res = QATdx.QA_fetch_get_future_day(code, start, end)
                 res = QA_DataStruct_Future_day(res.set_index(['date', 'code']))
         elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
@@ -171,17 +173,34 @@ def QA_quotation(code, start, end, frequence, market, source=DATASOURCE.TDX, out
                         code, start, end, frequence=frequence)
                 except:
                     res = None
-            if source == DATASOURCE.TDX or res == None:
+            if source == DATASOURCE.TDX or res is None:
                 res = QATdx.QA_fetch_get_future_min(
                     code, start, end, frequence=frequence)
                 res = QA_DataStruct_Future_min(
                     res.set_index(['datetime', 'code']))
 
-    # 指数代码和股票代码是冲突重复的，  sh000001 上证指数  000001 是不同的
     elif market == MARKET_TYPE.INDEX_CN:
         if frequence == FREQUENCE.DAY:
             if source == DATASOURCE.MONGO:
-                res = QAQueryAdv.QA_fetch_index_day_adv(code, start, end)
+                try:
+                    res = QAQueryAdv.QA_fetch_index_day_adv(code, start, end)
+                except:
+                    return None
+            if source == DATASOURCE.TDX or res == None:
+                res = QATdx.QA_fetch_get_index_day(code, start, end)
+                res = QA_DataStruct_Index_day(res.set_index(['date', 'code']))
+        elif frequence in [FREQUENCE.ONE_MIN, FREQUENCE.FIVE_MIN, FREQUENCE.FIFTEEN_MIN, FREQUENCE.THIRTY_MIN, FREQUENCE.SIXTY_MIN]:
+            if source == DATASOURCE.MONGO:
+                try:
+                    res = QAQueryAdv.QA_fetch_index_min_adv(
+                        code, start, end, frequence=frequence)
+                except:
+                    res = None
+            if source == DATASOURCE.TDX or res == None:
+                res = QATdx.QA_fetch_get_index_min(
+                    code, start, end, frequence=frequence)
+                res = QA_DataStruct_Index_min(
+                    res.set_index(['datetime', 'code']))
 
     elif market == MARKET_TYPE.OPTION_CN:
         if source == DATASOURCE.MONGO:
