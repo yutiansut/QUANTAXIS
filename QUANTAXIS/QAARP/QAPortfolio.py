@@ -186,6 +186,7 @@ class QA_Portfolio(QA_Account):
     def init_hold(self):
         return self.init_hold_table.groupby('code').sum()
 
+
     @property
     def cash_available(self):
         return self.cash[-1]
@@ -503,6 +504,15 @@ class QA_Portfolio(QA_Account):
         return sum(
             [account.cash_available for account in self.accounts.values()]
         )
+    def hold_table(self, datetime=None):
+        """返回每个acc的hold
+        
+        Keyword Arguments:
+            datetime {[type]} -- [description] (default: {None})
+        """
+        return pd.concat(
+            [account.hold_table(datetime).reset_index().assign(account_cookie= account.account_cookie) for account in self.accounts.values()]
+        ).set_index(['code', 'account_cookie']).sort_index()
 
     # def pull(self, account_cookie=None, collection=DATABASE.account):
     #     'pull from the databases'

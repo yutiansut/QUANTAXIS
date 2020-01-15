@@ -902,7 +902,7 @@ class QA_Account(QA_Worker):
 
         return pd.concat([self.init_hold,
                           hold_available]).groupby('code').sum().sort_index(
-                          ).apply(lambda x: x if x > 0 else None).dropna()
+                          )
 
     def current_hold_price(self):
         """计算目前持仓的成本  用于模拟盘和实盘查询
