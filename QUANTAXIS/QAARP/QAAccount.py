@@ -2093,10 +2093,6 @@ class QA_Account(QA_Worker):
                     holdamount =  abs(holdamount)
                     self.buy_close(code, price, amount=holdamount, time = time, if_selfdeal=True)
             
-
-
-
-
     def buy(self, code:str, price:float, amount:int, time:str, order_model:str = ORDER_MODEL.LIMIT, amount_model:str = AMOUNT_MODEL.BY_AMOUNT, if_selfdeal:bool =False):
         """self.buy == self.buy_open 自动识别股票/期货
 
