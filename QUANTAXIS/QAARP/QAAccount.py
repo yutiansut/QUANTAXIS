@@ -902,7 +902,7 @@ class QA_Account(QA_Worker):
 
         return pd.concat([self.init_hold,
                           hold_available]).groupby('code').sum().sort_index(
-                          ).apply(lambda x: x if x > 0 else None).dropna()
+                          )
 
     def current_hold_price(self):
         """计算目前持仓的成本  用于模拟盘和实盘查询
@@ -2058,6 +2058,7 @@ class QA_Account(QA_Worker):
 
         # 先生成交易日
         day =  start[0:9]
+
         for idx, item in QA_quotation(code, start, end, frequence, self.market_type, 'mongo').iterrows():
             
             code = idx[1]
@@ -2073,6 +2074,9 @@ class QA_Account(QA_Worker):
 
             
             price = item['close']
+            mp = price* self.market_preset.get_frozen(code)* self.market_preset.get_unit(code)
+
+            amounts =  int(self.cash_available/(3*mp)) -1
             holdamount =  self.sell_available.get(code, 0)
 
             if random.random() < 0.5:
@@ -2080,9 +2084,9 @@ class QA_Account(QA_Worker):
                 
                 if holdamount == 0:
                     if random.random() < 0.5:
-                        self.buy(code,price, amount=1, time = time, if_selfdeal=True)
+                        self.buy(code,price, amount=amounts, time = time, if_selfdeal=True)
                     else:
-                        self.sell(code,price, amount=1, time = time,if_selfdeal=True)
+                        self.sell(code,price, amount=amounts, time = time,if_selfdeal=True)
                 else:
                     pass
             else:
@@ -2093,10 +2097,6 @@ class QA_Account(QA_Worker):
                     holdamount =  abs(holdamount)
                     self.buy_close(code, price, amount=holdamount, time = time, if_selfdeal=True)
             
-
-
-
-
     def buy(self, code:str, price:float, amount:int, time:str, order_model:str = ORDER_MODEL.LIMIT, amount_model:str = AMOUNT_MODEL.BY_AMOUNT, if_selfdeal:bool =False):
         """self.buy == self.buy_open 自动识别股票/期货
 
