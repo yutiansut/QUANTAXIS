@@ -2058,6 +2058,7 @@ class QA_Account(QA_Worker):
 
         # 先生成交易日
         day =  start[0:9]
+
         for idx, item in QA_quotation(code, start, end, frequence, self.market_type, 'mongo').iterrows():
             
             code = idx[1]
@@ -2073,6 +2074,9 @@ class QA_Account(QA_Worker):
 
             
             price = item['close']
+            mp = price* self.market_preset.get_frozen(code)* self.market_preset.get_unit(code)
+
+            amounts =  int(self.cash_available/(3*mp)) -1
             holdamount =  self.sell_available.get(code, 0)
 
             if random.random() < 0.5:
@@ -2080,9 +2084,9 @@ class QA_Account(QA_Worker):
                 
                 if holdamount == 0:
                     if random.random() < 0.5:
-                        self.buy(code,price, amount=1, time = time, if_selfdeal=True)
+                        self.buy(code,price, amount=amounts, time = time, if_selfdeal=True)
                     else:
-                        self.sell(code,price, amount=1, time = time,if_selfdeal=True)
+                        self.sell(code,price, amount=amounts, time = time,if_selfdeal=True)
                 else:
                     pass
             else:
