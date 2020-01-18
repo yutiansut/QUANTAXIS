@@ -1358,7 +1358,7 @@ class QA_Account(QA_Worker):
             [type] -- [description]
         """
 
-        print('QAACCOUNT ==> receive deal {} {} {} {}'.format(trade_time, code, trade_price, trade_towards, ))
+        print('QAACCOUNT ==> receive deal  Time {}/ Code:{}/ Price:{}/ TOWARDS:{}/ Amounts:{}'.format(trade_time, code, trade_price, trade_towards, trade_amount))
 
         trade_time = str(trade_time)
         code = str(code)
