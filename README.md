@@ -3,6 +3,20 @@
 
 ------------------
 
+## 作者强烈推荐 如果你不是二次开发人员或者对于python以及数据处理有极大兴趣对同学 在看完安装教程后直接移步QAStrategy项目来开始你的第一个策略
+
+## QAStrategy传送门: 
+
+[QAStrategy](https://github.com/yutiansut/QAStrategy）
+
+PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件自行下载) 以外,  QAStrategy专属的APP也即将上架, 支持自定义的服务器后端连接, 实时的实盘账户手动干预, 行情处理, 持仓管理以及多策略的运行调整等 
+
+PS: 从2020/2月起 QUANTAXIS Ted会逐步推出 致力于 15分钟介绍/解决一个实际问题/策略的系列 敬请期待
+
+PS: QUANTAXIS 是一个完全开放, 目前是我们私募实盘自用的框架, 并未包含任何收费项目 我们主要是致力于二级市场交易 
+
+------------------
+
 
 
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
