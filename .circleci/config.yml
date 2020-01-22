@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6.5@sha256:1bf67ac270854fd738d6399793b4befe2f9cd2cbac4911e58755417c36f0c6ef
+      - image: circleci/python:3.6.5@sha256:ef4a4a0fcd458102cf69480f945ded98f772250d772558228aa3ae22175b0842
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images

@@ -169,3 +169,7 @@ selenium_driver/*
 QUANTAXIS_WEBDRIVER/*
 
 celerybeat*
+
+/data/
+
+/quantaxis_env/

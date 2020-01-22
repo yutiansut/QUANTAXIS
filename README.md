@@ -3,6 +3,28 @@
 
 ------------------
 
+## 写在你看本项目之前:
+
+作者强烈推荐 如果你不是二次开发人员或者对于python以及数据处理有极大兴趣对同学 在看完安装教程后直接移步QAStrategy项目来开始你的第一个策略
+
+
+    QAStrategy传送门: 
+
+    [QAStrategy](https://github.com/yutiansut/QAStrategy）
+
+PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件自行下载) 以外,  QAStrategy专属的APP也即将上架, 支持自定义的服务器后端连接, 实时的实盘账户手动干预, 行情处理, 持仓管理以及多策略的运行调整等 
+
+PS: 从2020/2月起 QUANTAXIS Ted会逐步推出 致力于 15分钟介绍/解决一个实际问题/策略的系列 敬请期待
+
+PS: QUANTAXIS 是一个完全开放, 目前是我们私募实盘自用的框架, QUANTAXIS 主要解决的是从数据到回测到实盘, 并主要在解决的是大量规模的账户实时组合的问题, 因此架构以及19个周边项目可能对于小白用户较为难以理解, 因此我们推荐你使用docker来直接部署, 把主要经历放在策略的开发上
+
+PS: QUANTAXIS 虽然使用到来数据库/消息队列等服务, 并使用docker来分发服务, 但是你并不需要理解, 也不需要担心自己不会数据库而不能上手本项目, 作者也是学金融出身的, 如果你在使用中有任何问题 可以加入QUANTAXIS群获得几乎24小时的实时反馈帮助服务(:也许是水群 [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
+
+
+
+
+------------------
+
 
 
 点击此处下载 QUANTAXIS2019 介绍性pdf [quantaxis 2019](http://whl.yutiansut.com/QUANTAXIS%202019.pdf)
@@ -93,6 +115,8 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 
 ### 核心工具链(生产环境在用)
 
+![QQ图片20191029223640.png](http://pic.yutiansut.com/FuVrzcbWJUBNrj4Wa0zlRl-YlBY_)
+
 #### 已开源
 
 > 数据存储/数据分析/回测
@@ -127,7 +151,16 @@ QUANTAXIS量化金融策略框架,是一个面向中小型策略团队的量化�
 - [QIFIAccount](https://github.com/yutiansut/qifiaccount) 一个基于QIFI协议的多市场兼容的 实时账户实现
 - [QAStrategy](https://github.com/yutiansut/qastrategy) 一个完整的 支持 模拟/回测/实盘一键切换的策略基类
 
+> 多语言实现
+
+- [qatrader-rs](https://github.com/yutiansut/qatrader-rs) 一个rust实现的qatrader
+- [qamarket-rs](https://github.com/yutiansut/qamarket-rs)  一个rust实现的期货全市场行情多周期采样分发
+
+
+
 #### 未开源
+
+未开源部分为 目前私募自用部分, 因此暂时不开源 一些相关的项目会经过选取和完善后逐步开源
 
 > 实时交易解决方案/ 无人值守/状态汇报/实时账户评估/多账户/策略账户拆分/事件流风控/PB系统/CEP引擎/多系统终端
 

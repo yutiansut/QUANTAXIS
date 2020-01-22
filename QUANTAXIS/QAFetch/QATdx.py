@@ -502,7 +502,78 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
              'bid_vol5']]
         return data.set_index(['datetime', 'code'])
 
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_index_realtime(code=['000001'], ip=None, port=None):
+    ip, port = get_mainmarket_ip(ip, port)
+    # reversed_bytes9 --> 涨速
+    # active1,active2 --> 活跃度
+    # reversed_bytes1 --> -价格*100
+    # vol 总量 cur_vol 现量
+    # amount 总金额
+    # s_vol 内盘 b_vol 外盘
+    # reversed_bytes2 市场
+    # # reversed_bytes0 时间
 
+    api = TdxHq_API()
+    __data = pd.DataFrame()
+    with api.connect(ip, port):
+        code = [code] if isinstance(code, str) else code
+        for id_ in range(int(len(code) / 80) + 1):
+            __data = __data.append(api.to_df(api.get_security_quotes(
+                [(_select_index_code(x), x) for x in
+                 code[80 * id_:80 * (id_ + 1)]])))
+            __data = __data.assign(datetime=datetime.datetime.now(
+            ), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
+            # __data['rev']
+        data = __data[
+            ['datetime', 'servertime', 'active1', 'active2', 'last_close', 'code', 'open',
+             'high', 'low', 'price', 'cur_vol',
+             's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1',
+             'ask2', 'ask_vol2',
+             'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3',
+             'ask4',
+             'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5',
+             'bid_vol5']]
+        return data.set_index(['datetime', 'code'])
+
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_bond_realtime(code=['010107'], ip=None, port=None):
+    ip, port = get_mainmarket_ip(ip, port)
+    # reversed_bytes9 --> 涨速
+    # active1,active2 --> 活跃度
+    # reversed_bytes1 --> -价格*100
+    # vol 总量 cur_vol 现量
+    # amount 总金额
+    # s_vol 内盘 b_vol 外盘
+    # reversed_bytes2 市场
+    # # reversed_bytes0 时间
+
+    api = TdxHq_API()
+    __data = pd.DataFrame()
+    with api.connect(ip, port):
+        code = [code] if isinstance(code, str) else code
+        for id_ in range(int(len(code) / 80) + 1):
+            __data = __data.append(api.to_df(api.get_security_quotes(
+                [(_select_bond_market_code(x), x) for x in
+                 code[80 * id_:80 * (id_ + 1)]])))
+            __data = __data.assign(datetime=datetime.datetime.now(
+            ), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
+            # __data['rev']
+        data = __data[
+            ['datetime', 'servertime', 'active1', 'active2', 'last_close', 'code', 'open',
+             'high', 'low', 'price', 'cur_vol',
+             's_vol', 'b_vol', 'vol', 'ask1', 'ask_vol1', 'bid1', 'bid_vol1',
+             'ask2', 'ask_vol2',
+             'bid2', 'bid_vol2', 'ask3', 'ask_vol3', 'bid3', 'bid_vol3',
+             'ask4',
+             'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5',
+             'bid_vol5']]
+        data = data.assign(last_close=data.last_close/10, open=data.open/10, high=data.high/10, low=data.low/10,
+                        price= data.price/10,  
+                        ask1=data.ask1/10, ask2=data.ask2/10, ask3=data.ask3/10, ask4=data.ask4/10, ask5=data.ask5/10,
+                        bid1=data.bid1/10, bid2=data.bid2/10, bid3=data.bid3/10, bid4=data.bid4/10, bid5=data.bid5/10)
+
+        return data.set_index(['datetime', 'code'])
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
@@ -1560,6 +1631,7 @@ def QA_fetch_get_option_all_contract_time_to_market():
         strName = result.loc[idx, 'name']  # 510050C9M03200
         strDesc = result.loc[idx, 'desc']  # 10001215
 
+        # 50etf
         if strName.startswith("510050"):
             # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
 
@@ -1567,6 +1639,61 @@ def QA_fetch_get_option_all_contract_time_to_market():
                 putcall = '50ETF,认购期权'
             elif strName.startswith("510050P"):
                 putcall = '50ETF,认沽期权'
+            else:
+                putcall = "Unkown code name ： " + strName
+
+            expireMonth = strName[7:8]
+            if expireMonth == 'A':
+                expireMonth = "10月"
+            elif expireMonth == 'B':
+                expireMonth = "11月"
+            elif expireMonth == 'C':
+                expireMonth = "12月"
+            else:
+                expireMonth = expireMonth + '月'
+
+            # 第12位期初设为“M”，并根据合约调整次数按照“A”至“Z”依序变更，如变更为“A”表示期权合约发生首次调整，变更为“B”表示期权合约发生第二次调整，依此类推；
+            # fix here : M ??
+            if strName[8:9] == "M":
+                adjust = "未调整"
+            elif strName[8:9] == 'A':
+                adjust = " 第1次调整"
+            elif strName[8:9] == 'B':
+                adjust = " 第2调整"
+            elif strName[8:9] == 'C':
+                adjust = " 第3次调整"
+            elif strName[8:9] == 'D':
+                adjust = " 第4次调整"
+            elif strName[8:9] == 'E':
+                adjust = " 第5次调整"
+            elif strName[8:9] == 'F':
+                adjust = " 第6次调整"
+            elif strName[8:9] == 'G':
+                adjust = " 第7次调整"
+            elif strName[8:9] == 'H':
+                adjust = " 第8次调整"
+            elif strName[8:9] == 'I':
+                adjust = " 第9次调整"
+            elif strName[8:9] == 'J':
+                adjust = " 第10次调整"
+            else:
+                adjust = " 第10次以上的调整，调整代码 %s" + strName[8:9]
+
+            executePrice = strName[9:]
+            result.loc[idx, 'meaningful_name'] = '%s,到期月份:%s,%s,行权价:%s' % (
+                putcall, expireMonth, adjust, executePrice)
+
+            row = result.loc[idx]
+            rows.append(row)
+
+        # 300etf
+        if strName.startswith("510300"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+
+            if strName.startswith("510300C"):
+                putcall = '300ETF,认购期权'
+            elif strName.startswith("510300P"):
+                putcall = '300ETF,认沽期权'
             else:
                 putcall = "Unkown code name ： " + strName
 
@@ -1839,6 +1966,90 @@ def QA_fetch_get_option_50etf_contract_time_to_market():
                 putcall = '50ETF,认购期权'
             elif strName.startswith("510050P"):
                 putcall = '50ETF,认沽期权'
+            else:
+                putcall = "Unkown code name ： " + strName
+
+            expireMonth = strName[7:8]
+            if expireMonth == 'A':
+                expireMonth = "10月"
+            elif expireMonth == 'B':
+                expireMonth = "11月"
+            elif expireMonth == 'C':
+                expireMonth = "12月"
+            else:
+                expireMonth = expireMonth + '月'
+
+            # 第12位期初设为“M”，并根据合约调整次数按照“A”至“Z”依序变更，如变更为“A”表示期权合约发生首次调整，变更为“B”表示期权合约发生第二次调整，依此类推；
+            # fix here : M ??
+            if strName[8:9] == "M":
+                adjust = "未调整"
+            elif strName[8:9] == 'A':
+                adjust = " 第1次调整"
+            elif strName[8:9] == 'B':
+                adjust = " 第2调整"
+            elif strName[8:9] == 'C':
+                adjust = " 第3次调整"
+            elif strName[8:9] == 'D':
+                adjust = " 第4次调整"
+            elif strName[8:9] == 'E':
+                adjust = " 第5次调整"
+            elif strName[8:9] == 'F':
+                adjust = " 第6次调整"
+            elif strName[8:9] == 'G':
+                adjust = " 第7次调整"
+            elif strName[8:9] == 'H':
+                adjust = " 第8次调整"
+            elif strName[8:9] == 'I':
+                adjust = " 第9次调整"
+            elif strName[8:9] == 'J':
+                adjust = " 第10次调整"
+            else:
+                adjust = " 第10次以上的调整，调整代码 %s" + strName[8:9]
+
+            executePrice = strName[9:]
+            result.loc[idx, 'meaningful_name'] = '%s,到期月份:%s,%s,行权价:%s' % (
+                putcall, expireMonth, adjust, executePrice)
+
+            row = result.loc[idx]
+            rows.append(row)
+    return rows
+
+
+def QA_fetch_get_option_300etf_contract_time_to_market():
+    '''
+        #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+        :return: list Series
+        '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+    '''
+    fix here : 
+    See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+    result['meaningful_name'] = None
+    C:\work_new\QUANTAXIS\QUANTAXIS\QAFetch\QATdx.py:1468: SettingWithCopyWarning: 
+    A value is trying to be set on a copy of a slice from a DataFrame.
+    Try using .loc[row_indexer,col_indexer] = value instead
+    '''
+    # df = pd.DataFrame()
+    rows = []
+
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  # 10001215
+        strName = result.loc[idx, 'name']  # 510300C9M03200
+        strDesc = result.loc[idx, 'desc']  # 10001215
+
+        if strName.startswith("510300"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+
+            if strName.startswith("510050C"):
+                putcall = '300ETF,认购期权'
+            elif strName.startswith("510050P"):
+                putcall = '300ETF,认沽期权'
             else:
                 putcall = "Unkown code name ： " + strName
 
@@ -2323,8 +2534,8 @@ def QA_fetch_get_future_transaction_realtime(code, ip=None, port=None):
     with apix.connect(ip, port):
         data = pd.DataFrame()
         data = pd.concat([apix.to_df(apix.get_transaction_data(
-            int(code_market.market), code, (30 - i) * 1800), sort=True) for i in
-            range(31)], axis=0)
+            int(code_market.market), code, (30 - i) * 1800), ) for i in
+            range(31)], axis=0,sort=True)
         return data.assign(datetime=pd.to_datetime(data['date'])).assign(
             date=lambda x: str(x)[0:10]) \
             .assign(code=str(code)).assign(

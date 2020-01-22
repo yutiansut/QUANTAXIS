@@ -67,7 +67,11 @@ class QA_DataStruct_Indicators():
         获取某一段时间的某一只股票的指标
         """
         try:
-            return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(code)), :]
+            if code is None:
+                #  code为空时 返回start ～end之间的所有数据
+                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end))), :]
+            else:
+                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), code), :]
         except:
             return ValueError('CANNOT FOUND THIS TIME RANGE')
 

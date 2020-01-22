@@ -245,6 +245,25 @@ def BARLAST(cond, yes=True):
     """支持MultiIndex的cond和DateTimeIndex的cond
     条件成立  yes= True 或者 yes=1 根据不同的指标自己定
 
+    最后一次条件成立  到 当前到周期数
+
+    Arguments:
+        cond {[type]} -- [description]
+    """
+    if isinstance(cond.index, pd.MultiIndex):
+        return len(cond)-cond.index.levels[0].tolist().index(cond[cond == yes].index[-1][0])-1
+    elif isinstance(cond.index, pd.DatetimeIndex):
+        return len(cond)-cond.index.tolist().index(cond[cond == yes].index[-1])-1
+
+
+def BARLAST_EXIST(cond, yes=True):
+    """
+    上一次条件成立   持续到当前到数量
+
+
+    支持MultiIndex的cond和DateTimeIndex的cond
+    条件成立  yes= True 或者 yes=1 根据不同的指标自己定
+
     Arguments:
         cond {[type]} -- [description]
     """
@@ -253,6 +272,47 @@ def BARLAST(cond, yes=True):
     elif isinstance(cond.index, pd.DatetimeIndex):
         return len(cond)-cond.index.tolist().index(cond[cond != yes].index[-1])-1
 
-
 def XARROUND(x, y): return np.round(
     y*(round(x/y-math.floor(x/y)+0.00000000001) + math.floor(x/y)), 2)
+
+
+def RENKO(Series, N, condensed=True):
+
+    last_price = Series[0]
+    chart = [last_price]
+    for price in Series:
+        bricks = math.floor(abs(price-last_price)/N)
+        if bricks == 0:
+            if condensed:
+                chart.append(chart[-1])
+            continue
+        sign = int(np.sign(price-last_price))
+        chart += [sign*(last_price+(sign*N*x)) for x in range(1, bricks+1)]
+        last_price = abs(chart[-1])
+
+    return pd.Series(chart)
+
+
+
+def RENKOP(Series, N, condensed=True):
+    last_price = Series[0]
+    chart = [last_price]
+    for price in Series:
+        inc = (price-last_price)/last_price
+        #print(inc)
+        if abs(inc) < N:
+            # if condensed:
+            #     chart.append(chart[-1])
+            continue
+
+        sign = int(np.sign(price-last_price))
+        bricks = math.floor(inc/N)
+        #print(bricks)
+        #print((N * (price-last_price)) / inc)
+        step = math.floor((N * (price-last_price)) / inc)
+        print(step)
+        #print(sign)
+        chart += [sign*(last_price+(sign*step*x))
+                  for x in range(1, abs(bricks)+1)]
+        last_price = abs(chart[-1])
+    return pd.Series(chart)

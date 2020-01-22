@@ -61,6 +61,8 @@ from QUANTAXIS.QASU.main import (
     QA_SU_save_financialfiles,
     QA_SU_save_option_50etf_day,
     QA_SU_save_option_50etf_min,
+    QA_SU_save_option_300etf_day,
+    QA_SU_save_option_300etf_min,
     QA_SU_save_option_commodity_day,
     QA_SU_save_option_commodity_min,
     QA_SU_save_option_contract_list,
@@ -254,15 +256,17 @@ class CLI(cmd.Cmd):
             命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
             命令格式：save financialfiles : 保存高级财务数据(自1996年开始) \n\
             命令格式：save option_contract_list 保存上市的期权合约信息（不包括已经过期摘牌的合约数据）\n\
-            命令格式：save 50etf_option_day : 保存50ETF期权日线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save 50etf_option_min : 保存50ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
+            命令格式：save 50etf_option_day : 保存上海证券交易所50ETF期权日线数据（不包括已经过期摘牌的数据） \n\
+            命令格式：save 50etf_option_min : 保存上海证券交易所50ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
+            命令格式：save 300etf_option_day : 保存上海证券交易所300ETF期权日线数据（不包括已经过期摘牌的数据） \n\
+            命令格式：save 300etf_option_min : 保存上海证券交易所300ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_commodity_day : 保存商品期权日线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_commodity_min : 保存商品期权分钟线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save option_day_all : 保存所有期权日线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save option_min_all : 保存所有期权分钟数据（不包括已经过期摘牌的数据） \n\
-            命令格式: save index_list : 保存指数列表 \n\
-            命令格式: save etf_list : 保存etf列表 \n\
-            命令格式: save future_list : 保存期货列表 \n\
+            命令格式：save option_day_all : 保存上海证券交易所所有期权日线数据（不包括已经过期摘牌的数据） \n\
+            命令格式：save option_min_all : 保存上海证券交易所所有期权分钟数据（不包括已经过期摘牌的数据） \n\
+            命令格式：save index_list : 保存指数列表 \n\
+            命令格式：save etf_list : 保存etf列表 \n\
+            命令格式：save future_list : 保存期货列表 \n\
             ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
@@ -430,6 +434,12 @@ class CLI(cmd.Cmd):
             elif len(arg) == 1 and arg[0] == '50etf_option_min':
                 QA_SU_save_option_50etf_min('tdx')
 
+            elif len(arg) == 1 and arg[0] == '300etf_option_day':
+                QA_SU_save_option_300etf_day('tdx')
+
+            elif len(arg) == 1 and arg[0] == '300etf_option_min':
+                QA_SU_save_option_300etf_min('tdx')
+
             elif len(arg) == 1 and arg[0] == 'option_commodity_day':
                 QA_SU_save_option_commodity_day('tdx')
             elif len(arg) == 1 and arg[0] == 'option_commodity_min':
@@ -438,6 +448,8 @@ class CLI(cmd.Cmd):
                 QA_SU_save_option_contract_list('tdx')
                 QA_SU_save_option_50etf_day('tdx')
                 QA_SU_save_option_50etf_min('tdx')
+                QA_SU_save_option_300etf_day('tdx')
+                QA_SU_save_option_300etf_min('tdx')
                 QA_SU_save_option_commodity_day('tdx')
                 QA_SU_save_option_commodity_min('tdx')
             elif len(arg) == 2 and arg[0] == 'single_stock_day':

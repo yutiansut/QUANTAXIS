@@ -199,13 +199,8 @@ class QA_Dealer():
                 self.deal_price = 0
                 self.deal_amount = 0
 
-            elif ((float(self.order.price) < float(self.market_data.get('high'))
-                   and
-                   float(self.order.price) > float(self.market_data.get('low')))
-                  or float(self.order.price) == float(
-                      self.market_data.get('low'))
-                  or float(self.order.price) == float(
-                      self.market_data.get('high'))):
+            elif float(self.order.price) <= float(self.market_data.get('high')) and \
+                   float(self.order.price) >= float(self.market_data.get('low')):
                 '能成功交易的情况 有滑点调整'
                 if float(self.order.amount) < float(self.market_data.get(
                         'volume',
@@ -253,8 +248,22 @@ class QA_Dealer():
                     self.market_data.get('date',
                                          None)
                 )
+            elif float(self.order.price) > float(self.market_data.get('high')) and int(self.order.towards) > 0:
+                # 买入价格> 最高价
+                #==> 按最高价成交
+                self.order.price = self.market_data.get('high')
+                self.backtest_dealer()
+            
+            elif float(self.order.price) < float(self.market_data.get('low')) and int(self.order.towards) < 0:
+                # 卖出价格< 最低价 
+
+                #==> 按最低价成交
+                self.order.price = self.market_data.get('low')
+                self.backtest_dealer()
+            
             else:
                 print('failed to deal this order')
+                print(self.order.to_dict())
                 print(self.order.price)
                 print(self.market_data)
                 self.status = TRADE_STATUS.FAILED
