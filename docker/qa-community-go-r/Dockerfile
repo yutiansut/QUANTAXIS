@@ -66,8 +66,12 @@ RUN set -eux; \
     cargo install evcxr_jupyter --force; \
     evcxr_jupyter --install;
 
+RUN echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c "source ~/.vimrc"
 
 RUN chmod +x /root/run-community.sh
 CMD ["bash", "/root/run-community.sh"]
 
+WORKDIR /home
+
 EXPOSE 80
+EXPOSE 8787

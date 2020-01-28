@@ -103,4 +103,6 @@ RUN cp /root/go/bin/gophernotes /usr/local/bin/ \
     ## clean
 EXPOSE 8888 
 
+WORKDIR /home
+
 CMD ["bash", "/root/runpy.sh"]

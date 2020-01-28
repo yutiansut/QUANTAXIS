@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.7.1'
+__version__ = '1.8.0'
 __author__ = 'yutiansut'
 
 import argparse
@@ -112,6 +112,7 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_bond_list,
     QA_fetch_get_bond_realtime,
     QA_fetch_get_future_realtime,
+    QA_fetch_get_future_domain,
     QA_fetch_get_future_transaction,
     QA_fetch_get_future_transaction_realtime,
     QA_fetch_get_globalfuture_day,

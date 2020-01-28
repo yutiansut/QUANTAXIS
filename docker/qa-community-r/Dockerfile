@@ -30,4 +30,6 @@ RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.p
 RUN chmod +x /root/run-community.sh
 CMD ["bash", "/root/run-community.sh"]
 
+WORKDIR /home
+
 EXPOSE 80

@@ -11,8 +11,6 @@
 
 请使用如下代码对要PR的代码进行格式化:
 
-qa的 yapf格式也是从vnpy那拿来的 参见 https://github.com/vnpy/vnpy/blob/v2.0-DEV/.style.yapf
-
 使用以下代码来格式化
 ```
 pip install https://github.com/google/yapf/archive/master.zip
