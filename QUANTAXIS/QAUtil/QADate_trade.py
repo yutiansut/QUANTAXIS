@@ -7401,7 +7401,35 @@ def QA_util_format_date2str(cursor_date):
         raise ValueError('请输入正确的日期格式，建议 "%Y-%m-%d"')
     return cursor_date
 
-
+def QA_util_get_next_period(datetime,frequence='1min'):
+    '''
+    得到给定频率的下一个周期起始时间
+    :param datetime: 类型 datetime eg: 2018-11-11 13:01:01
+    :param frequence: 类型 str eg: '30min'
+    :return: datetime eg: 2018-11-11 13:31:00
+    '''
+    if frequence == FREQUENCE.YEAR:
+        p=pd.Period(datetime,freq='Y')+1
+    if frequence == FREQUENCE.QUARTER:
+        p=pd.Period(datetime,freq='Q')+1
+    if frequence == FREQUENCE.MONTH:
+        p=pd.Period(datetime,freq='M')+1
+    if frequence == FREQUENCE.WEEK:
+        p=pd.Period(datetime,freq='W')+1
+    elif frequence == FREQUENCE.DAY:
+        p=pd.Period(datetime,freq='D')+1
+    elif frequence == FREQUENCE.SIXTY_MIN:
+        p=pd.Period(datetime,freq='H')+1
+    elif frequence == FREQUENCE.THIRTY_MIN:
+        p=pd.Period(datetime,freq='30T')+1
+    elif frequence == FREQUENCE.FIFTEEN_MIN:
+        p=pd.Period(datetime,freq='15T')+1
+    elif frequence == FREQUENCE.FIVE_MIN:
+        p=pd.Period(datetime,freq='5T')+1
+    elif frequence == FREQUENCE.ONE_MIN:
+        p=pd.Period(datetime,freq='T')+1
+    return p.to_timestamp()
+    
 def QA_util_get_next_trade_date(cursor_date, n=1):
     """
     得到下 n 个交易日 (不包含当前交易日)

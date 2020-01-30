@@ -409,6 +409,7 @@ class DATASOURCE():
     CHOICE = 'choice'  # choice金融终端
     CCXT = 'ccxt'  # github/ccxt 虚拟货币
     LOCALFILE = 'localfile'  # 本地文件
+    AUTO = 'auto' # Mongodb优先，Mongodb中未下载的数据，在线补充
 
 
 class OUTPUT_FORMAT():

@@ -78,6 +78,7 @@ from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
                                            QA_util_get_trade_datetime,
                                            QA_util_future_to_realdatetime,
                                            QA_util_future_to_tradedatetime,
+                                           QA_util_get_next_period,
                                            trade_date_sse)
 # datetolls
 from QUANTAXIS.QAUtil.QADateTools import (QA_util_add_months,
