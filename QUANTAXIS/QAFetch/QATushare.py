@@ -139,7 +139,7 @@ def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
             time.sleep(0.002)
             pro = get_pro()
             data = ts.pro_bar(
-                pro_api=pro,
+                api=pro,
                 ts_code=str(name),
                 asset='E',
                 adj=if_fq,
