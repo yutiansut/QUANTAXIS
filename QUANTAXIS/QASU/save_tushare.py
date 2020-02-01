@@ -190,9 +190,11 @@ def QA_SU_save_trade_date_all(client=DATABASE):
 
 
 def QA_SU_save_stock_info(client=DATABASE):
-    data = QA_fetch_get_stock_info('all')
+    data = QA_fetch_get_stock_info('')
+    client.drop_collection('stock_info')
     coll = client.stock_info
-    coll.insert_many(data)
+    coll.create_index('code')
+    coll.insert_many(QA_util_to_json_from_pandas(data.reset_index()))
 
 
 def QA_save_stock_day_all_bfq(client=DATABASE):
