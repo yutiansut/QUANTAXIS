@@ -66,13 +66,13 @@ def get_pro():
 
 def QA_fetch_get_stock_adj(code, end=''):
     """获取股票的复权因子
-    
+
     Arguments:
         code {[type]} -- [description]
-    
+
     Keyword Arguments:
         end {str} -- [description] (default: {''})
-    
+
     Returns:
         [type] -- [description]
     """
@@ -139,7 +139,7 @@ def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
             time.sleep(0.002)
             pro = get_pro()
             data = ts.pro_bar(
-                pro_api=pro,
+                api=pro,
                 ts_code=str(name),
                 asset='E',
                 adj=if_fq,
@@ -181,7 +181,7 @@ def QA_fetch_get_stock_realtime():
 def QA_fetch_get_stock_info(name):
     data = ts.get_stock_basics()
     try:
-        return data.loc[name]
+        return data if name == '' else data.loc[name]
     except:
         return None
 
