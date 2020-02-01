@@ -25,7 +25,10 @@
 import datetime
 import pandas as pd
 
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
+from QUANTAXIS.QAUtil.QAParameter import (
+    MARKET_TYPE,
+    FREQUENCE
+)
 
 # todo 🛠 只记录非交易日，其余的用程序迭代 生成交易日
 
@@ -7375,6 +7378,7 @@ trade_date_sse = [
     '2020-12-31'
 ]
 
+
 def QA_util_format_date2str(cursor_date):
     """
     对输入日期进行格式化处理，返回格式为 "%Y-%m-%d" 格式字符串
@@ -7401,35 +7405,29 @@ def QA_util_format_date2str(cursor_date):
         raise ValueError('请输入正确的日期格式，建议 "%Y-%m-%d"')
     return cursor_date
 
-def QA_util_get_next_period(datetime,frequence='1min'):
+
+def QA_util_get_next_period(datetime, frequence='1min'):
     '''
     得到给定频率的下一个周期起始时间
     :param datetime: 类型 datetime eg: 2018-11-11 13:01:01
     :param frequence: 类型 str eg: '30min'
     :return: datetime eg: 2018-11-11 13:31:00
     '''
-    if frequence == FREQUENCE.YEAR:
-        p=pd.Period(datetime,freq='Y')+1
-    if frequence == FREQUENCE.QUARTER:
-        p=pd.Period(datetime,freq='Q')+1
-    if frequence == FREQUENCE.MONTH:
-        p=pd.Period(datetime,freq='M')+1
-    if frequence == FREQUENCE.WEEK:
-        p=pd.Period(datetime,freq='W')+1
-    elif frequence == FREQUENCE.DAY:
-        p=pd.Period(datetime,freq='D')+1
-    elif frequence == FREQUENCE.SIXTY_MIN:
-        p=pd.Period(datetime,freq='H')+1
-    elif frequence == FREQUENCE.THIRTY_MIN:
-        p=pd.Period(datetime,freq='30T')+1
-    elif frequence == FREQUENCE.FIFTEEN_MIN:
-        p=pd.Period(datetime,freq='15T')+1
-    elif frequence == FREQUENCE.FIVE_MIN:
-        p=pd.Period(datetime,freq='5T')+1
-    elif frequence == FREQUENCE.ONE_MIN:
-        p=pd.Period(datetime,freq='T')+1
-    return p.to_timestamp()
-    
+    freq = {
+        FREQUENCE.YEAR: 'Y',
+        FREQUENCE.QUARTER: 'Q',
+        FREQUENCE.MONTH: 'M',
+        FREQUENCE.WEEK: 'W',
+        FREQUENCE.DAY: 'D',
+        FREQUENCE.SIXTY_MIN: '60T',
+        FREQUENCE.THIRTY_MIN: '30T',
+        FREQUENCE.FIFTEEN_MIN: '15T',
+        FREQUENCE.FIVE_MIN: '5T',
+        FREQUENCE.ONE_MIN: 'T'
+    }
+    return (pd.Period(datetime, freq=freq[frequence]) + 1).to_timestamp()
+
+
 def QA_util_get_next_trade_date(cursor_date, n=1):
     """
     得到下 n 个交易日 (不包含当前交易日)
@@ -7459,7 +7457,6 @@ def QA_util_get_pre_trade_date(cursor_date, n=1):
     return QA_util_date_gap(real_aft_trade_date, n, "lt")
 
 
-
 def QA_util_if_trade(day):
     '''
     '日期是否交易'
@@ -7474,9 +7471,9 @@ def QA_util_if_trade(day):
 
 
 def QA_util_if_tradetime(
-        _time=datetime.datetime.now(),
-        market=MARKET_TYPE.STOCK_CN,
-        code=None
+    _time=datetime.datetime.now(),
+    market=MARKET_TYPE.STOCK_CN,
+    code=None
 ):
     '时间是否交易'
     _time = datetime.datetime.strptime(str(_time)[0:19], '%Y-%m-%d %H:%M:%S')
@@ -7494,69 +7491,107 @@ def QA_util_if_tradetime(
                 return False
         else:
             return False
-    elif market is MARKET_TYPE.FUTURE_CN:                              
-        date_today=str(_time.date())    
-        date_yesterday=str((_time-datetime.timedelta(days=1)).date())                         
-        
-        is_today_open=QA_util_if_trade(date_today)
-        is_yesterday_open=QA_util_if_trade(date_yesterday)
-        
-        #考虑周六日的期货夜盘情况
-        if is_today_open==False: #可能是周六或者周日
-            if is_yesterday_open==False or (_time.hour > 2 or _time.hour == 2 and _time.minute > 30):
+    elif market is MARKET_TYPE.FUTURE_CN:
+        date_today = str(_time.date())
+        date_yesterday = str((_time - datetime.timedelta(days=1)).date())
+
+        is_today_open = QA_util_if_trade(date_today)
+        is_yesterday_open = QA_util_if_trade(date_yesterday)
+
+        # 考虑周六日的期货夜盘情况
+        if is_today_open == False:  # 可能是周六或者周日
+            if is_yesterday_open == False or (_time.hour > 2 or _time.hour == 2
+                                              and _time.minute > 30):
                 return False
 
-        shortName = ""                      # i , p
+        shortName = ""       # i , p
         for i in range(len(code)):
             ch = code[i]
-            if ch.isdigit():                # ch >= 48 and ch <= 57:
+            if ch.isdigit():  # ch >= 48 and ch <= 57:
                 break
             shortName += code[i].upper()
 
-        period = [
-            [9, 0, 10, 15],
-            [10, 30, 11, 30],
-            [13, 30, 15, 0]
-        ]
-        
+        period = [[9, 0, 10, 15], [10, 30, 11, 30], [13, 30, 15, 0]]
+
         if (shortName in ["IH", 'IF', 'IC']):
-            period = [
-                [9, 30, 11, 30],
-                [13, 0, 15, 0]
-            ]
+            period = [[9, 30, 11, 30], [13, 0, 15, 0]]
         elif (shortName in ["T", "TF"]):
-            period = [
-                [9, 15, 11, 30],
-                [13, 0, 15, 15]
-            ]
-        
-        if 0<=_time.weekday()<=4:
+            period = [[9, 15, 11, 30], [13, 0, 15, 15]]
+
+        if 0 <= _time.weekday() <= 4:
             for i in range(len(period)):
                 p = period[i]
-                if ((_time.hour > p[0] or (_time.hour == p[0] and _time.minute >= p[1])) and (_time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3]))):
+                if ((_time.hour > p[0] or
+                     (_time.hour == p[0] and _time.minute >= p[1]))
+                        and (_time.hour < p[2] or
+                             (_time.hour == p[2] and _time.minute < p[3]))):
                     return True
 
-        #最新夜盘时间表_2019.03.29
+        # 最新夜盘时间表_2019.03.29
         nperiod = [
+            [['AU',
+              'AG',
+              'SC'],
+             [21,
+              0,
+              2,
+              30]],
+            [['CU',
+              'AL',
+              'ZN',
+              'PB',
+              'SN',
+              'NI'],
+             [21,
+              0,
+              1,
+              0]],
+            [['RU',
+              'RB',
+              'HC',
+              'BU',
+              'FU',
+              'SP'],
+             [21,
+              0,
+              23,
+              0]],
             [
-                ['AU', 'AG', 'SC'],
-                [21, 0, 2, 30]  
+                [
+                    'A',
+                    'B',
+                    'Y',
+                    'M',
+                    'JM',
+                    'J',
+                    'P',
+                    'I',
+                    'L',
+                    'V',
+                    'PP',
+                    'EG',
+                    'C',
+                    'CS'
+                ],
+                [21,
+                 0,
+                 23,
+                 0]
             ],
             [
-                ['CU', 'AL', 'ZN', 'PB', 'SN', 'NI'],
-                [21, 0, 1, 0]   
-            ],
-            [
-                ['RU', 'RB', 'HC', 'BU','FU','SP'],
-                [21, 0, 23, 0]
-            ],
-            [
-                ['A', 'B', 'Y', 'M', 'JM', 'J', 'P', 'I', 'L', 'V', 'PP', 'EG', 'C', 'CS'],
-                [21, 0, 23, 0]
-            ],
-            [
-                ['SR', 'CF', 'RM', 'MA', 'TA', 'ZC', 'FG', 'IO', 'CY'],
-                [21, 0, 23, 30]
+                ['SR',
+                 'CF',
+                 'RM',
+                 'MA',
+                 'TA',
+                 'ZC',
+                 'FG',
+                 'IO',
+                 'CY'],
+                [21,
+                 0,
+                 23,
+                 30]
             ],
         ]
 
@@ -7564,14 +7599,22 @@ def QA_util_if_tradetime(
             for j in range(len(nperiod[i][0])):
                 if nperiod[i][0][j] == shortName:
                     p = nperiod[i][1]
-                    condA = _time.hour > p[0] or (_time.hour == p[0] and _time.minute >= p[1])
-                    condB = _time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3])
+                    condA = _time.hour > p[0] or (
+                        _time.hour == p[0] and _time.minute >= p[1]
+                    )
+                    condB = _time.hour < p[2] or (
+                        _time.hour == p[2] and _time.minute < p[3]
+                    )
                     # in one day
                     if p[2] >= p[0]:
-                        if ((_time.weekday() >= 0 and _time.weekday() <= 4) and condA and condB):
+                        if ((_time.weekday() >= 0 and _time.weekday() <= 4)
+                                and condA and condB):
                             return True
                     else:
-                        if (((_time.weekday() >= 0 and _time.weekday() <= 4) and condA) or ((_time.weekday() >= 1 and _time.weekday() <= 5) and condB)):
+                        if (((_time.weekday() >= 0 and _time.weekday() <= 4)
+                             and condA) or
+                            ((_time.weekday() >= 1 and _time.weekday() <= 5)
+                             and condB)):
                             return True
                     return False
         return False

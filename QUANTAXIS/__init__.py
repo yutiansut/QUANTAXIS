@@ -159,7 +159,10 @@ from QUANTAXIS.QAFetch import (
     get_stock_market
 )
 # fetch methods
-from QUANTAXIS.QAFetch.Fetcher import QA_quotation,QA_quotation_adv
+from QUANTAXIS.QAFetch.Fetcher import (
+    QA_quotation,
+    QA_quotation_adv
+)
 from QUANTAXIS.QAFetch.QACrawler import (
     QA_fetch_get_sh_margin,
     QA_fetch_get_sz_margin
