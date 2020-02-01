@@ -18,6 +18,7 @@ WORKDIR /tmp
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake \
+&& apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32  40976EAF437D05B5\
 && cmake -version
 
 
@@ -101,5 +102,7 @@ RUN cp /root/go/bin/gophernotes /usr/local/bin/ \
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
     ## clean
 EXPOSE 8888 
+
+WORKDIR /home
 
 CMD ["bash", "/root/runpy.sh"]

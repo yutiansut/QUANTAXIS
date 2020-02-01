@@ -26,11 +26,15 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
 
+RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32  40976EAF437D05B5\
+&& apt update
+
 RUN apt install -y curl\
-&& curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-&& apt-get install -y nodejs \
-&& apt-get install npm \
-&& npm install npm -g 
+&& apt install npm -y \
+&& npm install npm -g \
+&& npm install n -g \
+&& n stable
+
 
 RUN pip install qgrid\
 && jupyter nbextension enable --py --sys-prefix qgrid\
