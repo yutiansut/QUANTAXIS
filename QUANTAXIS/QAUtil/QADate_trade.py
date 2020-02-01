@@ -25,10 +25,7 @@
 import datetime
 import pandas as pd
 
-from QUANTAXIS.QAUtil.QAParameter import (
-    MARKET_TYPE,
-    FREQUENCE
-)
+from QUANTAXIS.QAUtil.QAParameter import (MARKET_TYPE, FREQUENCE)
 
 # todo 🛠 只记录非交易日，其余的用程序迭代 生成交易日
 
@@ -7483,7 +7480,7 @@ def QA_util_if_tradetime(
                 return True
             elif _time.hour in [
                     9
-            ] and _time.minute >= 15:  # 修改成9:15 加入 9:15-9:30的盘前竞价时间
+            ] and _time.minute >= 15: # 修改成9:15 加入 9:15-9:30的盘前竞价时间
                 return True
             elif _time.hour in [11] and _time.minute <= 30:
                 return True
@@ -7499,7 +7496,7 @@ def QA_util_if_tradetime(
         is_yesterday_open = QA_util_if_trade(date_yesterday)
 
         # 考虑周六日的期货夜盘情况
-        if is_today_open == False:  # 可能是周六或者周日
+        if is_today_open == False:                                              # 可能是周六或者周日
             if is_yesterday_open == False or (_time.hour > 2 or _time.hour == 2
                                               and _time.minute > 30):
                 return False
@@ -7507,7 +7504,7 @@ def QA_util_if_tradetime(
         shortName = ""       # i , p
         for i in range(len(code)):
             ch = code[i]
-            if ch.isdigit():  # ch >= 48 and ch <= 57:
+            if ch.isdigit(): # ch >= 48 and ch <= 57:
                 break
             shortName += code[i].upper()
 

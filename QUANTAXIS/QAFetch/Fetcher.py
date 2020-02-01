@@ -582,20 +582,29 @@ class AsyncFetcher():
 
 
 if __name__ == '__main__':
-    # import asyncio
+    import asyncio
     print(
         QA_quotation_adv(
             '000001',
             '2020-01-01',
-            '2020-01-22',
+            '2020-01-23',
             frequence=FREQUENCE.DAY,
             market=MARKET_TYPE.STOCK_CN,
             source=DATASOURCE.AUTO,
             output=OUTPUT_FORMAT.DATAFRAME
         )
     )
-    # print(QA_quotation_adv('000001', '2020-01-22', '2020-01-23 14:54:00', frequence=FREQUENCE.ONE_MIN,
-    #                 market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.AUTO, output=OUTPUT_FORMAT.DATAFRAME))
+    # print(
+    #     QA_quotation_adv(
+    #         '000001',
+    #         '2020-01-22',
+    #         '2020-01-23 14:54:00',
+    #         frequence=FREQUENCE.ONE_MIN,
+    #         market=MARKET_TYPE.STOCK_CN,
+    #         source=DATASOURCE.AUTO,
+    #         output=OUTPUT_FORMAT.DATAFRAME
+    #     )
+    # )
     # print(QA_quotation_adv('000001', '2020-01-22', '2020-01-23 14:54:00', frequence=FREQUENCE.SIXTY_MIN,
     #                 market=MARKET_TYPE.STOCK_CN, source=DATASOURCE.AUTO, output=OUTPUT_FORMAT.DATAFRAME))
     # print(QA_quotation_adv('000001', '2019-12-01', '2020-01-23', frequence=FREQUENCE.WEEK,

@@ -21,8 +21,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
 """
 这里定义的是一些常用常量
 """
@@ -55,28 +53,28 @@ class ORDER_DIRECTION():
 
 
 class TIME_CONDITION():
-    IOC = 'IOC'  # 立即完成，否则撤销
-    GFS = 'GFS'  # 本节有效
-    GFD = 'GFD'  # 当日有效
-    GTD = 'GTD'  # 指定日期前有效
-    GTC = 'GTC'  # 撤销前有效
-    GFA = 'GFA'  # 集合竞价有效
+    IOC = 'IOC' # 立即完成，否则撤销
+    GFS = 'GFS' # 本节有效
+    GFD = 'GFD' # 当日有效
+    GTD = 'GTD' # 指定日期前有效
+    GTC = 'GTC' # 撤销前有效
+    GFA = 'GFA' # 集合竞价有效
 
 
 class VOLUME_CONDITION():
-    ANY = 'ANY'  # 任意数量
-    MIN = 'MIN'  # 最小数量
-    ALL = 'ALL'  # 全部数量
+    ANY = 'ANY' # 任意数量
+    MIN = 'MIN' # 最小数量
+    ALL = 'ALL' # 全部数量
 
 
 class EXCHANGE_ID():
-    SSE = 'sse'  # 上交所
-    SZSE = 'szse'  # 深交所
-    SHFE = 'SHFE'  # 上期所
-    DCE = 'DCE'  # 大商所
-    CZCE = 'CZCE'  # 郑商所
-    CFFEX = 'CFFEX'  # 中金所
-    INE = 'INE'  # 能源中心
+    SSE = 'sse'     # 上交所
+    SZSE = 'szse'   # 深交所
+    SHFE = 'SHFE'   # 上期所
+    DCE = 'DCE'     # 大商所
+    CZCE = 'CZCE'   # 郑商所
+    CFFEX = 'CFFEX' # 中金所
+    INE = 'INE'     # 能源中心
 
 
 class OFFSET():
@@ -106,13 +104,13 @@ class ORDER_MODEL():
     @yutiansut/2017-12-18
     """
 
-    LIMIT = 'LIMIT'  # 限价
-    ANY = 'ANY'  # 市价(otg兼容)
-    MARKET = 'MARKET'  # 市价/在回测里是下个bar的开盘价买入/实盘就是五档剩余最优成交价
-    CLOSE = 'CLOSE'  # 当前bar的收盘价买入
-    NEXT_OPEN = 'NEXT_OPEN'  # 下个bar的开盘价买入
-    STRICT = 'STRICT'  # 严格模式/不推荐(仅限回测测试用)
-    BEST = 'BEST'  # 中金所  最优成交剩余转限
+    LIMIT = 'LIMIT'         # 限价
+    ANY = 'ANY'             # 市价(otg兼容)
+    MARKET = 'MARKET'       # 市价/在回测里是下个bar的开盘价买入/实盘就是五档剩余最优成交价
+    CLOSE = 'CLOSE'         # 当前bar的收盘价买入
+    NEXT_OPEN = 'NEXT_OPEN' # 下个bar的开盘价买入
+    STRICT = 'STRICT'       # 严格模式/不推荐(仅限回测测试用)
+    BEST = 'BEST'           # 中金所  最优成交剩余转限
     FIVELEVEL = 'FIVELEVEL'
 
 
@@ -142,14 +140,14 @@ class ORDER_STATUS():
     # FAILED = 600
 
     NEW = 'new'
-    SUCCESS_ALL = 'success_all'  # == FINISHED
+    SUCCESS_ALL = 'success_all' # == FINISHED
     SUCCESS_PART = 'success_part'
-    QUEUED = 'queued'  # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交 == ALIVED
+    QUEUED = 'queued'           # queued 用于表示在order_queue中 实际表达的意思是订单存活 待成交 == ALIVED
     CANCEL_ALL = 'cancel_all'
     CANCEL_PART = 'cancel_part'
     SETTLED = 'settled'
     FAILED = 'failed'
-    NEXT = 'next'  # 当前bar未成交,下一个bar继续等待
+    NEXT = 'next'               # 当前bar未成交,下一个bar继续等待
 
 
 class AMOUNT_MODEL():
@@ -191,7 +189,7 @@ class TRADE_STATUS():
     """
 
     SUCCESS = 'trade_success'
-    PRICE_LIMIT = 'trade_price_limit'  # 只是未成交
+    PRICE_LIMIT = 'trade_price_limit' # 只是未成交
     NO_MARKET_DATA = 'trade_no_market_data'
     FAILED = 'trade_failed'
 
@@ -226,19 +224,19 @@ class MARKET_TYPE():
     美股 4
     比特币/加密货币市场 5
     """
-    STOCK_CN = 'stock_cn'  # 中国A股
-    STOCK_CN_B = 'stock_cn_b'  # 中国B股
-    STOCK_CN_D = 'stock_cn_d'  # 中国D股 沪伦通
-    STOCK_HK = 'stock_hk'  # 港股
-    STOCK_US = 'stock_us'  # 美股
-    FUTURE_CN = 'future_cn'  # 国内期货
-    OPTION_CN = 'option_cn'  # 国内期权
-    STOCKOPTION_CN = 'stockoption_cn'  # 个股期权
-    # BITCOIN = 'bitcoin'  # 比特币
-    CRYPTOCURRENCY = 'cryptocurrency'  # 加密货币(衍生货币)
-    INDEX_CN = 'index_cn'  # 中国指数
-    FUND_CN = 'fund_cn'   # 中国基金
-    BOND_CN = 'bond_cn'  # 中国债券
+    STOCK_CN = 'stock_cn'             # 中国A股
+    STOCK_CN_B = 'stock_cn_b'         # 中国B股
+    STOCK_CN_D = 'stock_cn_d'         # 中国D股 沪伦通
+    STOCK_HK = 'stock_hk'             # 港股
+    STOCK_US = 'stock_us'             # 美股
+    FUTURE_CN = 'future_cn'           # 国内期货
+    OPTION_CN = 'option_cn'           # 国内期权
+    STOCKOPTION_CN = 'stockoption_cn' # 个股期权
+                                      # BITCOIN = 'bitcoin'  # 比特币
+    CRYPTOCURRENCY = 'cryptocurrency' # 加密货币(衍生货币)
+    INDEX_CN = 'index_cn'             # 中国指数
+    FUND_CN = 'fund_cn'               # 中国基金
+    BOND_CN = 'bond_cn'               # 中国债券
 
 
 class BROKER_TYPE():
@@ -364,51 +362,51 @@ class FREQUENCE():
     2019/08/06 @yutiansut
     """
 
-    YEAR = 'year'  # 年bar
-    QUARTER = 'quarter'  # 季度bar
-    MONTH = 'month'  # 月bar
-    WEEK = 'week'  # 周bar
-    DAY = 'day'  # 日bar
-    ONE_MIN = '1min'  # 1min bar
-    FIVE_MIN = '5min'  # 5min bar
-    FIFTEEN_MIN = '15min'  # 15min bar
-    THIRTY_MIN = '30min'  # 30min bar
-    HOUR = '60min'  # 60min bar
-    SIXTY_MIN = '60min'  # 60min bar
-    TICK = 'tick'  # transaction
-    ASKBID = 'askbid'  # 上下五档/一档
-    REALTIME_MIN = 'realtime_min'  # 实时分钟线
-    LATEST = 'latest'  # 当前bar/latest
+    YEAR = 'year'                 # 年bar
+    QUARTER = 'quarter'           # 季度bar
+    MONTH = 'month'               # 月bar
+    WEEK = 'week'                 # 周bar
+    DAY = 'day'                   # 日bar
+    ONE_MIN = '1min'              # 1min bar
+    FIVE_MIN = '5min'             # 5min bar
+    FIFTEEN_MIN = '15min'         # 15min bar
+    THIRTY_MIN = '30min'          # 30min bar
+    HOUR = '60min'                # 60min bar
+    SIXTY_MIN = '60min'           # 60min bar
+    TICK = 'tick'                 # transaction
+    ASKBID = 'askbid'             # 上下五档/一档
+    REALTIME_MIN = 'realtime_min' # 实时分钟线
+    LATEST = 'latest'             # 当前bar/latest
 
 
 class CURRENCY_TYPE():
     """货币种类"""
-    RMB = 'rmb'  # 人民币
-    USD = 'usd'  # 美元
-    EUR = 'eur'  # 欧元
-    HKD = 'hkd'  # 港币
-    GBP = 'GBP'  # 英镑
-    BTC = 'btc'  # 比特币
-    JPY = 'jpy'  # 日元
-    AUD = 'aud'  # 澳元
-    CAD = 'cad'  # 加拿大元
+    RMB = 'rmb' # 人民币
+    USD = 'usd' # 美元
+    EUR = 'eur' # 欧元
+    HKD = 'hkd' # 港币
+    GBP = 'GBP' # 英镑
+    BTC = 'btc' # 比特币
+    JPY = 'jpy' # 日元
+    AUD = 'aud' # 澳元
+    CAD = 'cad' # 加拿大元
 
 
 class DATASOURCE():
     """数据来源
     """
 
-    WIND = 'wind'  # wind金融终端
-    TDB = 'tdb'  # wind tdb
-    THS = 'ths'  # 同花顺网页
-    TUSHARE = 'tushare'  # tushare
-    TDX = 'tdx'  # 通达信
-    MONGO = 'mongo'  # 本地/远程Mongodb
-    EASTMONEY = 'eastmoney'  # 东方财富网
-    CHOICE = 'choice'  # choice金融终端
-    CCXT = 'ccxt'  # github/ccxt 虚拟货币
-    LOCALFILE = 'localfile'  # 本地文件
-    AUTO = 'auto'  # Mongodb优先，Mongodb中未下载的数据，在线补充
+    WIND = 'wind'           # wind金融终端
+    TDB = 'tdb'             # wind tdb
+    THS = 'ths'             # 同花顺网页
+    TUSHARE = 'tushare'     # tushare
+    TDX = 'tdx'             # 通达信
+    MONGO = 'mongo'         # 本地/远程Mongodb
+    EASTMONEY = 'eastmoney' # 东方财富网
+    CHOICE = 'choice'       # choice金融终端
+    CCXT = 'ccxt'           # github/ccxt 虚拟货币
+    LOCALFILE = 'localfile' # 本地文件
+    AUTO = 'auto'           # Mongodb优先，Mongodb中未下载的数据，在线补充
 
 
 class OUTPUT_FORMAT():
@@ -441,36 +439,68 @@ class RUNNING_STATUS():
 
 
 DATABASE_TABLE = {
-    (MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): 'stock_day',
-    (MARKET_TYPE.STOCK_CN, FREQUENCE.ONE_MIN): 'stock_min',
-    (MARKET_TYPE.STOCK_CN, FREQUENCE.FIVE_MIN): 'stock_min',
-    (MARKET_TYPE.STOCK_CN, FREQUENCE.FIFTEEN_MIN): 'stock_min',
-    (MARKET_TYPE.STOCK_CN, FREQUENCE.THIRTY_MIN): 'stock_min',
-    (MARKET_TYPE.STOCK_CN, FREQUENCE.SIXTY_MIN): 'stock_min',
-    (MARKET_TYPE.STOCK_CN, FREQUENCE.HOUR): 'stock_min',
-    (MARKET_TYPE.STOCK_CN, FREQUENCE.TICK): 'stock_transaction',
-    (MARKET_TYPE.INDEX_CN, FREQUENCE.DAY): 'index_day',
-    (MARKET_TYPE.INDEX_CN, FREQUENCE.ONE_MIN): 'index_min',
-    (MARKET_TYPE.INDEX_CN, FREQUENCE.FIVE_MIN): 'index_min',
-    (MARKET_TYPE.INDEX_CN, FREQUENCE.FIFTEEN_MIN): 'index_min',
-    (MARKET_TYPE.INDEX_CN, FREQUENCE.THIRTY_MIN): 'index_min',
-    (MARKET_TYPE.INDEX_CN, FREQUENCE.SIXTY_MIN): 'index_min',
-    (MARKET_TYPE.INDEX_CN, FREQUENCE.HOUR): 'index_min',
-    (MARKET_TYPE.INDEX_CN, FREQUENCE.TICK): 'index_transaction',
-    (MARKET_TYPE.FUND_CN, FREQUENCE.DAY): 'index_day',
-    (MARKET_TYPE.FUND_CN, FREQUENCE.ONE_MIN): 'index_min',
-    (MARKET_TYPE.FUND_CN, FREQUENCE.FIVE_MIN): 'index_min',
-    (MARKET_TYPE.FUND_CN, FREQUENCE.FIFTEEN_MIN): 'index_min',
-    (MARKET_TYPE.FUND_CN, FREQUENCE.THIRTY_MIN): 'index_min',
-    (MARKET_TYPE.FUND_CN, FREQUENCE.SIXTY_MIN): 'index_min',
-    (MARKET_TYPE.FUND_CN, FREQUENCE.HOUR): 'index_min',
-    (MARKET_TYPE.FUND_CN, FREQUENCE.TICK): 'index_transaction',
-    (MARKET_TYPE.FUTURE_CN, FREQUENCE.DAY): 'future_day',
-    (MARKET_TYPE.FUTURE_CN, FREQUENCE.ONE_MIN): 'future_min',
-    (MARKET_TYPE.FUTURE_CN, FREQUENCE.FIVE_MIN): 'future_min',
-    (MARKET_TYPE.FUTURE_CN, FREQUENCE.FIFTEEN_MIN): 'future_min',
-    (MARKET_TYPE.FUTURE_CN, FREQUENCE.THIRTY_MIN): 'future_min',
-    (MARKET_TYPE.FUTURE_CN, FREQUENCE.SIXTY_MIN): 'future_min',
-    (MARKET_TYPE.FUTURE_CN, FREQUENCE.HOUR): 'future_min',
-    (MARKET_TYPE.FUTURE_CN, FREQUENCE.TICK): 'future_transaction'
+    (MARKET_TYPE.STOCK_CN,
+     FREQUENCE.DAY): 'stock_day',
+    (MARKET_TYPE.STOCK_CN,
+     FREQUENCE.ONE_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN,
+     FREQUENCE.FIVE_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN,
+     FREQUENCE.FIFTEEN_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN,
+     FREQUENCE.THIRTY_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN,
+     FREQUENCE.SIXTY_MIN): 'stock_min',
+    (MARKET_TYPE.STOCK_CN,
+     FREQUENCE.HOUR): 'stock_min',
+    (MARKET_TYPE.STOCK_CN,
+     FREQUENCE.TICK): 'stock_transaction',
+    (MARKET_TYPE.INDEX_CN,
+     FREQUENCE.DAY): 'index_day',
+    (MARKET_TYPE.INDEX_CN,
+     FREQUENCE.ONE_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN,
+     FREQUENCE.FIVE_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN,
+     FREQUENCE.FIFTEEN_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN,
+     FREQUENCE.THIRTY_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN,
+     FREQUENCE.SIXTY_MIN): 'index_min',
+    (MARKET_TYPE.INDEX_CN,
+     FREQUENCE.HOUR): 'index_min',
+    (MARKET_TYPE.INDEX_CN,
+     FREQUENCE.TICK): 'index_transaction',
+    (MARKET_TYPE.FUND_CN,
+     FREQUENCE.DAY): 'index_day',
+    (MARKET_TYPE.FUND_CN,
+     FREQUENCE.ONE_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN,
+     FREQUENCE.FIVE_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN,
+     FREQUENCE.FIFTEEN_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN,
+     FREQUENCE.THIRTY_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN,
+     FREQUENCE.SIXTY_MIN): 'index_min',
+    (MARKET_TYPE.FUND_CN,
+     FREQUENCE.HOUR): 'index_min',
+    (MARKET_TYPE.FUND_CN,
+     FREQUENCE.TICK): 'index_transaction',
+    (MARKET_TYPE.FUTURE_CN,
+     FREQUENCE.DAY): 'future_day',
+    (MARKET_TYPE.FUTURE_CN,
+     FREQUENCE.ONE_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN,
+     FREQUENCE.FIVE_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN,
+     FREQUENCE.FIFTEEN_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN,
+     FREQUENCE.THIRTY_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN,
+     FREQUENCE.SIXTY_MIN): 'future_min',
+    (MARKET_TYPE.FUTURE_CN,
+     FREQUENCE.HOUR): 'future_min',
+    (MARKET_TYPE.FUTURE_CN,
+     FREQUENCE.TICK): 'future_transaction'
 }
