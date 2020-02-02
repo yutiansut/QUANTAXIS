@@ -35,24 +35,25 @@ QATZInfo_CN = 'Asia/Shanghai'
 
 def QA_util_time_now():
     """
-    返回当前时间
-    :return: 类型datetime.datetime
+    explanation:
+       获取当前日期时间
+        
     """
     return datetime.datetime.now()
 
 
 def QA_util_date_today():
     """
-    返回当前日期
-    :return: 类型datetime.date
+    explanation:
+       获取当前日期
     """
     return datetime.date.today()
 
 
 def QA_util_today_str():
     """
-    返回今天的日期字符串
-    :return: 类型字符串 2011-11-11
+    explanation:
+        返回今天的日期字符串
     """
     dt = QA_util_date_today()
     return QA_util_datetime_to_strdate(dt)
@@ -60,10 +61,20 @@ def QA_util_today_str():
 
 def QA_util_date_str2int(date):
     """
-    日期字符串 '2011-09-11' 变换成 整数 20110911
-    日期字符串 '2018-12-01' 变换成 整数 20181201
-    :param date: str日期字符串
-    :return: 类型int
+    explanation:
+        转换日期字符串为整数
+    
+    params:
+        * date->
+            含义: 日期字符串
+            类型: date
+            参数支持: []
+    
+    demonstrate:
+        print(QA_util_date_str2int("2011-09-11"))
+
+    output:
+        >>20110911
     """
     # return int(str(date)[0:4] + str(date)[5:7] + str(date)[8:10])
     if isinstance(date, str):
@@ -74,9 +85,14 @@ def QA_util_date_str2int(date):
 
 def QA_util_date_int2str(int_date):
     """
-    类型datetime.datatime
-    :param date: int 8位整数
-    :return: 类型str
+    explanation:
+        转换日期字符串为整数
+    
+    params:
+        * int_date->
+            含义: 日期转换得
+            类型: int
+            参数支持: []
     """
     date = str(int_date)
     if len(date) == 8:
