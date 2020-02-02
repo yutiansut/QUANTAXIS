@@ -143,7 +143,7 @@ def QA_util_make_hour_index(day, type_='1h'):
 def QA_util_time_gap(time, gap, methods, type_):
     """
     explanation:
-        分钟线回测的时候的gap
+        分钟线回测的时候的gap, 按交易日往前往后推
 
     params:
         * time ->
