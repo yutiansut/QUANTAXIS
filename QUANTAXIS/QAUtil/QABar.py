@@ -38,13 +38,20 @@ from QUANTAXIS.QAUtil.QADate_trade import (
 
 
 def QA_util_make_future_min_index(day, type_='1min'):
-    """创建期货分钟线的index
+    """
+    explanation:
+        创建期货分钟线的index
 
-    Arguments:
-        day {[type]} -- [description]
-
-    Returns:
-        [type] -- [description]
+    params:
+        * day ->
+            含义: 天数
+            类型: str
+            参数支持: []
+        * type_ ->
+            含义: 周期索引
+            类型: str
+            参数支持: ["1min"]
+    
     """
 
     if QA_util_if_trade(day) is True:
@@ -66,13 +73,19 @@ def QA_util_make_future_min_index(day, type_='1min'):
 
 
 def QA_util_make_min_index(day, type_='1min'):
-    """创建股票分钟线的index
+    """
+    explanation:
+        创建股票分钟线的index
 
-    Arguments:
-        day {[type]} -- [description]
-
-    Returns:
-        [type] -- [description]
+    params:
+        * day ->
+            含义:天数
+            类型:int
+            参数支持: []
+        * type_ ->
+            含义: 周期索引
+            类型: str
+            参数支持: ["1min"]
     """
 
     if QA_util_if_trade(day) is True:
@@ -94,13 +107,19 @@ def QA_util_make_min_index(day, type_='1min'):
 
 
 def QA_util_make_hour_index(day, type_='1h'):
-    """创建股票的小时线的index
+    """
+    explanation:
+        创建股票的小时线的index
 
-    Arguments:
-        day {[type]} -- [description]
-
-    Returns:
-        [type] -- [description]
+    params:
+        * day ->
+            含义:天数
+            类型:int
+            参数支持: []
+        * type_ ->
+            含义: 周期索引
+            类型: str
+            参数支持: ["1h"]
     """
 
     if QA_util_if_trade(day) is True:
@@ -122,7 +141,28 @@ def QA_util_make_hour_index(day, type_='1h'):
 
 
 def QA_util_time_gap(time, gap, methods, type_):
-    '分钟线回测的时候的gap'
+    """
+    explanation:
+        分钟线回测的时候的gap, 按交易日往前往后推
+
+    params:
+        * time ->
+            含义:时间
+            类型:int
+            参数支持: []
+        * gap ->
+            含义: gap
+            类型:float
+            参数支持: []
+        * methods ->
+            含义:方向
+            类型:str
+            参数支持: [">", "gt",">=", "gte", "<", "lt", "<=", "lte"]
+        * type_ ->
+            含义: 周期
+            类型: str
+            参数支持: ["xmin"]
+    """
     min_len = int(240 / int(str(type_).split('min')[0]))
     day_gap = math.ceil(gap / min_len)
 
@@ -270,6 +310,3 @@ http://www.dce.com.cn/dalianshangpin/yw/fw/jystz/ywtz/6156940/index.html
 
 
 """
-
-if __name__ == '__main__':
-    pass

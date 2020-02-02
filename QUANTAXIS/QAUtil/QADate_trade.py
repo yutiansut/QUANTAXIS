@@ -7377,16 +7377,19 @@ trade_date_sse = [
 
 def QA_util_format_date2str(cursor_date):
     """
-    对输入日期进行格式化处理，返回格式为 "%Y-%m-%d" 格式字符串
-    支持格式包括:
-    1. str: "%Y%m%d" "%Y%m%d%H%M%S", "%Y%m%d %H:%M:%S",
-            "%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H%M%S"
-    2. datetime.datetime
-    3. pd.Timestamp
-    4. int -> 自动在右边加 0 然后转换，譬如 '20190302093' --> "2019-03-02"
-
-    :param cursor_date: str/datetime.datetime/int 日期或时间
-    :return: str 返回字符串格式日期
+    explanation:
+        对输入日期进行格式化处理，返回格式为 "%Y-%m-%d" 格式字符串
+        支持格式包括:
+        1. str: "%Y%m%d" "%Y%m%d%H%M%S", "%Y%m%d %H:%M:%S",
+                "%Y-%m-%d", "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H%M%S"
+        2. datetime.datetime
+        3. pd.Timestamp
+        4. int -> 自动在右边加 0 然后转换，譬如 '20190302093' --> "2019-03-02"
+    params:
+        * cursor_date->
+            含义: 输入日期
+            类型: str
+            参数支持: []
     """
     if isinstance(cursor_date, datetime.datetime):
         cursor_date = str(cursor_date)[:10]
@@ -7404,9 +7407,18 @@ def QA_util_format_date2str(cursor_date):
 
 def QA_util_get_next_trade_date(cursor_date, n=1):
     """
-    得到下 n 个交易日 (不包含当前交易日)
-    :param date:
-    :param n:
+    explanation:
+        根据输入日期得到下 n 个交易日 (不包含当前交易日)
+        
+    params:
+        * cursor_date->
+            含义: 输入日期
+            类型: str
+            参数支持: []
+        * n->
+            含义: 步长,默认为1
+            类型: int
+            参数支持: [int]
     """
 
     cursor_date = QA_util_format_date2str(cursor_date)
@@ -7419,9 +7431,18 @@ def QA_util_get_next_trade_date(cursor_date, n=1):
 
 def QA_util_get_pre_trade_date(cursor_date, n=1):
     """
-    得到前 n 个交易日 (不包含当前交易日)
-    :param date:
-    :param n:
+    explanation:
+        得到前 n 个交易日 (不包含当前交易日)
+        
+    params:
+        * cursor_date->
+            含义: 输入日期
+            类型: str
+            参数支持: []
+        * n->
+            含义: 步长,默认为1
+            类型: int
+            参数支持: [int]
     """
 
     cursor_date = QA_util_format_date2str(cursor_date)
@@ -7433,12 +7454,13 @@ def QA_util_get_pre_trade_date(cursor_date, n=1):
 
 
 def QA_util_if_trade(day):
-    '''
+    """
+    得到前 n 个交易日 (不包含当前交易日)
     '日期是否交易'
     查询上面的 交易日 列表
     :param day: 类型 str eg: 2018-11-11
     :return: Boolean 类型
-    '''
+    """
     if day in trade_date_sse:
         return True
     else:
@@ -7450,7 +7472,24 @@ def QA_util_if_tradetime(
         market=MARKET_TYPE.STOCK_CN,
         code=None
 ):
-    '时间是否交易'
+    """
+    explanation:
+        时间是否交易
+        
+    params:
+        * _time->
+            含义: 指定时间
+            类型: datetime
+            参数支持: []
+        * market->
+            含义: 市场
+            类型: int
+            参数支持: [MARKET_TYPE.STOCK_CN]
+        * code->
+            含义: 代码
+            类型: str
+            参数支持: [None]
+    """
     _time = datetime.datetime.strptime(str(_time)[0:19], '%Y-%m-%d %H:%M:%S')
     if market is MARKET_TYPE.STOCK_CN:
         if QA_util_if_trade(str(_time.date())[0:10]):
@@ -7550,28 +7589,59 @@ def QA_util_if_tradetime(
 
 
 def QA_util_get_next_day(date, n=1):
-    '''
-    得到下一个(n)交易日
-    :param date: 类型 str eg: 2018-11-11
-    :param n:  整形
-    :return: 字符串 str eg: 2018-11-12
-    '''
+    """
+    explanation:
+        得到下一个(n)交易日
+        
+    params:
+        * date->
+            含义: 日期
+            类型: str
+            参数支持: []
+        * n->
+            含义: 步长
+            类型: int
+            参数支持: [int]
+    """
     date = str(date)[0:10]
     return QA_util_date_gap(date, n, 'gt')
 
 
 def QA_util_get_last_day(date, n=1):
-    '''
-    得到上一个(n)交易日
-    :param  date: 类型 str eg: 2018-11-11
-    :param n:  整形
-    :return: 字符串 str eg: 2018-11-10
-    '''
+    """
+    explanation:
+       得到上一个(n)交易日
+        
+    params:
+        * date->
+            含义: 日期
+            类型: str
+            参数支持: []
+        * n->
+            含义: 步长
+            类型: int
+            参数支持: [int]
+    """
     date = str(date)[0:10]
     return QA_util_date_gap(date, n, 'lt')
 
 
 def QA_util_get_last_datetime(datetime, day=1):
+    """
+    explanation:
+        获取几天前交易日的时间
+        
+    params:
+        * datetime->
+            含义: 指定时间
+            类型: datetime
+            参数支持: []
+        * day->
+            含义: 指定时间
+            类型: int
+            参数支持: []
+    """
+
     date = str(datetime)[0:10]
     return '{} {}'.format(QA_util_date_gap(date, day, 'lt'), str(datetime)[11:])
 
@@ -7583,11 +7653,22 @@ def QA_util_get_next_datetime(datetime, day=1):
 
 def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
     """
-    获取真实的交易日期,其中,第三个参数towards是表示向前/向后推
-    towards=1 日期向后迭代
-    towards=-1 日期向前迭代
-    @ yutiansut
-
+    explanation:
+        获取真实的交易日期
+        
+    params:
+        * date->
+            含义: 日期
+            类型: date
+            参数支持: []
+        * trade_list->
+            含义: 交易列表
+            类型: List
+            参数支持: []
+        * towards->
+            含义: 方向， 1 -> 向前, -1 -> 向后
+            类型: int
+            参数支持: [1， -1]
     """
     date = str(date)[0:10]
     if towards == 1:
@@ -7612,12 +7693,19 @@ def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
 
 def QA_util_get_real_datelist(start, end):
     """
-    取数据的真实区间,返回的时候用 start,end=QA_util_get_real_datelist
-    @yutiansut
-    2017/8/10
-
-    当start end中间没有交易日 返回None, None
-    @yutiansut/ 2017-12-19
+    explanation:
+        取数据的真实区间，当start end中间没有交易日时返回None, None,
+        同时返回的时候用 start,end=QA_util_get_real_datelist
+        
+    params:
+        * start->
+            含义: 开始日期
+            类型: date
+            参数支持: []
+        * end->
+            含义: 截至日期
+            类型: date
+            参数支持: []
     """
     real_start = QA_util_get_real_date(start, trade_date_sse, 1)
     real_end = QA_util_get_real_date(end, trade_date_sse, -1)
@@ -7628,7 +7716,20 @@ def QA_util_get_real_datelist(start, end):
 
 
 def QA_util_get_trade_range(start, end):
-    '给出交易具体时间'
+    """
+    explanation:
+       给出交易具体时间
+        
+    params:
+        * start->
+            含义: 开始日期
+            类型: date
+            参数支持: []
+        * end->
+            含义: 截至日期
+            类型: date
+            参数支持: []
+    """
     start, end = QA_util_get_real_datelist(start, end)
     if start is not None:
         return trade_date_sse[trade_date_sse
@@ -7638,7 +7739,20 @@ def QA_util_get_trade_range(start, end):
 
 
 def QA_util_get_trade_gap(start, end):
-    '返回start_day到end_day中间有多少个交易天 算首尾'
+    """
+    explanation:
+        返回start_day到end_day中间有多少个交易天 算首尾
+        
+    params:
+        * start->
+            含义: 开始日期
+            类型: date
+            参数支持: []
+        * end->
+            含义: 截至日期
+            类型: date
+            参数支持: []
+   """
     start, end = QA_util_get_real_datelist(start, end)
     if start is not None:
         return trade_date_sse.index(end) + 1 - trade_date_sse.index(start)
@@ -7647,12 +7761,24 @@ def QA_util_get_trade_gap(start, end):
 
 
 def QA_util_date_gap(date, gap, methods):
-    '''
-    :param date: 字符串起始日 类型 str eg: 2018-11-11
-    :param gap: 整数 间隔多数个交易日
-    :param methods:  gt大于 ，gte 大于等于， 小于lt ，小于等于lte ， 等于===
-    :return: 字符串 eg：2000-01-01
-    '''
+    """
+    explanation:
+        返回start_day到end_day中间有多少个交易天 算首尾
+        
+    params:
+        * date->
+            含义: 字符串起始日
+            类型: str
+            参数支持: []
+        * gap->
+            含义: 间隔多数个交易日
+            类型: int
+            参数支持: [int]
+        * methods->
+            含义: 方向
+            类型: str
+            参数支持: ["gt->大于", "gte->大于等于","小于->lt", "小于等于->lte", "等于->==="]
+    """
     try:
         if methods in ['>', 'gt']:
             return trade_date_sse[trade_date_sse.index(date) + gap]
@@ -7670,10 +7796,15 @@ def QA_util_date_gap(date, gap, methods):
 
 
 def QA_util_get_trade_datetime(dt=datetime.datetime.now()):
-    """交易的真实日期
-
-    Returns:
-        [type] -- [description]
+    """
+    explanation:
+        获取交易的真实日期
+        
+    params:
+        * dt->
+            含义: 时间
+            类型: datetime
+            参数支持: []
     """
 
     #dt= datetime.datetime.now()
@@ -7685,10 +7816,16 @@ def QA_util_get_trade_datetime(dt=datetime.datetime.now()):
 
 
 def QA_util_get_order_datetime(dt):
-    """委托的真实日期
+    """
+    explanation:
+        获取委托的真实日期
+        
+    params:
+        * dt->
+            含义: 委托的时间
+            类型: datetime
+            参数支持: []
 
-    Returns:
-        [type] -- [description]
     """
 
     #dt= datetime.datetime.now()
@@ -7708,13 +7845,15 @@ def QA_util_get_order_datetime(dt):
 
 
 def QA_util_future_to_tradedatetime(real_datetime):
-    """输入是真实交易时间,返回按期货交易所规定的时间* 适用于tb/文华/博弈的转换
-
-    Arguments:
-        real_datetime {[type]} -- [description]
-
-    Returns:
-        [type] -- [description]
+    """
+    explanation:
+        输入是真实交易时间,返回按期货交易所规定的时间* 适用于tb/文华/博弈的转换
+        
+    params:
+        * real_datetime->
+            含义: 真实交易时间
+            类型: datetime
+            参数支持: []
     """
     if len(str(real_datetime)) >= 19:
         dt = datetime.datetime.strptime(
@@ -7737,13 +7876,15 @@ def QA_util_future_to_tradedatetime(real_datetime):
 
 
 def QA_util_future_to_realdatetime(trade_datetime):
-    """输入是交易所规定的时间,返回真实时间*适用于通达信的时间转换
-
-    Arguments:
-        trade_datetime {[type]} -- [description]
-
-    Returns:
-        [type] -- [description]
+    """
+    explanation:
+       输入是交易所规定的时间,返回真实时间*适用于通达信的时间转换
+        
+    params:
+        * trade_datetime->
+            含义: 真实交易时间
+            类型: datetime
+            参数支持: []
     """
     if len(str(trade_datetime)) == 19:
         dt = datetime.datetime.strptime(

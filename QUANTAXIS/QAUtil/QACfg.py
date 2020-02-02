@@ -36,14 +36,20 @@ def QA_util_cfg_initial(CONFIG_FILE):
 
 
 def QA_util_get_cfg(__file_path, __file_name):
-    """[summary]
+    """
+    explanation:
+        获取配置信息
 
-    Arguments:
-        __file_path {[type]} -- [description]
-        __file_name {[type]} -- [description]
+    params:
+        * __file_path ->
+            含义: 配置文件地址
+            类型: str
+            参数支持: []
+        * __file_name ->
+            含义: 文件名
+            类型: str
+            参数支持: []
 
-    Returns:
-        [type] -- [description]
     """
     __setting_file = ConfigParser()
     try:
