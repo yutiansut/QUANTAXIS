@@ -1412,7 +1412,15 @@ def QA_fetch_get_extensionmarket_info(ip=None, port=None):
 
 
 def QA_fetch_get_extensionmarket_list(ip=None, port=None):
-    '期货代码list'
+    """获取所以扩展市场交易品种list
+    
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    
+    Returns:
+        [type] -- [description]
+    """
     ip, port = get_extensionmarket_ip(ip, port)
     apix = TdxExHq_API()
     with apix.connect(ip, port):
@@ -1424,19 +1432,17 @@ def QA_fetch_get_extensionmarket_list(ip=None, port=None):
 
 
 def QA_fetch_get_future_list(ip=None, port=None):
-    """[summary]
+    """获取国内期货市场所有交易合约列表
+
     Keyword Arguments:
         ip {[type]} -- [description] (default: {None})
         port {[type]} -- [description] (default: {None})
     42         3      商品指数         TI
-    60         3    主力期货合约         MA
+    60         3    主力期货合约        MA
     28         3      郑州商品         QZ
     29         3      大连商品         QD
     30         3      上海期货(原油+贵金属)  QS
     47         3     中金所期货         CZ
-    50         3      渤海商品         BH
-    76         3      齐鲁商品         QL
-    46        11      上海黄金(伦敦金T+D)         SG
     """
 
     global extension_market_list
@@ -1445,6 +1451,45 @@ def QA_fetch_get_future_list(ip=None, port=None):
 
     return extension_market_list.query(
         'market==42 or market==28 or market==29 or market==30 or market==47')
+
+def QA_fetch_get_future_symbol_list(ip=None, port=None):
+    """获取国内期货交易品种列表,根据QA_fetch_get_future_list结果,处理获取品种名称
+    
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    """
+    df=QA_fetch_get_future_list()
+
+    cons=[]
+    for i in df['code'].values:
+        if i[-2:]=='L8':
+            cons.append(i[:-2])
+    
+    name,market=[],[]
+
+    def get_market_name(num):
+        if num==42:
+            return '商品指数'
+        elif num==60:
+            return '主力期货合约'
+        elif num==28:
+            return '郑州商品'
+        elif num==29:
+            return '大连商品'
+        elif num==30:
+            return '上海期货'
+        elif num==47:
+            return '中金所期货'
+            
+    for i in cons:
+        details=df.loc[i+'L8']
+        name.append(details['name'][:-2])
+        market.append(get_market_name(details['market']))
+    
+    res=dict(symbol=cons,name=name,market=market)
+    return pd.DataFrame(res)
+    return pd.DataFrame([cons,name,market],columns='symbol,name,market'.split(',')).T
 
 
 def QA_fetch_get_globalindex_list(ip=None, port=None):
