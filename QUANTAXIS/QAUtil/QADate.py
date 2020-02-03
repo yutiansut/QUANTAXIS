@@ -227,6 +227,7 @@ def QA_util_time_stamp(time_):
 
 
 def QA_util_tdxtimestamp(time_stamp):
+
     """
     explanation:
        转换tdx的realtimeQuote数据, [相关地址](https://github.com/rainx/pytdx/issues/187#issuecomment-441270487)
@@ -239,6 +240,7 @@ def QA_util_tdxtimestamp(time_stamp):
 
     return:
         int
+
     """
     if time_stamp is not None:
         time_stamp = str(time_stamp)

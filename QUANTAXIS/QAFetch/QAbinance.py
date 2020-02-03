@@ -10,8 +10,9 @@ import pandas as pd
 from requests.exceptions import ConnectTimeout
 
 from urllib.parse import urljoin
-from QUANTAXIS.QAUtil.QAcrypto import TIMEOUT, ILOVECHINA
-
+# from QUANTAXIS.QAUtil.QAcrypto import TIMEOUT, ILOVECHINA
+TIMEOUT = 10
+ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！"
 Binance_base_url = "https://api.binance.com"
 
 columne_names = ['start_time', 'open', 'high', 'low', 'close', 'volume', 'close_time',

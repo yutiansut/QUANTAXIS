@@ -756,7 +756,7 @@ class QA_PortfolioView():
     @property
     def code(self):
         return pd.concat(
-            [pd.Series(account.code) for account in self.accounts]
+            [pd.Series(account.code) for account in self.accounts], sort=False
         ).drop_duplicates().tolist()
 
     @property
@@ -784,38 +784,38 @@ class QA_PortfolioView():
         # res = res.assign(date=res.index)
         # res.date = res.date.apply(lambda x: str(x)[0:10])
 
-        return pd.concat([item.daily_cash for item in self.accounts]).groupby(level=0).sum()\
+        return pd.concat([item.daily_cash for item in self.accounts], sort=False).groupby(level=0).sum()\
             .assign(account_cookie=self.account_cookie).reset_index().set_index(['date', 'account_cookie'], drop=False)
 
     @property
     def daily_hold(self):
-        return pd.concat([account.daily_hold for account in self.accounts])\
+        return pd.concat([account.daily_hold for account in self.accounts], sort=False)\
             .groupby('date').sum().assign(account_cookie=self.account_cookie)\
             .reset_index().set_index(['date', 'account_cookie'])
 
 
     @property
     def daily_frozen(self):
-        return pd.concat([account.daily_frozen for account in self.accounts], axis=1).sum(axis=1)
+        return pd.concat([account.daily_frozen for account in self.accounts], axis=1, sort=False).sum(axis=1)
 
 
     @property
     def trade(self):
-        return pd.concat([item.trade for item in self.accounts]).groupby(level=0).sum()\
+        return pd.concat([item.trade for item in self.accounts], sort=False).groupby(level=0).sum()\
             .assign(account_cookie=self.account_cookie).reset_index().set_index(['datetime', 'account_cookie'])
 
     @property
     def history_table(self):
-        return pd.concat([item.history_table for item in self.accounts]
+        return pd.concat([item.history_table for item in self.accounts], sort=False
                          ).sort_index()
 
     @property
     def trade_day(self):
-        return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
+        return pd.concat([pd.Series(item.trade_day) for item in self.accounts], sort=False
                          ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):
         return pd.concat(
-            [pd.Series(item.trade_range) for item in self.accounts]
+            [pd.Series(item.trade_range) for item in self.accounts], sort=False
         ).drop_duplicates().sort_values().tolist()
