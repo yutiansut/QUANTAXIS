@@ -25,7 +25,10 @@
 import datetime
 import pandas as pd
 
-from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
+from QUANTAXIS.QAUtil.QAParameter import (
+    MARKET_TYPE,
+    FREQUENCE
+)
 
 # todo 🛠 只记录非交易日，其余的用程序迭代 生成交易日
 
@@ -7375,6 +7378,7 @@ trade_date_sse = [
     '2020-12-31'
 ]
 
+
 def QA_util_format_date2str(cursor_date):
     """
     explanation:
@@ -7405,11 +7409,33 @@ def QA_util_format_date2str(cursor_date):
     return cursor_date
 
 
+def QA_util_get_next_period(datetime, frequence='1min'):
+    '''
+    得到给定频率的下一个周期起始时间
+    :param datetime: 类型 datetime eg: 2018-11-11 13:01:01
+    :param frequence: 类型 str eg: '30min'
+    :return: datetime eg: 2018-11-11 13:31:00
+    '''
+    freq = {
+        FREQUENCE.YEAR: 'Y',
+        FREQUENCE.QUARTER: 'Q',
+        FREQUENCE.MONTH: 'M',
+        FREQUENCE.WEEK: 'W',
+        FREQUENCE.DAY: 'D',
+        FREQUENCE.SIXTY_MIN: '60T',
+        FREQUENCE.THIRTY_MIN: '30T',
+        FREQUENCE.FIFTEEN_MIN: '15T',
+        FREQUENCE.FIVE_MIN: '5T',
+        FREQUENCE.ONE_MIN: 'T'
+    }
+    return (pd.Period(datetime, freq=freq[frequence]) + 1).to_timestamp()
+
+
 def QA_util_get_next_trade_date(cursor_date, n=1):
     """
     explanation:
         根据输入日期得到下 n 个交易日 (不包含当前交易日)
-        
+
     params:
         * cursor_date->
             含义: 输入日期
@@ -7433,7 +7459,7 @@ def QA_util_get_pre_trade_date(cursor_date, n=1):
     """
     explanation:
         得到前 n 个交易日 (不包含当前交易日)
-        
+
     params:
         * cursor_date->
             含义: 输入日期
@@ -7450,7 +7476,6 @@ def QA_util_get_pre_trade_date(cursor_date, n=1):
         return QA_util_date_gap(cursor_date, n, "lt")
     real_aft_trade_date = QA_util_get_real_date(cursor_date)
     return QA_util_date_gap(real_aft_trade_date, n, "lt")
-
 
 
 def QA_util_if_trade(day):
@@ -7475,7 +7500,7 @@ def QA_util_if_tradetime(
     """
     explanation:
         时间是否交易
-        
+
     params:
         * _time->
             含义: 指定时间
@@ -7505,16 +7530,16 @@ def QA_util_if_tradetime(
                 return False
         else:
             return False
-    elif market is MARKET_TYPE.FUTURE_CN:                              
-        date_today=str(_time.date())    
-        date_yesterday=str((_time-datetime.timedelta(days=1)).date())                         
-        
-        is_today_open=QA_util_if_trade(date_today)
-        is_yesterday_open=QA_util_if_trade(date_yesterday)
-        
-        #考虑周六日的期货夜盘情况
-        if is_today_open==False: #可能是周六或者周日
-            if is_yesterday_open==False or (_time.hour > 2 or _time.hour == 2 and _time.minute > 30):
+    elif market is MARKET_TYPE.FUTURE_CN:
+        date_today = str(_time.date())
+        date_yesterday = str((_time-datetime.timedelta(days=1)).date())
+
+        is_today_open = QA_util_if_trade(date_today)
+        is_yesterday_open = QA_util_if_trade(date_yesterday)
+
+        # 考虑周六日的期货夜盘情况
+        if is_today_open == False:  # 可能是周六或者周日
+            if is_yesterday_open == False or (_time.hour > 2 or _time.hour == 2 and _time.minute > 30):
                 return False
 
         shortName = ""                      # i , p
@@ -7529,7 +7554,7 @@ def QA_util_if_tradetime(
             [10, 30, 11, 30],
             [13, 30, 15, 0]
         ]
-        
+
         if (shortName in ["IH", 'IF', 'IC']):
             period = [
                 [9, 30, 11, 30],
@@ -7540,29 +7565,30 @@ def QA_util_if_tradetime(
                 [9, 15, 11, 30],
                 [13, 0, 15, 15]
             ]
-        
-        if 0<=_time.weekday()<=4:
+
+        if 0 <= _time.weekday() <= 4:
             for i in range(len(period)):
                 p = period[i]
                 if ((_time.hour > p[0] or (_time.hour == p[0] and _time.minute >= p[1])) and (_time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3]))):
                     return True
 
-        #最新夜盘时间表_2019.03.29
+        # 最新夜盘时间表_2019.03.29
         nperiod = [
             [
                 ['AU', 'AG', 'SC'],
-                [21, 0, 2, 30]  
+                [21, 0, 2, 30]
             ],
             [
                 ['CU', 'AL', 'ZN', 'PB', 'SN', 'NI'],
-                [21, 0, 1, 0]   
+                [21, 0, 1, 0]
             ],
             [
-                ['RU', 'RB', 'HC', 'BU','FU','SP'],
+                ['RU', 'RB', 'HC', 'BU', 'FU', 'SP'],
                 [21, 0, 23, 0]
             ],
             [
-                ['A', 'B', 'Y', 'M', 'JM', 'J', 'P', 'I', 'L', 'V', 'PP', 'EG', 'C', 'CS'],
+                ['A', 'B', 'Y', 'M', 'JM', 'J', 'P', 'I',
+                    'L', 'V', 'PP', 'EG', 'C', 'CS'],
                 [21, 0, 23, 0]
             ],
             [
@@ -7575,8 +7601,10 @@ def QA_util_if_tradetime(
             for j in range(len(nperiod[i][0])):
                 if nperiod[i][0][j] == shortName:
                     p = nperiod[i][1]
-                    condA = _time.hour > p[0] or (_time.hour == p[0] and _time.minute >= p[1])
-                    condB = _time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3])
+                    condA = _time.hour > p[0] or (
+                        _time.hour == p[0] and _time.minute >= p[1])
+                    condB = _time.hour < p[2] or (
+                        _time.hour == p[2] and _time.minute < p[3])
                     # in one day
                     if p[2] >= p[0]:
                         if ((_time.weekday() >= 0 and _time.weekday() <= 4) and condA and condB):
@@ -7592,7 +7620,7 @@ def QA_util_get_next_day(date, n=1):
     """
     explanation:
         得到下一个(n)交易日
-        
+
     params:
         * date->
             含义: 日期
@@ -7611,7 +7639,7 @@ def QA_util_get_last_day(date, n=1):
     """
     explanation:
        得到上一个(n)交易日
-        
+
     params:
         * date->
             含义: 日期
@@ -7630,7 +7658,7 @@ def QA_util_get_last_datetime(datetime, day=1):
     """
     explanation:
         获取几天前交易日的时间
-        
+
     params:
         * datetime->
             含义: 指定时间
@@ -7655,7 +7683,7 @@ def QA_util_get_real_date(date, trade_list=trade_date_sse, towards=-1):
     """
     explanation:
         获取真实的交易日期
-        
+
     params:
         * date->
             含义: 日期
@@ -7696,7 +7724,7 @@ def QA_util_get_real_datelist(start, end):
     explanation:
         取数据的真实区间，当start end中间没有交易日时返回None, None,
         同时返回的时候用 start,end=QA_util_get_real_datelist
-        
+
     params:
         * start->
             含义: 开始日期
@@ -7719,7 +7747,7 @@ def QA_util_get_trade_range(start, end):
     """
     explanation:
        给出交易具体时间
-        
+
     params:
         * start->
             含义: 开始日期
@@ -7742,7 +7770,7 @@ def QA_util_get_trade_gap(start, end):
     """
     explanation:
         返回start_day到end_day中间有多少个交易天 算首尾
-        
+
     params:
         * start->
             含义: 开始日期
@@ -7764,7 +7792,7 @@ def QA_util_date_gap(date, gap, methods):
     """
     explanation:
         返回start_day到end_day中间有多少个交易天 算首尾
-        
+
     params:
         * date->
             含义: 字符串起始日
@@ -7799,7 +7827,7 @@ def QA_util_get_trade_datetime(dt=datetime.datetime.now()):
     """
     explanation:
         获取交易的真实日期
-        
+
     params:
         * dt->
             含义: 时间
@@ -7819,7 +7847,7 @@ def QA_util_get_order_datetime(dt):
     """
     explanation:
         获取委托的真实日期
-        
+
     params:
         * dt->
             含义: 委托的时间
@@ -7848,7 +7876,7 @@ def QA_util_future_to_tradedatetime(real_datetime):
     """
     explanation:
         输入是真实交易时间,返回按期货交易所规定的时间* 适用于tb/文华/博弈的转换
-        
+
     params:
         * real_datetime->
             含义: 真实交易时间
@@ -7879,7 +7907,7 @@ def QA_util_future_to_realdatetime(trade_datetime):
     """
     explanation:
        输入是交易所规定的时间,返回真实时间*适用于通达信的时间转换
-        
+
     params:
         * trade_datetime->
             含义: 真实交易时间
