@@ -13,8 +13,8 @@ from dateutil.relativedelta import relativedelta
 from requests.exceptions import ConnectTimeout
 
 from urllib.parse import urljoin
-from QUANTAXIS.QAUtil.QAcrypto import TIMEOUT, ILOVECHINA
-
+TIMEOUT = 10
+ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！"
 Bitmex_base_url = "https://www.bitmex.com/api/v1/"
 
 MAX_HISTORY = 750
