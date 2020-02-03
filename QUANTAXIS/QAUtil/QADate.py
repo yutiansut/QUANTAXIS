@@ -156,10 +156,10 @@ def QA_util_time_stamp(time_):
 def QA_util_tdxtimestamp(time_stamp):
     """转换tdx的realtimeQuote数据
     https://github.com/rainx/pytdx/issues/187#issuecomment-441270487
-    
+
     Arguments:
         timestamp {[type]} -- [description]
-    
+
     Returns:
         [type] -- [description]
     """
