@@ -266,7 +266,8 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     QA_util_to_datetime, QA_util_to_json_from_pandas,
     QA_util_to_list_from_numpy, QA_util_to_list_from_pandas,
     QA_util_to_pandas_from_json, QA_util_to_pandas_from_list, QA_util_web_ping,
-    QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse)
+    QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse,
+    QA_util_get_next_period)
 
 # Factor
 from QUANTAXIS.QAFactor.analyze import FactorAnalyzer
