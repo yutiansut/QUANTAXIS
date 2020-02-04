@@ -1489,7 +1489,7 @@ def QA_fetch_get_future_symbol_list(ip=None, port=None):
     
     res=dict(symbol=cons,name=name,market=market)
     return pd.DataFrame(res)
-    return pd.DataFrame([cons,name,market],columns='symbol,name,market'.split(',')).T
+
 
 
 def QA_fetch_get_globalindex_list(ip=None, port=None):
