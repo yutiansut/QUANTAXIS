@@ -1,0 +1,153 @@
+<!doctype html>
+
+<!--
+  A presentation done entirely in Markdown, as found in extras/markdown/.
+  
+  By: @henrikingo
+-->
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>QUANTAXIS </title>
+    
+    <meta name="description" content="Authoring impress.js presentations in Markdown" />
+    <meta name="author" content="Henrik Ingo" />
+    <link rel="stylesheet" href="http://pic.yutiansut.com/qtcreator_light.css">
+
+        
+    <!--
+        Styles specific for this example presentation. 
+    -->
+    <link href="http://pic.yutiansut.com/markdown-slides.css" rel="stylesheet" />
+    <link href="http://pic.yutiansut.com/devopsy.css" rel="stylesheet" />
+    <link href="http://pic.yutiansut.com/effects.css" rel="stylesheet" />
+    
+</head>
+
+<body class="impress-not-supported">
+<div class="fallback-message">
+    <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+    <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+</div>
+
+<div id="impress" data-transition-duration="1000">
+
+<div id="markdown" class="step slide markdown" data-rel-x="0" data-rel-y="900">
+# QUANTAXIS
+## Quantitative Financial FrameWork
+
+* 核心功能
+* 解决方案
+* 社区
+
+-----
+# 核心功能
+
+* 数据服务
+* 分析服务
+* 可扩展事件驱动框架
+* 回测服务
+* 多市场实盘接入
+* 网站HTTP服务
+
+
+</div>
+
+<div id="title-slide" class="step slide title markdown" data-x="2000" data-y="5000">
+# 数据服务
+## 提供历史数据运维和实时行情分发
+</div>
+
+<div id="title-slide1" class="step slide markdown" data-rotate="-85" data-x="4000" data-y="5000">
+# 历史数据运维(落地数据库)
+
+- A股市场 日线/分钟线/tick 行情
+- A股市场 28年财务数据
+- 期货市场 日线/分钟线/tick行情
+- 期权/指数/基金/ETF/汇率/国际期货/虚拟货币市场
+- 港股/美股
+</div>
+
+    
+<div id="title-slide2" class="step slide markdown" data-rotate="-25" data-x="6000" data-y="5000">
+# 实时行情分发
+- 免费的基于爬虫的实时数据
+- 付费的基于API的实时数据
+- 本地行情总线 分发给多个策略账户
+</div>
+    
+
+<div id="tilted-slide" class="step slide markdown" data-rotate="-85" data-x="2000" data-y="2000" data-z="1000" data-scale="4">
+# 分析服务
+  
+- QUANTAXIS.QA_DATASTRUCT  自定义的多市场多品种行情类
+- QUANTAXIS.QA_DATASTRUCT_Indicator 多品种多市场的指标类
+</div>
+
+<script type="text/javascript">
+var enableBwCss = function(){
+    disableDevopsCss();
+    disableEffectsCss();
+};
+
+var enableDevopsCss = function(){
+    document.body.classList.add("devopsy");
+    disableEffectsCss();
+};
+
+var disableDevopsCss = function(){
+    document.body.classList.remove("devopsy");
+};
+
+var enableEffectsCss = function(){
+    document.body.classList.add("effects");
+    disableDevopsCss();
+};
+
+var disableEffectsCss = function(){
+    document.body.classList.remove("effects");
+};
+</script>
+
+
+<div id="js-slide" class="step slide" data-rotate="0" data-x="4000" data-y="5000">
+<h1>CSS &amp; JavaScript magic</h1>
+
+<p>Just to emphasize my point, this last slide allows you to use a JavaScript powered menu to
+toggle the CSS style:</p>
+
+<p><a href="#" onclick="enableBwCss();" class="css-menu-bw">Black &amp; white</a>, 
+<a href="#" onclick="enableDevopsCss();" class="css-menu-devopsy">Devopsy</a>, 
+<a href="#" onclick="enableEffectsCss();" class="css-menu-effects">Effects overload</a></p>
+
+<p>Simplicity of Markdown married with full power of Impress.js!</p>
+
+</div>
+
+
+<div id="overview" class="step" data-x="5000" data-y="4000" data-scale="10" style="pointer-events: none;" data-rotate="5">
+</div>
+
+</div>
+
+<div id="impress-toolbar"></div>
+<div id="impress-help"></div>
+
+
+<!-- Extra modules
+     Load highlight.js, mermaid.js and markdown.js from extras.
+     See also src/plugins/extras/extras.js -->
+<script type="text/javascript" src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js"></script>
+<script type="text/javascript" src="http://pic.yutiansut.com/markdown.js"></script>
+
+<!--
+    To make all described above really work, you need to include impress.js in the page.
+    You also need to call a `impress().init()` function to initialize impress.js presentation.
+    And you should do it in the end of your document. 
+-->
+<script type="text/javascript" src="http://pic.yutiansut.com/impress.js"></script>
+<script>impress().init();enableEffectsCss()</script>
+</body>
+</html>

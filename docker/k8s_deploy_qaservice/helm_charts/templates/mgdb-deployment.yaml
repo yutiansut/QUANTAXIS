@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: E:\k8s-for-docker-desktop\kompose-windows-amd64.exe convert -c
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mgdb
+  name: mgdb
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mgdb
+    spec:
+      containers:
+      - env:
+        - name: MONGO_INITDB_DATABASE
+          value: quantaxis
+        - name: TZ
+          value: Asia/Shanghai
+        image: daocloud.io/quantaxis/qamongo_single:latest
+        name: mgdb
+        ports:
+        - containerPort: 27017
+        resources: {}
+        volumeMounts:
+        - mountPath: /data/db
+          name: qamg
+      restartPolicy: Always
+      volumes:
+      - name: qamg
+        persistentVolumeClaim:
+          claimName: qamg
+status: {}

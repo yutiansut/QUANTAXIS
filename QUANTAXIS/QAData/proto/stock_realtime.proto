@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+
+message stock_realtime{
+    string code=1;
+    string datetime=2;
+    float last_close=3;
+    float open=4;
+    float high=5;
+    float low=6;
+    float price=7;
+    float cur_vol=8;
+    float s_vol=9;
+    float b_vol=10;
+    float vol=11;
+    float ask1=12;
+    float ask_vol1=13;
+    float ask2=14;
+    float ask_vol2=15;
+    float ask3=16;
+    float ask_vol3=17;
+    float ask4=18;
+    float ask_vol4=19;
+    float ask5=20;
+    float ask_vol5=21;
+    float bid1=22;
+    float bid_vol1=23;
+    float bid2=24;
+    float bid_vol2=25;
+    float bid3=26;
+    float bid_vol3=27;
+    float bid4=28;
+    float bid_vol4=29;
+    float bid5=30;
+    float bid_vol5=31;
+
+
+    
+}

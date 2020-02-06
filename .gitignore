@@ -1,7 +1,9 @@
 
 # Self-defined ignore
-
+_data_/
+_notebooks_/
 *.pyc
+*.pyd
 node_modules/
 .vscode/
 *.7z
@@ -21,7 +23,9 @@ node_modules/
 QA_*.html
 test/
 *lock.json
-
+docs
+record.txt
+build/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
@@ -29,16 +33,14 @@ __pycache__/
 
 #zip
 *.zip
-
 # C extensions
 *.so
 
 # Distribution / packaging
 .Python
 env/
-
+_build
 develop-eggs/
-downloads/
 eggs/
 .eggs/
 lib64/
@@ -136,7 +138,7 @@ ENV/
 
 #jupyter
 
-*.ipynb
+
 
 
 # jupyter-kernel
@@ -147,3 +149,27 @@ kernel*.json
 # packge-lock
 
 .\vs
+
+
+
+# sqlite database
+*.db
+
+
+*.dad
+*.cover
+
+#future connections
+
+*.con
+/QUANTAXIS_Test/QAFetch_Test/data/
+*.sqlite_db
+
+selenium_driver/*
+QUANTAXIS_WEBDRIVER/*
+
+celerybeat*
+
+/data/
+
+/quantaxis_env/

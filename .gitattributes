@@ -1,0 +1,6 @@
+*.html linguist-language=QUANTAXIS
+*.ipynb linguist-language=python
+*.h linguist-language=*
+*.cc linguist-language=*
+*.pb.cc linguist-language=*
+*.pc.h linguist-language=*

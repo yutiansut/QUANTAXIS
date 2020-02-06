@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,16 @@
 
 import csv
 import os
-import sys
 
-from QUANTAXIS.QAUtil import QA_Setting, QA_util_log_expection
-
-
+from QUANTAXIS.QAUtil import QA_util_log_expection
+"""适用于老代码的回测
+现在已经废弃
+"""
+"""
 def QA_SU_save_account_message(message, client):
-    #header = message['header']
-    #body = message['body']
     coll = client.quantaxis.backtest_history
     try:
         coll.insert({
-            #'time': message['body']['time'],
-
             'time_stamp': message['body']['date_stamp'],
             "cookie": message['header']['cookie'],
             'user': message['header']['session']['user'],
@@ -48,8 +45,7 @@ def QA_SU_save_account_message(message, client):
             'detail': message['body']['account']['detail']
         })
     except:
-        QA_util_log_expection('error in saving backtest account')
-    # print(message)
+        QA_util_log_expection('QA error in saving backtest account')
 
 
 def QA_SU_save_backtest_message(message, client):
@@ -58,9 +54,10 @@ def QA_SU_save_backtest_message(message, client):
     __coll.insert(message)
 
 
-def QA_SU_save_account_to_csv(message,path=os.getcwd()):
+def QA_SU_save_account_to_csv(message, path=os.getcwd()):
 
-    __file_name_1 = '{}backtest-ca&history-{}.csv'.format(path,str(message['header']['cookie']))
+    __file_name_1 = '{}backtest-ca&history-{}.csv'.format(
+        path, str(message['header']['cookie']))
     with open(__file_name_1, 'w', newline='') as C:
         csvwriter = csv.writer(C)
         csvwriter.writerow(['date', 'code', 'price', 'towards', 'amount',
@@ -84,11 +81,4 @@ def QA_SU_save_pnl_to_csv(detail, cookie):
         csvwriter_1.writerow(detail.columns)
         for item in detail:
             csvwriter_1.writerow(item)
-
-    """
-            'cash': message['body']['account']['cash'],
-            'hold': message['body']['account']['hold'],
-            'history': message['body']['account']['history'],
-            'assets': message['body']['account']['assets'],
-            'detail': message['body']['account']['detail']
 """

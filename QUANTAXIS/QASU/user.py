@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,46 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-from QUANTAXIS.QAUtil import QA_util_log_info
-import pymongo
 
-def QA_user_sign_in(name, password, clients=pymongo.MongoClient()):
-    coll = clients.quantaxis.user_list
-    if (coll.find({'username': name, 'password': password}).count() > 0):
-        QA_util_log_info('success login! your username is:' + str(name))
-        return True
-    else:
-        QA_util_log_info('Failed to login,please check your password ')
+
+from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
+#from QUANTAXIS.QAARP.QAUser import QA_User
+from QUANTAXIS.QAUtil.QASetting import DATABASE
+
+
+def QA_user_sign_in(username, password):
+    """用户登陆
+    不使用 QAUSER库
+    只返回 TRUE/FALSE
+    """
+    #user = QA_User(name= name, password=password)
+    cursor = DATABASE.user.find_one(
+        {'username': username, 'password': password})
+    if cursor is None:
+        QA_util_log_info('SOMETHING WRONG')
         return False
+    else:
+        return True
 
 
-def QA_user_sign_up(name, password, clients=pymongo.MongoClient()):
-    coll = clients.quantaxis.user_list
+def QA_user_sign_up(name, password, client):
+    """只做check! 具体逻辑需要在自己的函数中实现
+
+    参见:QAWEBSERVER中的实现
+    
+    Arguments:
+        name {[type]} -- [description]
+        password {[type]} -- [description]
+        client {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    coll = client.user
     if (coll.find({'username': name}).count() > 0):
+        print(name)
         QA_util_log_info('user name is already exist')
         return False
     else:
-        coll.insert({'username': name, 'password': password})
-        QA_util_log_info('Success sign in! please login ')
         return True

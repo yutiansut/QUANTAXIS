@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,10 @@ import time
 import numpy as np
 import pandas as pd
 import pymongo
-from QUANTAXIS.QAUtil import QA_util_date_valid, QA_util_log_info
-from . import data_list as data_list
 
+from QUANTAXIS.QAUtil import QA_util_date_valid, QA_util_log_info
+
+from QUANTAXIS.QAFetch import data_list as data_list
 
 
 def QA_fetch_get_stock_info(name, startDate, endDate):
@@ -65,7 +66,7 @@ def QA_fetch_get_stock_info(name, startDate, endDate):
                      startDate, endDate)
         # QA_util_log_info(data)
         if (data.ErrorCode != 0):
-            QA_util_log_info("Connent to Wind successfully")
+            QA_util_log_info("Connect to Wind successfully")
             return data.Data
 
 
@@ -92,7 +93,7 @@ def QA_fetch_get_stock_day(name, startDate, endDate, if_fq='01'):
             data = w.wsd(name, "sec_name,pre_close,open,high,low,close,volume",
                          startDate, endDate, "PriceAdj=B")
         if (data.ErrorCode == 0):
-            QA_util_log_info("Connent to Wind successfully")
+            QA_util_log_info("Connect to Wind successfully")
 
             return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
@@ -111,7 +112,7 @@ def QA_fetch_get_stock_day_simple(name, startDate, endDate):
         #data=w.wsd("000002.SZ", "open,high,low,close,volume", "2017-03-03", "2017-04-01", "PriceAdj=B")
         QA_util_log_info(data.ErrorCode)
         if (data.ErrorCode == 0):
-            QA_util_log_info("Connent to Wind successfully")
+            QA_util_log_info("Connect to Wind successfully")
             return data.Data
 
 
@@ -150,7 +151,7 @@ def QA_fetch_get_stock_indicator(name, startDate, endDate):
                      VMACD_L=26;VMACD_N=9;VMACD_IO=1;VOSC_S=12;VOSC_L=26;WVAD_N1=24;\
                      WVAD_N2=6;WVAD_IO=1;VolumeRatio_N=5")
         if (data.ErrorCode == 0):
-            QA_util_log_info("Connent to Wind successfully")
+            QA_util_log_info("Connect to Wind successfully")
     return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
@@ -167,7 +168,7 @@ def QA_fetch_get_stock_shape(name, startDate, endDate):
         data = w.wsd(name, "history_low,stage_high,history_high,stage_low,up_days,down_days,breakout_ma,breakdown_ma,bull_bear_ma",
                      startDate, endDate, "n=3;m=60;meanLine=60;N1=5;N2=10;N3=20;N4=30;upOrLow=1")
         if (data.ErrorCode == 0):
-            QA_util_log_info("Connent to Wind successfully")
+            QA_util_log_info("Connect to Wind successfully")
     return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
@@ -186,7 +187,7 @@ def QA_fetch_get_stock_risk(name, startDate, endDate):
                     risk_nonsysrisk1,r2,alpha2,beta,sharpe,treynor,jensen,jenseny,betadf",
                      startDate, endDate, "period=2;returnType=1;index=000001.SH;yield=1")
         if (data.ErrorCode == 0):
-            QA_util_log_info("Connent to Wind successfully")
+            QA_util_log_info("Connect to Wind successfully")
     return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
@@ -203,7 +204,7 @@ def QA_fetch_get_stock_xueqiu(name, startDate, endDate):
                     xq_focusadded,xq_commentsadded,xq_sharesadded,\
                     xq_WOW_focus,xq_WOW_comments,xq_WOW_shares", startDate, endDate, "")
         if (data.ErrorCode == 0):
-            QA_util_log_info("Connent to Wind successfully")
+            QA_util_log_info("Connect to Wind successfully")
     return pd.DataFrame(np.asarray(data.Data).T, columns=data.Fields, index=data.Times)
 
 
