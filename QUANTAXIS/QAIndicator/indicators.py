@@ -68,6 +68,18 @@ def QA_indicator_MA(DataFrame,*args,**kwargs):
     CLOSE = DataFrame['close']
     return pd.DataFrame({'MA{}'.format(N): MA(CLOSE, N)  for N in list(args)})
 
+def QA_indicator_MA_VOL(DataFrame,*args,**kwargs):
+    """MA_VOLU
+    
+    Arguments:
+        DataFrame {[type]} -- [description]
+    
+    Returns:
+        [type] -- [description]
+    """
+
+    VOL = DataFrame['volume']
+    return pd.DataFrame({'MA_VOL{}'.format(N): MA(VOL, N)  for N in list(args)})
 
 def QA_indicator_EMA(DataFrame, N):
     CLOSE = DataFrame['close']
