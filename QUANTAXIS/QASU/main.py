@@ -606,3 +606,80 @@ def QA_SU_save_stock_divyield_day():
 
 def QA_SU_save_stock_divyield_his():
     return save_stock_divyield.QA_SU_save_stock_divyield_his()
+
+
+def QA_SU_save_bond_list(engine, client=DATABASE):
+    """save bond_list
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_bond_list(client=client)
+
+
+@print_used_time
+def QA_SU_save_bond_day(engine, client=DATABASE, paralleled=False):
+    """save bond_day
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_bond_day(client=client)
+
+
+def QA_SU_save_single_bond_day(code, engine, client=DATABASE, paralleled=False):
+    """save bond_day
+
+    Arguments:
+        code: bond code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_single_bond_day(code=code, client=client)
+
+
+def QA_SU_save_bond_min(engine, client=DATABASE):
+    """save bond_min
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_bond_min(client=client)
+
+
+def QA_SU_save_single_bond_min(code, engine, client=DATABASE):
+    """save bond_min
+
+    Arguments:
+        code: bond code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_single_bond_min(code=code, client=client)
