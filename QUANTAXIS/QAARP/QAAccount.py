@@ -2117,7 +2117,7 @@ class QA_Account(QA_Worker):
         if self.market_type== MARKET_TYPE.FUTURE_CN:
             towards=ORDER_DIRECTION.BUY_OPEN
         else:
-            towards=QA.ORDER_DIRECTION.BUY
+            towards=ORDER_DIRECTION.BUY
 
 
 
@@ -2158,7 +2158,7 @@ class QA_Account(QA_Worker):
         if self.market_type== MARKET_TYPE.FUTURE_CN:
             towards=ORDER_DIRECTION.SELL_OPEN
         else:
-            towards=QA.ORDER_DIRECTION.SELL
+            towards=ORDER_DIRECTION.SELL
 
 
 
@@ -2199,7 +2199,7 @@ class QA_Account(QA_Worker):
             towards=ORDER_DIRECTION.BUY_CLOSE
         else:
             print("WARING: 当前账户是股票账户, 不应该使用此接口")
-            towards=QA.ORDER_DIRECTION.BUY
+            towards = ORDER_DIRECTION.BUY
 
 
 
@@ -2239,7 +2239,7 @@ class QA_Account(QA_Worker):
             towards=ORDER_DIRECTION.SELL_CLOSE
         else:
             print("WARING: 当前账户是股票账户, 不应该使用此接口")
-            towards=QA.ORDER_DIRECTION.SELL
+            towards=ORDER_DIRECTION.SELL
 
 
 
