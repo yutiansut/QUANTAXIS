@@ -10,7 +10,7 @@ services:
             qanetwork:
                 ipv4_address: 172.19.0.3
         ports:
-            - "8888:8888"
+            - "8889:8888"
             - "81:80"
         environment:
           - TZ=Asia/Shanghai
