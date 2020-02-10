@@ -609,7 +609,7 @@ class QA_Account(QA_Worker):
 
     def set_end_date(self, date):
         if QA_util_if_trade(date):
-            self._end = date
+            self.end_ = date
         else:
             print('error {} not a trade date'.format(date))
 
