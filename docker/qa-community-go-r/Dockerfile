@@ -6,6 +6,8 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN cd /root && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASIC \
 && pip install quantaxis-servicedetect \
 && pip install quantaxis-pubsub
+
+
 COPY run-community.sh /root/run-community.sh
 RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py\
     && mkdir -p /home/jovyan/.local/share/jupyter/kernels/gophernotes \
@@ -20,7 +22,7 @@ RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.p
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
     ## clean
 
-RUN pip install qgrid
+RUN pip install qgrid && pip install "dask[complete]"
 
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
@@ -61,11 +63,15 @@ RUN set -eux; \
     apt-get install -y build-essential libzmq3-dev pkg-config;
 
 RUN set -eux; \
-    cargo install evcxr_jupyter; \
+    cargo install evcxr_jupyter --force; \
     evcxr_jupyter --install;
 
+RUN echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c "source ~/.vimrc"
 
 RUN chmod +x /root/run-community.sh
 CMD ["bash", "/root/run-community.sh"]
 
+WORKDIR /home
+
 EXPOSE 80
+EXPOSE 8787

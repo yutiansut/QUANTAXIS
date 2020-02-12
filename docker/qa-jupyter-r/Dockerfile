@@ -15,10 +15,11 @@ COPY requirements.txt /requirements.txt
 # COPY pip.conf /root/.pip/pip.conf
 COPY source.list /etc/apt/sources.list
 
-RUN \ 
-    apt-get update \
+RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32  40976EAF437D05B5\
+    && apt-get update
+
     # && apt-get install -y apt-utils locales\
-    && apt-get install gcc -y --force-yes\
+RUN apt-get install gcc -y --force-yes\
     && locale-gen zh_CN.UTF-8 \
     && localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 \
     && echo "LANG=zh_CN.UTF-8" > /etc/locale.conf \

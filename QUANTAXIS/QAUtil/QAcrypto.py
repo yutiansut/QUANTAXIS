@@ -1,10 +1,20 @@
 from QUANTAXIS.QAUtil import (QASETTING, QA_util_log_info)
 
-TIMEOUT = 10
-ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！"
-
-
 def QA_SU_save_symbols(fetch_symnol_func, exchange):
+    """
+    explanation:
+        保存获取的代码列表
+    
+    params:
+        * fetch_symnol_func->
+            含义: 获取代码列表的函数对象,注意这是一个函数对象,而不是函数运行的实体
+            类型: func
+            参数支持: []
+        * exchange:
+            含义: 交易所代码
+            类型: str
+            参数支持: []
+    """
     symbols = fetch_symnol_func()
     col = QASETTING.client[exchange].symbols
     if col.find().count() == len(symbols):

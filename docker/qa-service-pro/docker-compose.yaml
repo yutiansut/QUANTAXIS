@@ -60,6 +60,7 @@ services:
         ports:
             - "8888:8888"
             - "81:80"
+            - "8787:8787"
         environment:
             - TZ=Asia/Shanghai
             - LANG=C.UTF-8
@@ -284,6 +285,26 @@ services:
         command: worker
 
 
+    editer:
+        image: yutiansut/qaeditor:latest
+        container_name: qaeditor
+        networks: 
+            qanetwork_pro:
+                ipv4_address: 172.19.3.14
+        ports: 
+            - "3001:3000"
+        environment:
+            - TZ=Asia/Shanghai
+            - LANG=C.UTF-8
+            - MONGODB=mgdb
+            - QARUN=qaweb
+            - QAPUBSUB_IP=qaeventmq
+            - QAPUBSUB_PORT=5672
+            - QAPUBSUB_USER=admin
+            - QAPUBSUB_PWD=admin
+        restart: always
+        volumes: 
+            - qacode:/home/project
 volumes:
     qamg:
         external:
