@@ -941,7 +941,8 @@ def QA_fetch_get_index_day(code, start_date, end_date, frequence='day',
             .set_index('date', drop=False, inplace=False) \
             .assign(code=code) \
             .drop(['year', 'month', 'day', 'hour',
-                   'minute', 'datetime'], axis=1)[start_date:end_date]
+                   'minute', 'datetime'], axis=1)
+        data = data.loc[start_date:end_date]
         return data.assign(date=data['date'].apply(lambda x: str(x)[0:10]))
 
 
