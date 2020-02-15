@@ -96,6 +96,32 @@ def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', collec
             'QA Error QA_fetch_stock_day data parameter start=%s end=%s is not right' % (start, end))
 
 
+
+def QA_fetch_stock_adj(code, start, end, format='pd', collections=DATABASE.stock_adj):
+    """获取股票复权系数 ADJ
+
+    """
+
+    start = str(start)[0:10]
+    end = str(end)[0:10]
+    #code= [code] if isinstance(code,str) else code
+
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    if QA_util_date_valid(end):
+
+        cursor = collections.find({
+            'code': {'$in': code}, "date": {
+                "$lte": end,
+                "$gte": start}}, {"_id": 0}, batch_size=10000)
+        #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
+
+        res = pd.DataFrame([item for item in cursor])
+        res.date = pd.to_datetime(res.date)
+        return res.set_index('date', drop=False)
+
+
 def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min', collections=DATABASE.stock_min):
     '获取股票分钟线'
     if frequence in ['1min', '1m']:
