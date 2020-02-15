@@ -126,7 +126,6 @@ class QA_DataStruct_Stock_day(_quotation_base):
                     date = self.date
                     adj = _QA_fetch_stock_adj(self.code.to_list(), str(date[0])[0:10], str(date[-1])[0:10]).set_index(['date','code'])
                     data = self.data.join(adj)
-                    print(data)
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']
                         data['volume'] = data['volume'] / \
@@ -136,7 +135,6 @@ class QA_DataStruct_Stock_day(_quotation_base):
                             data['low_limit'] = data['high_limit'] * data['adj']
                         except:
                             pass
-                    print(data)
                     return self.new(data, self.type, 'qfq')
                 except Exception as e:
                     print(e)
