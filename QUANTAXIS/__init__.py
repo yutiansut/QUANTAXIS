@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.8.6'
+__version__ = '1.9.0'
 __author__ = 'yutiansut'
 
 import argparse
@@ -182,6 +182,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_quotations,
     QA_fetch_stock_block,
     QA_fetch_stock_day,
+    QA_fetch_stock_adj,
     QA_fetch_stock_full,
     QA_fetch_stock_info,
     QA_fetch_stock_list,
