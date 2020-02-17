@@ -38,6 +38,7 @@ from QUANTAXIS.QAMarket.QAPosition import QA_Position
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
+    QA_util_if_trade,
     QA_util_get_next_day,
     QA_util_get_trade_range
 )
@@ -417,6 +418,13 @@ class QA_AccountPRO(QA_Worker):
                 )
         else:
             return self.end_
+
+
+    def set_end_date(self, date):
+        if QA_util_if_trade(date):
+            self.end_ = date
+        else:
+            print('error {} not a trade date'.format(date))
 
     @property
     def market_data(self):

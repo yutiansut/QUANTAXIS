@@ -55,9 +55,35 @@ from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic,
                               QA_util_to_json_from_pandas,
+                              QA_util_date_valid,
+                              QA_util_code_tolist,
                               QA_util_to_pandas_from_json, trade_date_sse)
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 from QUANTAXIS.QAUtil.QAParameter import FREQUENCE, MARKET_TYPE
+
+def _QA_fetch_stock_adj(code, start, end, format='pd', collections=DATABASE.stock_adj):
+    """获取股票复权系数 ADJ
+
+    """
+
+    start = str(start)[0:10]
+    end = str(end)[0:10]
+    #code= [code] if isinstance(code,str) else code
+
+    # code checking
+    code = QA_util_code_tolist(code)
+
+    if QA_util_date_valid(end):
+
+        cursor = collections.find({
+            'code': {'$in': code}, "date": {
+                "$lte": end,
+                "$gte": start}}, {"_id": 0}, batch_size=10000)
+        #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
+
+        res = pd.DataFrame([item for item in cursor])
+        res.date = pd.to_datetime(res.date)
+        return res.set_index('date', drop=False)
 
 class QA_DataStruct_Stock_day(_quotation_base):
     '''
@@ -96,8 +122,25 @@ class QA_DataStruct_Stock_day(_quotation_base):
             #     return self.new(pd.concat(list(map(
             #         lambda x: QA_data_stock_to_fq(self.data[self.data['code'] == x]), self.code))), self.type, 'qfq')
             else:
-                return self.new(
-                    self.groupby(level=1).apply(QA_data_stock_to_fq, 'qfq'), self.type, 'qfq')
+                try:
+                    date = self.date
+                    adj = _QA_fetch_stock_adj(self.code.to_list(), str(date[0])[0:10], str(date[-1])[0:10]).set_index(['date','code'])
+                    data = self.data.join(adj)
+                    for col in ['open', 'high', 'low', 'close']:
+                        data[col] = data[col] * data['adj']
+                        data['volume'] = data['volume'] / \
+                            data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+                        try:
+                            data['high_limit'] = data['high_limit'] * data['adj']
+                            data['low_limit'] = data['high_limit'] * data['adj']
+                        except:
+                            pass
+                    return self.new(data, self.type, 'qfq')
+                except Exception as e:
+                    print(e)
+                    print('use old model qfq')
+                    return self.new(
+                        self.groupby(level=1).apply(QA_data_stock_to_fq, 'qfq'), self.type, 'qfq')
         else:
             QA_util_log_info(
                 'none support type for qfq Current type is: %s' % self.if_fq)
@@ -230,8 +273,30 @@ class QA_DataStruct_Stock_min(_quotation_base):
             #     data.if_fq = 'qfq'
             #     return data
             else:
-                return self.new(
-                    self.groupby(level=1).apply(QA_data_stock_to_fq, 'qfq'), self.type, 'qfq')
+                try:
+                    date = self.date
+                    adj = _QA_fetch_stock_adj(self.code.to_list(), str(date[0])[0:10], str(date[-1])[0:10]).set_index(['date','code'])
+                    u = self.data.reset_index()
+                    u = u.assign(date=u.datetime.apply(lambda x: x.date()))
+                    u = u.set_index(['date', 'code'], drop=False)
+
+                    data = u.join(adj).set_index(['datetime','code'])
+
+                    for col in ['open', 'high', 'low', 'close']:
+                        data[col] = data[col] * data['adj']
+                        data['volume'] = data['volume'] / \
+                            data['adj']
+                        try:
+                            data['high_limit'] = data['high_limit'] * data['adj']
+                            data['low_limit'] = data['high_limit'] * data['adj']
+                        except:
+                            pass
+                    return self.new(data, self.type, 'qfq')
+                except Exception as e:
+                    print(e)
+                    print('use old model qfq')
+                    return self.new(
+                        self.groupby(level=1).apply(QA_data_stock_to_fq, 'qfq'), self.type, 'qfq')
 
         else:
             QA_util_log_info(

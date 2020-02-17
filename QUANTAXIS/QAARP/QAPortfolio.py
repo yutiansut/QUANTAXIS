@@ -717,6 +717,10 @@ class QA_PortfolioView():
             len(self.accounts)
         )
 
+    def set_end_date(self, date):
+        for item in self.accounts:
+            item.set_end_date(date)
+
     @property
     def contained_cookie(self):
         """

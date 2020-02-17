@@ -75,7 +75,12 @@ from QUANTAXIS.QASU.main import (
     QA_SU_save_report_calendar_day,
     QA_SU_save_report_calendar_his,
     QA_SU_save_stock_divyield_day,
-    QA_SU_save_stock_divyield_his
+    QA_SU_save_stock_divyield_his,
+    QA_SU_save_bond_day,
+    QA_SU_save_single_bond_day,
+    QA_SU_save_bond_list,
+    QA_SU_save_bond_min,
+    QA_SU_save_single_bond_min
 )
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
@@ -267,6 +272,11 @@ class CLI(cmd.Cmd):
             命令格式：save index_list : 保存指数列表 \n\
             命令格式：save etf_list : 保存etf列表 \n\
             命令格式：save future_list : 保存期货列表 \n\
+            命令格式：save bond_day  : 保存债券日线数据 \n\
+            命令格式：save single_bond_day  : 保存单个债券日线数据 \n\
+            命令格式：save bond_min  : 保存债券分钟线数据 \n\
+            命令格式：save single_bond_min  : 保存单个债券分钟线数据 \n\
+            命令格式：save bond_list : 保存债券列表 \n\
             ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
@@ -464,6 +474,10 @@ class CLI(cmd.Cmd):
                 QA_SU_save_single_index_min(arg[1], 'tdx')
             elif len(arg) == 2 and arg[0] == 'single_etf_min':
                 QA_SU_save_single_etf_min(arg[1], 'tdx')
+            elif len(arg) == 2 and arg[0] == 'single_bond_day':
+                QA_SU_save_single_bond_day(arg[1], 'tdx')
+            elif len(arg) == 2 and arg[0] == 'single_bond_min':
+                QA_SU_save_single_bond_min(arg[1], 'tdx')
             else:
                 for i in arg:
                     if i == 'insert_user':
