@@ -70,6 +70,8 @@ from QUANTAXIS.QAUtil import (
     QA_util_to_json_from_pandas,
     trade_date_sse
 )
+from QUANTAXIS.QAData.data_fq import _QA_data_stock_to_fq
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import Parallelism
 from QUANTAXIS.QAFetch.QATdx import ping, get_ip_list_by_multi_process_ping, stock_ip_list
 from multiprocessing import cpu_count
@@ -594,14 +596,22 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
     """
     stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     # client.drop_collection('stock_xdxr')
-    try:
 
+    try:
         coll = client.stock_xdxr
         coll.create_index(
             [('code',
               pymongo.ASCENDING),
              ('date',
               pymongo.ASCENDING)],
+            unique=True
+        )
+        coll_adj = client.stock_adj
+        coll_adj.create_index(
+            [('code',
+                pymongo.ASCENDING),
+                ('date',
+                pymongo.ASCENDING)],
             unique=True
         )
     except:
@@ -614,6 +624,16 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
               pymongo.ASCENDING)],
             unique=True
         )
+        client.drop_collection('stock_adj')
+        coll_adj = client.stock_adj
+        coll_adj.create_index(
+            [('code',
+                pymongo.ASCENDING),
+                ('date',
+                pymongo.ASCENDING)],
+            unique=True
+        )
+
     err = []
 
     def __saving_work(code, coll):
@@ -622,12 +642,31 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
             ui_log=ui_log
         )
         try:
-            coll.insert_many(
-                QA_util_to_json_from_pandas(QA_fetch_get_stock_xdxr(str(code))),
-                ordered=False
-            )
 
-        except:
+            xdxr  = QA_fetch_get_stock_xdxr(str(code))
+            try:
+                coll.insert_many(
+                    QA_util_to_json_from_pandas(xdxr),
+                    ordered=False
+                )
+            except:
+                pass
+            try:
+                data = QA_fetch_stock_day(str(code), '1990-01-01',str(datetime.date.today()), 'pd')
+                qfq = _QA_data_stock_to_fq(data, xdxr, 'qfq')
+                qfq = qfq.assign(date=qfq.date.apply(lambda x: str(x)[0:10]))
+                adjdata = QA_util_to_json_from_pandas(qfq.loc[:, ['date','code', 'adj']])
+                coll_adj.delete_many({'code': code})
+                #print(adjdata)
+                coll_adj.insert_many(adjdata)
+
+
+            except Exception as e:
+                print(e)
+
+
+        except Exception as e:
+            print(e)
 
             err.append(str(code))
 
