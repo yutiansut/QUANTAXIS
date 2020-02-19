@@ -42,6 +42,7 @@ from QUANTAXIS.QAUtil.QASetting import QA_Setting
 
 
 """2019-01-03  升级到warning级别 不然大量别的代码的log会批量输出出来
+2020-02-19 默认使用本地log 不再和数据库同步
 """
 
 try:
