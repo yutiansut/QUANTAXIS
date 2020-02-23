@@ -128,13 +128,13 @@ class QA_DataStruct_Stock_day(_quotation_base):
                     data = self.data.join(adj)
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']
-                        data['volume'] = data['volume'] / \
-                            data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
-                        try:
-                            data['high_limit'] = data['high_limit'] * data['adj']
-                            data['low_limit'] = data['high_limit'] * data['adj']
-                        except:
-                            pass
+                    data['volume'] = data['volume'] / \
+                        data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+                    try:
+                        data['high_limit'] = data['high_limit'] * data['adj']
+                        data['low_limit'] = data['high_limit'] * data['adj']
+                    except:
+                        pass
                     return self.new(data, self.type, 'qfq')
                 except Exception as e:
                     print(e)
@@ -284,13 +284,13 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']
-                        data['volume'] = data['volume'] / \
-                            data['adj']
-                        try:
-                            data['high_limit'] = data['high_limit'] * data['adj']
-                            data['low_limit'] = data['high_limit'] * data['adj']
-                        except:
-                            pass
+                    data['volume'] = data['volume'] / \
+                        data['adj']
+                    try:
+                        data['high_limit'] = data['high_limit'] * data['adj']
+                        data['low_limit'] = data['high_limit'] * data['adj']
+                    except:
+                        pass
                     return self.new(data, self.type, 'qfq')
                 except Exception as e:
                     print(e)
