@@ -772,6 +772,51 @@ def QA_data_day_resample(day_data, type_='w'):
     ).apply(CONVERSION).dropna()
     return data.assign(date=pd.to_datetime(data.date)).set_index(['date', 'code'])
 
+def QA_data_futureday_resample(day_data, type_='w'):
+    """期货日线降采样
+
+    Arguments:
+        day_data {[type]} -- [description]
+
+    Keyword Arguments:
+        type_ {str} -- [description] (default: {'w'})
+
+    Returns:
+        [type] -- [description]
+    """
+    # return day_data_p.assign(open=day_data.open.resample(type_).first(),high=day_data.high.resample(type_).max(),low=day_data.low.resample(type_).min(),\
+    #             vol=day_data.vol.resample(type_).sum() if 'vol' in day_data.columns else day_data.volume.resample(type_).sum(),\
+    #             amount=day_data.amount.resample(type_).sum()).dropna().set_index('date')
+    try:
+        day_data = day_data.reset_index().set_index('date', drop=False)
+    except:
+        day_data = day_data.set_index('date', drop=False)
+
+    CONVERSION = {
+        'code': 'first',
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'vol': 'sum',
+        'position': 'sum',
+        'date': 'last'
+    } if 'vol' in day_data.columns else {
+        'code': 'first',
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'volume': 'sum',
+        'position': 'sum',
+        'date': 'last'
+    }
+
+    data = day_data.resample(
+        type_,
+        closed='right'
+    ).apply(CONVERSION).dropna()
+    return data.assign(date=pd.to_datetime(data.date)).set_index(['date', 'code'])
 
 if __name__ == '__main__':
     import QUANTAXIS as QA
