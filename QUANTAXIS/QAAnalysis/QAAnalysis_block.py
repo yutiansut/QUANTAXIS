@@ -48,7 +48,7 @@ class QAAnalysis_block():
     @property
     @lru_cache()
     def market_value(self):
-        return self.market_data.add_func(QA_data_marketvalue)
+        return QA_data_marketvalue(self.market_data.data)
 
     @property
     def week_data(self):
