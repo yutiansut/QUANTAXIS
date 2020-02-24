@@ -86,4 +86,4 @@ def QA_data_marketvalue(data):
                 ]
             )   
     code_list = data.index.remove_unused_levels().levels[1].tolist()
-    return QA_data_calc_marketvalue_new(data, __QA_fetch_stock_xdxr(code_list))
+    return QA_data_calc_marketvalue(data, __QA_fetch_stock_xdxr(code_list))
