@@ -818,6 +818,49 @@ def QA_data_futureday_resample(day_data, type_='w'):
     ).apply(CONVERSION).dropna()
     return data.assign(date=pd.to_datetime(data.date)).set_index(['date', 'code'])
 
+def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
+    """数字加密资产的分钟线采样成大周期
+
+
+    分钟线采样成子级别的分钟线
+
+
+    time+ OHLC==> resample
+    Arguments:
+        min {[type]} -- [description]
+        raw_type {[type]} -- [description]
+        new_type {[type]} -- [description]
+    """
+
+    CONVERSION = {
+        'symbol': 'first',
+        'market': 'first',
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'vol': 'sum',
+        'amount': 'sum'
+    } if 'vol' in min_data.columns else {
+        'symbol': 'first',
+        'market': 'first',
+        'open': 'first',
+        'high': 'max',
+        'low': 'min',
+        'close': 'last',
+        'volume': 'sum',
+        'amount': 'sum'
+    }
+    min_data = min_data.loc[:, list(CONVERSION.keys())]
+    data = min_data.resample(
+        type_,
+        base=0,
+        closed='right',
+        loffset=type_
+    ).apply(CONVERSION).dropna()
+    return data.assign(datetime=pd.to_datetime(data.datetime)).set_index(['datetime', 'symbol', 'market'])
+
+
 if __name__ == '__main__':
     import QUANTAXIS as QA
     tick = QA.QA_fetch_get_stock_transaction(

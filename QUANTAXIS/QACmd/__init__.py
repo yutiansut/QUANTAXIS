@@ -84,7 +84,9 @@ from QUANTAXIS.QASU.main import (
 )
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
-from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex
+from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex_day
+from QUANTAXIS.QASU.save_huobi import QA_SU_save_huobi_symbol, QA_SU_save_huobi_1hour, \
+    QA_SU_save_huobi_1day, QA_SU_save_huobi_1min, QA_SU_save_huobi
 
 # 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney)
@@ -277,6 +279,12 @@ class CLI(cmd.Cmd):
             命令格式：save bond_min  : 保存债券分钟线数据 \n\
             命令格式：save single_bond_min  : 保存单个债券分钟线数据 \n\
             命令格式：save bond_list : 保存债券列表 \n\
+            命令格式：save bitmex : 保存bitmex交易所日线数据 \n\
+            命令格式：save binance : 保存币安交易所数据 \n\
+            命令格式：save binance 1day/1hour/1min : 保存币安交易所日/小时/分钟数据 \n\
+            命令格式：save huobi : 保存火币Pro交易所数据 \n\
+            命令格式：save huobi 1day/1hour/1min/5min/15min/30min : 保存火币Pro交易所日/小时/分钟线数据 \n\
+            命令格式：save huobi realtime : 接收火币Pro交易所实时行情（仅排名前20的主要币种）\n\
             ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
@@ -411,7 +419,6 @@ class CLI(cmd.Cmd):
                 # QA_SU_save_stock_info('tdx')
             elif len(arg) == 1 and arg[0] == "binance":
                 QA_SU_save_binance_symbol()
-                QA_SU_save_binance_1day()
                 QA_SU_save_binance_1hour()
                 QA_SU_save_binance_1day()
                 QA_SU_save_binance_1min()
@@ -420,11 +427,20 @@ class CLI(cmd.Cmd):
                 QA_SU_save_binance(frequency)
             elif len(arg) == 1 and arg[0] == "bitmex":
                 QA_SU_save_bitmex_symbol()
-                QA_SU_save_bitmex('1m')
-                QA_SU_save_bitmex('1h')
-                QA_SU_save_bitmex('1d')
+                QA_SU_save_bitmex_day('1m')
+                QA_SU_save_bitmex_day('1h')
+                QA_SU_save_bitmex_day('1d')
             elif len(arg) == 1 and arg[0] == "huobi":
-                pass
+                QA_SU_save_huobi_symbol()
+                QA_SU_save_huobi_1day()
+                QA_SU_save_huobi_1hour()
+                QA_SU_save_huobi_1min()
+            elif len(arg) == 2 and arg[0] == "huobi":
+                if (arg[1]=='realtime'):
+                    QA_SU_save_huobi_realtime()
+                else:
+                    frequency = arg[1]
+                    QA_SU_save_huobi(frequency)
             elif len(arg) == 1 and arg[0] == "financialfiles":
                 QA_SU_save_financialfiles()
 
