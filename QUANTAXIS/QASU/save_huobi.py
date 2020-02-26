@@ -118,7 +118,7 @@ def QA_SU_save_huobi_day(client=DATABASE, ui_log=None, ui_progress=None, fetch_r
         if data is None:
             QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol'],
                     QA_util_timestamp_to_str(start_time), 
-                    QA_util_timestamp_to_str(end))), ui_log = ui_log, ui_progress = ui_progress)
+                    QA_util_timestamp_to_str(end)), ui_log = ui_log, ui_progress = ui_progress)
             continue
         QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(symbol_info['symbol'],
                     Huobi2QA_FREQUENCY_DICT[frequency],
@@ -136,8 +136,7 @@ def QA_SU_save_huobi_min(client=DATABASE, ui_log=None, ui_progress=None, frequen
         """
         异步获取数据回调用的 MongoDB 存储函数
         """
-        QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
-                    symbol_info['symbol'],
+        QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(symbol_info['symbol'],
                     Huobi2QA_FREQUENCY_DICT[frequency],
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
@@ -219,7 +218,8 @@ def QA_SU_save_huobi_min(client=DATABASE, ui_log=None, ui_progress=None, frequen
             time.mktime(end.utctimetuple()),
             frequency=frequency, callback_save_data_func=QA_SU_save_data_huobi_min_callback)
         if data is None:
-            QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol']Huobi2QA_FREQUENCY_DICT[frequency],
+            QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time), 
                     QA_util_timestamp_to_str(end)))
             continue
