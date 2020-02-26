@@ -49,7 +49,7 @@ except:
 
 from QUANTAXIS.QAData.base_datastruct import _quotation_base
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
-from QUANTAXIS.QAData.data_resample import (QA_data_tick_resample, QA_data_day_resample,
+from QUANTAXIS.QAData.data_resample import (QA_data_tick_resample, QA_data_day_resample, QA_data_futureday_resample,
                                             QA_data_min_resample, QA_data_futuremin_resample)
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
@@ -128,13 +128,13 @@ class QA_DataStruct_Stock_day(_quotation_base):
                     data = self.data.join(adj)
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']
-                        data['volume'] = data['volume'] / \
-                            data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
-                        try:
-                            data['high_limit'] = data['high_limit'] * data['adj']
-                            data['low_limit'] = data['high_limit'] * data['adj']
-                        except:
-                            pass
+                    data['volume'] = data['volume'] / \
+                        data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+                    try:
+                        data['high_limit'] = data['high_limit'] * data['adj']
+                        data['low_limit'] = data['high_limit'] * data['adj']
+                    except:
+                        pass
                     return self.new(data, self.type, 'qfq')
                 except Exception as e:
                     print(e)
@@ -284,13 +284,13 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']
-                        data['volume'] = data['volume'] / \
-                            data['adj']
-                        try:
-                            data['high_limit'] = data['high_limit'] * data['adj']
-                            data['low_limit'] = data['high_limit'] * data['adj']
-                        except:
-                            pass
+                    data['volume'] = data['volume'] / \
+                        data['adj']
+                    try:
+                        data['high_limit'] = data['high_limit'] * data['adj']
+                        data['low_limit'] = data['high_limit'] * data['adj']
+                    except:
+                        pass
                     return self.new(data, self.type, 'qfq')
                 except Exception as e:
                     print(e)
@@ -483,7 +483,7 @@ class QA_DataStruct_Future_day(_quotation_base):
 
     def resample(self, level):
         try:
-            return self.add_func(QA_data_day_resample, level).sort_index()
+            return self.add_func(QA_data_futureday_resample, level).sort_index()
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None
