@@ -20,7 +20,6 @@ ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不�
 Bitmex_base_url = "https://www.bitmex.com/api/v1/"
 
 MAX_HISTORY = 750
-
 """
 QUANTAXIS 和 Bitmex 的 frequency 常量映射关系
 """
@@ -33,6 +32,7 @@ Bitmex2QA_FREQUENCY_DICT = {
     "1d": '1day',
     "1h": '60min'
 }
+
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_bitmex_symbols(active=True):
@@ -47,7 +47,7 @@ def QA_fetch_bitmex_symbols(active=True):
     retries = 1
     while (retries != 0):
         try:
-            req = requests.get(url, params={"count":500}, timeout=TIMEOUT)
+            req = requests.get(url, params={"count": 500}, timeout=TIMEOUT)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
             retries = retries + 1
@@ -70,10 +70,17 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
     url = urljoin(Bitmex_base_url, "trade/bucketed")
     while start_time < end_time:
         try:
-            req = requests.get(url, params={"symbol": symbol, "binSize": frequency,
-                                            "startTime": start_time.isoformat(),
-                                            "endTime": end_time.isoformat(),
-                                            "count":MAX_HISTORY}, timeout=TIMEOUT)
+            req = requests.get(
+                url,
+                params={
+                    "symbol": symbol,
+                    "binSize": frequency,
+                    "startTime": start_time.isoformat(),
+                    "endTime": end_time.isoformat(),
+                    "count": MAX_HISTORY
+                },
+                timeout=TIMEOUT
+            )
             time.sleep(0.5)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
@@ -98,7 +105,8 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
             if len(klines) == 0:
                 break
             datas.extend(klines)
-            start_time = parse(klines[-1].get("timestamp")) + relativedelta(second=+1)
+            start_time = parse(klines[-1].get("timestamp")
+                              ) + relativedelta(second=+1)
 
     if len(datas) == 0:
         return None
@@ -107,26 +115,39 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
     frame = pd.DataFrame(datas)
     frame['market'] = 'bitmex'
     # UTC时间转换为北京时间
-    frame['date'] = pd.to_datetime(frame['timestamp']).dt.tz_convert('Asia/Shanghai')
+    frame['date'] = pd.to_datetime(frame['timestamp']
+                                  ).dt.tz_convert('Asia/Shanghai')
     frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
-    frame['datetime'] = pd.to_datetime(frame['timestamp']).dt.tz_convert('Asia/Shanghai')
+    frame['datetime'] = pd.to_datetime(frame['timestamp']
+                                      ).dt.tz_convert('Asia/Shanghai')
     frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # GMT+0 String 转换为 UTC Timestamp
-    frame['time_stamp'] = pd.to_datetime(frame['timestamp']).astype(np.int64) // 10 ** 9
-    frame['date_stamp'] = pd.to_datetime(frame['date']).astype(np.int64) // 10 ** 9
-    frame['created_at'] = int(time.mktime(datetime.datetime.now().utctimetuple()))
-    frame['updated_at'] = int(time.mktime(datetime.datetime.now().utctimetuple()))
-    frame.rename({'trades':'trade'}, axis=1, inplace=True)
+    frame['time_stamp'] = pd.to_datetime(frame['timestamp']
+                                        ).astype(np.int64) // 10**9
+    frame['date_stamp'] = pd.to_datetime(frame['date']
+                                        ).astype(np.int64) // 10**9
+    frame['created_at'] = int(
+        time.mktime(datetime.datetime.now().utctimetuple())
+    )
+    frame['updated_at'] = int(
+        time.mktime(datetime.datetime.now().utctimetuple())
+    )
+    frame.rename({'trades': 'trade'}, axis=1, inplace=True)
     frame['amount'] = frame['volume'] * (frame['open'] + frame['close']) / 2
     if (frequency != '1d'):
         frame['type'] = Bitmex2QA_FREQUENCY_DICT[frequency]
-    frame.drop(['foreignNotional', 
-        'homeNotional', 
-        'lastSize', 
-        'timestamp', 
-        'turnover', 
-        'vwap'], 
-        axis=1, inplace=True)
+    frame.drop(
+        [
+            'foreignNotional',
+            'homeNotional',
+            'lastSize',
+            'timestamp',
+            'turnover',
+            'vwap'
+        ],
+        axis=1,
+        inplace=True
+    )
     return json.loads(frame.to_json(orient='records'))
 
 
