@@ -52,6 +52,12 @@ from QUANTAXIS.QAUtil.QALogs import (
     QA_util_log_expection,
     QA_util_log_debug
 )
+from QUANTAXIS.QAFetch.QAhuobi_realtime import (
+    QA_Fetch_Job_Status,
+    QA_Fetch_Job_Type,
+    QA_Fetch_Job,
+    QA_Fetch_Huobi
+)
 
 Huobi_base_url = 'https://api.huobi.pro/'
 
@@ -265,13 +271,6 @@ def QA_fetch_huobi_kline_subscription(
 
     data = []
     requested_counter = 1
-    from QUANTAXIS.QAFetch.QAhuobi_realtime import (
-        QA_Fetch_Job_Status,
-        QA_Fetch_Job_Type,
-        QA_Fetch_Job,
-        QA_Fetch_Huobi
-    )
-
     sub_client = QA_Fetch_Huobi(
         callback_save_data_func=callback_save_data_func,
         find_missing_kline_func=QA_util_find_missing_kline
@@ -293,7 +292,10 @@ def QA_fetch_huobi_kline_subscription(
                     requested_counter
                 )
                 if (frame is None):
-                    pass
+                    # 火币网的 WebSocket 接口机制很奇特，返回len(data)==0
+                    # 就说明已经超越这个交易对的上架时间，不再有更多数据了。
+                    # 当前 Symbol Klines 抓取已经结束了
+                    return None
                 else:
                     retries = 0
             except Exception:

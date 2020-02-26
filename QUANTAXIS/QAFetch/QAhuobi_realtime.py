@@ -50,8 +50,6 @@ from QUANTAXIS.QAUtil.QADate_Adv import (
     QA_util_datetime_to_Unix_timestamp,
     QA_util_timestamp_to_str
 )
-
-from QUANTAXIS.QAFetch.QAhuobi import (FIRST_PRIORITY)
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_find_missing_kline
 
 from datetime import datetime, timezone, timedelta
@@ -899,7 +897,11 @@ class QA_Fetch_Huobi(object):
                     'volume': msg_dict['data'][t]['vol'],  # amount
                 }, ignore_index=True)
             if (len(ohlcvData) == 0):
-                pass
+                # 火币网的 WebSocket 接口机制很奇特，返回len(data)==0
+                # 就说明已经超越这个交易对的上架时间，不再有更多数据了。
+                # 当前 Symbol Klines 抓取已经结束了
+                #print(QA_util_timestamp_to_str(reqParams['from'])[2:16], 'Return None')
+                return None
             else:
                 # 归一化数据字段，转换填充必须字段，删除多余字段 GMT+8
                 ohlcvData['date'] = pd.to_datetime(
