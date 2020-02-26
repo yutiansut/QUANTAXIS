@@ -35,8 +35,11 @@ columne_names = [
 
 Binace2QA_FREQUENCY_DICT = {
     "1m": '1min',
-    "1d": '1day',
+    "5m": '5min',
+    "15m": '15min',
+    "30m": '30min',
     "1h": '60min',
+    "1d": 'day',
 }
 
 
@@ -150,7 +153,7 @@ def QA_fetch_binance_kline(symbol, start_time, end_time, frequency):
         axis=1,
         inplace=True
     )
-    if (frequency != '1d'):
+    if (frequency not in ['1day', Binace2QA_FREQUENCY_DICT['1d'], '1d']):
         frame['type'] = Binace2QA_FREQUENCY_DICT[frequency]
     frame.drop(
         ['close_time',

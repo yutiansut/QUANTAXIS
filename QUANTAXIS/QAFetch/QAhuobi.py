@@ -234,9 +234,9 @@ def QA_fetch_huobi_kline(
     ).dt.tz_localize('Asia/Shanghai').astype(np.int64) // 10**9
     frame['created_at'] = time.mktime(datetime.datetime.now().utctimetuple())
     frame['updated_at'] = time.mktime(datetime.datetime.now().utctimetuple())
-    frame.rename({'count': 'trade', 'id': 'time_stamp'}, axis=1, inplace=True)
-    if (frequency != CandlestickInterval.DAY1):
-        frame['type'] = frequency
+    frame.rename({'count': 'trade', 'id': 'time_stamp', 'vol': 'volume'}, axis=1, inplace=True)
+    if (frequency not in [CandlestickInterval.DAY1, Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1], '1d']):
+        frame['type'] = Huobi2QA_FREQUENCY_DICT[frequency]
     data = json.loads(frame.to_json(orient='records'))
     callback_save_data_func(data, symbol=symbol)
     return data

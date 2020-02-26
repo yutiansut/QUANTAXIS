@@ -57,7 +57,7 @@ def QA_SU_save_binance(frequency):
     """
     Save binance kline "smart"
     """
-    if (frequency != "1d"):
+    if (frequency not in ["1d", "1day", "day"]):
         return QA_SU_save_binance_min(frequency)
     else:
         return QA_SU_save_binance_day(frequency)
