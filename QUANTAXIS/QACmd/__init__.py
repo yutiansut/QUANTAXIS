@@ -84,7 +84,7 @@ from QUANTAXIS.QASU.main import (
 )
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
-from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex_day
+from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex
 from QUANTAXIS.QASU.save_huobi import QA_SU_save_huobi_symbol, QA_SU_save_huobi_1hour, \
     QA_SU_save_huobi_1day, QA_SU_save_huobi_1min, QA_SU_save_huobi, QA_SU_save_huobi_realtime
 
@@ -427,9 +427,9 @@ class CLI(cmd.Cmd):
                 QA_SU_save_binance(frequency)
             elif len(arg) == 1 and arg[0] == "bitmex":
                 QA_SU_save_bitmex_symbol()
-                QA_SU_save_bitmex_day('1m')
-                QA_SU_save_bitmex_day('1h')
-                QA_SU_save_bitmex_day('1d')
+                QA_SU_save_bitmex('1m')
+                QA_SU_save_bitmex('1h')
+                QA_SU_save_bitmex('1d')
             elif len(arg) == 1 and arg[0] == "huobi":
                 QA_SU_save_huobi_symbol()
                 QA_SU_save_huobi_1day()

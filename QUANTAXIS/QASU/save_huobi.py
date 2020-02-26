@@ -259,7 +259,8 @@ def QA_SU_save_huobi_realtime():
     """
     实时抓取 huobi.pro 主流公链的交易品种行情
     """
-    QA_util_log_info('Downloading {:s} symbol list...'.format(market))
+    market = 'huobi'
+    QA_util_log_info('Starting {:s} realtime ...'.format(market))
     fetch_huobi_history = QA_Fetch_Huobi(callback_save_data_func=QA_SU_save_data_huobi_callback, find_missing_kline_func=QA_util_find_missing_kline)
 
     # 添加抓取行情数据任务，将会开启多线程抓取。
