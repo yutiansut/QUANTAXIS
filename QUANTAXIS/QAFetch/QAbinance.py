@@ -12,6 +12,7 @@ from requests.exceptions import ConnectTimeout, SSLError, ReadTimeout, Connectio
 from retrying import retry
 
 from urllib.parse import urljoin
+
 # from QUANTAXIS.QAUtil.QAcrypto import TIMEOUT, ILOVECHINA
 TIMEOUT = 10
 ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！蓝灯，喵帕斯，VPS，阴阳师，v2ray，随便什么来一个！我翻墙我骄傲！"
@@ -62,7 +63,7 @@ def QA_fetch_binance_kline(symbol, start_time, end_time, frequency):
     Get the latest symbol‘s candlestick data
     """
     market = 'binance'
-    retries = 1
+    unity_retries = retries = 1
     datas = list()
     start_time *= 1000
     end_time *= 1000
@@ -77,9 +78,10 @@ def QA_fetch_binance_kline(symbol, start_time, end_time, frequency):
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
             retries = retries + 1
+            unity_retries = unity_retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
-            print("Retry /api/v1/klines #{}".format(retries - 1))
+            print("Retry /api/v1/klines #{}".format(unity_retries))
             time.sleep(0.5)
 
         if (retries == 0):

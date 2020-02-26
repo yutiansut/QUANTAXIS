@@ -58,7 +58,7 @@ def QA_SU_save_huobi_day(client=DATABASE, ui_log=None, ui_progress=None, fetch_r
     """
     下载火币K线日线数据，统一转化字段保存数据为 crypto_asset_day
     """
-    def QA_SU_save_data_huobi_callback(data):
+    def QA_SU_save_data_huobi_callback(data, symbol, market='huobi'):
         """
         异步获取的回调存储
         """
@@ -67,7 +67,20 @@ def QA_SU_save_huobi_day(client=DATABASE, ui_log=None, ui_progress=None, fetch_r
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
                     len(data)), ui_log=ui_log, ui_progress=ui_progress)
-        col.insert_many(data)
+
+        query_id = {
+            "symbol": symbol, 
+            'market': market, 
+            'date_stamp': {'$in':list(map(lambda x : x['date_stamp'], data))}}
+        if (col.count_documents(query_id) > 0):
+            # 删掉重复数据
+            col.delete_many(query_id)
+        try:
+            col.insert_many(data)
+        except:
+            QA_util_log_expection('QA_SU_save_huobi_day():Insert_many(kline) to {} got Exception {}'.format(symbol_info['symbol'], len(data)))
+            pass
+        
 
     symbol_list = QA_fetch_crypto_asset_list(market='huobi')
     col = client.crypto_asset_day
@@ -121,9 +134,9 @@ def QA_SU_save_huobi_day(client=DATABASE, ui_log=None, ui_progress=None, fetch_r
                     QA_util_timestamp_to_str(end)), ui_log = ui_log, ui_progress = ui_progress)
             continue
         QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(symbol_info['symbol'],
-                    Huobi2QA_FREQUENCY_DICT[frequency],
-                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
+                    Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1],
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
+                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
                     len(data)))
     QA_util_log_info('DOWNLOAD PROGRESS of day Klines from huobi.pro accomplished.', ui_log=ui_log, ui_progress=ui_progress)
 
@@ -354,20 +367,22 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
         # market,symbol为 mongodb 索引字段，保存之前必须要检查存在
         symbol_lists['market'] = market
         symbol_lists['category'] = 1
-        symbol_lists['name'] = symbol_lists.apply(lambda x:'{:s}/{:s}'.format(x['base_currency'].upper(),x['quote_currency'].upper()), axis=1)
-        symbol_lists['desc'] = symbol_lists.apply(lambda x:'现货: {:s} 兑换 {:s}'.format(x['base_currency'],x['quote_currency']), axis=1)
+        symbol_lists['name'] = symbol_lists.apply(lambda x:'{:s}/{:s}'.format(x['base-currency'].upper(),
+                x['base-currency'].upper())
+            , axis=1)
+        symbol_lists['desc'] = symbol_lists.apply(lambda x:'现货: {:s} 兑换 {:s}'.format(x['base-currency'],x['quote-currency']), axis=1)
         symbol_lists['created_at'] = int(time.mktime(datetime.datetime.now().utctimetuple()))
         symbol_lists['updated_at'] = int(time.mktime(datetime.datetime.now().utctimetuple()))
 
         # 移除非共性字段，这些字段只有 broker 才关心，做对应交易所 broker 接口的时候在交易所 raw_symbol_lists
-        # 数据中读取。
-        symbol_lists.drop(['amount_precision', 
-             'leverage_ratio', 
-             'max_order_amt', 
-             'min_order_amt', 
-             'min_order_value', 
-             'symbol_partition', 
-             'value_precision'], 
+        # 数据中读取。火币网超有个性的，注意字段里面的减号，不是下划线！！！
+        symbol_lists.drop(['_id', 'amount-precision', 
+             'leverage-ratio', 
+             'max-order-amt', 
+             'min-order-amt', 
+             'min-order-value', 
+             'symbol-partition', 
+             'value-precision'], 
              axis=1, inplace=True)
 
         coll_crypto_asset_list = client.crypto_asset_list
@@ -391,6 +406,6 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
 
 
 if __name__ == '__main__':
-    #QA_SU_save_huobi_symbol()
-    #QA_SU_save_huobi_1day()
+    QA_SU_save_huobi_symbol()
+    QA_SU_save_huobi_1day()
     QA_SU_save_huobi_1hour(fetch_range=FIRST_PRIORITY)

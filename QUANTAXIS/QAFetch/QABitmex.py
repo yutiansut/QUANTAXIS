@@ -84,8 +84,6 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
             time.sleep(0.5)
 
         if (retries == 0):
-            # 成功获取才处理数据，否则继续尝试连接
-
             # 防止频率过快被断连
             remaining = int(req.headers['x-ratelimit-remaining'])
             if remaining < 20:
@@ -95,6 +93,7 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
             elif remaining < 3:
                 time.sleep(30)
 
+            # 成功获取才处理数据，否则继续尝试连接
             klines = json.loads(req.content)
             if len(klines) == 0:
                 break

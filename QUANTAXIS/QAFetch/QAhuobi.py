@@ -26,9 +26,10 @@
 # SOFTWARE.
 """
 火币api
-具体api文档参考:https://github.com/huobiapi/API_Docs/wiki
+具体api文档参考: https://huobiapi.github.io/docs/spot/v1/cn/
 """
 import requests
+import gzip
 import json
 import datetime
 import time
@@ -38,17 +39,13 @@ import numpy as np
 from requests.exceptions import ConnectTimeout, SSLError, ReadTimeout, ConnectionError
 from retrying import retry
 
-"""
-huobi Python官方客户端文档参考: https://github.com/HuobiRDCenter/huobi_Python/blob/master/Readme.md
-pip install 的不是最新版(v0.32)，需要自己去 git https://github.com/HuobiRDCenter/huobi_Python/ 
-下载安装，本模块开发测试基于 v1.0.8
-"""
-from huobi import RequestClient
-from huobi.exception.huobiapiexception import HuobiApiException
+from urllib.parse import urljoin
 
 from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_str_to_Unix_timestamp, QA_util_datetime_to_Unix_timestamp, QA_util_timestamp_to_str) 
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_find_missing_kline
 from QUANTAXIS.QAUtil.QALogs import (QA_util_log_info, QA_util_log_expection, QA_util_log_debug)
+
+Huobi_base_url = 'https://api.huobi.pro/'
 
 class CandlestickInterval:
     MIN1 = "1min"
@@ -73,12 +70,12 @@ Huobi2QA_FREQUENCY_DICT = {
 }
 
 FREQUENCY_SHIFTING = {
-    CandlestickInterval.MIN1: 60 * 240,
-    CandlestickInterval.MIN5: 300 * 240,
-    CandlestickInterval.MIN15: 900 * 240,
-    CandlestickInterval.MIN30: 1800 * 240,
-    CandlestickInterval.MIN60: 3600 * 240,
-    CandlestickInterval.DAY1: 86400 * 240
+    CandlestickInterval.MIN1: 14400,
+    CandlestickInterval.MIN5: 72000,
+    CandlestickInterval.MIN15: 216000,
+    CandlestickInterval.MIN30: 432000,
+    CandlestickInterval.MIN60: 864000,
+    CandlestickInterval.DAY1: 207360000
 }
 
 FIRST_PRIORITY = ['atomusdt', 'algousdt', 'adausdt',
@@ -100,11 +97,12 @@ def QA_fetch_huobi_symbols():
     """
     Get Symbol and currencies
     """
+    url = urljoin(Huobi_base_url, "/v1/common/symbols")
     retries = 1
-    request_client = RequestClient()
+    datas = list()
     while (retries != 0):
         try:
-            exchange_info = request_client.get_exchange_info()
+            req = requests.get(url, timeout=TIMEOUT)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
             retries = retries + 1
@@ -112,31 +110,31 @@ def QA_fetch_huobi_symbols():
                 print(ILOVECHINA)
             print("Retry get_exchange_info #{}".format(retries - 1))
             time.sleep(0.5)
-        except HuobiApiException as e:
-            retries = retries + 1
-            print("Retry get_exchange_info #{}".format(retries - 1))
-            print(e.error_code)
-            print(e.error_message)
-            time.sleep(0.5)
+    if (retries == 0):
+        msg_dict = json.loads(req.content)
+        if (('status' in msg_dict) and (msg_dict['status'] == 'ok') and ('data' in msg_dict)):
+            if len(msg_dict["data"]) == 0:
+                return []
+            for symbol in msg_dict["data"]:
+                # 只导入上架交易对
+                if (symbol['state'] == 'online'):
+                    datas.append(symbol)
 
-    # 转换成DICT，mongodb不接受专有类型
-    symbol_list = []
-    for symbol in exchange_info.symbol_list:
-        symbol_list.append(symbol.__dict__)
-    return symbol_list
+    return datas
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_huobi_kline(symbol, start_time, end_time, frequency, callback_save_data_func):
     """
-    Get the latest symbol‘s candlestick data
+    Get the latest symbol‘s candlestick data  当前 REST API 不支持自定义时间区间，如需要历史固定时间范围的数据，请参考 Websocket API 中的 K 线接口。
     """
     datas = list()
     retries = 1
-    request_client = RequestClient()
-    while start_time < end_time:
+    url = urljoin(Huobi_base_url, 
+                  "/market/history/kline?symbol={:s}&period={:s}&siz={:d}".format(symbol, frequency, 2000))
+    while (retries != 0):
         try:
-            klines = request_client.get_candlestick(symbol=symbol, interval=frequency, size=1990, start_time=int(start_time), end_time=int(end_time))
+            req = requests.get(url, timeout=TIMEOUT)
             # 防止频率过快被断连
             time.sleep(0.5)
             retries = 0
@@ -152,18 +150,17 @@ def QA_fetch_huobi_kline(symbol, start_time, end_time, frequency, callback_save_
             print("Skipping '{}'".format(symbol))
             time.sleep(0.5)
             break
-        if (retries == 0):
-            # 成功获取才处理数据，否则继续尝试连接
-            if (len(klines) == 0) or \
-                (end_time == klines[-1].id) or \
-                (start_time == klines[0].id):
-                break
-            # 转换成DICT，mongodb不接受专有类型
-            for kline in klines:
-                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(kline.id))
-                datas.append(kline.__dict__)
-            # 狗日huobi.pro的REST API kline时间戳排序居然是倒序向前获取，必须从后向前获取，而且有数量限制，Request
-            # < 2000,
+
+    if (retries == 0):
+        # 成功获取才处理数据，否则继续尝试连接
+        msg_dict = json.loads(req.content)
+        if (('status' in msg_dict) and (msg_dict['status'] == 'ok') and ('data' in msg_dict)):
+            if len(msg_dict["data"]) == 0:
+                return None
+            for kline in msg_dict["data"]:
+                datas.append(kline)
+        # 狗日huobi.pro的REST API kline时间戳排序居然是倒序向前获取，必须从后向前获取，而且有数量限制，Request
+        # < 2000,
 
     if len(datas) == 0:
         return None
@@ -185,7 +182,7 @@ def QA_fetch_huobi_kline(symbol, start_time, end_time, frequency, callback_save_
     if (frequency != CandlestickInterval.DAY1):
         frame['type'] = frequency
     data = json.loads(frame.to_json(orient='records'))
-    callback_save_data_func(data)
+    callback_save_data_func(data, symbol=symbol)
     return data
 
 
@@ -213,11 +210,6 @@ def QA_fetch_huobi_kline_subscription(symbol, start_time, end_time, frequency, c
         if (reqParams['to'] > QA_util_datetime_to_Unix_timestamp()):
             # 出现“未来”时间，一般是默认时区设置错误造成的
             raise Exception('A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set')
-        #print('Start: {}\nto {} --> {}\nfrom {} -->
-        #{}'.format(print_timestamp(start_time),
-        #print_timestamp(reqParams['to']), print_timestamp(reqParams['from'] -
-        #1), print_timestamp(reqParams['from']),
-        #print_timestamp(reqParams['from'] - FREQUENCY_SHIFTING[frequency])))
         retries = 1
         while (retries != 0):
             try:
@@ -247,19 +239,5 @@ def QA_fetch_huobi_kline_subscription(symbol, start_time, end_time, frequency, c
 
 if __name__ == '__main__':
     #from dateutil.tz import tzutc
-    from QUANTAXIS.QASU.save_huobi import QA_SU_save_data_huobi_callback
-
-    symbol = 'btcusdt'
-    frequency = '1min'
-    missing_data_list = QA_util_find_missing_kline(symbol, frequency)[::-1]
-    if len(missing_data_list) > 0:
-        # 查询确定中断的K线数据起止时间，缺分时数据，补分时数据
-        expected = 0
-        between = 1
-        missing = 2
-        reqParams = {}
-        for i in range(len(missing_data_list)):
-            reqParams['from'] = missing_data_list[i][expected]
-            reqParams['to'] = missing_data_list[i][between]
-            QA_util_log_info('Fetch %s missing %s kline：%s 到 %s' % (symbol, frequency, QA_util_timestamp_to_str(missing_data_list[i][expected])[2:16], QA_util_timestamp_to_str(missing_data_list[i][between])[2:16]))
-            QA_fetch_huobi_kline_subscription(symbol, start_time=reqParams['from'], end_time=reqParams['to'], frequency='1min', callback_save_data_func=QA_SU_save_data_huobi_callback)
+    #from QUANTAXIS.QASU.save_huobi import QA_SU_save_data_huobi_callback
+    pass
