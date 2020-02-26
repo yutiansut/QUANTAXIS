@@ -50,7 +50,7 @@ except:
 from QUANTAXIS.QAData.base_datastruct import _quotation_base
 from QUANTAXIS.QAData.data_fq import QA_data_stock_to_fq
 from QUANTAXIS.QAData.data_resample import (QA_data_tick_resample, QA_data_day_resample, QA_data_futureday_resample,
-                                            QA_data_min_resample, QA_data_futuremin_resample)
+                                            QA_data_min_resample, QA_data_futuremin_resample, QA_data_crypt_assetmin_resample)
 from QUANTAXIS.QAIndicator import EMA, HHV, LLV, SMA
 from QUANTAXIS.QAUtil import (DATABASE, QA_util_log_info,
                               QA_util_random_with_topic,
@@ -1470,3 +1470,129 @@ class QA_DataStruct_Future_tick():
 
     def append(self, new_data):
         pass
+
+
+
+class QA_DataStruct_Crypto_Asset_day(_quotation_base):
+    def __init__(self, DataFrame, dtype='crypto_asset_day', if_fq=''):
+        super().__init__(DataFrame, dtype, if_fq)
+        self.type = 'crypto_asset_day'
+        self.data = self.data.loc[:, [
+            'open', 'high', 'low', 'close', 'volume', 'trade', 'amount']]
+        self.if_fq = if_fq
+
+    # 抽象类继承
+    def choose_db(self):
+        self.mongo_coll = DATABASE.crypto_asset_day
+
+    def __repr__(self):
+        return '< QA_DataStruct_Crypto_Asset_day with {} securities >'.format(len(self.code))
+    __str__ = __repr__
+
+    @property
+    @lru_cache()
+    def week(self):
+        return self.resample('w')
+
+    @property
+    @lru_cache()
+    def month(self):
+        return self.resample('M')
+
+    @property
+    @lru_cache()
+    def quarter(self):
+        return self.resample('Q')
+
+    @property
+    @lru_cache()
+    def tradedate(self):
+        """返回交易所日历下的日期
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.date
+        except:
+            return None
+
+    @property
+    @lru_cache()
+    def tradetime(self):
+        """返回交易所日历下的日期
+
+        Returns:
+            [type] -- [description]
+        """
+
+        try:
+            return self.date
+        except:
+            return None
+    # @property
+    # @lru_cache()
+    # def semiannual(self):
+    #     return self.resample('SA')
+
+    @property
+    @lru_cache()
+    def year(self):
+        return self.resample('Y')
+
+    def resample(self, level):
+        try:
+            return self.add_func(QA_data_day_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
+
+
+class QA_DataStruct_Crypto_Asset_min(_quotation_base):
+    """
+    struct for crypto asset_
+    """
+
+    def __init__(self, DataFrame, dtype='crypto_asset_min', if_fq=''):
+        super().__init__(DataFrame, dtype, if_fq)
+        self.type = dtype
+        self.data = self.data.loc[:, [
+            'open', 'high', 'low', 'close', 'volume', 'trade', 'amount', 'type']]
+        self.if_fq = if_fq
+
+    # 抽象类继承
+    def choose_db(self):
+        self.mongo_coll = DATABASE.crypto_asset_min
+
+    @property
+    @lru_cache()
+    def min5(self):
+        return self.resample('5min')
+
+    @property
+    @lru_cache()
+    def min15(self):
+        return self.resample('15min')
+
+    @property
+    @lru_cache()
+    def min30(self):
+        return self.resample('30min')
+
+    @property
+    @lru_cache()
+    def min60(self):
+        return self.resample('60min')
+
+    def __repr__(self):
+        return '< QA_DataStruct_Crypto_Asset_min with {} securities >'.format(len(self.code))
+    __str__ = __repr__
+
+    def resample(self, level):
+        try:
+            return self.add_funcx(QA_data_crypt_assetmin_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
+

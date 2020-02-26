@@ -173,3 +173,7 @@ celerybeat*
 /data/
 
 /quantaxis_env/
+/huobi_client
+/inc/huobi_client
+/QUANTAXIS/QAFetch/__main__.py
+/QUANTAXIS.pyproj
