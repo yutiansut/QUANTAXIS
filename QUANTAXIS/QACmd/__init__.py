@@ -436,7 +436,7 @@ class CLI(cmd.Cmd):
                 QA_SU_save_huobi_1hour()
                 QA_SU_save_huobi_1min()
             elif len(arg) == 2 and arg[0] == "huobi":
-                if (arg[1]=='realtime'):
+                if (arg[1] == 'realtime'):
                     QA_SU_save_huobi_realtime()
                 else:
                     frequency = arg[1]
