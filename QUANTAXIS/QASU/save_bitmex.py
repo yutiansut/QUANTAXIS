@@ -34,6 +34,7 @@ from dateutil.relativedelta import relativedelta
 import pandas as pd
 
 from QUANTAXIS.QAUtil import (DATABASE, QASETTING, QA_util_log_info, QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_timestamp_to_str)
 from QUANTAXIS.QAFetch.QABitmex import (QA_fetch_bitmex_symbols, QA_fetch_bitmex_kline, Bitmex2QA_FREQUENCY_DICT)
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_save_raw_symbols
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
@@ -44,13 +45,13 @@ def QA_SU_save_bitmex(frequency):
     """
     Save bitmex kline "smart"
     """
-    if (frequency!="1day"):
+    if (frequency != "1day"):
         return QA_SU_save_bitmex_min(frequency)
     else:
         return QA_SU_save_bitmex_day(frequency)
 
 
-def QA_SU_save_bitmex_day(frequency='1d', client=DATABASE,):
+def QA_SU_save_bitmex_day(frequency='1d', client=DATABASE, ui_log=None, ui_progress=None, ):
     """
     获取 bitmex K线 日线数据，统一转化字段保存数据为 crypto_asset_day
     """
@@ -81,16 +82,24 @@ def QA_SU_save_bitmex_day(frequency='1d', client=DATABASE,):
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['date_stamp']
             start_time = datetime.datetime.fromtimestamp(start_stamp + 1,tz=tzutc())
-            QA_util_log_info('UPDATE_SYMBOL {} Trying updating "{}" from {} to {}'.format(Bitmex2QA_FREQUENCY_DICT['1d'], symbol_info['symbol'], start_time, end))
+            QA_util_log_info('UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(symbol_info['symbol'], 
+                    Bitmex2QA_FREQUENCY_DICT['1d'], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
         else:
             start_time = symbol_info.get('listing', "2018-01-01T00:00:00Z")
             start_time = parse(start_time)
-            QA_util_log_info('NEW_SYMBOL {} Trying downloading "{}" from {} to {}'.format(Bitmex2QA_FREQUENCY_DICT['1d'], symbol_info['symbol'], start_time, end))
+            QA_util_log_info('NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(symbol_info['symbol'], 
+                    Bitmex2QA_FREQUENCY_DICT['1d'], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
 
         data = QA_fetch_bitmex_kline(symbol_info['symbol'],
                                       start_time, end, frequency='1d')
         if data is None:
-            QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(symbol_info['symbol'], start_time, end))
+            QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol'], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
             continue
         QA_util_log_info('SYMBOL {} Recived {} from "{}" to {} in total {} klines'.format(Bitmex2QA_FREQUENCY_DICT['1d'],
                     symbol_info['symbol'],
@@ -138,22 +147,30 @@ def QA_SU_save_bitmex_min(frequency='1m', client=DATABASE,):
             'market': symbol_info['market'], 
             'type': Bitmex2QA_FREQUENCY_DICT[frequency]}
         ref = col.find(query_id).sort('time_stamp', -1)
-        if (symbol_info['symbol']=='ETHUSD'):
+        if (symbol_info['symbol'] == 'ETHUSD'):
             print(col.count_documents(query_id))
             print()
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['time_stamp']
             start_time = datetime.datetime.fromtimestamp(start_stamp + 1,tz=tzutc())
-            QA_util_log_info('UPDATE_SYMBOL {} Trying updating "{}" from {} to {}'.format(Bitmex2QA_FREQUENCY_DICT[frequency], symbol_info['symbol'], start_time, end))
+            QA_util_log_info('UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(symbol_info['symbol'], 
+                    Bitmex2QA_FREQUENCY_DICT[frequency], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
         else:
             start_time = symbol_info.get('listing', "2018-01-01T00:00:00Z")
             start_time = parse(start_time)
-            QA_util_log_info('NEW_SYMBOL {} Trying downloading "{}" from {} to {}'.format(Bitmex2QA_FREQUENCY_DICT[frequency], symbol_info['symbol'], start_time, end))
+            QA_util_log_info('NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(symbol_info['symbol'], 
+                    Bitmex2QA_FREQUENCY_DICT[frequency], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
 
         data = QA_fetch_bitmex_kline(symbol_info['symbol'],
                                       start_time, end, frequency)
         if data is None:
-            QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(symbol_info['symbol'], start_time, end))
+            QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol'], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
             continue
         QA_util_log_info('SYMBOL {} Recived "{}" from {} to {} in total {} klines'.format(Bitmex2QA_FREQUENCY_DICT[frequency],
                     symbol_info['symbol'],

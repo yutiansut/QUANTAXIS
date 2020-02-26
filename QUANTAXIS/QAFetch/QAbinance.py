@@ -38,7 +38,7 @@ def QA_fetch_binance_symbols():
             req = requests.get(url, timeout=TIMEOUT)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
-            retries += 1
+            retries = retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
             print("Retry /api/v1/exchangeInfo #{}".format(retries - 1))
@@ -76,7 +76,7 @@ def QA_fetch_binance_kline(symbol, start_time, end_time, frequency):
             time.sleep(0.5)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
-            retries += 1
+            retries = retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
             print("Retry /api/v1/klines #{}".format(retries - 1))
@@ -107,10 +107,10 @@ def QA_fetch_binance_kline(symbol, start_time, end_time, frequency):
     frame['date_stamp'] = pd.to_datetime(frame['date']).astype(np.int64) // 10 ** 9
     frame['created_at'] = int(time.mktime(datetime.datetime.now().utctimetuple()))
     frame['updated_at'] = int(time.mktime(datetime.datetime.now().utctimetuple()))
-    frame.rename({'num_trades':'trade', 'start_time':'time_stamp', 'buy_base_asset_volume':'amount'}, axis=1, inplace=True)
+    frame.rename({'num_trades':'trade', 'start_time':'time_stamp', 'buy_quote_asset_volume':'amount'}, axis=1, inplace=True)
     if (frequency != '1d'):
         frame['type'] = Binace2QA_FREQUENCY_DICT[frequency]
-    frame.drop(['close_time', 'quote_asset_volume', 'buy_quote_asset_volume', 'Ignore'], 
+    frame.drop(['close_time', 'quote_asset_volume', 'buy_base_asset_volume', 'Ignore'], 
         axis=1, inplace=True)
 
     return json.loads(frame.to_json(orient='records'))

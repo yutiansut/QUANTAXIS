@@ -429,7 +429,7 @@ class QA_Fetch_Huobi(object):
         开启轮询线程，do nothing
         """
         # 批处理任务的调试信息
-        QA_util_log_info('Batch job added.')
+        QA_util_log_info('Batch job added. Please make sure your Internet connection had jump-over-the-GFW...')
 
         # 启动实时行情订阅
         for key in self.__batchSubJobs:

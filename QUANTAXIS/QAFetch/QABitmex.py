@@ -50,7 +50,7 @@ def QA_fetch_bitmex_symbols(active=True):
             req = requests.get(url, params={"count":500}, timeout=TIMEOUT)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
-            retries += 1
+            retries = retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
             print("Retry instrument/active #{}".format(retries - 1))
@@ -77,7 +77,7 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
             time.sleep(0.5)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
-            retries += 1
+            retries = retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
             print("Retry trade/bucketed #{}".format(retries - 1))
@@ -112,12 +112,13 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
     frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
     frame['datetime'] = pd.to_datetime(frame['timestamp']).dt.tz_convert('Asia/Shanghai')
     frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    # GMT+0 String 转换为 UTC Timestamp 
+    # GMT+0 String 转换为 UTC Timestamp
     frame['time_stamp'] = pd.to_datetime(frame['timestamp']).astype(np.int64) // 10 ** 9
     frame['date_stamp'] = pd.to_datetime(frame['date']).astype(np.int64) // 10 ** 9
     frame['created_at'] = int(time.mktime(datetime.datetime.now().utctimetuple()))
     frame['updated_at'] = int(time.mktime(datetime.datetime.now().utctimetuple()))
     frame.rename({'trades':'trade'}, axis=1, inplace=True)
+    frame['amount'] = frame['volume'] * (frame['open'] + frame['close']) / 2
     if (frequency != '1d'):
         frame['type'] = Bitmex2QA_FREQUENCY_DICT[frequency]
     frame.drop(['foreignNotional', 

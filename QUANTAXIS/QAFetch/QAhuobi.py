@@ -107,13 +107,13 @@ def QA_fetch_huobi_symbols():
             exchange_info = request_client.get_exchange_info()
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
-            retries += 1
+            retries = retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
             print("Retry get_exchange_info #{}".format(retries - 1))
             time.sleep(0.5)
         except HuobiApiException as e:
-            retries += 1
+            retries = retries + 1
             print("Retry get_exchange_info #{}".format(retries - 1))
             print(e.error_code)
             print(e.error_message)
@@ -141,7 +141,7 @@ def QA_fetch_huobi_kline(symbol, start_time, end_time, frequency, callback_save_
             time.sleep(0.5)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
-            retries += 1
+            retries = retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
             print("Retry get_candlestick #{}".format(retries - 1))
@@ -162,7 +162,8 @@ def QA_fetch_huobi_kline(symbol, start_time, end_time, frequency, callback_save_
             for kline in klines:
                 time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(kline.id))
                 datas.append(kline.__dict__)
-            # 狗日huobi.pro的REST API kline时间戳排序居然是倒序向前获取，必须从后向前获取，而且有数量限制，Request < 2000,
+            # 狗日huobi.pro的REST API kline时间戳排序居然是倒序向前获取，必须从后向前获取，而且有数量限制，Request
+            # < 2000,
 
     if len(datas) == 0:
         return None
@@ -212,7 +213,11 @@ def QA_fetch_huobi_kline_subscription(symbol, start_time, end_time, frequency, c
         if (reqParams['to'] > QA_util_datetime_to_Unix_timestamp()):
             # 出现“未来”时间，一般是默认时区设置错误造成的
             raise Exception('A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set')
-        #print('Start: {}\nto {} --> {}\nfrom {} --> {}'.format(print_timestamp(start_time), print_timestamp(reqParams['to']), print_timestamp(reqParams['from'] - 1), print_timestamp(reqParams['from']), print_timestamp(reqParams['from'] - FREQUENCY_SHIFTING[frequency])))
+        #print('Start: {}\nto {} --> {}\nfrom {} -->
+        #{}'.format(print_timestamp(start_time),
+        #print_timestamp(reqParams['to']), print_timestamp(reqParams['from'] -
+        #1), print_timestamp(reqParams['from']),
+        #print_timestamp(reqParams['from'] - FREQUENCY_SHIFTING[frequency])))
         retries = 1
         while (retries != 0):
             try:
@@ -222,7 +227,7 @@ def QA_fetch_huobi_kline_subscription(symbol, start_time, end_time, frequency, c
                 else:
                     retries = 0
             except Exception:
-                retries += 1
+                retries = retries + 1
                 if (retries % 6 == 0):
                     print(ILOVECHINA)
                 print("Retry request_historical_kline #{}".format(retries - 1))

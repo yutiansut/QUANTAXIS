@@ -47,7 +47,7 @@ def QA_util_timestamp_to_str(ts_epoch = datetime.now(timezone(timedelta(hours=8)
     :return: 类型string
     """
     if isinstance(ts_epoch, datetime):
-        return ts_epoch.strftime('%Y-%m-%d %H:%M:%S')
+        return ts_epoch.astimezone(local_tz).strftime('%Y-%m-%d %H:%M:%S')
     elif isinstance(ts_epoch, int) or isinstance(ts_epoch, np.int32) or isinstance(ts_epoch, np.int64) or isinstance(ts_epoch, float):
         return (datetime(1970,1,1, tzinfo=timezone.utc) + timedelta(seconds = int(ts_epoch))).astimezone(local_tz).strftime('%Y-%m-%d %H:%M:%S')
     else:

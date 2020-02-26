@@ -86,7 +86,7 @@ from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_bi
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
 from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex_day
 from QUANTAXIS.QASU.save_huobi import QA_SU_save_huobi_symbol, QA_SU_save_huobi_1hour, \
-    QA_SU_save_huobi_1day, QA_SU_save_huobi_1min, QA_SU_save_huobi
+    QA_SU_save_huobi_1day, QA_SU_save_huobi_1min, QA_SU_save_huobi, QA_SU_save_huobi_realtime
 
 # 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney)

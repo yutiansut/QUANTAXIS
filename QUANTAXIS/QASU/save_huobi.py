@@ -31,7 +31,7 @@ from dateutil.relativedelta import relativedelta
 import pandas as pd
 
 from QUANTAXIS.QAUtil import (DATABASE, QASETTING, QA_util_log_info, QA_util_to_json_from_pandas)
-from QUANTAXIS.QAFetch.QAhuobi import (QA_fetch_huobi_symbols, QA_fetch_huobi_kline, QA_fetch_huobi_kline_subscription, Huobi2QA_FREQUENCY_DICT, FIRST_PRIORITY)
+from QUANTAXIS.QAFetch.QAhuobi import (QA_fetch_huobi_symbols, QA_fetch_huobi_kline, QA_fetch_huobi_kline_subscription, Huobi2QA_FREQUENCY_DICT, FIRST_PRIORITY, CandlestickInterval)
 from QUANTAXIS.QAFetch.QAhuobi_realtime import (QA_Fetch_Huobi)
 from QUANTAXIS.QAUtil.QAcrypto import (QA_util_save_raw_symbols, QA_util_find_missing_kline)
 from QUANTAXIS.QAUtil.QAParameter import (FREQUENCE, MARKET_TYPE)
@@ -39,12 +39,6 @@ from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_str_to_Unix_timestamp, QA_util_
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
 
 import pymongo
-
-"""
-huobi Python官方客户端文档参考: https://github.com/HuobiRDCenter/huobi_Python/blob/master/Readme.md
-pip install huobi-client 的不是最新版(v0.32)，需要自己去 git 下载安装，本模块开发测试基于 v1.0.8
-"""
-from huobi.model.constant import CandlestickInterval
 
 # huobi的历史数据只是从2017年10月开始有，9.4以前的国内火币网的数据貌似都没有保留
 huobi_MIN_DATE = datetime.datetime(2017, 10, 1, tzinfo=tzutc())
@@ -54,7 +48,7 @@ def QA_SU_save_huobi(frequency):
     """
     Save huobi kline "smart"
     """
-    if (frequency!="1day"):
+    if (frequency != "1day"):
         return QA_SU_save_huobi_min(frequency)
     else:
         return QA_SU_save_huobi_day(frequency)
@@ -68,8 +62,8 @@ def QA_SU_save_huobi_day(client=DATABASE, ui_log=None, ui_progress=None, fetch_r
         """
         异步获取的回调存储
         """
-        QA_util_log_info('SYMBOL {} Recived {} from {} to {} in total {} klines'.format(Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1],
-                    symbol_info['symbol'],
+        QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1],
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
                     len(data)), ui_log=ui_log, ui_progress=ui_progress)
@@ -106,26 +100,31 @@ def QA_SU_save_huobi_day(client=DATABASE, ui_log=None, ui_progress=None, fetch_r
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['time_stamp']
             start_time = datetime.datetime.fromtimestamp(start_stamp + 1,tz=tzutc())
-            QA_util_log_info('UPDATE_SYMBOL {} Trying updating {} from {} to {}'.format(Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1],
-                    symbol_info['symbol'],
-                    start_time,
-                    end), ui_log=ui_log, ui_progress=ui_progress)
+            QA_util_log_info('UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)), ui_log=ui_log, ui_progress=ui_progress)
         else:
             start_time = huobi_MIN_DATE
-            QA_util_log_info('NEW_SYMBOL {} Trying downloading {} from {} to {}'.format(Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1],
-                    symbol_info['symbol'],
-                    start_time,
-                    end), ui_log=ui_log, ui_progress=ui_progress)
+            QA_util_log_info('NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)), ui_log=ui_log, ui_progress=ui_progress)
 
         data = QA_fetch_huobi_kline(symbol_info['symbol'],
             time.mktime(start_time.utctimetuple()),
             time.mktime(end.utctimetuple()),
             frequency=CandlestickInterval.DAY1, callback_save_data_func=QA_SU_save_data_huobi_callback)
         if data is None:
-            QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(symbol_info['symbol'],
-                    start_time,
-                    end), ui_log=ui_log, ui_progress=ui_progress)
+            QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol'],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end))), ui_log = ui_log, ui_progress = ui_progress)
             continue
+        QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[frequency],
+                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
+                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
+                    len(data)))
     QA_util_log_info('DOWNLOAD PROGRESS of day Klines from huobi.pro accomplished.', ui_log=ui_log, ui_progress=ui_progress)
 
 
@@ -137,8 +136,9 @@ def QA_SU_save_huobi_min(client=DATABASE, ui_log=None, ui_progress=None, frequen
         """
         异步获取数据回调用的 MongoDB 存储函数
         """
-        QA_util_log_info('SYMBOL {} Recived {} from {} to {} in total {} klines'.format(Huobi2QA_FREQUENCY_DICT[frequency],
+        QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
                     symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[frequency],
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
                     len(data)), ui_log=ui_log, ui_progress=ui_progress)
@@ -186,10 +186,10 @@ def QA_SU_save_huobi_min(client=DATABASE, ui_log=None, ui_progress=None, frequen
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['time_stamp']
             start_time = datetime.datetime.fromtimestamp(start_stamp + 1,tz=tzutc())
-            QA_util_log_info('UPDATE_SYMBOL {} Trying updating {} from {} to {}'.format(Huobi2QA_FREQUENCY_DICT[frequency],
-                    symbol_info['symbol'],
-                    start_time,
-                    end))
+            QA_util_log_info('UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[frequency],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
 
             # 查询到 Kline 缺漏，点抓取模式，按缺失的时间段精确请求K线数据
             missing_data_list = QA_util_find_missing_kline(symbol_info['symbol'], frequency)[::-1]
@@ -209,20 +209,25 @@ def QA_SU_save_huobi_min(client=DATABASE, ui_log=None, ui_progress=None, frequen
                     QA_fetch_huobi_kline_subscription(symbol_info['symbol'], start_time=reqParams['from'], end_time=reqParams['to'], frequency='1min', callback_save_data_func=QA_SU_save_data_huobi_callback)
         else:
             start_time = huobi_MIN_DATE
-            QA_util_log_info('NEW_SYMBOL {} Trying downloading {} from {} to {}'.format(Huobi2QA_FREQUENCY_DICT[frequency],
-                    symbol_info['symbol'],
-                    start_time,
-                    end))
+            QA_util_log_info('NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[frequency],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
 
         data = QA_fetch_huobi_kline(symbol_info['symbol'],
             time.mktime(start_time.utctimetuple()),
             time.mktime(end.utctimetuple()),
             frequency=frequency, callback_save_data_func=QA_SU_save_data_huobi_min_callback)
         if data is None:
-            QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(symbol_info['symbol'],
-                    start_time,
-                    end))
+            QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol']Huobi2QA_FREQUENCY_DICT[frequency],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
             continue
+        QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(symbol_info['symbol'],
+                    Huobi2QA_FREQUENCY_DICT[frequency],
+                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
+                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
+                    len(data)))
     QA_util_log_info('DOWNLOAD PROGRESS of min Klines from huobi.pro accomplished.')
 
 
@@ -254,6 +259,7 @@ def QA_SU_save_huobi_realtime():
     """
     实时抓取 huobi.pro 主流公链的交易品种行情
     """
+    QA_util_log_info('Downloading {:s} symbol list...'.format(market))
     fetch_huobi_history = QA_Fetch_Huobi(callback_save_data_func=QA_SU_save_data_huobi_callback, find_missing_kline_func=QA_util_find_missing_kline)
 
     # 添加抓取行情数据任务，将会开启多线程抓取。

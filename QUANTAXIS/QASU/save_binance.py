@@ -31,7 +31,8 @@ from dateutil.tz import tzutc
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 
-from QUANTAXIS.QAUtil import (DATABASE, QASETTING, QA_util_log_info, QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil import (DATABASE, QASETTING, QA_util_log_info, QA_util_log_expection, QA_util_to_json_from_pandas)
+from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_timestamp_to_str)
 from QUANTAXIS.QAFetch.QAbinance import (QA_fetch_binance_symbols, QA_fetch_binance_kline, Binace2QA_FREQUENCY_DICT)
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_save_raw_symbols
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
@@ -45,7 +46,7 @@ def QA_SU_save_binance(frequency):
     """
     Save binance kline "smart"
     """
-    if (frequency!="1d"):
+    if (frequency != "1d"):
         return QA_SU_save_binance_min(frequency)
     else:
         return QA_SU_save_binance_day(frequency)
@@ -69,7 +70,8 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
     end = datetime.datetime.now(tzutc())
 
     QA_util_log_info('Starting DOWNLOAD PROGRESS of day Klines from binance... ', ui_log=ui_log, ui_progress=ui_progress)
-    for index, symbol_info in enumerate(symbol_list):
+    for index in range(len(symbol_list)):
+        symbol_info = symbol_list.iloc[index]
         # 上架仅处理交易对
         QA_util_log_info('The "{}" #{} of total in {}'.format(symbol_info['symbol'],
                 index, len(symbol_list)), ui_log=ui_log, ui_progress=ui_progress)
@@ -83,39 +85,45 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['date_stamp']
             start_time = datetime.datetime.fromtimestamp(start_stamp)
-            QA_util_log_info('UPDATE_SYMBOL {} Trying updating {} from {} to {}'.format(frequency,
-                    symbol_info['symbol'],
-                    start_time,
-                    end), ui_log=ui_log, ui_progress=ui_progress)
+            QA_util_log_info('UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(symbol_info['symbol'],
+                    Binace2QA_FREQUENCY_DICT[frequency], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)), ui_log=ui_log, ui_progress=ui_progress)
         else:
             start_time = BINANCE_MIN_DATE
-            QA_util_log_info('NEW_SYMBOL {} Trying downloading {} from {} to {}'.format(frequency,
-                    symbol_info['symbol'],
-                    start_time,
-                    end), ui_log=ui_log, ui_progress=ui_progress)
+            QA_util_log_info('NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(symbol_info['symbol'],
+                    Binace2QA_FREQUENCY_DICT[frequency], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)), ui_log=ui_log, ui_progress=ui_progress)
 
         data = QA_fetch_binance_kline(symbol_info['symbol'],
             time.mktime(start_time.utctimetuple()),
             time.mktime(end.utctimetuple()),
             frequency)
         if data is None:
-            QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(symbol_info['symbol'],
-                    start_time,
-                    end), ui_log=ui_log, ui_progress=ui_progress)
+            QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol'], 
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)), ui_log=ui_log, ui_progress=ui_progress)
             continue
+        QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(symbol_info['symbol'],
+                    Binace2QA_FREQUENCY_DICT[frequency],
+                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
+                    time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
+                    len(data)))
         query_id = {
             "symbol": symbol_info['symbol'], 
             'market': market, 
             'date_stamp': {'$in':list(map(lambda x : x['date_stamp'], data))}}
         if (symbol_info['symbol'] == 'LRCETH'):
-            print(len(data))
+            #print(len(data)) # To do: 这个会抛出异常，有空再解决
+            pass
         if (col.count_documents(query_id) > 0):
             # 删掉重复数据
             col.delete_many(query_id)
         try:
             col.insert_many(data)
         except:
-            print('QA_SU_save_binance_day():Insert_many(kline) to {} got Exception {}'.format(symbol_info['symbol'], len(data)))
+            QA_util_log_expection('QA_SU_save_binance_day():Insert_many(kline) to {} got Exception {}'.format(symbol_info['symbol'], len(data)))
             pass
     QA_util_log_info('DOWNLOAD PROGRESS of day Klines from binance accomplished.', ui_log=ui_log, ui_progress=ui_progress)
 
@@ -148,7 +156,8 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
     end = datetime.datetime.now(tzutc())
 
     QA_util_log_info('Starting DOWNLOAD PROGRESS of min Klines from binance... ', ui_log=ui_log, ui_progress=ui_progress)
-    for index, symbol_info in enumerate(symbol_list):
+    for index in range(len(symbol_list)):
+        symbol_info = symbol_list.iloc[index]
         # 上架仅处理交易对
         QA_util_log_info('The "{}" #{} of total in {}'.format(symbol_info['symbol'],
                 index, len(symbol_list)), ui_log=ui_log, ui_progress=ui_progress)
@@ -163,31 +172,31 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['time_stamp']
             start_time = datetime.datetime.fromtimestamp(start_stamp)
-            QA_util_log_info('UPDATE_SYMBOL {} Trying updating {} from {} to {}'.format(frequency,
-                    symbol_info['symbol'],
-                    start_time,
-                    end))
+            QA_util_log_info('UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(symbol_info['symbol'], 
+                    Binace2QA_FREQUENCY_DICT[frequency],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)), ui_log=ui_log, ui_progress=ui_progress)
         else:
             start_time = BINANCE_MIN_DATE
-            QA_util_log_info('NEW_SYMBOL {} Trying downloading {} from {} to {}'.format(frequency,
-                    symbol_info['symbol'],
-                    start_time,
-                    end))
+            QA_util_log_info('NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(symbol_info['symbol'], 
+                    Binace2QA_FREQUENCY_DICT[frequency],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)), ui_log=ui_log, ui_progress=ui_progress)
 
         data = QA_fetch_binance_kline(symbol_info['symbol'],
             time.mktime(start_time.utctimetuple()),
             time.mktime(end.utctimetuple()),
             frequency)
         if data is None:
-            QA_util_log_info('SYMBOL {} from {} to {} has no data'.format(symbol_info['symbol'],
-                    start_time,
-                    end))
+            QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol'],
+                    QA_util_timestamp_to_str(start_time), 
+                    QA_util_timestamp_to_str(end)))
             continue
-        QA_util_log_info('SYMBOL {} Recived "{}" from {} to {} in total {} klines'.format(Binace2QA_FREQUENCY_DICT[frequency],
-                    symbol_info['symbol'],
+        QA_util_log_info('SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(symbol_info['symbol'],
+                    Binace2QA_FREQUENCY_DICT[frequency],
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[0]['time_stamp'])),
                     time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data[-1]['time_stamp'])),
-                    len(data)))
+                    len(data)), ui_log=ui_log, ui_progress=ui_progress)
         query_id = {
             "symbol": symbol_info['symbol'], 
             'market': market, 
@@ -199,7 +208,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         try:
             col.insert_many(data)
         except:
-            print('QA_SU_save_binance_min():Insert_many(kline) to {} got Exception {}'.format(symbol_info['symbol'], len(data)))
+            QA_util_log_expection('QA_SU_save_binance_min():Insert_many(kline) to {} got Exception {}'.format(symbol_info['symbol'], len(data)))
             pass
     QA_util_log_info('DOWNLOAD PROGRESS of min Klines from binance accomplished.', ui_log=ui_log, ui_progress=ui_progress)
 
@@ -266,12 +275,12 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
             coll_crypto_asset_list.insert_many(QA_util_to_json_from_pandas(symbol_lists))
             return symbol_lists
         except:
-            print('QA_SU_save_binance_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception {}'.format(len(data)))
+            QA_util_log_expection('QA_SU_save_binance_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception {}'.format(len(data)))
             pass
         return []
 
 
 if __name__ == '__main__':
     QA_SU_save_binance_symbol()
-    QA_SU_save_binance_1day()
+    #QA_SU_save_binance_1day()
     QA_SU_save_binance_1hour()

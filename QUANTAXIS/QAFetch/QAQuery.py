@@ -1050,5 +1050,5 @@ def QA_fetch_crypto_asset_min(market, symbol,
 
 if __name__ == '__main__':
     #print(QA_fetch_lhb('2006-07-03'))
-    print(QA_fetch_crypto_asset_min('huobi', symbol=['btcusdt', 'ethusdt', 'eosusdt', ], start='2006-07-03', end='2020-02-24 02:10:00', frequence='60min', format='pandas'))
+    print(QA_fetch_crypto_asset_min('bitmex', symbol=['ETHUSD', 'XRPUSD', ], start='2006-07-03', end='2020-02-24 02:10:00', frequence='60min', format='pandas'))
     print(QA_fetch_crypto_asset_day('huobi', symbol=['btcusdt', 'ethusdt', 'eosusdt', ], start='2017-10-01', end='2020-02-24 02:10:00', format='pandas'))
