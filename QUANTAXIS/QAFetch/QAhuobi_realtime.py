@@ -927,7 +927,7 @@ class QA_Fetch_Huobi(object):
                 )
 
                 QA_util_log_info(
-                    "rep: %s, id: %s, return %d records." %
+                    "rep: %s, id: %s, return %d kiline bar(s)." %
                     (msg_dict['rep'],
                      msg_dict['id'],
                      len(ohlcvData))
