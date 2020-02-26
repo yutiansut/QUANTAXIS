@@ -69,6 +69,12 @@ def QA_util_find_missing_kline(symbol, freq, market='huobi', start_epoch=datetim
                 ('time_stamp',
                 pymongo.ASCENDING)],
         unique=True)
+        col.create_index([("type",
+                pymongo.ASCENDING),
+                ('time_stamp',
+                pymongo.ASCENDING)])
+        col.create_index([('time_stamp',
+                pymongo.ASCENDING)])
 
         # 查询历史数据
         query_id = {
@@ -79,10 +85,9 @@ def QA_util_find_missing_kline(symbol, freq, market='huobi', start_epoch=datetim
         _data = []
         cursor = col.find(query_id).sort('time_stamp', 1)
         for item in cursor:
-            _data.append([str(item['symbol']), str(item['market']), float(item['open']), float(item['high']), float(item['low']), float(item['close']), float(item['volume']), float(item['trade']), float(item['amount']),
-                item['time_stamp'], item['date'], item['datetime'], item['type']])
+            _data.append([str(item['symbol']), str(item['market']), item['time_stamp'], item['date'], item['datetime'], item['type']])
 
-        _data = pd.DataFrame(_data, columns=['symbol', 'market', 'open', 'high', 'low', 'close', 'volume', 'trade', 'amount', 'time_stamp', 'date', 'datetime', 'type'])
+        _data = pd.DataFrame(_data, columns=['symbol', 'market', 'time_stamp', 'date', 'datetime', 'type'])
         _data = _data.assign(datetime=pd.to_datetime(_data['datetime'])).drop_duplicates((['datetime', 'symbol'])).set_index(pd.DatetimeIndex(_data['datetime']), drop=False)
     else:
         col = DATABASE.crypto_asset_day

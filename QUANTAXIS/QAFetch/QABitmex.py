@@ -29,7 +29,7 @@ Bitmex2QA_FREQUENCY_DICT = {
     "15m": '15min',
     "30m": '30min',
     "60m": '60min',
-    "1d": '1day',
+    "1d": 'day',
     "1h": '60min'
 }
 
@@ -134,7 +134,7 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
     )
     frame.rename({'trades': 'trade'}, axis=1, inplace=True)
     frame['amount'] = frame['volume'] * (frame['open'] + frame['close']) / 2
-    if (frequency != '1d'):
+    if (frequency not in ['1day', Bitmex2QA_FREQUENCY_DICT['1d'], '1d']):
         frame['type'] = Bitmex2QA_FREQUENCY_DICT[frequency]
     frame.drop(
         [

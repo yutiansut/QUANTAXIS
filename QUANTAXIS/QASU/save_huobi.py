@@ -541,7 +541,7 @@ def QA_SU_save_data_huobi_callback(data, freq):
     """
     异步获取数据回调用的 MongoDB 存储函数
     """
-    if (freq != FREQUENCE.DAY):
+    if (freq not in [FREQUENCE.DAY, CandlestickInterval.DAY1, '1d']):
         col = DATABASE.crypto_asset_min
         col.create_index(
             [

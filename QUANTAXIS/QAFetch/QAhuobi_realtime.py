@@ -251,12 +251,12 @@ class QA_Fetch_Huobi(object):
     """
     QUANTAXIS 系统定义的时间跟火币网WebSocket 接口的有一点偏差 day 火币叫 1day，hour 火币定义为 60min，需要查表映射转换。
     """
-    FREQUENCE_DICT = {
-        FREQUENCE.ONE_MIN: FREQUENCE.ONE_MIN,
-        FREQUENCE.FIVE_MIN: FREQUENCE.FIVE_MIN,
-        FREQUENCE.FIFTEEN_MIN: FREQUENCE.FIFTEEN_MIN,
-        FREQUENCE.THIRTY_MIN: FREQUENCE.THIRTY_MIN,
-        FREQUENCE.SIXTY_MIN: FREQUENCE.SIXTY_MIN,
+    Huobi2QA_FREQUENCE_DICT = {
+        CandlestickInterval.MIN1: FREQUENCE.ONE_MIN,
+        CandlestickInterval.MIN5: FREQUENCE.FIVE_MIN,
+        CandlestickInterval.MIN15: FREQUENCE.FIFTEEN_MIN,
+        CandlestickInterval.MIN30: FREQUENCE.THIRTY_MIN,
+        CandlestickInterval.MIN60: FREQUENCE.SIXTY_MIN,
         FREQUENCE.HOUR: FREQUENCE.SIXTY_MIN,
         FREQUENCE.DAY: '1day',
         '1day': FREQUENCE.DAY,
@@ -369,7 +369,7 @@ class QA_Fetch_Huobi(object):
                 for t in range(len(msg_dict['data'])):
                     ohlcvData = ohlcvData.append({'symbol': self.__batchReqJobs[msg_dict['rep']].Symbol,  # stock ID
                         'market': 'huobi',
-                        'type': self.FREQUENCE_DICT[self.__batchReqJobs[msg_dict['rep']].Period],
+                        'type': self.Huobi2QA_FREQUENCE_DICT[self.__batchReqJobs[msg_dict['rep']].Period],
                         'time_stamp': msg_dict['data'][t]['id'],  # timestamp
                         'open': msg_dict['data'][t]['open'],  # open,
                         'high': msg_dict['data'][t]['high'],  # high,
@@ -422,7 +422,7 @@ class QA_Fetch_Huobi(object):
                     )
                     self.callback_save_data_func(
                         ohlcvData,
-                        freq=self.FREQUENCE_DICT[self.__batchSubJobs[
+                        freq=self.Huobi2QA_FREQUENCE_DICT[self.__batchSubJobs[
                             msg_dict['rep']].Period]
                     )
             else:
@@ -455,7 +455,7 @@ class QA_Fetch_Huobi(object):
                 )
                 ohlcvData = ohlcvData.append({'symbol': self.__batchSubJobs[msg_dict['ch']].Symbol,  # stock ID
                         'market': 'huobi',
-                        'type': self.FREQUENCE_DICT[self.__batchSubJobs[msg_dict['ch']].Period],
+                        'type': self.Huobi2QA_FREQUENCE_DICT[self.__batchSubJobs[msg_dict['ch']].Period],
                         'time_stamp': msg_dict['tick']['id'],  # timestamp
                         'open': msg_dict['tick']['open'],  # open,
                         'high': msg_dict['tick']['high'],  # high,
@@ -490,7 +490,7 @@ class QA_Fetch_Huobi(object):
                 )
                 self.callback_save_data_func(
                     ohlcvData,
-                    freq=self.FREQUENCE_DICT[self.__batchSubJobs[msg_dict['ch']
+                    freq=self.Huobi2QA_FREQUENCE_DICT[self.__batchSubJobs[msg_dict['ch']
                                                                 ].Period]
                 )
                 if ((msg_dict['ch'] in self.__batchReqJobs)
@@ -714,7 +714,7 @@ class QA_Fetch_Huobi(object):
         # 60min，需要查表映射转换。
         requestStr = "market.%s.kline.%s" % (
             symbol,
-            self.FREQUENCE_DICT[period]
+            self.Huobi2QA_FREQUENCE_DICT[period]
         )
 
         # 订阅K线记录
@@ -821,7 +821,7 @@ class QA_Fetch_Huobi(object):
         reqParams = {}
         reqParams['req'] = requestStr = "market.%s.kline.%s" % (
             symbol,
-            self.FREQUENCE_DICT[period]
+            self.Huobi2QA_FREQUENCE_DICT[period]
         )
         reqParams['from'] = start_epoch
         reqParams['to'] = end_epoch
@@ -886,7 +886,7 @@ class QA_Fetch_Huobi(object):
             for t in range(len(msg_dict['data'])):
                 ohlcvData = ohlcvData.append({'symbol': symbol,  # stock ID
                     'market': 'huobi',
-                    'type': self.FREQUENCE_DICT[period],
+                    'type': self.Huobi2QA_FREQUENCE_DICT[period],
                     'time_stamp': msg_dict['data'][t]['id'],  # timestamp
                     'open': msg_dict['data'][t]['open'],  # open,
                     'high': msg_dict['data'][t]['high'],  # high,
@@ -927,7 +927,7 @@ class QA_Fetch_Huobi(object):
                 )
 
                 QA_util_log_info(
-                    "rep: %s, id: %s, return %d records." %
+                    "rep: %s, id: %s, return %d kiline bar(s)." %
                     (msg_dict['rep'],
                      msg_dict['id'],
                      len(ohlcvData))
