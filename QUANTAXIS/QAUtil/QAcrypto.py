@@ -36,7 +36,7 @@ def QA_util_save_raw_symbols(fetch_symnol_func, exchange):
     return symbols
 
 
-def QA_util_find_missing_kline(symbol, freq, market='huobi', start_epoch=datetime(2017, 10, 1, tzinfo=tzutc()), tzlocalize='Asia/Shanghai'):
+def QA_util_find_missing_kline(symbol, freq, market, start_epoch=datetime(2017, 10, 1, tzinfo=tzutc()), tzlocalize='Asia/Shanghai'):
     """
     查找24小时不间断的连续交易市场中缺失的 kline 历史数据，生成缺失历史数据时间段
     """

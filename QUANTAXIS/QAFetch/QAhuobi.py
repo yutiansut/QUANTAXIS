@@ -253,7 +253,6 @@ def QA_fetch_huobi_kline_subscription(
     """
     Get the symbol‘s candlestick data by subscription
     """
-
     def print_timestamp(ts_epoch):
         return '{}({})'.format(
             QA_util_timestamp_to_str(ts_epoch)[2:16],
