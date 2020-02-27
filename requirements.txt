@@ -27,3 +27,4 @@ IPython
 jqdatasdk
 fastcache
 statsmodels
+websocket-client
