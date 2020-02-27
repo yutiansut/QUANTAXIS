@@ -677,7 +677,7 @@ class QA_Fetch_Huobi(object):
             missing_data_list = self.find_missing_kline_func(
                 currentJob.Symbol,
                 currentJob.Period,
-                'huobi'
+                market='huobi'
             )
             if len(missing_data_list) > 0:
                 # 查询确定中断的K线数据起止时间，缺分时数据，补分时数据
