@@ -225,9 +225,6 @@ def QA_SU_save_bitmex_min(
             'type': Bitmex2QA_FREQUENCY_DICT[frequency]
         }
         ref = col.find(query_id).sort('time_stamp', -1)
-        if (symbol_info['symbol'] == 'ETHUSD'):
-            print(col.count_documents(query_id))
-            print()
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['time_stamp']
             start_time = datetime.datetime.fromtimestamp(
