@@ -395,9 +395,10 @@ def QA_SU_save_huobi_min(
                         (QA_util_datetime_to_Unix_timestamp() + 120)):
                         # 出现“未来”时间，一般是默认时区设置错误造成的
                         raise Exception(
-                            'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s} at {:s}({:d}) but current time is {}'
+                            'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s}({:d}) but current time is {}'
                             .format(
-                                initalParams['req'],
+                                symbol_info['symbol'],
+                                frequency,
                                 missing_data_list[i][missing],
                                 missing_data_list[i][between],
                                 QA_util_datetime_to_Unix_timestamp()
@@ -597,8 +598,8 @@ def QA_SU_save_data_huobi_callback(data, freq):
         query_id = {
             "symbol": data.iloc[0].symbol,
             'market': data.iloc[0].market,
-            'time_stamp': {
-                '$in': data['time_stamp'].tolist()
+            'date_stamp': {
+                '$in': data['date_stamp'].tolist()
             }
         }
         refcount = col.count_documents(query_id)
@@ -705,5 +706,9 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
 
 if __name__ == '__main__':
     QA_SU_save_huobi_symbol()
-    #QA_SU_save_huobi_1day()
+    QA_SU_save_huobi_1day()
     QA_SU_save_huobi_1hour(fetch_range=FIRST_PRIORITY)
+    QA_SU_save_huobi_30min(fetch_range=FIRST_PRIORITY)
+    QA_SU_save_huobi_15min(fetch_range=FIRST_PRIORITY)
+    QA_SU_save_huobi_5min(fetch_range=FIRST_PRIORITY)
+    QA_SU_save_huobi_1min(fetch_range=FIRST_PRIORITY)
