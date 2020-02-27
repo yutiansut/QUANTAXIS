@@ -1,7 +1,6 @@
 # coding: utf-8
-# Author: Will
-# Contributor: 阿财（Rgveda@github）（11652964@qq.com）
-# Created date: 2018-06-08
+# Author: 阿财（Rgveda@github）（11652964@qq.com）
+# Created date: 2020-02-27
 #
 # The MIT License (MIT)
 #
@@ -39,36 +38,38 @@ from QUANTAXIS.QAUtil import (
     QA_util_to_json_from_pandas
 )
 from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_timestamp_to_str)
-from QUANTAXIS.QAFetch.QAbinance import (
-    QA_fetch_binance_symbols,
-    QA_fetch_binance_kline,
-    Binance2QA_FREQUENCY_DICT
+from QUANTAXIS.QAFetch.QABitfinex import (
+    QA_fetch_Bitfinex_symbols,
+    QA_fetch_Bitfinex_kline,
+    Bitfinex2QA_FREQUENCY_DICT
 )
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_save_raw_symbols
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
 
 import pymongo
 
-# binance的历史数据只是从2017年7月开始有，以前的貌似都没有保留 .  author:Will
-BINANCE_MIN_DATE = datetime.datetime(2017, 7, 1, tzinfo=tzutc())
+# Bitfinex的历史数据只是从2017年10月开始有，9.4以前的貌似都没有保留
+Bitfinex_MIN_DATE = datetime.datetime(2017, 10, 1, tzinfo=tzutc())
 
 
-def QA_SU_save_binance(frequency):
+def QA_SU_save_Bitfinex(frequency):
     """
-    Save binance kline "smart"
+    Save Bitfinex kline "smart"
     """
     if (frequency not in ["1d", "1day", "day"]):
-        return QA_SU_save_binance_min(frequency)
+        return QA_SU_save_Bitfinex_min(frequency)
     else:
-        return QA_SU_save_binance_day(frequency)
+        return QA_SU_save_Bitfinex_day(frequency)
 
 
-def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_Bitfinex_day(frequency, ui_log=None, ui_progress=None):
     """
-    Save binance day kline
+    Save Bitfinex day kline
     """
-    market = 'binance'
-    symbol_list = QA_fetch_crypto_asset_list(market='binance')
+    print('Under construction... I will test and debug soon...')
+    return False
+    market = 'Bitfinex'
+    symbol_list = QA_fetch_crypto_asset_list(market='Bitfinex')
     col = DATABASE.crypto_asset_day
     col.create_index(
         [
@@ -85,7 +86,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
     end = datetime.datetime.now(tzutc())
 
     QA_util_log_info(
-        'Starting DOWNLOAD PROGRESS of day Klines from binance... ',
+        'Starting DOWNLOAD PROGRESS of day Klines from Bitfinex... ',
         ui_log=ui_log,
         ui_progress=ui_progress
     )
@@ -116,7 +117,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Binance2QA_FREQUENCY_DICT[frequency],
+                    Binace2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -124,11 +125,11 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
                 ui_progress=ui_progress
             )
         else:
-            start_time = BINANCE_MIN_DATE
+            start_time = Bitfinex_MIN_DATE
             QA_util_log_info(
                 'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Binance2QA_FREQUENCY_DICT[frequency],
+                    Binace2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -136,7 +137,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
                 ui_progress=ui_progress
             )
 
-        data = QA_fetch_binance_kline(
+        data = QA_fetch_Bitfinex_kline(
             symbol_info['symbol'],
             time.mktime(start_time.utctimetuple()),
             time.mktime(end.utctimetuple()),
@@ -156,7 +157,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
         QA_util_log_info(
             'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
                 symbol_info['symbol'],
-                Binance2QA_FREQUENCY_DICT[frequency],
+                Binace2QA_FREQUENCY_DICT[frequency],
                 time.strftime(
                     '%Y-%m-%d %H:%M:%S',
                     time.localtime(data[0]['time_stamp'])
@@ -186,24 +187,26 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
             col.insert_many(data)
         except:
             QA_util_log_expection(
-                'QA_SU_save_binance_day():Insert_many(kline) to {} got Exception {}'
+                'QA_SU_save_Bitfinex_day():Insert_many(kline) to {} got Exception {}'
                 .format(symbol_info['symbol'],
                         len(data))
             )
             pass
     QA_util_log_info(
-        'DOWNLOAD PROGRESS of day Klines from binance accomplished.',
+        'DOWNLOAD PROGRESS of day Klines from Bitfinex accomplished.',
         ui_log=ui_log,
         ui_progress=ui_progress
     )
 
 
-def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_Bitfinex_min(frequency, ui_log=None, ui_progress=None):
     """
-    Save binance min kline
+    Save Bitfinex min kline
     """
-    market = 'binance'
-    symbol_list = QA_fetch_crypto_asset_list(market='binance')
+    print('Under construction... I will test and debug soon...')
+    return False
+    market = 'Bitfinex'
+    symbol_list = QA_fetch_crypto_asset_list(market='Bitfinex')
     col = DATABASE.crypto_asset_min
     col.create_index(
         [
@@ -234,7 +237,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
     end = datetime.datetime.now(tzutc())
 
     QA_util_log_info(
-        'Starting DOWNLOAD PROGRESS of min Klines from binance... ',
+        'Starting DOWNLOAD PROGRESS of min Klines from Bitfinex... ',
         ui_log=ui_log,
         ui_progress=ui_progress
     )
@@ -269,7 +272,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Binance2QA_FREQUENCY_DICT[frequency],
+                    Binace2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -277,11 +280,11 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
                 ui_progress=ui_progress
             )
         else:
-            start_time = BINANCE_MIN_DATE
+            start_time = Bitfinex_MIN_DATE
             QA_util_log_info(
                 'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Binance2QA_FREQUENCY_DICT[frequency],
+                    Binace2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -289,7 +292,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
                 ui_progress=ui_progress
             )
 
-        data = QA_fetch_binance_kline(
+        data = QA_fetch_Bitfinex_kline(
             symbol_info['symbol'],
             time.mktime(start_time.utctimetuple()),
             time.mktime(end.utctimetuple()),
@@ -307,7 +310,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         QA_util_log_info(
             'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
                 symbol_info['symbol'],
-                Binance2QA_FREQUENCY_DICT[frequency],
+                Binace2QA_FREQUENCY_DICT[frequency],
                 time.strftime(
                     '%Y-%m-%d %H:%M:%S',
                     time.localtime(data[0]['time_stamp'])
@@ -337,39 +340,41 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
             col.insert_many(data)
         except:
             QA_util_log_expection(
-                'QA_SU_save_binance_min():Insert_many(kline) to {} got Exception {}'
+                'QA_SU_save_Bitfinex_min():Insert_many(kline) to {} got Exception {}'
                 .format(symbol_info['symbol'],
                         len(data))
             )
             pass
     QA_util_log_info(
-        'DOWNLOAD PROGRESS of min Klines from binance accomplished.',
+        'DOWNLOAD PROGRESS of min Klines from Bitfinex accomplished.',
         ui_log=ui_log,
         ui_progress=ui_progress
     )
 
 
-def QA_SU_save_binance_1min():
-    QA_SU_save_binance('1m')
+def QA_SU_save_Bitfinex_1min():
+    QA_SU_save_Bitfinex('1m')
 
 
-def QA_SU_save_binance_1day():
-    QA_SU_save_binance("1d")
+def QA_SU_save_Bitfinex_1day():
+    QA_SU_save_Bitfinex("1d")
 
 
-def QA_SU_save_binance_1hour():
-    QA_SU_save_binance("1h")
+def QA_SU_save_Bitfinex_1hour():
+    QA_SU_save_Bitfinex("1h")
 
 
-def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
+def QA_SU_save_Bitfinex_symbol(client=DATABASE, market="Bitfinex"):
     """
     保存币安交易对信息
     """
+    print('Under construction... I will test and debug soon...')
+    return False
     QA_util_log_info('Downloading {:s} symbol list...'.format(market))
 
-    # 保存 Binance API 原始 Symbol 数据备查阅，自动交易用得着
+    # 保存 Bitfinex API 原始 Symbol 数据备查阅，自动交易用得着
     raw_symbol_lists = QA_util_save_raw_symbols(
-        QA_fetch_binance_symbols,
+        QA_fetch_Bitfinex_symbols,
         market
     )
     if (len(raw_symbol_lists) > 0):
@@ -452,7 +457,7 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
             return symbol_lists
         except:
             QA_util_log_expection(
-                'QA_SU_save_binance_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception {}'
+                'QA_SU_save_Bitfinex_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception {}'
                 .format(len(data))
             )
             pass
@@ -460,6 +465,6 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
 
 
 if __name__ == '__main__':
-    QA_SU_save_binance_symbol()
-    #QA_SU_save_binance_1day()
-    QA_SU_save_binance_1hour()
+    QA_SU_save_Bitfinex_symbol()
+    #QA_SU_save_Bitfinex_1day()
+    QA_SU_save_Bitfinex_1hour()
