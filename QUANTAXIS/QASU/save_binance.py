@@ -42,7 +42,7 @@ from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_timestamp_to_str)
 from QUANTAXIS.QAFetch.QAbinance import (
     QA_fetch_binance_symbols,
     QA_fetch_binance_kline,
-    Binace2QA_FREQUENCY_DICT
+    Binance2QA_FREQUENCY_DICT
 )
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_save_raw_symbols
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
@@ -116,7 +116,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Binace2QA_FREQUENCY_DICT[frequency],
+                    Binance2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -128,7 +128,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
             QA_util_log_info(
                 'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Binace2QA_FREQUENCY_DICT[frequency],
+                    Binance2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -156,7 +156,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
         QA_util_log_info(
             'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
                 symbol_info['symbol'],
-                Binace2QA_FREQUENCY_DICT[frequency],
+                Binance2QA_FREQUENCY_DICT[frequency],
                 time.strftime(
                     '%Y-%m-%d %H:%M:%S',
                     time.localtime(data[0]['time_stamp'])
@@ -259,7 +259,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         query_id = {
             "symbol": symbol_info['symbol'],
             'market': market,
-            'type': Binace2QA_FREQUENCY_DICT[frequency]
+            'type': Binance2QA_FREQUENCY_DICT[frequency]
         }
         ref = col.find(query_id).sort('time_stamp', -1)
 
@@ -269,7 +269,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Binace2QA_FREQUENCY_DICT[frequency],
+                    Binance2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -281,7 +281,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
             QA_util_log_info(
                 'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Binace2QA_FREQUENCY_DICT[frequency],
+                    Binance2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -307,7 +307,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         QA_util_log_info(
             'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
                 symbol_info['symbol'],
-                Binace2QA_FREQUENCY_DICT[frequency],
+                Binance2QA_FREQUENCY_DICT[frequency],
                 time.strftime(
                     '%Y-%m-%d %H:%M:%S',
                     time.localtime(data[0]['time_stamp'])
@@ -324,7 +324,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         query_id = {
             "symbol": symbol_info['symbol'],
             'market': market,
-            'type': Binace2QA_FREQUENCY_DICT[frequency],
+            'type': Binance2QA_FREQUENCY_DICT[frequency],
             'time_stamp': {
                 '$in': list(map(lambda x: x['time_stamp'],
                                 data))
