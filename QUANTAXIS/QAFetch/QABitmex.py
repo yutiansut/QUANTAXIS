@@ -116,10 +116,10 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
     frame['market'] = 'bitmex'
     # UTC时间转换为北京时间
     frame['date'] = pd.to_datetime(frame['timestamp']
-                                  ).dt.tz_convert('Asia/Shanghai')
+                                  ).dt.tz_localize('Asia/Shanghai')
     frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
     frame['datetime'] = pd.to_datetime(frame['timestamp']
-                                      ).dt.tz_convert('Asia/Shanghai')
+                                      ).dt.tz_localize('Asia/Shanghai')
     frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # GMT+0 String 转换为 UTC Timestamp
     frame['time_stamp'] = pd.to_datetime(frame['timestamp']
