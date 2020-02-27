@@ -119,8 +119,8 @@ def QA_SU_save_bitmex_day(frequency='1d',
                     QA_util_timestamp_to_str(end)))
 
         data = QA_fetch_bitmex_kline(symbol_info['symbol'],
-            start_time,
-            end,
+            QA_util_datetime_to_Unix_timestamp(start_time),
+            QA_util_datetime_to_Unix_timestamp(end),
             frequency='1d')
         if data is None:
             QA_util_log_info('SYMBOL "{}" from {} to {} has no data'.format(symbol_info['symbol'],
@@ -427,6 +427,6 @@ def QA_SU_save_data_bitmex_callback(data, freq):
 
 if __name__ == '__main__':
     QA_SU_save_bitmex_symbol()
-    QA_SU_save_bitmex_1min()
     QA_SU_save_bitmex_1day()
     QA_SU_save_bitmex_1hour()
+    QA_SU_save_bitmex_1min()

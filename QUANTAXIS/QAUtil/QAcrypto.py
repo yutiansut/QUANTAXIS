@@ -88,7 +88,7 @@ def QA_util_find_missing_kline(symbol, freq, market, start_epoch=datetime(2017, 
             _data.append([str(item['symbol']), str(item['market']), item['time_stamp'], item['date'], item['datetime'], item['type']])
 
         _data = pd.DataFrame(_data, columns=['symbol', 'market', 'time_stamp', 'date', 'datetime', 'type'])
-        _data = _data.assign(datetime=pd.to_datetime(_data['datetime'])).drop_duplicates((['datetime', 'symbol'])).set_index(pd.DatetimeIndex(_data['datetime']), drop=False)
+        _data = _data.set_index(pd.DatetimeIndex(_data['datetime']), drop=False)
     else:
         col = DATABASE.crypto_asset_day
         col.create_index([('market',

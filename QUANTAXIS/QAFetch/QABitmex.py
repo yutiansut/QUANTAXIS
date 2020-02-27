@@ -36,8 +36,8 @@ Bitmex2QA_FREQUENCY_DICT = {
     "15m": '15min',
     "30m": '30min',
     "60m": '60min',
+    "1h": '60min',
     "1d": 'day',
-    "1h": '60min'
 }
 
 FREQUENCY_SHIFTING = {
@@ -45,7 +45,7 @@ FREQUENCY_SHIFTING = {
     "5m": 72000,
     "15m": 216000,
     "30m": 432000,
-    "60m": 864000,
+    "1h": 864000,
     "1d": 207360000
 }
 
@@ -117,23 +117,23 @@ def QA_fetch_bitmex_symbols(active=True):
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
-def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency, callback_func=None):
+def QA_fetch_bitmex_kline_with_auto_retry(symbol, start_time, end_time, frequency,):
     """
-    Get the latest symbol‘s candlestick data
+    Get the latest symbol‘s candlestick data raw method
     """
-    market = 'bitmex'
-    retries = 1
-    datas = list()
     url = urljoin(Bitmex_base_url, "trade/bucketed")
-    while start_time < end_time:
+    retries = 1
+    while (retries != 0):
         try:
+            start_epoch = datetime.datetime.fromtimestamp(start_time, tz=tzutc())
+            end_epoch = datetime.datetime.fromtimestamp(end_time, tz=tzutc())
             req = requests.get(
                 url,
                 params={
                     "symbol": symbol,
                     "binSize": frequency,
-                    "startTime": start_time.isoformat(),
-                    "endTime": end_time.isoformat(),
+                    "startTime": start_epoch.isoformat(),
+                    "endTime": end_epoch.isoformat(),
                     "count": MAX_HISTORY
                 },
                 timeout=TIMEOUT
@@ -159,10 +159,24 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency, callback_func
 
             # 成功获取才处理数据，否则继续尝试连接
             klines = json.loads(req.content)
-            if (len(klines) == 0) or \
-                ('error' in klines):
-                # 出错放弃
-                break
+            return klines
+
+    return None
+
+
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency, callback_func=None):
+    """
+    Get the latest symbol‘s candlestick data
+    """
+    market = 'bitmex'
+    datas = list()
+    while start_time < end_time:
+        klines = QA_fetch_bitmex_kline_with_auto_retry(symbol, start_time, end_time, frequency,)
+        if (len(klines) == 0) or \
+            ('error' in klines):
+            # 出错放弃
+            break
 
             datas.extend(klines)
             start_time = parse(klines[-1].get("timestamp")
@@ -196,7 +210,6 @@ def QA_fetch_bitmex_kline_min(symbol, start_time, end_time, frequency, callback_
     market = 'bitmex'
     retries = 1
     datas = list()
-    url = urljoin(Bitmex_base_url, "trade/bucketed")
     while (reqParams['to'] > start_time):
         if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
             ((reqParams['from'] > reqParams['to'])):
@@ -210,54 +223,19 @@ def QA_fetch_bitmex_kline_min(symbol, start_time, end_time, frequency, callback_
                     QA_util_print_timestamp(QA_util_datetime_to_Unix_timestamp())
                 )
             )
-        retries = 1
-        while (retries != 0):
-            try:
-                start_epoch = datetime.datetime.fromtimestamp(reqParams['from'], tz=tzutc())
-                end_epoch = datetime.datetime.fromtimestamp(reqParams['to'], tz=tzutc())
-                req = requests.get(
-                    url,
-                    params={
-                        "symbol": symbol,
-                        "binSize": frequency,
-                        "startTime": start_epoch.isoformat(),
-                        "endTime": end_epoch.isoformat(),
-                        "count": MAX_HISTORY
-                    },
-                    timeout=TIMEOUT
-                )
-                time.sleep(0.5)
-                retries = 0
-            except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
-                retries = retries + 1
-                if (retries % 6 == 0):
-                    print(ILOVECHINA)
-                print("Retry trade/bucketed #{}".format(retries - 1))
-                time.sleep(0.5)
 
-            if (retries == 0):
-                # 防止频率过快被断连
-                remaining = int(req.headers['x-ratelimit-remaining'])
-                if remaining < 20:
-                    time.sleep(0.5)
-                elif remaining < 10:
-                    time.sleep(5)
-                elif remaining < 3:
-                    time.sleep(30)
+        klines = QA_fetch_bitmex_kline_with_auto_retry(symbol, reqParams['from'], reqParams['to'], frequency,)
+        if (len(klines) == 0) or \
+            ('error' in klines):
+            # 出错放弃
+            break
 
-                # 成功获取才处理数据，否则继续尝试连接
-                klines = json.loads(req.content)
-                if (len(klines) == 0) or \
-                    ('error' in klines):
-                    # 出错放弃
-                    break
+        reqParams['to'] = reqParams['from'] - 1
+        reqParams['from'] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
 
-                reqParams['to'] = reqParams['from'] - 1
-                reqParams['from'] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
-
-                if (callback_func is not None):
-                    frame = format_btimex_data_fields(klines, frequency)
-                    callback_func(frame, Bitmex2QA_FREQUENCY_DICT[frequency])
+        if (callback_func is not None):
+            frame = format_btimex_data_fields(klines, frequency)
+            callback_func(frame, Bitmex2QA_FREQUENCY_DICT[frequency])
 
         if (len(klines) == 0):
             return None
