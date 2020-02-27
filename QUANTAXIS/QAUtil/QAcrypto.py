@@ -107,10 +107,9 @@ def QA_util_find_missing_kline(symbol, freq, market, start_epoch=datetime(2017, 
         cursor = col.find(query_id).sort('time_stamp', 1)
         _data = []
         for item in cursor:
-            _data.append([str(item['symbol']), str(item['market']), float(item['open']), float(item['high']), float(item['low']), float(item['close']), float(item['volume']), float(item['trade']), float(item['amount']),
-                item['time_stamp'], item['date'], item['datetime']])
+            _data.append([str(item['symbol']), str(item['market']), item['time_stamp'], item['date'], item['datetime']])
         
-        _data = pd.DataFrame(_data, columns=['symbol', 'market', 'open', 'high', 'low', 'close', 'volume', 'trade', 'amount', 'time_stamp', 'date', 'datetime']).drop_duplicates()
+        _data = pd.DataFrame(_data, columns=['symbol', 'market', 'time_stamp', 'date', 'datetime']).drop_duplicates()
         _data['date'] = pd.to_datetime(_data['date'])
         _data = _data.set_index(pd.DatetimeIndex(_data['date']), drop=False)
 

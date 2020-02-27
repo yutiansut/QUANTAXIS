@@ -56,6 +56,7 @@ from datetime import datetime, timezone, timedelta
 import pandas as pd
 import numpy as np
 from random import random
+
 """
 huobi Python官方客户端文档参考: https://github.com/HuobiRDCenter/huobi_Python/blob/master/Readme.md
 pip install huobi-client 的不是最新版(v0.32)，需要自己去 git 下载安装，测试基于
@@ -936,13 +937,12 @@ class QA_Fetch_Huobi(object):
 
 
 if __name__ == "__main__":
-    #from QUANTAXIS.QASU.save_huobi import (QA_SU_save_data_huobi_callback)
+    from QUANTAXIS.QASU.save_huobi import (QA_SU_save_data_huobi_callback)
 
-    #fetch_huobi_history = QA_Fetch_Huobi(callback_save_data_func=QA_SU_save_data_huobi_callback, find_missing_kline_func=QA_util_find_missing_kline)
+    fetch_huobi_history = QA_Fetch_Huobi(callback_save_data_func=QA_SU_save_data_huobi_callback, find_missing_kline_func=QA_util_find_missing_kline)
 
-    ## 添加抓取行情数据任务，将会开启多线程抓取。
-    #fetch_huobi_history.add_subscription_batch_jobs(['hb10usdt'], [FREQUENCE.ONE_MIN,
-    #                                      FREQUENCE.FIVE_MIN], '2017-10-26 02:00:00')
+    # 添加抓取行情数据任务，将会开启多线程抓取。
+    fetch_huobi_history.add_subscription_batch_jobs(['hb10usdt'], [FREQUENCE.DAY], '2017-10-26 02:00:00')
 
-    #fetch_huobi_history.run_subscription_batch_jobs()
+    fetch_huobi_history.run_subscription_batch_jobs()
     pass
