@@ -70,7 +70,7 @@ Bitfinex2QA_FREQUENCY_DICT = {
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
-def QA_fetch_Bitfinex_symbols():
+def QA_fetch_bitfinex_symbols():
     url = urljoin(Bitfinex_base_url, "/api/v1/exchangeInfo")
     retries = 1
     datas = list()
@@ -98,7 +98,7 @@ def QA_fetch_Bitfinex_symbols():
     return datas
 
 
-def QA_fetch_Bitfinex_kline(symbol, start_time, end_time, frequency):
+def QA_fetch_bitfinex_kline(symbol, start_time, end_time, frequency):
     """
     Get the latest symbol‘s candlestick data
     """
@@ -218,7 +218,7 @@ if __name__ == '__main__':
     )
     print(start * 1000)
     print(end * 1000)
-    data = QA_fetch_Bitfinex_kline("ETHBTC", start, end, '1d')
+    data = QA_fetch_bitfinex_kline("ETHBTC", start, end, '1d')
     print(len(data))
     print(data[0])
     print(data[-1])

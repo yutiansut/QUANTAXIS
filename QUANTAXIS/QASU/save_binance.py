@@ -259,7 +259,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         query_id = {
             "symbol": symbol_info['symbol'],
             'market': market,
-            'type': Binace2QA_FREQUENCY_DICT[frequency]
+            'type': Binance2QA_FREQUENCY_DICT[frequency]
         }
         ref = col.find(query_id).sort('time_stamp', -1)
 
@@ -324,7 +324,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         query_id = {
             "symbol": symbol_info['symbol'],
             'market': market,
-            'type': Binace2QA_FREQUENCY_DICT[frequency],
+            'type': Binance2QA_FREQUENCY_DICT[frequency],
             'time_stamp': {
                 '$in': list(map(lambda x: x['time_stamp'],
                                 data))
