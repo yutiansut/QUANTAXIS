@@ -114,12 +114,12 @@ def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency):
     # 归一化数据字段，转换填充必须字段，删除多余字段
     frame = pd.DataFrame(datas)
     frame['market'] = 'bitmex'
-    # UTC时间转换为北京时间
-    frame['date'] = pd.to_datetime(frame['timestamp']
-                                  ).dt.tz_localize('Asia/Shanghai')
-    frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
+    # UTC时间转换为北京时间，接收到的数据有时候 tz-aware 有时候又是变成 non tz-aware，
+    # 改了几次代码，既不能单纯 tz_localize 也不能单纯 tz_convert 
+    # dt.tz_localize(None) 是 Stackoverflow 的解决方案，先观察效果
     frame['datetime'] = pd.to_datetime(frame['timestamp']
-                                      ).dt.tz_localize('Asia/Shanghai')
+                                      ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+    frame['date'] = frame['datetime'].dt.strftime('%Y-%m-%d')
     frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # GMT+0 String 转换为 UTC Timestamp
     frame['time_stamp'] = pd.to_datetime(frame['timestamp']
