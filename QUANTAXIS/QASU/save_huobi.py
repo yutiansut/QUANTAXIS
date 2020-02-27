@@ -67,7 +67,7 @@ def QA_SU_save_huobi(frequency):
     """
     Save huobi kline "smart"
     """
-    if (frequency != "1day"):
+    if (frequency not in ["1d", "1day", "day"]):
         return QA_SU_save_huobi_min(frequency)
     else:
         return QA_SU_save_huobi_day(frequency)
@@ -245,11 +245,11 @@ def QA_SU_save_huobi_day(
 
 
 def QA_SU_save_huobi_min(
+    frequency=CandlestickInterval.MIN1,
+    fetch_range='all',
     client=DATABASE,
     ui_log=None,
     ui_progress=None,
-    frequency=CandlestickInterval.MIN1,
-    fetch_range='all'
 ):
     """
     下载火币K线分钟数据，统一转化字段保存数据为 crypto_asset_min
@@ -380,7 +380,8 @@ def QA_SU_save_huobi_min(
             # 查询到 Kline 缺漏，点抓取模式，按缺失的时间段精确请求K线数据
             missing_data_list = QA_util_find_missing_kline(
                 symbol_info['symbol'],
-                Huobi2QA_FREQUENCY_DICT[frequency]
+                Huobi2QA_FREQUENCY_DICT[frequency],
+                market='huobi'
             )[::-1]
             if len(missing_data_list) > 0:
                 # 查询确定中断的K线数据起止时间，缺分时数据，补分时数据
@@ -705,6 +706,7 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
 
 
 if __name__ == '__main__':
+    QA_SU_save_huobi('30min')()
     QA_SU_save_huobi_symbol()
     QA_SU_save_huobi_1day()
     QA_SU_save_huobi_1hour(fetch_range=FIRST_PRIORITY)

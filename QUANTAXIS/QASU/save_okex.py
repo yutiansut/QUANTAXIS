@@ -56,7 +56,7 @@ def QA_SU_save_okex(frequency):
     """
     Save OKEx kline "smart"
     """
-    if (frequency not in ["1d", "1day", "day"]):
+    if (frequency not in ["1d", '86400', "1day", "day"]):
         return QA_SU_save_okex_min(frequency)
     else:
         return QA_SU_save_okex_day(frequency)
