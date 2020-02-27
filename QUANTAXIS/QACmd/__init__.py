@@ -287,10 +287,16 @@ class CLI(cmd.Cmd):
             命令格式：save binance : 保存币安交易所数据 \n\
             命令格式：save binance all : 一次性保存币安交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
             命令格式：save binance 1day/1hour/1min : 单独保存币安交易所日/小时/分钟数据 \n\
+            命令格式：save bitfinex : 保存bitfinex交易所数据 \n\
+            命令格式：save bitfinex all : 一次性保存bitfinex交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
+            命令格式：save bitfinex 1day/1hour/1min : 单独保存bitfinex交易所日/小时/分钟数据 \n\
             命令格式：save huobi : 保存火币Pro交易所日/小时/分钟现货交易对数据 \n\
             命令格式：save huobi all : 一次性保存火币Pro交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
             命令格式：save huobi 1day/1hour/1min/5min/15min/30min : 单独保存火币Pro交易所日/小时/分钟线数据 \n\
             命令格式：save huobi realtime : 接收火币Pro交易所实时行情（仅排名前30的主要币种）\n\
+            命令格式：save okex : 保存OKEx交易所数据 \n\
+            命令格式：save okex all : 一次性保存OKEx交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
+            命令格式：save okex 1day/1hour/1min : 单独保存OKEx交易所日/小时/分钟数据 \n\
             ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
