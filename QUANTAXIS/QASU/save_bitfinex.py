@@ -1,7 +1,6 @@
 # coding: utf-8
-# Author: Unknown
-# Contributor: 阿财（Rgveda@github）（11652964@qq.com）
-# Created date: 2018-06-08
+# Author: 阿财（Rgveda@github）（11652964@qq.com）
+# Created date: 2020-02-27
 #
 # The MIT License (MIT)
 #
@@ -27,9 +26,7 @@
 # SOFTWARE.
 import datetime
 import time
-import math
 from dateutil.tz import tzutc
-from dateutil.parser import parse
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 
@@ -37,41 +34,43 @@ from QUANTAXIS.QAUtil import (
     DATABASE,
     QASETTING,
     QA_util_log_info,
+    QA_util_log_expection,
     QA_util_to_json_from_pandas
 )
 from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_timestamp_to_str)
-from QUANTAXIS.QAFetch.QABitmex import (
-    QA_fetch_bitmex_symbols,
-    QA_fetch_bitmex_kline,
-    Bitmex2QA_FREQUENCY_DICT
+from QUANTAXIS.QAFetch.QABitfinex import (
+    QA_fetch_bitfinex_symbols,
+    QA_fetch_bitfinex_kline,
+    Bitfinex2QA_FREQUENCY_DICT
 )
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_save_raw_symbols
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
 
 import pymongo
 
+# Bitfinex的历史数据只是从2017年10月开始有，9.4以前的貌似都没有保留
+Bitfinex_MIN_DATE = datetime.datetime(2017, 10, 1, tzinfo=tzutc())
 
-def QA_SU_save_bitmex(frequency):
+
+def QA_SU_save_bitfinex(frequency):
     """
-    Save bitmex kline "smart"
+    Save Bitfinex kline "smart"
     """
-    if (frequency != "1day"):
-        return QA_SU_save_bitmex_min(frequency)
+    if (frequency not in ["1d", "1day", "day"]):
+        return QA_SU_save_bitfinex_min(frequency)
     else:
-        return QA_SU_save_bitmex_day(frequency)
+        return QA_SU_save_bitfinex_day(frequency)
 
 
-def QA_SU_save_bitmex_day(
-    frequency='1d',
-    client=DATABASE,
-    ui_log=None,
-    ui_progress=None,
-):
+def QA_SU_save_bitfinex_day(frequency, ui_log=None, ui_progress=None):
     """
-    获取 bitmex K线 日线数据，统一转化字段保存数据为 crypto_asset_day
+    Save Bitfinex day kline
     """
-    symbol_list = QA_fetch_crypto_asset_list(market='bitmex')
-    col = client.crypto_asset_day
+    print('Under construction... I will test and debug soon...')
+    return False
+    market = 'Bitfinex'
+    symbol_list = QA_fetch_crypto_asset_list(market='Bitfinex')
+    col = DATABASE.crypto_asset_day
     col.create_index(
         [
             ('market',
@@ -86,57 +85,63 @@ def QA_SU_save_bitmex_day(
 
     end = datetime.datetime.now(tzutc())
 
-    QA_util_log_info('Starting DOWNLOAD PROGRESS of day Klines from bitmex... ')
+    QA_util_log_info(
+        'Starting DOWNLOAD PROGRESS of day Klines from Bitfinex... ',
+        ui_log=ui_log,
+        ui_progress=ui_progress
+    )
     for index in range(len(symbol_list)):
         symbol_info = symbol_list.iloc[index]
+        # 上架仅处理交易对
         QA_util_log_info(
             'The "{}" #{} of total in {}'.format(
                 symbol_info['symbol'],
                 index,
                 len(symbol_list)
-            )
+            ),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
         QA_util_log_info(
             'DOWNLOAD PROGRESS {} '
-            .format(str(float(index / len(symbol_list) * 100))[0:4] + '%')
+            .format(str(float(index / len(symbol_list) * 100))[0:4] + '%'),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
-        query_id = {
-            "symbol": symbol_info['symbol'],
-            'market': symbol_info['market']
-        }
-        ref = col.find(query_id).sort('date_stamp', -1)
+        query_id = {"symbol": symbol_info['symbol'], 'market': market}
+        ref = col.find(query_id).sort('time_stamp', -1)
 
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['date_stamp']
-            start_time = datetime.datetime.fromtimestamp(
-                start_stamp + 1,
-                tz=tzutc()
-            )
+            start_time = datetime.datetime.fromtimestamp(start_stamp)
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Bitmex2QA_FREQUENCY_DICT['1d'],
+                    Bitfinex2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
         else:
-            start_time = symbol_info.get('listing', "2018-01-01T00:00:00Z")
-            start_time = parse(start_time)
+            start_time = Bitfinex_MIN_DATE
             QA_util_log_info(
                 'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Bitmex2QA_FREQUENCY_DICT['1d'],
+                    Bitfinex2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
 
-        data = QA_fetch_bitmex_kline(
+        data = QA_fetch_Bitfinex_kline(
             symbol_info['symbol'],
-            start_time,
-            end,
-            frequency='1d'
+            time.mktime(start_time.utctimetuple()),
+            time.mktime(end.utctimetuple()),
+            frequency
         )
         if data is None:
             QA_util_log_info(
@@ -144,39 +149,65 @@ def QA_SU_save_bitmex_day(
                     symbol_info['symbol'],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
             continue
         QA_util_log_info(
-            'SYMBOL {} Recived {} from "{}" to {} in total {} klines'.format(
-                Bitmex2QA_FREQUENCY_DICT['1d'],
+            'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
                 symbol_info['symbol'],
+                Bitfinex2QA_FREQUENCY_DICT[frequency],
                 time.strftime(
                     '%Y-%m-%d %H:%M:%S',
-                    time.localtime(data[0]['date_stamp'])
+                    time.localtime(data[0]['time_stamp'])
                 ),
                 time.strftime(
                     '%Y-%m-%d %H:%M:%S',
-                    time.localtime(data[-1]['date_stamp'])
+                    time.localtime(data[-1]['time_stamp'])
                 ),
                 len(data)
             )
         )
-        col.insert_many(data)
+        query_id = {
+            "symbol": symbol_info['symbol'],
+            'market': market,
+            'date_stamp': {
+                '$in': list(map(lambda x: x['date_stamp'],
+                                data))
+            }
+        }
+        if (symbol_info['symbol'] == 'LRCETH'):
+            #print(len(data)) # To do: 这个会抛出异常，有空再解决
+            pass
+        if (col.count_documents(query_id) > 0):
+            # 删掉重复数据
+            col.delete_many(query_id)
+        try:
+            col.insert_many(data)
+        except:
+            QA_util_log_expection(
+                'QA_SU_save_Bitfinex_day():Insert_many(kline) to {} got Exception {}'
+                .format(symbol_info['symbol'],
+                        len(data))
+            )
+            pass
     QA_util_log_info(
-        'DOWNLOAD PROGRESS of day Klines from bitmex accomplished '
+        'DOWNLOAD PROGRESS of day Klines from Bitfinex accomplished.',
+        ui_log=ui_log,
+        ui_progress=ui_progress
     )
 
 
-def QA_SU_save_bitmex_min(
-    frequency='1m',
-    client=DATABASE,
-):
+def QA_SU_save_bitfinex_min(frequency, ui_log=None, ui_progress=None):
     """
-    获取 bitmex K线 分钟线数据，统一转化字段保存数据为 crypto_asset_min issue：已知问题：目前测试无法获得 bitmex K线 分钟线数据
+    Save Bitfinex min kline
     """
-    symbol_list = QA_fetch_crypto_asset_list(market='bitmex')
-    col = client.crypto_asset_min
+    print('Under construction... I will test and debug soon...')
+    return False
+    market = 'Bitfinex'
+    symbol_list = QA_fetch_crypto_asset_list(market='Bitfinex')
+    col = DATABASE.crypto_asset_min
     col.create_index(
         [
             ('market',
@@ -205,56 +236,66 @@ def QA_SU_save_bitmex_min(
 
     end = datetime.datetime.now(tzutc())
 
-    QA_util_log_info('Starting DOWNLOAD PROGRESS of min Klines from bitmex... ')
+    QA_util_log_info(
+        'Starting DOWNLOAD PROGRESS of min Klines from Bitfinex... ',
+        ui_log=ui_log,
+        ui_progress=ui_progress
+    )
     for index in range(len(symbol_list)):
         symbol_info = symbol_list.iloc[index]
+        # 上架仅处理交易对
         QA_util_log_info(
             'The "{}" #{} of total in {}'.format(
                 symbol_info['symbol'],
                 index,
                 len(symbol_list)
-            )
+            ),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
         QA_util_log_info(
             'DOWNLOAD PROGRESS {} '
-            .format(str(float(index / len(symbol_list) * 100))[0:4] + '%')
+            .format(str(float(index / len(symbol_list) * 100))[0:4] + '%'),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
         query_id = {
             "symbol": symbol_info['symbol'],
-            'market': symbol_info['market'],
-            'type': Bitmex2QA_FREQUENCY_DICT[frequency]
+            'market': market,
+            'type': Bitfinex2QA_FREQUENCY_DICT[frequency]
         }
         ref = col.find(query_id).sort('time_stamp', -1)
+
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['time_stamp']
-            start_time = datetime.datetime.fromtimestamp(
-                start_stamp + 1,
-                tz=tzutc()
-            )
+            start_time = datetime.datetime.fromtimestamp(start_stamp)
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Bitmex2QA_FREQUENCY_DICT[frequency],
+                    Bitfinex2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
         else:
-            start_time = symbol_info.get('listing', "2018-01-01T00:00:00Z")
-            start_time = parse(start_time)
+            start_time = Bitfinex_MIN_DATE
             QA_util_log_info(
                 'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Bitmex2QA_FREQUENCY_DICT[frequency],
+                    Bitfinex2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
 
-        data = QA_fetch_bitmex_kline(
+        data = QA_fetch_Bitfinex_kline(
             symbol_info['symbol'],
-            start_time,
-            end,
+            time.mktime(start_time.utctimetuple()),
+            time.mktime(end.utctimetuple()),
             frequency
         )
         if data is None:
@@ -267,9 +308,9 @@ def QA_SU_save_bitmex_min(
             )
             continue
         QA_util_log_info(
-            'SYMBOL {} Recived "{}" from {} to {} in total {} klines'.format(
-                Bitmex2QA_FREQUENCY_DICT[frequency],
+            'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
                 symbol_info['symbol'],
+                Bitfinex2QA_FREQUENCY_DICT[frequency],
                 time.strftime(
                     '%Y-%m-%d %H:%M:%S',
                     time.localtime(data[0]['time_stamp'])
@@ -279,88 +320,117 @@ def QA_SU_save_bitmex_min(
                     time.localtime(data[-1]['time_stamp'])
                 ),
                 len(data)
-            )
+            ),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
-        col.insert_many(data)
+        query_id = {
+            "symbol": symbol_info['symbol'],
+            'market': market,
+            'type': Bitfinex2QA_FREQUENCY_DICT[frequency],
+            'time_stamp': {
+                '$in': list(map(lambda x: x['time_stamp'],
+                                data))
+            }
+        }
+        if (col.count_documents(query_id) > 0):
+            # 删掉重复数据
+            col.delete_many(query_id)
+        try:
+            col.insert_many(data)
+        except:
+            QA_util_log_expection(
+                'QA_SU_save_Bitfinex_min():Insert_many(kline) to {} got Exception {}'
+                .format(symbol_info['symbol'],
+                        len(data))
+            )
+            pass
     QA_util_log_info(
-        'DOWNLOAD PROGRESS of min Klines from bitmex accomplished '
+        'DOWNLOAD PROGRESS of min Klines from Bitfinex accomplished.',
+        ui_log=ui_log,
+        ui_progress=ui_progress
     )
 
 
-def QA_SU_save_bitmex_1min():
-    QA_SU_save_bitmex_min(frequency='1m')
+def QA_SU_save_bitfinex_1min():
+    QA_SU_save_bitfinex('1m')
 
 
-def QA_SU_save_bitmex_1day():
-    QA_SU_save_bitmex_day()
+def QA_SU_save_bitfinex_1day():
+    QA_SU_save_bitfinex("1d")
 
 
-def QA_SU_save_bitmex_1hour():
-    QA_SU_save_bitmex_min(frequency="1h")
+def QA_SU_save_bitfinex_1hour():
+    QA_SU_save_bitfinex("1h")
 
 
-def QA_SU_get_bitmex_symbol(
-    market="bitmex",
-    client=DATABASE,
-):
+def QA_SU_save_bitfinex_symbol(client=DATABASE, market="Bitfinex"):
     """
-    返回 bitmex 交易对信息
+    保存币安交易对信息
     """
-
-
-def QA_SU_save_bitmex_symbol(
-    market="bitmex",
-    client=DATABASE,
-):
-    """
-    保存 bitmex 交易对信息
-    """
+    print('Under construction... I will test and debug soon...')
+    return False
     QA_util_log_info('Downloading {:s} symbol list...'.format(market))
 
-    # 保存 bitmex API 原始 Symbol 数据备查阅，自动交易用得着
-    raw_symbol_lists = QA_util_save_raw_symbols(QA_fetch_bitmex_symbols, market)
-
+    # 保存 Bitfinex API 原始 Symbol 数据备查阅，自动交易用得着
+    raw_symbol_lists = QA_util_save_raw_symbols(
+        QA_fetch_Bitfinex_symbols,
+        market
+    )
     if (len(raw_symbol_lists) > 0):
         # 保存到 QUANTAXIS.crypto_asset_list 数字资产列表，为了跨市场统一查询做数据汇总
         symbol_lists = pd.DataFrame(raw_symbol_lists)
 
         # market,symbol为 mongodb 索引字段，保存之前必须要检查存在
         symbol_lists['market'] = market
-        symbol_lists['category'] = symbol_lists['typ']
+        symbol_lists['category'] = 1
         symbol_lists.rename(
             {
-                'rootSymbol': 'base_currency',
-                'quoteCurrency': 'quote_currency',
+                'baseAssetPrecision': 'price_precision',
+                'baseAsset': 'base_currency',
+                'quoteAsset': 'quote_currency',
+                'status': 'state',
             },
             axis=1,
             inplace=True
         )
-        symbol_lists['price_precision'] = symbol_lists.apply(
-            lambda x: 2 + -1 * int(math.log10(float(x.maintMargin))),
+        symbol_lists['name'] = symbol_lists.apply(
+            lambda x: '{:s}/{:s}'.
+            format(x['base_currency'].upper(),
+                   x['quote_currency'].upper()),
             axis=1
         )
-        symbol_lists['name'] = symbol_lists['symbol']
-        symbol_lists['desc'] = ''
-
-        # 移除非共性字段，这些字段只有 broker 才关心，做对应交易所 broker 接口的时候在交易所 raw_symbol_lists
-        # 数据中读取。
-        symbol_lists = symbol_lists[[
-            'symbol',
-            'name',
-            'market',
-            'state',
-            'category',
-            'base_currency',
-            'quote_currency',
-            'price_precision',
-            'desc'
-        ]]
+        symbol_lists['desc'] = symbol_lists['name']
         symbol_lists['created_at'] = int(
             time.mktime(datetime.datetime.now().utctimetuple())
         )
         symbol_lists['updated_at'] = int(
             time.mktime(datetime.datetime.now().utctimetuple())
         )
+
+        # 移除非共性字段，这些字段只有 broker 才关心，做对应交易所 broker 接口的时候在交易所 raw_symbol_lists
+        # 数据中读取。
+        symbol_lists.drop(
+            [
+                '_id',
+                'price_precision',
+                'baseCommissionPrecision',
+                'quotePrecision',
+                'filters',
+                'icebergAllowed',
+                'isMarginTradingAllowed',
+                'isSpotTradingAllowed',
+                'ocoAllowed',
+                'orderTypes',
+                'quoteCommissionPrecision',
+                'quoteOrderQtyMarketAllowed',
+            ],
+            axis=1,
+            inplace=True
+        )
+
+        # 删除不交易的交易对
+        symbol_lists = symbol_lists[symbol_lists['state'].isin(['TRADING'])]
 
         coll_crypto_asset_list = client.crypto_asset_list
         coll_crypto_asset_list.create_index(
@@ -386,8 +456,8 @@ def QA_SU_save_bitmex_symbol(
             )
             return symbol_lists
         except:
-            print(
-                'QA_SU_save_bitmex_symbol(): Insert_many(symbol) to "crypto_asset_list" got Exception {}'
+            QA_util_log_expection(
+                'QA_SU_save_Bitfinex_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception {}'
                 .format(len(data))
             )
             pass
@@ -395,6 +465,6 @@ def QA_SU_save_bitmex_symbol(
 
 
 if __name__ == '__main__':
-    QA_SU_save_bitmex_symbol()
-    QA_SU_save_bitmex_1day()
-    QA_SU_save_bitmex_1hour()
+    QA_SU_save_Bitfinex_symbol()
+    #QA_SU_save_Bitfinex_1day()
+    QA_SU_save_Bitfinex_1hour()
