@@ -52,17 +52,17 @@ import pymongo
 Bitfinex_MIN_DATE = datetime.datetime(2017, 10, 1, tzinfo=tzutc())
 
 
-def QA_SU_save_Bitfinex(frequency):
+def QA_SU_save_bitfinex(frequency):
     """
     Save Bitfinex kline "smart"
     """
     if (frequency not in ["1d", "1day", "day"]):
-        return QA_SU_save_Bitfinex_min(frequency)
+        return QA_SU_save_bitfinex_min(frequency)
     else:
-        return QA_SU_save_Bitfinex_day(frequency)
+        return QA_SU_save_bitfinex_day(frequency)
 
 
-def QA_SU_save_Bitfinex_day(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_bitfinex_day(frequency, ui_log=None, ui_progress=None):
     """
     Save Bitfinex day kline
     """
@@ -199,7 +199,7 @@ def QA_SU_save_Bitfinex_day(frequency, ui_log=None, ui_progress=None):
     )
 
 
-def QA_SU_save_Bitfinex_min(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_bitfinex_min(frequency, ui_log=None, ui_progress=None):
     """
     Save Bitfinex min kline
     """
@@ -352,19 +352,19 @@ def QA_SU_save_Bitfinex_min(frequency, ui_log=None, ui_progress=None):
     )
 
 
-def QA_SU_save_Bitfinex_1min():
-    QA_SU_save_Bitfinex('1m')
+def QA_SU_save_bitfinex_1min():
+    QA_SU_save_bitfinex('1m')
 
 
-def QA_SU_save_Bitfinex_1day():
-    QA_SU_save_Bitfinex("1d")
+def QA_SU_save_bitfinex_1day():
+    QA_SU_save_bitfinex("1d")
 
 
-def QA_SU_save_Bitfinex_1hour():
-    QA_SU_save_Bitfinex("1h")
+def QA_SU_save_bitfinex_1hour():
+    QA_SU_save_bitfinex("1h")
 
 
-def QA_SU_save_Bitfinex_symbol(client=DATABASE, market="Bitfinex"):
+def QA_SU_save_bitfinex_symbol(client=DATABASE, market="Bitfinex"):
     """
     保存币安交易对信息
     """

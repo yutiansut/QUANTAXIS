@@ -89,8 +89,8 @@ from QUANTAXIS.QASU.save_bitfinex import QA_SU_save_bitfinex_symbol, QA_SU_save_
 from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex
 from QUANTAXIS.QASU.save_huobi import QA_SU_save_huobi_symbol, QA_SU_save_huobi_1hour, \
     QA_SU_save_huobi_1day, QA_SU_save_huobi_1min, QA_SU_save_huobi, QA_SU_save_huobi_realtime
-from QUANTAXIS.QASU.save_bitfinex import QA_SU_save_bitfinex_symbol, QA_SU_save_bitfinex_1hour, \
-    QA_SU_save_bitfinex_1day, QA_SU_save_bitfinex_1min, QA_SU_save_bitfinex
+from QUANTAXIS.QASU.save_okex import QA_SU_save_okex_symbol, QA_SU_save_okex_1hour, \
+    QA_SU_save_okex_1day, QA_SU_save_okex_1min, QA_SU_save_okex
 
 # 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney)
@@ -482,22 +482,22 @@ class CLI(cmd.Cmd):
                     frequency = arg[1]
                     QA_SU_save_huobi(frequency)
             elif len(arg) == 1 and arg[0] == "okex":
-                QA_SU_save_OKEx_symbol()
-                QA_SU_save_OKEx_1day()
-                QA_SU_save_OKEx_1hour()
-                QA_SU_save_OKEx_1min()
+                QA_SU_save_okex_symbol()
+                QA_SU_save_okex_1day()
+                QA_SU_save_okex_1hour()
+                QA_SU_save_okex_1min()
             elif len(arg) == 2 and arg[0] == "okex":
                 if (arg[1] == 'all'):
-                    QA_SU_save_OKEx_symbol()
-                    QA_SU_save_OKEx_1day()
-                    QA_SU_save_OKEx_1hour()
-                    QA_SU_save_OKEx_('30m')
-                    QA_SU_save_OKEx_('15m')
-                    QA_SU_save_OKEx_('5m')
-                    QA_SU_save_OKEx_1min()
+                    QA_SU_save_okex_symbol()
+                    QA_SU_save_okex_1day()
+                    QA_SU_save_okex_1hour()
+                    QA_SU_save_okex('30m')
+                    QA_SU_save_okex('15m')
+                    QA_SU_save_okex('5m')
+                    QA_SU_save_okex_1min()
                 else:
                     frequency = arg[1]
-                    QA_SU_save_bitfinex(frequency)
+                    QA_SU_save_okex(frequency)
             elif len(arg) == 1 and arg[0] == "financialfiles":
                 QA_SU_save_financialfiles()
 

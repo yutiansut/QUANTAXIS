@@ -70,7 +70,7 @@ OKEx2QA_FREQUENCY_DICT = {
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
-def QA_fetch_OKEx_symbols():
+def QA_fetch_okex_symbols():
     url = urljoin(OKEx_base_url, "/api/spot/v3/instruments")
     retries = 1
     datas = list()
@@ -98,7 +98,7 @@ def QA_fetch_OKEx_symbols():
     return datas
 
 
-def QA_fetch_OKEx_kline(symbol, start_time, end_time, frequency):
+def QA_fetch_okex_kline(symbol, start_time, end_time, frequency):
     """
     Get the latest symbol‘s candlestick data
     """

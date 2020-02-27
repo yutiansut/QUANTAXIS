@@ -39,8 +39,8 @@ from QUANTAXIS.QAUtil import (
 )
 from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_timestamp_to_str)
 from QUANTAXIS.QAFetch.QAOKEx import (
-    QA_fetch_OKEx_symbols,
-    QA_fetch_OKEx_kline,
+    QA_fetch_okex_symbols,
+    QA_fetch_okex_kline,
     OKEx2QA_FREQUENCY_DICT
 )
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_save_raw_symbols
@@ -52,17 +52,17 @@ import pymongo
 OKEx_MIN_DATE = datetime.datetime(2017, 10, 1, tzinfo=tzutc())
 
 
-def QA_SU_save_OKEx(frequency):
+def QA_SU_save_okex(frequency):
     """
     Save OKEx kline "smart"
     """
     if (frequency not in ["1d", "1day", "day"]):
-        return QA_SU_save_OKEx_min(frequency)
+        return QA_SU_save_okex_min(frequency)
     else:
-        return QA_SU_save_OKEx_day(frequency)
+        return QA_SU_save_okex_day(frequency)
 
 
-def QA_SU_save_OKEx_day(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_okex_day(frequency, ui_log=None, ui_progress=None):
     """
     Save OKEx day kline
     """
@@ -199,7 +199,7 @@ def QA_SU_save_OKEx_day(frequency, ui_log=None, ui_progress=None):
     )
 
 
-def QA_SU_save_OKEx_min(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_okex_min(frequency, ui_log=None, ui_progress=None):
     """
     Save OKEx min kline
     """
@@ -292,7 +292,7 @@ def QA_SU_save_OKEx_min(frequency, ui_log=None, ui_progress=None):
                 ui_progress=ui_progress
             )
 
-        data = QA_fetch_OKEx_kline(
+        data = QA_fetch_okex_kline(
             symbol_info['symbol'],
             time.mktime(start_time.utctimetuple()),
             time.mktime(end.utctimetuple()),
@@ -352,19 +352,19 @@ def QA_SU_save_OKEx_min(frequency, ui_log=None, ui_progress=None):
     )
 
 
-def QA_SU_save_OKEx_1min():
-    QA_SU_save_OKEx('1m')
+def QA_SU_save_okex_1min():
+    QA_SU_save_okex('1m')
 
 
-def QA_SU_save_OKEx_1day():
-    QA_SU_save_OKEx("1d")
+def QA_SU_save_okex_1day():
+    QA_SU_save_okex("1d")
 
 
-def QA_SU_save_OKEx_1hour():
-    QA_SU_save_OKEx("1h")
+def QA_SU_save_okex_1hour():
+    QA_SU_save_okex("1h")
 
 
-def QA_SU_save_OKEx_symbol(client=DATABASE, market="OKEx"):
+def QA_SU_save_okex_symbol(client=DATABASE, market="OKEx"):
     """
     保存OKEx交易对信息
     """
@@ -374,7 +374,7 @@ def QA_SU_save_OKEx_symbol(client=DATABASE, market="OKEx"):
 
     # 保存 OKEx API 原始 Symbol 数据备查阅，自动交易用得着
     raw_symbol_lists = QA_util_save_raw_symbols(
-        QA_fetch_OKEx_symbols,
+        QA_fetch_okex_symbols,
         market
     )
     if (len(raw_symbol_lists) > 0):
