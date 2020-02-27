@@ -55,7 +55,7 @@ def QA_SU_save_bitmex(frequency):
     """
     Save bitmex kline "smart"
     """
-    if (frequency != "1day"):
+    if (frequency not in ["1day", '1d', 'day']):
         return QA_SU_save_bitmex_min(frequency)
     else:
         return QA_SU_save_bitmex_day(frequency)
