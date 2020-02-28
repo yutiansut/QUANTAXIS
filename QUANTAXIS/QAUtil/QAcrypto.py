@@ -9,7 +9,8 @@ import pymongo
 from QUANTAXIS.QAUtil.QADate_Adv import (
     QA_util_str_to_Unix_timestamp,
     QA_util_datetime_to_Unix_timestamp,
-    QA_util_timestamp_to_str
+    QA_util_timestamp_to_str,
+    QA_util_print_timestamp
 )
 
 
@@ -184,34 +185,30 @@ def QA_util_find_missing_kline(
             freq=freq
         ).difference(_data.index).tz_localize(tzlocalize)
         if (int(_data.iloc[0].time_stamp) >
-            (QA_util_datetime_to_Unix_timestamp() + 120)) or \
-            (int(time.mktime(start_epoch.utctimetuple())) > int(_data.iloc[0].time_stamp)):
+            (QA_util_datetime_to_Unix_timestamp() + 120)):
             # 出现“未来”时间，一般是默认时区设置错误造成的
             raise Exception(
-                'Get a unexpected \'Future\' timestamp, Check function param \'tzlocalize\' set'
+                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
+                .format(
+                    symbol,
+                    freq,
+                    QA_util_print_timestamp(_data.iloc[0].time_stamp),
+                    QA_util_print_timestamp(
+                        QA_util_datetime_to_Unix_timestamp()
+                    )
+                )
             )
-        miss_kline = pd.DataFrame(
-            [
-                [
-                    int(time.mktime(start_epoch.utctimetuple())),
-                    int(_data.iloc[0].time_stamp),
-                    '{} 到 {}'.format(start_epoch,
-                                     _data.iloc[0].datetime)
-                ]
-            ],
-            columns=['expected',
-                     'between',
-                     'missing']
-        )
     else:
         leak_datetime = pd.date_range(
             _data.index.min(),
             _data.index.max(),
             freq='1D'
         ).difference(_data.index).tz_localize(tzlocalize)
-        if (int(time.mktime(start_epoch.utctimetuple())) > int(_data.iloc[0].time_stamp)):
-            print('fooo13')
-            print()
+
+    if (int(time.mktime(start_epoch.utctimetuple())) > int(
+            _data.iloc[0].time_stamp)):
+        miss_kline = pd.DataFrame(columns=['expected', 'between', 'missing'])
+    else:
         miss_kline = pd.DataFrame(
             [
                 [
@@ -259,7 +256,8 @@ def QA_util_find_missing_kline(
             )
             expected = int(leak_datetime[x].timestamp())
 
-    if (int(_data.iloc[-1].time_stamp) + 1 > int(QA_util_datetime_to_Unix_timestamp())):
+    if (int(_data.iloc[-1].time_stamp) + 1 > int(
+            QA_util_datetime_to_Unix_timestamp())):
         print('fooo11')
         print()
     miss_kline = miss_kline.append(

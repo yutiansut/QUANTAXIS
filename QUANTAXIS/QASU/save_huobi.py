@@ -618,7 +618,7 @@ def QA_SU_save_huobi_realtime():
 
 
 if __name__ == '__main__':
-    QA_SU_save_huobi_min('60min', ['bsvusdt'])
+    QA_SU_save_huobi_min('60min', ['bchbtc'])
     QA_SU_save_huobi_symbol()
     QA_SU_save_huobi('30min')
     QA_SU_save_huobi_1day()

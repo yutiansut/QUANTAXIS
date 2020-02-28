@@ -286,6 +286,7 @@ def QA_fetch_huobi_kline_subscription(
         find_missing_kline_func=QA_util_find_missing_kline
     )
     datas = list()
+    retries = 1
     while (reqParams['to'] > start_time):
         if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
             ((reqParams['from'] > reqParams['to'])):
@@ -337,10 +338,10 @@ def QA_fetch_huobi_kline_subscription(
                 callback_save_data_func(data=frame, freq=frequency)
         time.sleep(0.5)
     
-    if (frame is None):
+    if ((retries == 0) and (len(frame) > 0)):
+        return frame
+    else:
         return None
-
-    return frame
 
 
 if __name__ == '__main__':
