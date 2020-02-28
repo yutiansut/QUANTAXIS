@@ -256,24 +256,22 @@ def QA_util_find_missing_kline(
             )
             expected = int(leak_datetime[x].timestamp())
 
-    if (int(_data.iloc[-1].time_stamp) + 1 > int(
+    if (int(_data.iloc[-1].time_stamp) + 1 < int(
             QA_util_datetime_to_Unix_timestamp())):
-        print('fooo11')
-        print()
-    miss_kline = miss_kline.append(
-        {
-            'expected':
-                int(_data.iloc[-1].time_stamp) + 1,
-            'between':
-                int(QA_util_datetime_to_Unix_timestamp()),
-            'missing':
-                '{} 到 {}'.format(
-                    int(_data.iloc[0].time_stamp) + 1,
-                    QA_util_datetime_to_Unix_timestamp()
-                )
-        },
-        ignore_index=True
-    )
+        miss_kline = miss_kline.append(
+            {
+                'expected':
+                    int(_data.iloc[-1].time_stamp) + 1,
+                'between':
+                    int(QA_util_datetime_to_Unix_timestamp()),
+                'missing':
+                    '{} 到 {}'.format(
+                        int(_data.iloc[0].time_stamp) + 1,
+                        QA_util_datetime_to_Unix_timestamp()
+                    )
+            },
+            ignore_index=True
+        )
     return miss_kline.values
 
 
