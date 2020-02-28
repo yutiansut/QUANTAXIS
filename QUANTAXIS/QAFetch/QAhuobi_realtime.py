@@ -577,7 +577,7 @@ class QA_Fetch_Huobi(object):
             for i in range(len(missing_data_list)):
                 reqParams['from'] = int(missing_data_list[i][
                     between] - initalParams['shifting_time'])
-                reqParams['to'] = (missing_data_list[i][between])
+                reqParams['to'] =  int(missing_data_list[i][between])
                 if (reqParams['to'] >
                     (QA_util_datetime_to_Unix_timestamp() + 120)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的

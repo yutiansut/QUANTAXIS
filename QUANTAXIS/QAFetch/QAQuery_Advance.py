@@ -1030,7 +1030,7 @@ def QA_fetch_crypto_asset_list_adv(
 
 
 if __name__ == '__main__':
-    st = QA_fetch_stock_block_adv(None, ["北京", "计算机"])
+    #st = QA_fetch_stock_block_adv(None, ["北京", "计算机"])
     #QA_fetch_stock_realtime_adv(['000001', '000002'], num=10)
     print(
         QA_fetch_crypto_asset_min(
@@ -1041,7 +1041,7 @@ if __name__ == '__main__':
                 'eosusdt',
             ],
             start='2006-07-03',
-            end='2020-02-24 02:10:00',
+            end='2020-05-28 08:10:00',
             frequence='60min',
             format='pandas'
         )
@@ -1055,19 +1055,30 @@ if __name__ == '__main__':
                 'eosusdt',
             ],
             start='2006-07-03',
-            end='2020-02-24 02:10:00',
+            end='2020-05-28 08:10:00',
             frequence='60min'
         ).data
     )
     print(
         QA_fetch_crypto_asset_day_adv(
-            'huobi',
+            'okex',
             symbol=[
-                'btcusdt',
-                'ethusdt',
-                'eosusdt',
+                'BTC-USDT',
+                'ETH-USDT',
             ],
             start='2017-10-01',
-            end='2020-02-24 02:10:00'
+            end='2020-05-28 18:10:00'
+        ).data
+    )
+    print(
+        QA_fetch_crypto_asset_min_adv(
+            'okex',
+            symbol=[
+                'BTC-USDT',
+                'ETH-USDT',
+            ],
+            start='2017-10-01',
+            end='2020-05-28 18:10:00',
+            frequence='60min'
         ).data
     )

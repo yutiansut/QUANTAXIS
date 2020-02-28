@@ -299,7 +299,6 @@ def QA_fetch_okex_kline_min(
 
     requested_counter = 1
     market = 'okex'
-    retries = 1
     datas = list()
     while (reqParams['to'] > start_time):
         if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
