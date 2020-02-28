@@ -18,7 +18,7 @@ TIMEOUT = 10
 ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！蓝灯，喵帕斯，VPS，阴阳师，v2ray，随便什么来一个！我翻墙我骄傲！"
 Binance_base_url = "https://api.binance.com"
 
-columne_names = [
+column_names = [
     'start_time',
     'open',
     'high',
@@ -117,7 +117,7 @@ def QA_fetch_binance_kline(symbol, start_time, end_time, frequency):
         return None
 
     # 归一化数据字段，转换填充必须字段，删除多余字段
-    frame = pd.DataFrame(datas, columns=columne_names)
+    frame = pd.DataFrame(datas, columns=column_names)
     frame['market'] = market
     frame['symbol'] = symbol
     # UTC时间转换为北京时间

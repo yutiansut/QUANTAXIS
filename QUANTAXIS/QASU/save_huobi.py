@@ -706,8 +706,8 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
 
 
 if __name__ == '__main__':
-    QA_SU_save_huobi('30min')()
     QA_SU_save_huobi_symbol()
+    QA_SU_save_huobi('30min')
     QA_SU_save_huobi_1day()
     QA_SU_save_huobi_1hour(fetch_range=FIRST_PRIORITY)
     QA_SU_save_huobi_30min(fetch_range=FIRST_PRIORITY)

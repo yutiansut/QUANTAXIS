@@ -55,10 +55,11 @@ def format_btimex_data_fields(datas, frequency):
     frame = pd.DataFrame(datas)
     frame['market'] = 'bitmex'
     # UTC时间转换为北京时间，接收到的数据有时候 tz-aware 有时候又是变成 non tz-aware，
-    # 改了几次代码，既不能单纯 tz_localize 也不能单纯 tz_convert 
+    # 改了几次代码，既不能单纯 tz_localize 也不能单纯 tz_convert
     # dt.tz_localize(None) 是 Stackoverflow 的解决方案，先观察效果
-    frame['datetime'] = pd.to_datetime(frame['timestamp']
-                                        ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+    frame['datetime'] = pd.to_datetime(
+        frame['timestamp']
+    ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
     frame['date'] = frame['datetime'].dt.strftime('%Y-%m-%d')
     frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # GMT+0 String 转换为 UTC Timestamp
@@ -112,12 +113,25 @@ def QA_fetch_bitmex_symbols(active=True):
                 print(ILOVECHINA)
             print("Retry instrument/active #{}".format(retries - 1))
             time.sleep(0.5)
-    body = json.loads(req.content)
-    return body
+
+        if (retries == 0):
+            # 成功获取才处理数据，否则继续尝试连接
+            symbol_lists = json.loads(req.content)
+            if len(symbol_lists) == 0:
+                return []
+            for symbol in symbol_lists:
+                datas.append(symbol)
+
+    return datas
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
-def QA_fetch_bitmex_kline_with_auto_retry(symbol, start_time, end_time, frequency,):
+def QA_fetch_bitmex_kline_with_auto_retry(
+    symbol,
+    start_time,
+    end_time,
+    frequency,
+):
     """
     Get the latest symbol‘s candlestick data raw method
     """
@@ -125,7 +139,10 @@ def QA_fetch_bitmex_kline_with_auto_retry(symbol, start_time, end_time, frequenc
     retries = 1
     while (retries != 0):
         try:
-            start_epoch = datetime.datetime.fromtimestamp(start_time, tz=tzutc())
+            start_epoch = datetime.datetime.fromtimestamp(
+                start_time,
+                tz=tzutc()
+            )
             end_epoch = datetime.datetime.fromtimestamp(end_time, tz=tzutc())
             req = requests.get(
                 url,
@@ -138,6 +155,7 @@ def QA_fetch_bitmex_kline_with_auto_retry(symbol, start_time, end_time, frequenc
                 },
                 timeout=TIMEOUT
             )
+            # 防止频率过快被断连
             time.sleep(0.5)
             retries = 0
         except (ConnectTimeout, ConnectionError, SSLError, ReadTimeout):
@@ -164,38 +182,53 @@ def QA_fetch_bitmex_kline_with_auto_retry(symbol, start_time, end_time, frequenc
     return None
 
 
-@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
-def QA_fetch_bitmex_kline(symbol, start_time, end_time, frequency, callback_func=None):
+def QA_fetch_bitmex_kline(
+    symbol,
+    start_time,
+    end_time,
+    frequency,
+    callback_func=None
+):
     """
     Get the latest symbol‘s candlestick data
     """
     market = 'bitmex'
     datas = list()
     while start_time < end_time:
-        klines = QA_fetch_bitmex_kline_with_auto_retry(symbol, start_time, end_time, frequency,)
+        klines = QA_fetch_bitmex_kline_with_auto_retry(
+            symbol,
+            start_time,
+            end_time,
+            frequency,
+        )
         if (len(klines) == 0) or \
             ('error' in klines):
             # 出错放弃
             break
 
-            datas.extend(klines)
-            start_time = parse(klines[-1].get("timestamp")
-                              ) + relativedelta(second=+1)
+        datas.extend(klines)
+        start_time = parse(klines[-1].get("timestamp")
+                          ) + relativedelta(second=+1)
 
-            if (callback_func is not None):
-                frame = format_btimex_data_fields(klines, frequency)
-                callback_func(frame, Bitmex2QA_FREQUENCY_DICT[frequency])
+        if (callback_func is not None):
+            frame = format_btimex_data_fields(klines, frequency)
+            callback_func(frame, Bitmex2QA_FREQUENCY_DICT[frequency])
 
     if len(datas) == 0:
         return None
-    
+
     # 归一化数据字段，转换填充必须字段，删除多余字段
-    frame = format_btimex_data_fields(datas)
+    frame = format_btimex_data_fields(datas, frequency)
     return frame
 
 
-@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
-def QA_fetch_bitmex_kline_min(symbol, start_time, end_time, frequency, callback_func=None):
+def QA_fetch_bitmex_kline_min(
+    symbol,
+    start_time,
+    end_time,
+    frequency,
+    callback_func=None
+):
     """
     Get the latest symbol‘s candlestick data with time slices
     时间倒序切片获取算法，是各大交易所获取1min数据的神器，因为大部分交易所直接请求跨月跨年的1min分钟数据
@@ -220,11 +253,18 @@ def QA_fetch_bitmex_kline_min(symbol, start_time, end_time, frequency, callback_
                     symbol,
                     frequency,
                     QA_util_print_timestamp(reqParams['to']),
-                    QA_util_print_timestamp(QA_util_datetime_to_Unix_timestamp())
+                    QA_util_print_timestamp(
+                        QA_util_datetime_to_Unix_timestamp()
+                    )
                 )
             )
 
-        klines = QA_fetch_bitmex_kline_with_auto_retry(symbol, reqParams['from'], reqParams['to'], frequency,)
+        klines = QA_fetch_bitmex_kline_with_auto_retry(
+            symbol,
+            reqParams['from'],
+            reqParams['to'],
+            frequency,
+        )
         if (len(klines) == 0) or \
             ('error' in klines):
             # 出错放弃
@@ -239,7 +279,7 @@ def QA_fetch_bitmex_kline_min(symbol, start_time, end_time, frequency, callback_
 
         if (len(klines) == 0):
             return None
-    
+
 
 if __name__ == '__main__':
     print(QA_fetch_bitmex_symbols())

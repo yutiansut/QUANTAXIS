@@ -408,7 +408,6 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
         symbol_lists.drop(
             [
                 '_id',
-                'price_precision',
                 'baseCommissionPrecision',
                 'quotePrecision',
                 'filters',
@@ -462,4 +461,4 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
 if __name__ == '__main__':
     QA_SU_save_binance_symbol()
     #QA_SU_save_binance_1day()
-    QA_SU_save_binance_1hour()
+    #QA_SU_save_binance_1hour()

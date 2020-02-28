@@ -135,6 +135,7 @@ def QA_util_find_missing_kline(symbol, freq, market, start_epoch=datetime(2017, 
             miss_kline = miss_kline.append({'expected':expected, 'between':between, 'missing':'{} 到 {}'.format(pd.to_datetime(expected, unit='s').tz_localize('Asia/Shanghai'), pd.to_datetime(between, unit='s').tz_localize('Asia/Shanghai'))}, ignore_index=True)
             expected = int(leak_datetime[x].timestamp())
 
+    miss_kline = miss_kline.append({'expected':int(_data.iloc[-1].time_stamp) + 1, 'between':QA_util_datetime_to_Unix_timestamp(), 'missing':'{} 到 {}'.format(int(_data.iloc[0].time_stamp) + 1, QA_util_datetime_to_Unix_timestamp())}, ignore_index=True)
     return miss_kline.values
 
 
