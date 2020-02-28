@@ -620,7 +620,7 @@ class QA_Fetch_Huobi(object):
                                 'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s} at {:s} but current time is {}'
                                 .format(
                                     initalParams['req'],
-                                    QA_util_print_timestamp(reqParams['to']),
+                                    QA_util_print_timestamp(reqParams['from']),
                                     QA_util_print_timestamp(
                                         QA_util_datetime_to_Unix_timestamp()
                                     )

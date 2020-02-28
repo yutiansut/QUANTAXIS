@@ -297,7 +297,7 @@ def QA_SU_save_bitmex_min(frequency='1m', ui_log=None, ui_progress=None):
             for i in range(len(missing_data_list)):
                 reqParams['from'] = missing_data_list[i][expected]
                 reqParams['to'] = missing_data_list[i][between]
-                if (reqParams['to'] >
+                if (reqParams['from'] >
                     (QA_util_datetime_to_Unix_timestamp() + 3600)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
                     raise Exception(
@@ -305,7 +305,7 @@ def QA_SU_save_bitmex_min(frequency='1m', ui_log=None, ui_progress=None):
                         .format(
                             symbol_info['symbol'],
                             frequency,
-                            QA_util_print_timestamp(reqParams['to']),
+                            QA_util_print_timestamp(reqParams['from']),
                             QA_util_print_timestamp(
                                 QA_util_datetime_to_Unix_timestamp()
                             )

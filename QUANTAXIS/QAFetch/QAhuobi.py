@@ -296,7 +296,7 @@ def QA_fetch_huobi_kline_subscription(
                 .format(
                     symbol,
                     frequency,
-                    QA_util_print_timestamp(reqParams['to']),
+                    QA_util_print_timestamp(reqParams['from']),
                     QA_util_print_timestamp(
                         QA_util_datetime_to_Unix_timestamp()
                     )

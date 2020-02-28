@@ -237,7 +237,7 @@ def QA_fetch_bitmex_kline(
                 .format(
                     symbol,
                     frequency,
-                    QA_util_print_timestamp(reqParams['to']),
+                    QA_util_print_timestamp(reqParams['from']),
                     QA_util_print_timestamp(
                         QA_util_datetime_to_Unix_timestamp()
                     )
@@ -306,7 +306,7 @@ def QA_fetch_bitmex_kline_min(
                 .format(
                     symbol,
                     frequency,
-                    QA_util_print_timestamp(reqParams['to']),
+                    QA_util_print_timestamp(reqParams['from']),
                     QA_util_print_timestamp(
                         QA_util_datetime_to_Unix_timestamp()
                     )
