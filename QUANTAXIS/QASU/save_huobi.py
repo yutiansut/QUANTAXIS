@@ -496,21 +496,25 @@ def QA_SU_save_data_huobi_callback(data, freq):
     """
     异步获取数据回调用的 MongoDB 存储函数
     """
-    QA_util_log_info(
-        'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
-            data.iloc[0].symbol,
-            freq,
-            time.strftime(
-                '%Y-%m-%d %H:%M:%S',
-                time.localtime(data.iloc[0].time_stamp)
-            )[2:16],
-            time.strftime(
-                '%Y-%m-%d %H:%M:%S',
-                time.localtime(data.iloc[-1].time_stamp)
-            )[2:16],
-            len(data)
+    if ((len(data)==1)):
+        # 减少统计刷屏
+        pass
+    else:
+        QA_util_log_info(
+            'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
+                data.iloc[0].symbol,
+                freq,
+                time.strftime(
+                    '%Y-%m-%d %H:%M:%S',
+                    time.localtime(data.iloc[0].time_stamp)
+                )[2:16],
+                time.strftime(
+                    '%Y-%m-%d %H:%M:%S',
+                    time.localtime(data.iloc[-1].time_stamp)
+                )[2:16],
+                len(data)
+            )
         )
-    )
     if (freq not in ['1day', '86400', 'day', '1d']):
         col = DATABASE.crypto_asset_min
         col.create_index(

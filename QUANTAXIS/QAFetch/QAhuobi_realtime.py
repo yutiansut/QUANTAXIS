@@ -211,7 +211,7 @@ class QA_Tick_Summary(object):
     行情数据获取统计类，负责统计和输出日志
     """
 
-    def __init__(self, countdown=5):
+    def __init__(self, countdown=30):
         """
         初始化的时候 会初始化
         """
