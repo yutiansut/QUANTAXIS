@@ -111,5 +111,15 @@ def QA_util_str_to_datetime(time, tz_str= ' +0800'):
 
 #    return QA_util_str_to_Unix_timestamp(dtDatetime)
 
+def QA_util_print_timestamp(ts_epoch):
+    """
+    打印合适阅读的时间格式
+    """
+    return '{:s}({:d})'.format(
+        QA_util_timestamp_to_str(ts_epoch)[2:16],
+        int(ts_epoch)
+    )
+
+
 if __name__ == '__main__':
     print(QA_util_time_stamp('2017-01-01 10:25:08'))
