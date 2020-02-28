@@ -52,6 +52,7 @@ ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不�
 OKEx_base_url = "https://www.okex.com/"
 
 column_names = ['time', 'open', 'high', 'low', 'close', 'volume']
+
 """
 QUANTAXIS 和 okex 的 frequency 常量映射关系
 """
@@ -63,6 +64,7 @@ OKEx2QA_FREQUENCY_DICT = {
     "3600": '60min',
     "86400": 'day',
 }
+
 """
 OKEx 只允许一次获取 200bar，时间请求超过范围则只返回最新200条
 """

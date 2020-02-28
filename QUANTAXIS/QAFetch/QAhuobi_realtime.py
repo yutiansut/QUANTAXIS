@@ -575,9 +575,9 @@ class QA_Fetch_Huobi(object):
             # 所以选择倒序算法，从最近的时间开始补历史数据，'from' 'to' 请求范围一直向前递减到请求不到数据为止。
             missing_data_list = initalParams['missing'][::-1]
             for i in range(len(missing_data_list)):
-                reqParams['from'] = missing_data_list[i][
-                    between] - initalParams['shifting_time']
-                reqParams['to'] = missing_data_list[i][between]
+                reqParams['from'] = int(missing_data_list[i][
+                    between] - initalParams['shifting_time'])
+                reqParams['to'] = (missing_data_list[i][between])
                 if (reqParams['to'] >
                     (QA_util_datetime_to_Unix_timestamp() + 120)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
@@ -636,9 +636,9 @@ class QA_Fetch_Huobi(object):
                         )
 
                         # 等待3秒，请求下一个时间段的批量K线数据
-                        reqParams['to'] = reqParams['from'] - 1
-                        reqParams['from'] = reqParams['from'] - initalParams[
-                            'shifting_time']
+                        reqParams['to'] = int(reqParams['from'] - 1)
+                        reqParams['from'] = int(reqParams['from'] - initalParams[
+                            'shifting_time'])
                         requested_counter = requested_counter + 1
 
                         # 锁定线程，等待回复，避免快速频繁重复请求，会被ban IP的
@@ -824,8 +824,8 @@ class QA_Fetch_Huobi(object):
             symbol,
             self.Huobi2QA_FREQUENCE_DICT[period]
         )
-        reqParams['from'] = start_epoch
-        reqParams['to'] = end_epoch
+        reqParams['from'] = int(start_epoch)
+        reqParams['to'] = int(end_epoch)
         reqParams['id'] = requestIdx = "%s_#%d" % (
             self.gen_ws_id(symbol,
                            period),
