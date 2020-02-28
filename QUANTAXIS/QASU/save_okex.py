@@ -276,8 +276,8 @@ def QA_SU_save_okex_min(frequency='60', ui_log=None, ui_progress=None):
             miss_kline = pd.DataFrame(
                 [
                     [
-                        QA_util_datetime_to_Unix_timestamp(start_time),
-                        QA_util_datetime_to_Unix_timestamp(end),
+                        int(QA_util_datetime_to_Unix_timestamp(start_time)),
+                        int(QA_util_datetime_to_Unix_timestamp(end)),
                         '{} 到 {}'.format(start_time,
                                          end)
                     ]
@@ -295,10 +295,10 @@ def QA_SU_save_okex_min(frequency='60', ui_log=None, ui_progress=None):
             missing = 2
             reqParams = {}
             for i in range(len(missing_data_list)):
-                reqParams['from'] = missing_data_list[i][expected]
-                reqParams['to'] = missing_data_list[i][between]
-                if (reqParams['to'] >
-                    (QA_util_datetime_to_Unix_timestamp() + 3600)):
+                reqParams['from'] = int(missing_data_list[i][expected])
+                reqParams['to'] = int(missing_data_list[i][between])
+                if (reqParams['from'] >
+                    (QA_util_datetime_to_Unix_timestamp() + 1)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
                     raise Exception(
                         'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
@@ -542,6 +542,7 @@ def QA_SU_save_data_okex_callback(data, freq):
 
 
 if __name__ == '__main__':
+    QA_SU_save_okex_min('900')
     QA_SU_save_okex_symbol()
     #QA_SU_save_okex_1day()
     #QA_SU_save_okex_1hour()
