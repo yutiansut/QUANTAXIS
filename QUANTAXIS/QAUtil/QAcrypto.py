@@ -36,7 +36,7 @@ def QA_util_save_raw_symbols(fetch_symnol_func, exchange):
     return symbols
 
 
-def QA_util_find_missing_kline(symbol, freq, market='huobi', start_epoch=datetime(2017, 10, 1, tzinfo=tzutc()), tzlocalize='Asia/Shanghai'):
+def QA_util_find_missing_kline(symbol, freq, market, start_epoch=datetime(2017, 10, 1, tzinfo=tzutc()), tzlocalize='Asia/Shanghai'):
     """
     查找24小时不间断的连续交易市场中缺失的 kline 历史数据，生成缺失历史数据时间段
     """
@@ -88,7 +88,7 @@ def QA_util_find_missing_kline(symbol, freq, market='huobi', start_epoch=datetim
             _data.append([str(item['symbol']), str(item['market']), item['time_stamp'], item['date'], item['datetime'], item['type']])
 
         _data = pd.DataFrame(_data, columns=['symbol', 'market', 'time_stamp', 'date', 'datetime', 'type'])
-        _data = _data.assign(datetime=pd.to_datetime(_data['datetime'])).drop_duplicates((['datetime', 'symbol'])).set_index(pd.DatetimeIndex(_data['datetime']), drop=False)
+        _data = _data.set_index(pd.DatetimeIndex(_data['datetime']), drop=False)
     else:
         col = DATABASE.crypto_asset_day
         col.create_index([('market',
@@ -107,10 +107,9 @@ def QA_util_find_missing_kline(symbol, freq, market='huobi', start_epoch=datetim
         cursor = col.find(query_id).sort('time_stamp', 1)
         _data = []
         for item in cursor:
-            _data.append([str(item['symbol']), str(item['market']), float(item['open']), float(item['high']), float(item['low']), float(item['close']), float(item['volume']), float(item['trade']), float(item['amount']),
-                item['time_stamp'], item['date'], item['datetime']])
+            _data.append([str(item['symbol']), str(item['market']), item['time_stamp'], item['date'], item['datetime']])
         
-        _data = pd.DataFrame(_data, columns=['symbol', 'market', 'open', 'high', 'low', 'close', 'volume', 'trade', 'amount', 'time_stamp', 'date', 'datetime']).drop_duplicates()
+        _data = pd.DataFrame(_data, columns=['symbol', 'market', 'time_stamp', 'date', 'datetime']).drop_duplicates()
         _data['date'] = pd.to_datetime(_data['date'])
         _data = _data.set_index(pd.DatetimeIndex(_data['date']), drop=False)
 
@@ -136,6 +135,7 @@ def QA_util_find_missing_kline(symbol, freq, market='huobi', start_epoch=datetim
             miss_kline = miss_kline.append({'expected':expected, 'between':between, 'missing':'{} 到 {}'.format(pd.to_datetime(expected, unit='s').tz_localize('Asia/Shanghai'), pd.to_datetime(between, unit='s').tz_localize('Asia/Shanghai'))}, ignore_index=True)
             expected = int(leak_datetime[x].timestamp())
 
+    miss_kline = miss_kline.append({'expected':int(_data.iloc[-1].time_stamp) + 1, 'between':QA_util_datetime_to_Unix_timestamp(), 'missing':'{} 到 {}'.format(int(_data.iloc[0].time_stamp) + 1, QA_util_datetime_to_Unix_timestamp())}, ignore_index=True)
     return miss_kline.values
 
 

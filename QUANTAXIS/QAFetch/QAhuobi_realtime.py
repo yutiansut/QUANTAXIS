@@ -56,6 +56,7 @@ from datetime import datetime, timezone, timedelta
 import pandas as pd
 import numpy as np
 from random import random
+
 """
 huobi Python官方客户端文档参考: https://github.com/HuobiRDCenter/huobi_Python/blob/master/Readme.md
 pip install huobi-client 的不是最新版(v0.32)，需要自己去 git 下载安装，测试基于
@@ -574,19 +575,20 @@ class QA_Fetch_Huobi(object):
             # 所以选择倒序算法，从最近的时间开始补历史数据，'from' 'to' 请求范围一直向前递减到请求不到数据为止。
             missing_data_list = initalParams['missing'][::-1]
             for i in range(len(missing_data_list)):
-                reqParams['from'] = missing_data_list[i][
-                    between] - initalParams['shifting_time']
-                reqParams['to'] = missing_data_list[i][between]
+                reqParams['from'] = int(missing_data_list[i][
+                    between] - initalParams['shifting_time'])
+                reqParams['to'] = (missing_data_list[i][between])
                 if (reqParams['to'] >
                     (QA_util_datetime_to_Unix_timestamp() + 120)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
                     raise Exception(
-                        'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s} at {:s}({:d}) but current time is {}'
+                        'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                         .format(
                             initalParams['req'],
-                            missing_data_list[i][missing],
-                            missing_data_list[i][between],
-                            QA_util_datetime_to_Unix_timestamp()
+                            QA_util_print_timestamp(reqParams['to']),
+                            QA_util_print_timestamp(
+                                QA_util_datetime_to_Unix_timestamp()
+                            )
                         )
                     )
                 QA_util_log_info(
@@ -615,10 +617,13 @@ class QA_Fetch_Huobi(object):
                             (QA_util_datetime_to_Unix_timestamp() + 120)):
                             # 出现“未来”时间，一般是默认时区设置错误造成的
                             raise Exception(
-                                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s} at {:s}'
+                                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                                 .format(
                                     initalParams['req'],
-                                    missing_data_list[i][missing]
+                                    QA_util_print_timestamp(reqParams['to']),
+                                    QA_util_print_timestamp(
+                                        QA_util_datetime_to_Unix_timestamp()
+                                    )
                                 )
                             )
                         self.__batchReqJobs[initalParams['req']
@@ -635,9 +640,9 @@ class QA_Fetch_Huobi(object):
                         )
 
                         # 等待3秒，请求下一个时间段的批量K线数据
-                        reqParams['to'] = reqParams['from'] - 1
-                        reqParams['from'] = reqParams['from'] - initalParams[
-                            'shifting_time']
+                        reqParams['to'] = int(reqParams['from'] - 1)
+                        reqParams['from'] = int(reqParams['from'] - initalParams[
+                            'shifting_time'])
                         requested_counter = requested_counter + 1
 
                         # 锁定线程，等待回复，避免快速频繁重复请求，会被ban IP的
@@ -677,7 +682,7 @@ class QA_Fetch_Huobi(object):
             missing_data_list = self.find_missing_kline_func(
                 currentJob.Symbol,
                 currentJob.Period,
-                'huobi'
+                market='huobi'
             )
             if len(missing_data_list) > 0:
                 # 查询确定中断的K线数据起止时间，缺分时数据，补分时数据
@@ -823,8 +828,8 @@ class QA_Fetch_Huobi(object):
             symbol,
             self.Huobi2QA_FREQUENCE_DICT[period]
         )
-        reqParams['from'] = start_epoch
-        reqParams['to'] = end_epoch
+        reqParams['from'] = int(start_epoch)
+        reqParams['to'] = int(end_epoch)
         reqParams['id'] = requestIdx = "%s_#%d" % (
             self.gen_ws_id(symbol,
                            period),
@@ -936,13 +941,12 @@ class QA_Fetch_Huobi(object):
 
 
 if __name__ == "__main__":
-    #from QUANTAXIS.QASU.save_huobi import (QA_SU_save_data_huobi_callback)
+    from QUANTAXIS.QASU.save_huobi import (QA_SU_save_data_huobi_callback)
 
-    #fetch_huobi_history = QA_Fetch_Huobi(callback_save_data_func=QA_SU_save_data_huobi_callback, find_missing_kline_func=QA_util_find_missing_kline)
+    fetch_huobi_history = QA_Fetch_Huobi(callback_save_data_func=QA_SU_save_data_huobi_callback, find_missing_kline_func=QA_util_find_missing_kline)
 
-    ## 添加抓取行情数据任务，将会开启多线程抓取。
-    #fetch_huobi_history.add_subscription_batch_jobs(['hb10usdt'], [FREQUENCE.ONE_MIN,
-    #                                      FREQUENCE.FIVE_MIN], '2017-10-26 02:00:00')
+    # 添加抓取行情数据任务，将会开启多线程抓取。
+    fetch_huobi_history.add_subscription_batch_jobs(['hb10usdt'], [FREQUENCE.DAY], '2017-10-26 02:00:00')
 
-    #fetch_huobi_history.run_subscription_batch_jobs()
+    fetch_huobi_history.run_subscription_batch_jobs()
     pass

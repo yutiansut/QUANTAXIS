@@ -296,7 +296,7 @@ class CLI(cmd.Cmd):
             命令格式：save huobi realtime : 接收火币Pro交易所实时行情（仅排名前30的主要币种）\n\
             命令格式：save okex : 保存OKEx交易所数据 \n\
             命令格式：save okex all : 一次性保存OKEx交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
-            命令格式：save okex 1day/1hour/1min : 单独保存OKEx交易所日/小时/分钟数据 \n\
+            命令格式：save okex 86400/3600/1800/900/300/60 : 单独保存OKEx交易所日/小时/30/15/5/1分钟数据 \n\
             ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
@@ -497,9 +497,9 @@ class CLI(cmd.Cmd):
                     QA_SU_save_okex_symbol()
                     QA_SU_save_okex_1day()
                     QA_SU_save_okex_1hour()
-                    QA_SU_save_okex('30m')
-                    QA_SU_save_okex('15m')
-                    QA_SU_save_okex('5m')
+                    QA_SU_save_okex('1800')
+                    QA_SU_save_okex('900')
+                    QA_SU_save_okex('300')
                     QA_SU_save_okex_1min()
                 else:
                     frequency = arg[1]
