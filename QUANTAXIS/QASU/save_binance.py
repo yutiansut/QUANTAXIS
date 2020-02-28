@@ -38,7 +38,11 @@ from QUANTAXIS.QAUtil import (
     QA_util_log_expection,
     QA_util_to_json_from_pandas
 )
-from QUANTAXIS.QAUtil.QADate_Adv import (QA_util_timestamp_to_str)
+from QUANTAXIS.QAUtil.QADate_Adv import (
+    QA_util_timestamp_to_str,
+    QA_util_datetime_to_Unix_timestamp,
+    QA_util_print_timestamp
+)
 from QUANTAXIS.QAFetch.QAbinance import (
     QA_fetch_binance_symbols,
     QA_fetch_binance_kline,

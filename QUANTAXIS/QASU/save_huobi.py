@@ -53,7 +53,8 @@ from QUANTAXIS.QAUtil.QAParameter import (FREQUENCE, MARKET_TYPE)
 from QUANTAXIS.QAUtil.QADate_Adv import (
     QA_util_str_to_Unix_timestamp,
     QA_util_datetime_to_Unix_timestamp,
-    QA_util_timestamp_to_str
+    QA_util_timestamp_to_str,
+    QA_util_print_timestamp
 )
 from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
 
