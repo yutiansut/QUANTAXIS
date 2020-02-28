@@ -237,9 +237,8 @@ def QA_fetch_huobi_kline(
     frame.rename({'count': 'trade', 'id': 'time_stamp', 'vol': 'volume'}, axis=1, inplace=True)
     if (frequency not in [CandlestickInterval.DAY1, Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1], '1d']):
         frame['type'] = Huobi2QA_FREQUENCY_DICT[frequency]
-    data = json.loads(frame.to_json(orient='records'))
-    callback_save_data_func(data, symbol=symbol)
-    return data
+    callback_save_data_func(frame, freq=frequency)
+    return frame
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)

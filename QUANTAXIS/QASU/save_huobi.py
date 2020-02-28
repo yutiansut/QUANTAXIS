@@ -618,10 +618,10 @@ def QA_SU_save_huobi_realtime():
 
 
 if __name__ == '__main__':
+    QA_SU_save_huobi_1day()
     QA_SU_save_huobi_min('1min', ['adausdt'])
     QA_SU_save_huobi_symbol()
     QA_SU_save_huobi('30min')
-    QA_SU_save_huobi_1day()
     QA_SU_save_huobi_1hour(fetch_range=FIRST_PRIORITY)
     QA_SU_save_huobi_30min(fetch_range=FIRST_PRIORITY)
     QA_SU_save_huobi_15min(fetch_range=FIRST_PRIORITY)
