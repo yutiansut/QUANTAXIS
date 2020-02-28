@@ -394,7 +394,7 @@ def QA_SU_save_huobi_min(
                     reqParams['from'] = missing_data_list[i][expected]
                     reqParams['to'] = missing_data_list[i][between]
                     if (reqParams['to'] >
-                        (QA_util_datetime_to_Unix_timestamp() + 120)):
+                        (QA_util_datetime_to_Unix_timestamp() + 3600)):
                         # 出现“未来”时间，一般是默认时区设置错误造成的
                         raise Exception(
                             'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
