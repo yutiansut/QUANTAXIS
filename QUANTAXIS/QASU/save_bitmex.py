@@ -70,17 +70,13 @@ def QA_SU_save_bitmex(frequency):
         return QA_SU_save_bitmex_day(frequency)
 
 
-def QA_SU_save_bitmex_day(
-    frequency='1d',
-    client=DATABASE,
-    ui_log=None,
-    ui_progress=None,
-):
+def QA_SU_save_bitmex_day(frequency='1d', ui_log=None, ui_progress=None):
     """
     获取 bitmex K线 日线数据，统一转化字段保存数据为 crypto_asset_day
     """
-    symbol_list = QA_fetch_crypto_asset_list(market='bitmex')
-    col = client.crypto_asset_day
+    market = 'bitmex'
+    symbol_list = QA_fetch_crypto_asset_list(market=market)
+    col = DATABASE.crypto_asset_day
     col.create_index(
         [
             ('market',
@@ -95,7 +91,11 @@ def QA_SU_save_bitmex_day(
 
     end = datetime.datetime.now(tzutc())
 
-    QA_util_log_info('Starting DOWNLOAD PROGRESS of day Klines from bitmex... ')
+    QA_util_log_info(
+        'Starting DOWNLOAD PROGRESS of day Klines from bitmex... ',
+        ui_log=ui_log,
+        ui_progress=ui_progress
+    )
     for index in range(len(symbol_list)):
         symbol_info = symbol_list.iloc[index]
         QA_util_log_info(
@@ -103,11 +103,15 @@ def QA_SU_save_bitmex_day(
                 symbol_info['symbol'],
                 index,
                 len(symbol_list)
-            )
+            ),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
         QA_util_log_info(
             'DOWNLOAD PROGRESS {} '
-            .format(str(float(index / len(symbol_list) * 100))[0:4] + '%')
+            .format(str(float(index / len(symbol_list) * 100))[0:4] + '%'),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
         query_id = {
             "symbol": symbol_info['symbol'],
@@ -124,10 +128,12 @@ def QA_SU_save_bitmex_day(
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Bitmex2QA_FREQUENCY_DICT['1d'],
+                    Bitmex2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
         else:
             start_time = symbol_info.get('listing', "2018-01-01T00:00:00Z")
@@ -135,17 +141,20 @@ def QA_SU_save_bitmex_day(
             QA_util_log_info(
                 'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
                     symbol_info['symbol'],
-                    Bitmex2QA_FREQUENCY_DICT['1d'],
+                    Bitmex2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
 
         data = QA_fetch_bitmex_kline(
             symbol_info['symbol'],
             QA_util_datetime_to_Unix_timestamp(start_time),
             QA_util_datetime_to_Unix_timestamp(end),
-            frequency='1d'
+            frequency,
+            callback_func=QA_SU_save_data_bitmex_callback
         )
         if data is None:
             QA_util_log_info(
@@ -153,39 +162,25 @@ def QA_SU_save_bitmex_day(
                     symbol_info['symbol'],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
             continue
-        QA_util_log_info(
-            'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
-                Bitmex2QA_FREQUENCY_DICT['1d'],
-                symbol_info['symbol'],
-                time.strftime(
-                    '%Y-%m-%d %H:%M:%S',
-                    time.localtime(data[0]['date_stamp'])
-                ),
-                time.strftime(
-                    '%Y-%m-%d %H:%M:%S',
-                    time.localtime(data[-1]['date_stamp'])
-                ),
-                len(data)
-            )
-        )
-        col.insert_many(data)
     QA_util_log_info(
-        'DOWNLOAD PROGRESS of day Klines from bitmex accomplished '
+        'DOWNLOAD PROGRESS of day Klines from bitmex accomplished ',
+        ui_log=ui_log,
+        ui_progress=ui_progress
     )
 
 
-def QA_SU_save_bitmex_min(
-    frequency='1m',
-    client=DATABASE,
-):
+def QA_SU_save_bitmex_min(frequency='1m', ui_log=None, ui_progress=None):
     """
     获取 bitmex K线 分钟线数据，统一转化字段保存数据为 crypto_asset_min
     """
-    symbol_list = QA_fetch_crypto_asset_list(market='bitmex')
-    col = client.crypto_asset_min
+    market = 'bitmex'
+    symbol_list = QA_fetch_crypto_asset_list(market=market)
+    col = DATABASE.crypto_asset_min
     col.create_index(
         [
             ('market',
@@ -214,7 +209,11 @@ def QA_SU_save_bitmex_min(
 
     end = datetime.datetime.now(tzutc())
 
-    QA_util_log_info('Starting DOWNLOAD PROGRESS of min Klines from bitmex... ')
+    QA_util_log_info(
+        'Starting DOWNLOAD PROGRESS of min Klines from bitmex... ',
+        ui_log=ui_log,
+        ui_progress=ui_progress
+    )
     for index in range(len(symbol_list)):
         symbol_info = symbol_list.iloc[index]
         QA_util_log_info(
@@ -222,11 +221,15 @@ def QA_SU_save_bitmex_min(
                 symbol_info['symbol'],
                 index,
                 len(symbol_list)
-            )
+            ),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
         QA_util_log_info(
             'DOWNLOAD PROGRESS {} '
-            .format(str(float(index / len(symbol_list) * 100))[0:4] + '%')
+            .format(str(float(index / len(symbol_list) * 100))[0:4] + '%'),
+            ui_log=ui_log,
+            ui_progress=ui_progress
         )
         query_id = {
             "symbol": symbol_info['symbol'],
@@ -246,7 +249,9 @@ def QA_SU_save_bitmex_min(
                     Bitmex2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
 
             # 查询到 Kline 缺漏，点抓取模式，按缺失的时间段精确请求K线数据
@@ -264,7 +269,9 @@ def QA_SU_save_bitmex_min(
                     Bitmex2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
-                )
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
             )
             miss_kline = pd.DataFrame(
                 [
@@ -307,7 +314,7 @@ def QA_SU_save_bitmex_min(
                         )
                     )
                 QA_util_log_info(
-                    'Fetch %s slices %s kline：%s 到 %s' % (
+                    'Fetch "{:s}" slices "{:s}" kline：{:s} to {:s}'.format(
                         symbol_info['symbol'],
                         frequency,
                         QA_util_timestamp_to_str(
@@ -336,7 +343,9 @@ def QA_SU_save_bitmex_min(
             continue
 
     QA_util_log_info(
-        'DOWNLOAD PROGRESS of min Klines from bitmex accomplished '
+        'DOWNLOAD PROGRESS of min Klines from bitmex accomplished ',
+        ui_log=ui_log,
+        ui_progress=ui_progress
     )
 
 
@@ -449,15 +458,15 @@ def QA_SU_save_data_bitmex_callback(data, freq):
             time.strftime(
                 '%Y-%m-%d %H:%M:%S',
                 time.localtime(data.iloc[0].time_stamp)
-            ),
+            )[2:16],
             time.strftime(
                 '%Y-%m-%d %H:%M:%S',
                 time.localtime(data.iloc[-1].time_stamp)
-            ),
+            )[2:16],
             len(data)
         )
     )
-    if (freq not in ['1day', 'day', '1d']):
+    if (freq not in ['1day', '86400', 'day', '1d']):
         col = DATABASE.crypto_asset_min
         col.create_index(
             [

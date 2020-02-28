@@ -1,3 +1,29 @@
+# coding: utf-8
+# Author: 阿财（Rgveda@github）（11652964@qq.com）
+# Created date: 2020-02-27
+#
+# The MIT License (MIT)
+#
+# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 """
 bitmex api
 具体api文档参考:https://www.bitmex.com/api/explorer/#/
@@ -41,12 +67,12 @@ Bitmex2QA_FREQUENCY_DICT = {
 }
 
 FREQUENCY_SHIFTING = {
-    "1m": 14400,
-    "5m": 72000,
-    "15m": 216000,
-    "30m": 432000,
-    "1h": 864000,
-    "1d": 207360000
+    "1m": 43200,
+    "5m": 225000,
+    "15m": 675000,
+    "30m": 1350000,
+    "1h": 2700000,
+    "1d": 64800000
 }
 
 
@@ -75,8 +101,6 @@ def format_btimex_data_fields(datas, frequency):
     )
     frame.rename({'trades': 'trade'}, axis=1, inplace=True)
     frame['amount'] = frame['volume'] * (frame['open'] + frame['close']) / 2
-    if (frequency not in ['1day', Bitmex2QA_FREQUENCY_DICT['1d'], '1d']):
-        frame['type'] = Bitmex2QA_FREQUENCY_DICT[frequency]
     frame.drop(
         [
             'foreignNotional',
@@ -89,6 +113,8 @@ def format_btimex_data_fields(datas, frequency):
         axis=1,
         inplace=True
     )
+    if (frequency not in ['1day', Bitmex2QA_FREQUENCY_DICT['1d'], '1d']):
+        frame['type'] = Bitmex2QA_FREQUENCY_DICT[frequency]
     return frame
 
 
@@ -103,6 +129,7 @@ def QA_fetch_bitmex_symbols(active=True):
         url = urljoin(Bitmex_base_url, "instrument")
 
     retries = 1
+    datas = list()
     while (retries != 0):
         try:
             req = requests.get(url, params={"count": 500}, timeout=TIMEOUT)
@@ -191,14 +218,35 @@ def QA_fetch_bitmex_kline(
 ):
     """
     Get the latest symbol‘s candlestick data
+    时间倒序切片获取算法，是各大交易所获取1min数据的神器，因为大部分交易所直接请求跨月跨年的1min分钟数据
+    会直接返回空值，只有将 start_epoch，end_epoch 切片细分到 200/300 bar 以内，才能正确返回 kline，
+    火币和okex，OKEx 均为如此，直接用跨年时间去直接请求上万bar 的 kline 数据永远只返回最近200条数据。
     """
     market = 'bitmex'
     datas = list()
-    while start_time < end_time:
+    reqParams = {}
+    reqParams['from'] = end_time - FREQUENCY_SHIFTING[frequency]
+    reqParams['to'] = end_time
+
+    while (reqParams['to'] > start_time):
+        if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
+            ((reqParams['from'] > reqParams['to'])):
+            # 出现“未来”时间，一般是默认时区设置，或者时间窗口滚动前移错误造成的
+            raise Exception(
+                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
+                .format(
+                    symbol,
+                    frequency,
+                    QA_util_print_timestamp(reqParams['to']),
+                    QA_util_print_timestamp(
+                        QA_util_datetime_to_Unix_timestamp()
+                    )
+                )
+            )
         klines = QA_fetch_bitmex_kline_with_auto_retry(
             symbol,
-            start_time,
-            end_time,
+            reqParams['from'],
+            reqParams['to'],
             frequency,
         )
         if (len(klines) == 0) or \
@@ -206,9 +254,15 @@ def QA_fetch_bitmex_kline(
             # 出错放弃
             break
 
+        reqParams['to'] = reqParams['from'] - 1
+        reqParams['from'] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
+
+        if (klines is None) or \
+            ((len(datas) > 0) and (klines[-1][0] == datas[-1][0])):
+            # 没有更多数据
+            break
+
         datas.extend(klines)
-        start_time = parse(klines[-1].get("timestamp")
-                          ) + relativedelta(second=+1)
 
         if (callback_func is not None):
             frame = format_btimex_data_fields(klines, frequency)
@@ -232,7 +286,7 @@ def QA_fetch_bitmex_kline_min(
     """
     Get the latest symbol‘s candlestick data with time slices
     时间倒序切片获取算法，是各大交易所获取1min数据的神器，因为大部分交易所直接请求跨月跨年的1min分钟数据
-    会直接返回空值，只有将 start_epoch，end_epoch 切片细分到 300 bar 以内，才能正确返回 kline，
+    会直接返回空值，只有将 start_epoch，end_epoch 切片细分到 1000 bar 以内，才能正确返回 kline，
     火币和Bitmex，OKEx 均为如此，用上面那个函数的方式去直接请求上万bar 的分钟 kline 数据是不会有结果的。
     """
     reqParams = {}

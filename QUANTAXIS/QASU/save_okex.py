@@ -70,9 +70,9 @@ def QA_SU_save_okex(frequency):
         return QA_SU_save_okex_day(frequency)
 
 
-def QA_SU_save_okex_day(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_okex_day(frequency='86400', ui_log=None, ui_progress=None):
     """
-    Save OKEx day kline
+    Save OKEx day kline K线 日线数据，统一转化字段保存数据为 crypto_asset_day
     """
     market = 'okex'
     symbol_list = QA_fetch_crypto_asset_list(market=market)
@@ -98,7 +98,6 @@ def QA_SU_save_okex_day(frequency, ui_log=None, ui_progress=None):
     )
     for index in range(len(symbol_list)):
         symbol_info = symbol_list.iloc[index]
-        # 上架仅处理交易对
         QA_util_log_info(
             'The "{}" #{} of total in {}'.format(
                 symbol_info['symbol'],
@@ -114,12 +113,18 @@ def QA_SU_save_okex_day(frequency, ui_log=None, ui_progress=None):
             ui_log=ui_log,
             ui_progress=ui_progress
         )
-        query_id = {"symbol": symbol_info['symbol'], 'market': market}
-        ref = col.find(query_id).sort('time_stamp', -1)
+        query_id = {
+            "symbol": symbol_info['symbol'],
+            'market': symbol_info['market']
+        }
+        ref = col.find(query_id).sort('date_stamp', -1)
 
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['date_stamp']
-            start_time = datetime.datetime.fromtimestamp(start_stamp)
+            start_time = datetime.datetime.fromtimestamp(
+                start_stamp + 1,
+                tz=tzutc()
+            )
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
@@ -168,9 +173,9 @@ def QA_SU_save_okex_day(frequency, ui_log=None, ui_progress=None):
     )
 
 
-def QA_SU_save_okex_min(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_okex_min(frequency='60', ui_log=None, ui_progress=None):
     """
-    Save OKEx min kline
+    Save OKEx min kline 分钟线数据，统一转化字段保存数据为 crypto_asset_min
     """
     market = 'okex'
     symbol_list = QA_fetch_crypto_asset_list(market='okex')
@@ -228,14 +233,17 @@ def QA_SU_save_okex_min(frequency, ui_log=None, ui_progress=None):
         )
         query_id = {
             "symbol": symbol_info['symbol'],
-            'market': market,
+            'market': symbol_info['market'],
             'type': OKEx2QA_FREQUENCY_DICT[frequency]
         }
         ref = col.find(query_id).sort('time_stamp', -1)
 
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['time_stamp']
-            start_time = datetime.datetime.fromtimestamp(start_stamp)
+            start_time = datetime.datetime.fromtimestamp(
+                start_stamp + 1,
+                tz=tzutc()
+            )
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
                     symbol_info['symbol'],
@@ -326,7 +334,7 @@ def QA_SU_save_okex_min(frequency, ui_log=None, ui_progress=None):
 
         if data is None:
             QA_util_log_info(
-                'SYMBOL "{}" from {} to {} has no data'.format(
+                'SYMBOL "{}" from {} to {} has no MORE data'.format(
                     symbol_info['symbol'],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
@@ -352,7 +360,7 @@ def QA_SU_save_okex_1hour():
     QA_SU_save_okex("3600")
 
 
-def QA_SU_save_okex_symbol(client=DATABASE, market="okex"):
+def QA_SU_save_okex_symbol(market="okex", client=DATABASE, ):
     """
     保存OKEx交易对信息
     """
@@ -384,12 +392,6 @@ def QA_SU_save_okex_symbol(client=DATABASE, market="okex"):
             axis=1
         )
         symbol_lists['desc'] = symbol_lists['name']
-        symbol_lists['created_at'] = int(
-            time.mktime(datetime.datetime.now().utctimetuple())
-        )
-        symbol_lists['updated_at'] = int(
-            time.mktime(datetime.datetime.now().utctimetuple())
-        )
 
         # 移除非共性字段，这些字段只有 broker 才关心，做对应交易所 broker 接口的时候在交易所 raw_symbol_lists
         # 数据中读取。
@@ -400,6 +402,13 @@ def QA_SU_save_okex_symbol(client=DATABASE, market="okex"):
             ],
             axis=1,
             inplace=True
+        )
+
+        symbol_lists['created_at'] = int(
+            time.mktime(datetime.datetime.now().utctimetuple())
+        )
+        symbol_lists['updated_at'] = int(
+            time.mktime(datetime.datetime.now().utctimetuple())
         )
 
         coll_crypto_asset_list = client.crypto_asset_list
@@ -427,7 +436,7 @@ def QA_SU_save_okex_symbol(client=DATABASE, market="okex"):
             return symbol_lists
         except:
             QA_util_log_expection(
-                'QA_SU_save_okex_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception with {} klines'
+                'QA_SU_save_okex_symbol(): Insert_many(symbol) to "crypto_asset_list" got Exception with {} klines'
                 .format(len(data))
             )
             pass
