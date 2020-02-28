@@ -303,6 +303,7 @@ def QA_fetch_huobi_kline_subscription(
             )
 
         retries = 1
+        frame = None
         while (retries != 0):
             try:
                 frame = sub_client.run_request_historical_kline(
@@ -335,6 +336,9 @@ def QA_fetch_huobi_kline_subscription(
                 # 但不确定不开启实时行情抓取会不会绑定on_messgae事件，所以保留冗余。
                 callback_save_data_func(data=frame, freq=frequency)
         time.sleep(0.5)
+    
+    if (frame is None):
+        return None
 
     return frame
 
