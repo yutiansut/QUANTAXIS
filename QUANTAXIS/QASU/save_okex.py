@@ -318,8 +318,9 @@ def QA_SU_save_okex_min(frequency='60', ui_log=None, ui_progress=None):
                         QA_util_timestamp_to_str(
                             missing_data_list[i][expected]
                         )[2:16],
-                        QA_util_timestamp_to_str(missing_data_list[i][between]
-                                                )[2:16]
+                        QA_util_timestamp_to_str(
+                            missing_data_list[i][between]
+                        )[2:16]
                     )
                 )
                 data = QA_fetch_okex_kline_min(
