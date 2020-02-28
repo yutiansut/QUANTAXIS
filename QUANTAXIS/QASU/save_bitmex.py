@@ -305,9 +305,7 @@ def QA_SU_save_bitmex_min(frequency='1m', ui_log=None, ui_progress=None):
                         .format(
                             symbol_info['symbol'],
                             frequency,
-                            QA_util_print_timestamp(
-                                missing_data_list[i][missing]
-                            ),
+                            QA_util_print_timestamp(reqParams['to']),
                             QA_util_print_timestamp(
                                 QA_util_datetime_to_Unix_timestamp()
                             )

@@ -582,12 +582,13 @@ class QA_Fetch_Huobi(object):
                     (QA_util_datetime_to_Unix_timestamp() + 120)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
                     raise Exception(
-                        'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s} at {:s}({:d}) but current time is {}'
+                        'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                         .format(
                             initalParams['req'],
-                            missing_data_list[i][missing],
-                            missing_data_list[i][between],
-                            QA_util_datetime_to_Unix_timestamp()
+                            QA_util_print_timestamp(reqParams['to']),
+                            QA_util_print_timestamp(
+                                QA_util_datetime_to_Unix_timestamp()
+                            )
                         )
                     )
                 QA_util_log_info(
@@ -616,10 +617,13 @@ class QA_Fetch_Huobi(object):
                             (QA_util_datetime_to_Unix_timestamp() + 120)):
                             # 出现“未来”时间，一般是默认时区设置错误造成的
                             raise Exception(
-                                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s} at {:s}'
+                                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                                 .format(
                                     initalParams['req'],
-                                    missing_data_list[i][missing]
+                                    QA_util_print_timestamp(reqParams['to']),
+                                    QA_util_print_timestamp(
+                                        QA_util_datetime_to_Unix_timestamp()
+                                    )
                                 )
                             )
                         self.__batchReqJobs[initalParams['req']
