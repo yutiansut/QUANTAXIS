@@ -58,51 +58,17 @@ from QUANTAXIS.QAFetch.QAhuobi_realtime import (
     QA_Fetch_Job_Status,
     QA_Fetch_Job_Type,
     QA_Fetch_Job,
-    QA_Fetch_Huobi
+    QA_Fetch_Huobi,
+    format_huobi_data_fields,
+    Huobi2QA_FREQUENCY_DICT,
+    CandlestickInterval,
 )
-
 
 # from QUANTAXIS.QAUtil.QAcrypto import TIMEOUT, ILOVECHINA
 TIMEOUT = 10
 ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！蓝灯，喵帕斯，VPS，阴阳师，v2ray，随便什么来一个！我翻墙我骄傲！"
 Huobi_base_url = 'https://api.huobi.pro/'
 
-
-class CandlestickInterval:
-    MIN1 = "1min"
-    MIN5 = "5min"
-    MIN15 = "15min"
-    MIN30 = "30min"
-    MIN60 = "60min"
-    HOUR4 = "4hour"
-    DAY1 = "1day"
-    MON1 = "1mon"
-    WEEK1 = "1week"
-    YEAR1 = "1year"
-    INVALID = None
-
-"""
-QUANTAXIS 和 Huobi.pro 的 frequency 常量映射关系
-"""
-Huobi2QA_FREQUENCY_DICT = {
-    CandlestickInterval.MIN1: '1min',
-    CandlestickInterval.MIN5: '5min',
-    CandlestickInterval.MIN15: '15min',
-    CandlestickInterval.MIN30: '30min',
-    CandlestickInterval.MIN60: '60min',
-    CandlestickInterval.DAY1: '1day'
-}
-"""
-Huobi 只允许一次获取 300bar，时间请求超过范围则不返回数据
-"""
-FREQUENCY_SHIFTING = {
-    CandlestickInterval.MIN1: 14400,
-    CandlestickInterval.MIN5: 72000,
-    CandlestickInterval.MIN15: 216000,
-    CandlestickInterval.MIN30: 432000,
-    CandlestickInterval.MIN60: 864000,
-    CandlestickInterval.DAY1: 20736000
-}
 
 FIRST_PRIORITY = [
     'atomusdt',
@@ -129,44 +95,6 @@ FIRST_PRIORITY = [
     'xrpusdt',
     'zecusdt'
 ]
-
-def format_huobi_data_fields(datas, symbol, frequency):
-    """
-    # 归一化数据字段，转换填充必须字段，删除多余字段
-    参数名 	类型 	描述
-    id 	    int32 	开始时间
-    open 	String 	开盘价格
-    high 	String 	最高价格
-    low 	String 	最低价格
-    close 	String 	收盘价格
-    vol 	float 	交易量
-    amount  float   交易量（本币）
-    """
-    # 归一化数据字段，转换填充必须字段，删除多余字段
-    frame = pd.DataFrame(datas)
-    frame['symbol'] = symbol
-    frame['market'] = 'huobi'
-    # UTC时间转换为北京时间
-    frame['date'] = pd.to_datetime(
-        frame['id'],
-        unit='s'
-    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-    frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
-    frame['datetime'] = pd.to_datetime(
-        frame['id'],
-        unit='s'
-    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-    frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    # 北京时间转换为 UTC Timestamp
-    frame['date_stamp'] = pd.to_datetime(
-        frame['date']
-    ).dt.tz_localize('Asia/Shanghai').astype(np.int64) // 10**9
-    frame['created_at'] = time.mktime(datetime.datetime.now().utctimetuple())
-    frame['updated_at'] = time.mktime(datetime.datetime.now().utctimetuple())
-    frame.rename({'count': 'trade', 'id': 'time_stamp', 'vol': 'volume'}, axis=1, inplace=True)
-    if (frequency not in [CandlestickInterval.DAY1, Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1], '1d']):
-        frame['type'] = Huobi2QA_FREQUENCY_DICT[frequency]
-    return frame
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)

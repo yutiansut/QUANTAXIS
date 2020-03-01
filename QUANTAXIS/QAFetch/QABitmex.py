@@ -258,7 +258,8 @@ def QA_fetch_bitmex_kline(
         reqParams['from'] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
 
         if (klines is None) or \
-            ((len(datas) > 0) and (klines[-1][0] == datas[-1][0])):
+            (len(klines) == 0) or \
+            ((len(datas) > 0) and (len(klines) > 0) and (klines[-1][0] == datas[-1][0])):
             # 没有更多数据
             break
 

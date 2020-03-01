@@ -46,11 +46,13 @@ from QUANTAXIS.QAFetch.QAhuobi import (
     QA_fetch_huobi_symbols,
     QA_fetch_huobi_kline,
     QA_fetch_huobi_kline_subscription,
-    Huobi2QA_FREQUENCY_DICT,
     FIRST_PRIORITY,
+)
+from QUANTAXIS.QAFetch.QAhuobi_realtime import (
+    QA_Fetch_Huobi,
+    Huobi2QA_FREQUENCY_DICT,
     CandlestickInterval
 )
-from QUANTAXIS.QAFetch.QAhuobi_realtime import (QA_Fetch_Huobi)
 from QUANTAXIS.QAUtil.QAcrypto import (
     QA_util_save_raw_symbols,
     QA_util_find_missing_kline
@@ -440,7 +442,6 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
         # 数据中读取。火币网超有个性的，注意字段里面的减号，不是下划线！！！
         symbol_lists.drop(
             [
-                '_id',
                 'amount-precision',
                 'leverage-ratio',
                 'max-order-amt',
@@ -452,6 +453,14 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
             axis=1,
             inplace=True
         )
+        if ('_id' in symbol_lists.columns.values):
+            symbol_lists.drop(
+                [
+                    '_id',
+                ],
+                axis=1,
+                inplace=True
+            )
 
         symbol_lists['created_at'] = int(
             time.mktime(datetime.datetime.now().utctimetuple())
@@ -496,7 +505,7 @@ def QA_SU_save_data_huobi_callback(data, freq):
     """
     异步获取数据回调用的 MongoDB 存储函数
     """
-    if ((len(data)==1)):
+    if ((len(data) == 1)):
         # 减少统计刷屏
         pass
     else:
@@ -608,12 +617,12 @@ def QA_SU_save_huobi_realtime():
     fetch_huobi_history.add_subscription_batch_jobs(
         FIRST_PRIORITY,
         [
-            FREQUENCE.ONE_MIN,
-            FREQUENCE.FIVE_MIN,
-            FREQUENCE.FIFTEEN_MIN,
-            FREQUENCE.THIRTY_MIN,
-            FREQUENCE.SIXTY_MIN,
-            FREQUENCE.DAY
+            CandlestickInterval.MIN1,
+            CandlestickInterval.MIN5,
+            CandlestickInterval.MIN15,
+            CandlestickInterval.MIN30,
+            CandlestickInterval.MIN60,
+            CandlestickInterval.DAY1
         ],
         '2017-10-26 02:00:00'
     )

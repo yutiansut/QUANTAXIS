@@ -91,20 +91,19 @@ def format_okex_data_fields(datas, symbol, frequency):
     frame = pd.DataFrame(datas, columns=column_names)
     frame['market'] = 'okex'
     frame['symbol'] = symbol
-    # UTC时间转换为北京时间，接收到的数据有时候 tz-aware 有时候又是变成 non tz-aware，
-    # 改了几次代码，既不能单纯 tz_localize 也不能单纯 tz_convert
-    # dt.tz_localize(None) 是 Stackoverflow 的解决方案，先观察效果
-    frame['datetime'] = pd.to_datetime(
-        frame['time']
-    ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-    frame['date'] = frame['datetime'].dt.strftime('%Y-%m-%d')
-    frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # GMT+0 String 转换为 UTC Timestamp
     frame['time_stamp'] = pd.to_datetime(frame['time']
                                         ).astype(np.int64) // 10**9
+    # UTC时间转换为北京时间 
+    frame['datetime'] = pd.to_datetime(
+        frame['time_stamp'], unit='s'
+    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
+    frame['date'] = frame['datetime'].dt.strftime('%Y-%m-%d')
     frame['date_stamp'] = pd.to_datetime(
         frame['date']
     ).dt.tz_localize('Asia/Shanghai').astype(np.int64) // 10**9
+    frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
+
     frame['created_at'] = int(
         time.mktime(datetime.datetime.now().utctimetuple())
     )
