@@ -1,0 +1,4 @@
+steps:
+- name: 'python:3.7'
+  entrypoint: python3
+  args: ['-m', 'pip', 'install', '-t', '.', '-r', 'requirements.txt']
