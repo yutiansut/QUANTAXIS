@@ -933,7 +933,7 @@ def QA_fetch_crypto_asset_day_adv(
                end)
         )
     else:
-        res_set_index = res.set_index(['date', 'market', 'symbol'])
+        res_set_index = res.set_index(['date', 'market', 'code'])
         return QA_DataStruct_Crypto_Asset_day(res_set_index)
 
 
@@ -1003,7 +1003,7 @@ def QA_fetch_crypto_asset_min_adv(
         res_reset_index = res.set_index(
             ['datetime',
              'market',
-             'symbol'],
+             'code'],
             drop=if_drop_index
         )
         # if res_reset_index is None:
@@ -1032,53 +1032,24 @@ def QA_fetch_crypto_asset_list_adv(
 if __name__ == '__main__':
     #st = QA_fetch_stock_block_adv(None, ["北京", "计算机"])
     #QA_fetch_stock_realtime_adv(['000001', '000002'], num=10)
-    print(
-        QA_fetch_crypto_asset_min(
-            'huobi',
-            symbol=[
-                'btcusdt',
-                'ethusdt',
-                'eosusdt',
-            ],
-            start='2006-07-03',
-            end='2020-05-28 08:10:00',
-            frequence='60min',
-            format='pandas'
-        )
-    )
-    print(
-        QA_fetch_crypto_asset_min_adv(
-            'huobi',
-            symbol=[
-                'btcusdt',
-                'ethusdt',
-                'eosusdt',
-            ],
-            start='2006-07-03',
-            end='2020-05-28 08:10:00',
-            frequence='60min'
-        ).data
-    )
-    print(
-        QA_fetch_crypto_asset_day_adv(
-            'okex',
-            symbol=[
-                'BTC-USDT',
-                'ETH-USDT',
-            ],
-            start='2017-10-01',
-            end='2020-05-28 18:10:00'
-        ).data
-    )
-    print(
-        QA_fetch_crypto_asset_min_adv(
-            'okex',
-            symbol=[
-                'BTC-USDT',
-                'ETH-USDT',
-            ],
-            start='2017-10-01',
+    from QUANTAXIS.QAFetch.QAhuobi import FIRST_PRIORITY
+    codelist = ['BCHUSDT', 'BSVUSDT', 'BTCUSDT', 'EOSUSDT', 'ETHUSDT', 'ETCUSDT', 'DASHUSDT', 'LTCUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT']
+    data1 = QA_fetch_crypto_asset_day_adv(
+            ['binance','huobi'],
+            symbol=codelist+FIRST_PRIORITY,
+            start='2019-08-21',
             end='2020-05-28 18:10:00',
-            frequence='60min'
-        ).data
-    )
+        )
+    print(data1.data)
+    #print(
+    #    QA_fetch_crypto_asset_min_adv(
+    #        'okex',
+    #        symbol=[
+    #            'BTC-USDT',
+    #            'ETH-USDT',
+    #        ],
+    #        start='2017-10-01',
+    #        end='2020-05-28 18:10:00',
+    #        frequence='60min'
+    #    ).data
+    #)

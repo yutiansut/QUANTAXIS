@@ -1714,10 +1714,200 @@ class QA_DataStruct_Crypto_Asset_day(_quotation_base):
         except:
             return None
 
-    # @property
-    # @lru_cache()
-    # def semiannual(self):
-    #     return self.resample('SA')
+
+    '''
+    ########################################################################################################
+    计算统计相关的，重载方法 level=2
+    '''
+
+    @property
+    @lru_cache()
+    def max(self):
+        res = self.price.groupby(level=2).apply(lambda x: x.max())
+        res.name = 'max'
+        return res
+
+    @property
+    @lru_cache()
+    def min(self):
+        res = self.price.groupby(level=2).apply(lambda x: x.min())
+        res.name = 'min'
+        return res
+
+    @property
+    @lru_cache()
+    def mean(self):
+        res = self.price.groupby(level=2).apply(lambda x: x.mean())
+        res.name = 'mean'
+        return res
+
+    # 一阶差分序列
+
+    @property
+    @lru_cache()
+    def price_diff(self):
+        '返回DataStruct.price的一阶差分'
+        res = self.price.groupby(level=2).apply(lambda x: x.diff(1))
+        res.name = 'price_diff'
+        return res
+
+    # 样本方差(无偏估计) population variance 重载方法 level=2
+
+    @property
+    @lru_cache()
+    def pvariance(self):
+        '返回DataStruct.price的方差 variance'
+        res = self.price.groupby(level=2
+                                 ).apply(lambda x: statistics.pvariance(x))
+        res.name = 'pvariance'
+        return res
+
+    # 方差
+    @property
+    @lru_cache()
+    def variance(self):
+        '返回DataStruct.price的方差 variance' 
+        res = self.price.groupby(level=2
+                                 ).apply(lambda x: statistics.variance(x))
+        res.name = 'variance'
+        return res
+
+    @property
+    @lru_cache()
+    def stdev(self):
+        '返回DataStruct.price的样本标准差 Sample standard deviation'
+        res = self.price.groupby(level=2).apply(lambda x: statistics.stdev(x))
+        res.name = 'stdev'
+        return res
+
+    # 总体标准差 重载方法 level=2
+
+    @property
+    @lru_cache()
+    def pstdev(self):
+        '返回DataStruct.price的总体标准差 Population standard deviation'
+        res = self.price.groupby(level=2).apply(lambda x: statistics.pstdev(x))
+        res.name = 'pstdev'
+        return res
+
+    # 调和平均数 重载方法 level=2
+    @property
+    @lru_cache()
+    def mean_harmonic(self):
+        '返回DataStruct.price的调和平均数'
+        res = self.price.groupby(level=2
+                                 ).apply(lambda x: statistics.harmonic_mean(x))
+        res.name = 'mean_harmonic'
+        return res
+
+    # 众数 重载方法 level=2
+    @property
+    @lru_cache()
+    def mode(self):
+        '返回DataStruct.price的众数'
+        try:
+            res = self.price.groupby(level=2
+                                     ).apply(lambda x: statistics.mode(x))
+            res.name = 'mode'
+            return res
+        except:
+            return None
+
+    # 振幅
+    @property
+    @lru_cache()
+    def amplitude(self):
+        '返回DataStruct.price的百分比变化'
+        res = self.price.groupby(
+            level=2
+        ).apply(lambda x: (x.max() - x.min()) / x.min())
+        res.name = 'amplitude'
+        return res
+
+    # 偏度 Skewness
+
+    @property
+    @lru_cache()
+    def skew(self):
+        '返回DataStruct.price的偏度'
+        res = self.price.groupby(level=2).apply(lambda x: x.skew())
+        res.name = 'skew'
+        return res
+
+    # 峰度Kurtosis
+
+    @property
+    @lru_cache()
+    def kurt(self):
+        '返回DataStruct.price的峰度'
+        res = self.price.groupby(level=2).apply(lambda x: x.kurt())
+        res.name = 'kurt'
+        return res
+
+    # 百分数变化
+
+    @property
+    @lru_cache()
+    def pct_change(self):
+        '返回DataStruct.price的百分比变化'
+        res = self.price.groupby(level=2).apply(lambda x: x.pct_change())
+        res.name = 'pct_change'
+        return res
+
+    @lru_cache()
+    def close_pct_change(self):
+        '返回DataStruct.close的百分比变化'
+        res = self.close.groupby(level=2).apply(lambda x: x.pct_change())
+        res.name = 'close_pct_change'
+        return res
+
+    # 平均绝对偏差
+    @property
+    @lru_cache()
+    def mad(self):
+        '平均绝对偏差'
+        res = self.price.groupby(level=2).apply(lambda x: x.mad())
+        res.name = 'mad'
+        return res
+
+    @property
+    def security_gen(self):
+        '返回一个基于代码的迭代器'
+        for item in self.index.levels[2]:
+            yield self.new(
+                self.data.xs(item,
+                             level=2,
+                             drop_level=False),
+                dtype=self.type,
+                if_fq=self.if_fq
+            )
+
+    @property
+    @lru_cache()
+    def code(self):
+        '返回结构体中的代码 重载方法'
+        return self.index.levels[2]
+
+    def add_func(self, func, *arg, **kwargs):
+        """QADATASTRUCT的指标/函数apply入口
+
+        Arguments:
+            func {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        return self.groupby(['market', 'code'], sort=False).apply(func, *arg, **kwargs)
+
+    def add_funcx(self, func, *arg, **kwargs):
+        """QADATASTRUCT的指标/函数apply入口
+
+        add_funcx 和add_func 的区别是:
+
+        add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
+        """
+
+        return self.groupby(level=2, sort=False).apply(lambda x: func(x.reset_index(1), *arg, **kwargs))
 
     @property
     @lru_cache()
@@ -1776,6 +1966,200 @@ class QA_DataStruct_Crypto_Asset_min(_quotation_base):
     @lru_cache()
     def min60(self):
         return self.resample('60min')
+
+    '''
+    ########################################################################################################
+    计算统计相关的，重载方法 level=2
+    '''
+
+    @property
+    @lru_cache()
+    def max(self):
+        res = self.price.groupby(level=2).apply(lambda x: x.max())
+        res.name = 'max'
+        return res
+
+    @property
+    @lru_cache()
+    def min(self):
+        res = self.price.groupby(level=2).apply(lambda x: x.min())
+        res.name = 'min'
+        return res
+
+    @property
+    @lru_cache()
+    def mean(self):
+        res = self.price.groupby(level=2).apply(lambda x: x.mean())
+        res.name = 'mean'
+        return res
+
+    # 一阶差分序列
+
+    @property
+    @lru_cache()
+    def price_diff(self):
+        '返回DataStruct.price的一阶差分'
+        res = self.price.groupby(level=2).apply(lambda x: x.diff(1))
+        res.name = 'price_diff'
+        return res
+
+    # 样本方差(无偏估计) population variance 重载方法 level=2
+
+    @property
+    @lru_cache()
+    def pvariance(self):
+        '返回DataStruct.price的方差 variance'
+        res = self.price.groupby(level=2
+                                 ).apply(lambda x: statistics.pvariance(x))
+        res.name = 'pvariance'
+        return res
+
+    # 方差
+    @property
+    @lru_cache()
+    def variance(self):
+        '返回DataStruct.price的方差 variance' 
+        res = self.price.groupby(level=2
+                                 ).apply(lambda x: statistics.variance(x))
+        res.name = 'variance'
+        return res
+
+    @property
+    @lru_cache()
+    def stdev(self):
+        '返回DataStruct.price的样本标准差 Sample standard deviation'
+        res = self.price.groupby(level=2).apply(lambda x: statistics.stdev(x))
+        res.name = 'stdev'
+        return res
+
+    # 总体标准差 重载方法 level=2
+
+    @property
+    @lru_cache()
+    def pstdev(self):
+        '返回DataStruct.price的总体标准差 Population standard deviation'
+        res = self.price.groupby(level=2).apply(lambda x: statistics.pstdev(x))
+        res.name = 'pstdev'
+        return res
+
+    # 调和平均数 重载方法 level=2
+    @property
+    @lru_cache()
+    def mean_harmonic(self):
+        '返回DataStruct.price的调和平均数'
+        res = self.price.groupby(level=2
+                                 ).apply(lambda x: statistics.harmonic_mean(x))
+        res.name = 'mean_harmonic'
+        return res
+
+    # 众数 重载方法 level=2
+    @property
+    @lru_cache()
+    def mode(self):
+        '返回DataStruct.price的众数'
+        try:
+            res = self.price.groupby(level=2
+                                     ).apply(lambda x: statistics.mode(x))
+            res.name = 'mode'
+            return res
+        except:
+            return None
+
+    # 振幅
+    @property
+    @lru_cache()
+    def amplitude(self):
+        '返回DataStruct.price的百分比变化'
+        res = self.price.groupby(
+            level=2
+        ).apply(lambda x: (x.max() - x.min()) / x.min())
+        res.name = 'amplitude'
+        return res
+
+    # 偏度 Skewness
+
+    @property
+    @lru_cache()
+    def skew(self):
+        '返回DataStruct.price的偏度'
+        res = self.price.groupby(level=2).apply(lambda x: x.skew())
+        res.name = 'skew'
+        return res
+
+    # 峰度Kurtosis
+
+    @property
+    @lru_cache()
+    def kurt(self):
+        '返回DataStruct.price的峰度'
+        res = self.price.groupby(level=2).apply(lambda x: x.kurt())
+        res.name = 'kurt'
+        return res
+
+    # 百分数变化
+
+    @property
+    @lru_cache()
+    def pct_change(self):
+        '返回DataStruct.price的百分比变化'
+        res = self.price.groupby(level=2).apply(lambda x: x.pct_change())
+        res.name = 'pct_change'
+        return res
+
+    @lru_cache()
+    def close_pct_change(self):
+        '返回DataStruct.close的百分比变化'
+        res = self.close.groupby(level=2).apply(lambda x: x.pct_change())
+        res.name = 'close_pct_change'
+        return res
+
+    # 平均绝对偏差
+    @property
+    @lru_cache()
+    def mad(self):
+        '平均绝对偏差'
+        res = self.price.groupby(level=2).apply(lambda x: x.mad())
+        res.name = 'mad'
+        return res
+
+    @property
+    def security_gen(self):
+        '返回一个基于代码的迭代器'
+        for item in self.index.levels[2]:
+            yield self.new(
+                self.data.xs(item,
+                             level=2,
+                             drop_level=False),
+                dtype=self.type,
+                if_fq=self.if_fq
+            )
+
+    @property
+    @lru_cache()
+    def code(self):
+        '返回结构体中的代码 重载方法'
+        return self.index.levels[2]
+
+    def add_func(self, func, *arg, **kwargs):
+        """QADATASTRUCT的指标/函数apply入口
+
+        Arguments:
+            func {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
+        return self.groupby(['market', 'code'], sort=False).apply(func, *arg, **kwargs)
+
+    def add_funcx(self, func, *arg, **kwargs):
+        """QADATASTRUCT的指标/函数apply入口
+
+        add_funcx 和add_func 的区别是:
+
+        add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
+        """
+
+        return self.groupby(level=2, sort=False).apply(lambda x: func(x.reset_index(1), *arg, **kwargs))
 
     def __repr__(self):
         return '< QA_DataStruct_Crypto_Asset_min with {} securities >'.format(

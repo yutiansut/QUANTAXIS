@@ -409,7 +409,7 @@ def QA_SU_save_huobi_1hour(fetch_range='all'):
     )
 
 
-def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
+def QA_SU_save_huobi_symbol(market="huobi", client=DATABASE,):
     """
     保存火币交易对信息
     """

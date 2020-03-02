@@ -838,6 +838,9 @@ class _quotation_base():
         elif by == self.index.names[0]:
             by = None
             level = 0
+        elif (len(self.index.names) > 1) and (by == self.index.names[2]):
+            by = None
+            level = 2
         return self.data.groupby(
             by=by,
             axis=axis,

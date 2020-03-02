@@ -62,6 +62,7 @@ from QUANTAXIS.QAFetch.QAhuobi_realtime import (
     format_huobi_data_fields,
     Huobi2QA_FREQUENCY_DICT,
     CandlestickInterval,
+    FREQUENCY_SHIFTING,
 )
 
 # from QUANTAXIS.QAUtil.QAcrypto import TIMEOUT, ILOVECHINA
