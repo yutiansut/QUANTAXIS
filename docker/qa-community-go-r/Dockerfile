@@ -27,7 +27,7 @@ RUN pip install qgrid && pip install "dask[complete]"
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
-    RUST_VERSION=1.39.0
+    RUST_VERSION=1.43.0
 
 ARG CMAKE_VERSION=3.12.0
 WORKDIR /tmp
