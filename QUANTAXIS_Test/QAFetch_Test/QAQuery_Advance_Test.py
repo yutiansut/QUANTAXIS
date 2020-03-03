@@ -577,24 +577,24 @@ class Test_Query_Advance(unittest.TestCase):
                                                             # https://stackoverflow.com/questions/12163875/python-left-shift-sign-issue
                                                                                                         # #
                                                                                                                                                     # https://stackoverflow.com/questions/5832982/how-to-get-the-logical-right-binary-shift-in-python/5833119#5833119
-                                                                                                                                                    # month
-                                                                                                                                                    # =
-                                                                                                                                                    # (date_raw
-                                                                                                                                                    # <<
-                                                                                                                                                    # (12))
-                                                                                                                                                    # >>
-                                                                                                                                                    # (64
-                                                                                                                                                    # -
-                                                                                                                                                    # 4)
-                                                                                                                                                    # #
-                                                                                                                                                    # 前12位表示年
+                                                                                                                                                                                                # month
+                                                                                                                                                                                                                                            # =
+                                                                                                                                                                                                                                                                                        # (date_raw
+                                                                                                                                                                                                                                                                                        # <<
+                                                                                                                                                                                                                                                                                        # (12))
+                                                                                                                                                                                                                                                                                        # >>
+                                                                                                                                                                                                                                                                                        # (64
+                                                                                                                                                                                                                                                                                        # -
+                                                                                                                                                                                                                                                                                        # 4)
+                                                                                                                                                                                                                                                                                        # #
+                                                                                                                                                                                                                                                                                        # 前12位表示年
                 #print('%#x' % (date_raw << (12)))
                                                             #print('%#x' %
                                                                                                         #(date_raw
                                                                                                                                                     #<<
-                                                                                                                                                    #(12+4*100)))
-                                                                                                                                                    #😱奇怪的shift
-                                                                                                                                                    #操作，0x7c8b80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+                                                                                                                                                                                                #(12+4*100)))
+                                                                                                                                                                                                                                            #😱奇怪的shift
+                                                                                                                                                                                                                                                                                        #操作，0x7c8b80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
                 # python 的数据类型 长度无限大 ？
 
                 month = (date_raw & (0x000F0000)) >> (32 - (12 + 4))
@@ -829,9 +829,15 @@ if __name__ == '__main__':
     codelist = ['BCHUSDT', 'BSVUSDT', 'BTCUSDT', 'EOSUSDT', 'ETHUSDT', 'ETCUSDT', 'DASHUSDT', 'LTCUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT']
     data1 = QA_fetch_crypto_asset_min_adv(['binance','huobi'],
             symbol=codelist + FIRST_PRIORITY,
-            start='2019-11-21',
+            start='2020-02-01',
             end='2020-05-28 18:10:00',
             frequence='60min')
+    data2 = QA_fetch_crypto_asset_min(['huobi'],
+            symbol=['btcusdt'],
+            start='2020-02-01',
+            end='2020-05-28 18:10:00',
+            frequence='60min',
+            format='pd')
     #codelist = QA.QA_fetch_stock_block_adv().get_block('沪深300').code
     print(codelist[0:30])
 
@@ -846,14 +852,15 @@ if __name__ == '__main__':
     #    end='2020-05-28 18:10:00',
     #    frequence='60min'
     #)
-    data_4h = QA.QA_DataStruct_Crypto_Asset_min(data1.resample('4h'))
+    data_4h = data1
+    #QA.QA_DataStruct_Crypto_Asset_min(data1.resample('4h'))
 
     import numpy as np
     import talib
     import pandas as pd
     import scipy.signal as signal
     import matplotlib.pyplot as plt
-    from QUANTAXIS.QAIndicator.talib_indicators_np import *
+    from QUANTAXIS.QAAnalysis.QAAnalysis_kline import QA_Timekline
 
     def ifup20_TA(data):
         # TA-lib计算
@@ -861,21 +868,94 @@ if __name__ == '__main__':
 
     # 写个自定义指标 MAX_FACTOR TA-lib计算
     def ifmaxfactor_greater_TA(data):
-        RSI = TA_RSI(data.close)
-        CCI = TA_CCI(data.high, data.low, data.close)
-        KDJ = TA_KDJ(data.high, data.low, data.close)    
+        RSI = QA.TA_RSI(data.close, timeperiod=12)
+        CCI = QA.TA_CCI(data.high, data.low, data.close)
+        KDJ = QA.TA_KDJ(data.high, data.low, data.close)    
         MAX_FACTOR = CCI[:,0] + (RSI[:,0] - 50) * 4 + (KDJ[:,2] - 50) * 4
         MAX_FACTOR_delta = np.r_[np.nan, np.diff(MAX_FACTOR)]
         REGRESSION_BASELINE = (RSI[:,0] - 50) * 4
         return pd.DataFrame(((MAX_FACTOR + MAX_FACTOR_delta) - (REGRESSION_BASELINE - 133)), index=data.index).dropna() > 0
 
+    def dual_cross(data):
+        RSI = QA.TA_RSI(data.close, timeperiod=12)
+        CCI = QA.TA_CCI(data.high, data.low, data.close)
+        KDJ = QA.TA_KDJ(data.high, data.low, data.close)
+    
+        CCI_CROSS_JX = CROSS_STATUS(CCI[:,0], (RSI[:,0] - 50) * 4)
+        KDJ_J_CROSS_JX = CROSS_STATUS(KDJ[:,2], RSI[:,0])
+        KDJ_J_CROSS_JX_PLUS = CROSS_STATUS(KDJ[:,2] + KDJ[:,3], RSI[:,0])
+        DUAL_CROSS_JX = CROSS_STATUS(CCI_CROSS_JX * (CCI_CROSS_JX + KDJ_J_CROSS_JX + KDJ_J_CROSS_JX_PLUS), 1)
+    
+        CCI_CROSS_SX = CROSS_STATUS((RSI[:,0] - 50) * 4, CCI[:,0])
+        KDJ_J_CROSS_SX = CROSS_STATUS(RSI[:,0], KDJ[:,2])
+        KDJ_J_CROSS_SX_PLUS = CROSS_STATUS(RSI[:,0], KDJ[:,2] + KDJ[:,3])
+        DUAL_CROSS_SX = CROSS_STATUS(CCI_CROSS_SX * (CCI_CROSS_SX + KDJ_J_CROSS_SX + KDJ_J_CROSS_SX_PLUS), 1)
+    
+        DUAL_CROSS = pd.DataFrame(columns=['DUAL_CROSS', 'DUAL_CROSS_JX', 'DUAL_CROSS_SX'], index=data.index)
+        DUAL_CROSS.loc[DUAL_CROSS_JX == 1, 'DUAL_CROSS'] = 1
+        DUAL_CROSS.loc[DUAL_CROSS_SX == 1, 'DUAL_CROSS'] = -1
+        DUAL_CROSS['DUAL_CROSS_JX'] = Timeline_Integral(DUAL_CROSS_JX)
+        DUAL_CROSS['DUAL_CROSS_SX'] = Timeline_Integral(DUAL_CROSS_SX)
+        return DUAL_CROSS
+
+    def ma30_cross(data):
+        MA5 = talib.MA(data.close, 5)
+        MA30 = talib.MA(data.close, 30)
+    
+        MA30_CROSS_JX = CROSS(MA5, MA30)
+        MA30_CROSS_JX_Integral = Timeline_Integral_with_cross_before(MA30_CROSS_JX)
+        MA30_CROSS_SX = CROSS(MA30, MA5)
+        MA30_CROSS_SX_Integral = Timeline_Integral_with_cross_before(MA30_CROSS_SX)
+    
+        MA30_CROSS = pd.DataFrame(columns=['MA30_CROSS', 'MA30_CROSS_JX', 'MA30_CROSS_SX', 'MA30_TP_CROSS_JX', 'MA30_TP_CROSS_SX'], index=data.index)
+        MA30_CROSS.loc[MA30_CROSS_JX == 1, 'MA30_CROSS'] = 1
+        MA30_CROSS.loc[MA30_CROSS_SX == 1, 'MA30_CROSS'] = -1
+        MA30_CROSS['MA30_CROSS_JX'] = Timeline_Integral_with_cross_before(MA30_CROSS_JX)
+        MA30_CROSS['MA30_CROSS_SX'] = Timeline_Integral_with_cross_before(MA30_CROSS_SX)
+    
+        # MA30 前29个是 NaN，处理会抛出 Warning，使用 [29:] 则不会计算 NaN，相应的 return_index+29
+        MA30_tp_min, MA30_tp_max = signal.argrelextrema(MA30.values[29:], np.less)[0] + 29, signal.argrelextrema(MA30.values[29:], np.greater)[0] + 29
+        MA30_TP_CROSS = pd.DataFrame(columns=['MA30_TP_CROSS_JX', 'MA30_TP_CROSS_SX'], index=data.index)
+        MA30_TP_CROSS['MA30_TP_CROSS_SX'] = MA30_TP_CROSS['MA30_TP_CROSS_JX'] = 0
+        MA30_TP_CROSS.iloc[MA30_tp_min, MA30_TP_CROSS.columns.get_loc('MA30_TP_CROSS_JX')] = 1
+        MA30_TP_CROSS.iloc[MA30_tp_max, MA30_TP_CROSS.columns.get_loc('MA30_TP_CROSS_SX')] = 1
+        MA30_CROSS['MA30_TP_CROSS_JX'] = Timeline_Integral_with_cross_before(MA30_TP_CROSS['MA30_TP_CROSS_JX'])
+        MA30_CROSS['MA30_TP_CROSS_SX'] = Timeline_Integral_with_cross_before(MA30_TP_CROSS['MA30_TP_CROSS_SX'])
+        return MA30_CROSS
+
+    def boll_cross(data):
+        BBANDS = QA.TA_BBANDS(data.close, timeperiod=20, nbdevup=2)
+
+        BOLL_CROSS_JX1 = CROSS(data.open, BBANDS[:,2])
+        BOLL_CROSS_JX2 = CROSS(data.close, BBANDS[:,2])
+        BOLL_CROSS_JX3 = CROSS(talib.MA(data.low, 2), BBANDS[:,2])
+        BOLL_CROSS_SX1 = CROSS(BBANDS[:,0], data.open)
+        BOLL_CROSS_SX2 = CROSS(BBANDS[:,0], data.close)
+        BOLL_CROSS_SX3 = CROSS(BBANDS[:,0], talib.MA(data.high, 2))
+
+        BOLL_CROSS = pd.DataFrame(columns=['BOLL_CROSS', 'BOLL_CROSS_JX', 'BOLL_CROSS_SX'], index=data.index)
+        BOLL_CROSS.loc[BOLL_CROSS_JX1 == 1, 'BOLL_CROSS'] = 1
+        BOLL_CROSS.loc[BOLL_CROSS_JX2 == 1, 'BOLL_CROSS'] = 1
+        BOLL_CROSS.loc[BOLL_CROSS_JX3 == 1, 'BOLL_CROSS'] = 1
+        BOLL_CROSS.loc[BOLL_CROSS_SX1 == 1, 'BOLL_CROSS'] = -1
+        BOLL_CROSS.loc[BOLL_CROSS_SX2 == 1, 'BOLL_CROSS'] = -1
+        BOLL_CROSS.loc[BOLL_CROSS_SX3 == 1, 'BOLL_CROSS'] = -1
+        BOLL_TP_CROSS = pd.DataFrame(columns=['BOLL_TP_CROSS_JX', 'BOLL_TP_CROSS_SX'], index=data.index)
+        BOLL_TP_CROSS['BOLL_TP_CROSS_SX'] = BOLL_TP_CROSS['BOLL_TP_CROSS_JX'] = 0
+        BOLL_TP_CROSS.loc[(BOLL_CROSS_JX1 | BOLL_CROSS_JX2 | BOLL_CROSS_JX3) == 1, 'BOLL_TP_CROSS_JX'] = 1
+        BOLL_TP_CROSS.loc[(BOLL_CROSS_SX1 | BOLL_CROSS_SX2 | BOLL_CROSS_SX3) == 1, 'BOLL_TP_CROSS_SX'] = 1
+
+        BOLL_CROSS['BOLL_CROSS_JX'] = QA.Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_JX'])
+        BOLL_CROSS['BOLL_CROSS_SX'] = QA.Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_SX'])
+        return BOLL_CROSS
+
     # apply到 QADataStruct上
 
     ind1 = data_4h.add_func(ifup20_TA)
-    #ind1.rename({0:'buy_ma20'}, inplace=True, axis=1)
-    #ind1.dropna().groupby(level=0).apply(lambda x:print(x.name, x.sum()))
     ind2 = data_4h.add_func(ifmaxfactor_greater_TA)
-    #ind2.rename({0:'buy_maxfactor'}, inplace=True, axis=1)
+    ind4 = data_4h.add_func(dual_cross)
+    DUAL_CROSS_count = ind4['DUAL_CROSS'].dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
+    print(DUAL_CROSS_count)
 
     # 对于指标 groupby 日期 求和
     ma20_jx_count = ind1.dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
@@ -929,12 +1009,32 @@ if __name__ == '__main__':
 
     # 画图看看
     hb10 = data_4h.select_code(['huobi'], ['btcusdt'])
+    hb10_ma30_cross = hb10.add_func(ma30_cross)
+    hb10_boll_cross = hb10.add_func(boll_cross)
+    hb10_boll_cross = hb10_boll_cross.reset_index([1,2])
+    hb10_ma20_cross = hb10.add_func(ifup20_TA).T
+    hb10_ma20_cross.columns = [x[1] for x in hb10_ma20_cross.columns]
+    hb10_ma20_cross = hb10_ma20_cross.reset_index([1,2])
+    #print(hb10_boll_cross)
+    #print(hb10_ma20_cross)
+    DUAL_CROSS_ACTION = ((hb10_boll_cross['BOLL_CROSS_JX'] > 0) & (hb10_ma20_cross['btcusdt'] == True) & (hb10_boll_cross['BOLL_CROSS_JX'] < hb10_boll_cross['BOLL_CROSS_SX']))
+    #DUAL_CROSS_ACTION = ((DUAL_CROSS_count > 0) &
+    #(hb10_boll_cross['BOLL_CROSS_JX'] > 1))
+    DUAL_CROSS_ACTION = DUAL_CROSS_ACTION[DUAL_CROSS_ACTION.apply(lambda x: x == True)]  # 去掉 False
+    print(DUAL_CROSS_ACTION)
+    #DUAL_CROSS_SX = (DUAL_CROSS_count < 0) & (hb10_ma30_cross['MA30_CROSS_SX']
+    #< hb10_ma30_cross['MA30_CROSS_JX']) & (hb10_ma20_cross['btcusdt'] ==
+    #False)
+    #DUAL_CROSS_SX = DUAL_CROSS_SX[DUAL_CROSS_SX.apply(lambda x: x == True)] #
+    #去掉 False
     hb10.data = hb10.data.reset_index([1,2], drop=False)
-    ma20_jx_count = ma20_jx_count.assign(DUAL_CROSS_JX_MARK=None)
-    ma20_jx_count.loc[BUY_ACTION_DUAL.index, 'DUAL_CROSS_JX_MARK'] = hb10.data.loc[BUY_ACTION_DUAL.index].close
-    ma20_jx_count = ma20_jx_count.assign(DUAL_CROSS_SX_MARK=None)
-    ma20_jx_count.loc[SELL_ACTION_DUAL.index, 'DUAL_CROSS_SX_MARK'] = hb10.data.loc[SELL_ACTION_DUAL.index].close
-
+    hb10.data = hb10.data.assign(DUAL_CROSS_JX_MARK=None)
+    hb10.data.loc[DUAL_CROSS_ACTION.index, 'DUAL_CROSS_JX_MARK'] = hb10.data.loc[DUAL_CROSS_ACTION.index].close
+    hb10.data = hb10.data.assign(DUAL_CROSS_SX_MARK=None)
+    #hb10.data.loc[DUAL_CROSS_SX.index.get_level_values(level=0),
+    #'DUAL_CROSS_SX_MARK'] =
+    #hb10.data.loc[DUAL_CROSS_SX.index.get_level_values(level=0)].close
+    
     # 打印出买入点信号日期
     print(BUY_ACTION_DUAL.index)
     print('sell')
@@ -944,8 +1044,18 @@ if __name__ == '__main__':
     fig = plt.figure()  
     ax1 = fig.add_subplot(111)  
 
-    ax1.plot(hb10.data.index.get_level_values(level=0), hb10.data.close.values)
+    hb10_boll = TA_BBANDS(hb10.data.close, timeperiod=20, nbdevup=2)
+    print(data2.close)
+    print(hb10.data.close)
+    hb10_kline = QA_Timekline(data2)
+    #print(hb10_kline.indices['BOLL_UB'])
+    #print(hb10_boll[:,0])
+    ax1.plot(hb10.data.index.get_level_values(level=0), hb10.data.close.values,)
+    ax1.plot(hb10.data.index.get_level_values(level=0), hb10_boll[:,0], lw=1)
+    ax1.plot(hb10.data.index.get_level_values(level=0), hb10_boll[:,1], lw=1)
+    ax1.plot(hb10.data.index.get_level_values(level=0), hb10_boll[:,2], lw=1)
     #ax1.plot(MAX_FACTOR_jx_count[0])
-    ax1.plot(ma20_jx_count['DUAL_CROSS_JX_MARK'],'ro')
-    ax1.plot(ma20_jx_count['DUAL_CROSS_SX_MARK'],'bx')
+    ax1.plot(hb10.data['DUAL_CROSS_JX_MARK'],'ro')
+    #ax1.plot(hb10.data['DUAL_CROSS_SX_MARK'],'bx')
+    hb10_kline.plot()
     plt.show()
