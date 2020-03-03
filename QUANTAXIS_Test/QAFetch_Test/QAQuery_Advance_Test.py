@@ -572,16 +572,29 @@ class Test_Query_Advance(unittest.TestCase):
                 year = date_raw >> (32 - 12) #前12位表示年
                 #print('%#x' % (date_raw >> (32-12)) )
                                                             #print(year)
-                                                            #
+                                                                                                        #
                 # #
                                                             # https://stackoverflow.com/questions/12163875/python-left-shift-sign-issue
-                                                            # #
-                                                            # https://stackoverflow.com/questions/5832982/how-to-get-the-logical-right-binary-shift-in-python/5833119#5833119
-                                                            # month = (date_raw << (12)) >> (64 - 4) # 前12位表示年
+                                                                                                        # #
+                                                                                                                                                    # https://stackoverflow.com/questions/5832982/how-to-get-the-logical-right-binary-shift-in-python/5833119#5833119
+                                                                                                                                                    # month
+                                                                                                                                                    # =
+                                                                                                                                                    # (date_raw
+                                                                                                                                                    # <<
+                                                                                                                                                    # (12))
+                                                                                                                                                    # >>
+                                                                                                                                                    # (64
+                                                                                                                                                    # -
+                                                                                                                                                    # 4)
+                                                                                                                                                    # #
+                                                                                                                                                    # 前12位表示年
                 #print('%#x' % (date_raw << (12)))
-                                                            #print('%#x' % (date_raw << (12+4*100)))
-                                                            #😱奇怪的shift
-                                                            #操作，0x7c8b80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+                                                            #print('%#x' %
+                                                                                                        #(date_raw
+                                                                                                                                                    #<<
+                                                                                                                                                    #(12+4*100)))
+                                                                                                                                                    #😱奇怪的shift
+                                                                                                                                                    #操作，0x7c8b80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
                 # python 的数据类型 长度无限大 ？
 
                 month = (date_raw & (0x000F0000)) >> (32 - (12 + 4))
@@ -814,8 +827,7 @@ if __name__ == '__main__':
     import QUANTAXIS as QA
     from QUANTAXIS.QAFetch.QAhuobi import FIRST_PRIORITY
     codelist = ['BCHUSDT', 'BSVUSDT', 'BTCUSDT', 'EOSUSDT', 'ETHUSDT', 'ETCUSDT', 'DASHUSDT', 'LTCUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT']
-    data1 = QA_fetch_crypto_asset_min_adv(
-            ['binance','huobi'],
+    data1 = QA_fetch_crypto_asset_min_adv(['binance','huobi'],
             symbol=codelist + FIRST_PRIORITY,
             start='2019-11-21',
             end='2020-05-28 18:10:00',
@@ -824,7 +836,7 @@ if __name__ == '__main__':
     print(codelist[0:30])
 
     # 获取全市场数据 QADataStruct格式
-    #data1 = QA.QA_fetch_stock_day_adv(codelist, '2018-11-01','2020-05-29')            
+    #data1 = QA.QA_fetch_stock_day_adv(codelist, '2018-11-01','2020-05-29')
 
     #print(data1.data)
     #data1 = QA.QA_fetch_crypto_asset_min_adv(
@@ -897,14 +909,14 @@ if __name__ == '__main__':
     MAX_FACTOR_jx_count = MAX_FACTOR_jx_count.assign(MAX_FACTOR_TP_CROSS_SX=0)
     MAX_FACTOR_jx_count.iloc[MAX_FACTOR_tp_max, MAX_FACTOR_jx_count.columns.get_loc('MAX_FACTOR_TP_CROSS_SX')] = 1
 
-    ma20_jx_count['MA20_TP_CROSS_JX'] = Timeline_Integral_with_cross_before(ma20_jx_count['MA20_TP_CROSS_JX'])
-    ma20_jx_count['MA20_TP_CROSS_SX'] = Timeline_Integral_with_cross_before(ma20_jx_count['MA20_TP_CROSS_SX'])
+    ma20_jx_count['MA20_TP_CROSS_JX'] = QA.Timeline_Integral_with_cross_before(ma20_jx_count['MA20_TP_CROSS_JX'])
+    ma20_jx_count['MA20_TP_CROSS_SX'] = QA.Timeline_Integral_with_cross_before(ma20_jx_count['MA20_TP_CROSS_SX'])
 
     MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'] = Timeline_Integral_with_cross_before(MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'])
     MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'] = Timeline_Integral_with_cross_before(MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'])
 
     #照例，上面的自创指标出现 双金叉，就是买入点信号
-    BUY_ACTION = (MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'] < MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'])
+    BUY_ACTION = (MAX_FACTOR_jx_count[0] < 0.382) & (MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'] < MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'])
     SELL_ACTION = (MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'] < MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'])
     BUY_ACTION2 = (ma20_jx_count['MA20_TP_CROSS_JX'] < ma20_jx_count['MA20_TP_CROSS_SX'])
     SELL_ACTION2 = (ma20_jx_count['MA20_TP_CROSS_SX'] < ma20_jx_count['MA20_TP_CROSS_JX'])
