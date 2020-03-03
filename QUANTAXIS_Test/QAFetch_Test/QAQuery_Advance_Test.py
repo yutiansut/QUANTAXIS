@@ -834,7 +834,7 @@ if __name__ == '__main__':
     #    end='2020-05-28 18:10:00',
     #    frequence='60min'
     #)
-    data1.data = data1.resample('4h')
+    data_4h = QA.QA_DataStruct_Crypto_Asset_min(data1.resample('4h'))
 
     import numpy as np
     import talib
@@ -859,10 +859,10 @@ if __name__ == '__main__':
 
     # apply到 QADataStruct上
 
-    ind1 = data1.add_func(ifup20_TA)
+    ind1 = data_4h.add_func(ifup20_TA)
     #ind1.rename({0:'buy_ma20'}, inplace=True, axis=1)
     #ind1.dropna().groupby(level=0).apply(lambda x:print(x.name, x.sum()))
-    ind2 = data1.add_func(ifmaxfactor_greater_TA)
+    ind2 = data_4h.add_func(ifmaxfactor_greater_TA)
     #ind2.rename({0:'buy_maxfactor'}, inplace=True, axis=1)
 
     # 对于指标 groupby 日期 求和
@@ -897,19 +897,6 @@ if __name__ == '__main__':
     MAX_FACTOR_jx_count = MAX_FACTOR_jx_count.assign(MAX_FACTOR_TP_CROSS_SX=0)
     MAX_FACTOR_jx_count.iloc[MAX_FACTOR_tp_max, MAX_FACTOR_jx_count.columns.get_loc('MAX_FACTOR_TP_CROSS_SX')] = 1
 
-    # 这个函数我一直没法不使用For循环来实现，求天神指导
-    def Timeline_Integral_with_cross_before(Tm,):
-        """
-        计算时域金叉/死叉信号的累积卷积和(死叉不清零)
-        """
-        T = [Tm[0]]
-        for i in range(1,len(Tm)):
-            if (Tm[i] == 0):
-                T.append(T[i - 1] + 1)
-            else:
-                T.append(0)
-        return np.array(T)
-
     ma20_jx_count['MA20_TP_CROSS_JX'] = Timeline_Integral_with_cross_before(ma20_jx_count['MA20_TP_CROSS_JX'])
     ma20_jx_count['MA20_TP_CROSS_SX'] = Timeline_Integral_with_cross_before(ma20_jx_count['MA20_TP_CROSS_SX'])
 
@@ -927,10 +914,14 @@ if __name__ == '__main__':
     #BUY_ACTION_DUAL = BUY_ACTION2
     BUY_ACTION_DUAL = BUY_ACTION_DUAL[BUY_ACTION_DUAL.apply(lambda x: x == True)]
     SELL_ACTION_DUAL = SELL_ACTION_DUAL[SELL_ACTION_DUAL.apply(lambda x: x == True)]
+
+    # 画图看看
+    hb10 = data_4h.select_code(['huobi'], ['btcusdt'])
+    hb10.data = hb10.data.reset_index([1,2], drop=False)
     ma20_jx_count = ma20_jx_count.assign(DUAL_CROSS_JX_MARK=None)
-    ma20_jx_count.loc[BUY_ACTION_DUAL.index, 'DUAL_CROSS_JX_MARK'] = ma20_jx_count.loc[BUY_ACTION_DUAL.index][0]
+    ma20_jx_count.loc[BUY_ACTION_DUAL.index, 'DUAL_CROSS_JX_MARK'] = hb10.data.loc[BUY_ACTION_DUAL.index].close
     ma20_jx_count = ma20_jx_count.assign(DUAL_CROSS_SX_MARK=None)
-    ma20_jx_count.loc[SELL_ACTION_DUAL.index, 'DUAL_CROSS_SX_MARK'] = ma20_jx_count.loc[SELL_ACTION_DUAL.index][0]
+    ma20_jx_count.loc[SELL_ACTION_DUAL.index, 'DUAL_CROSS_SX_MARK'] = hb10.data.loc[SELL_ACTION_DUAL.index].close
 
     # 打印出买入点信号日期
     print(BUY_ACTION_DUAL.index)
@@ -940,8 +931,9 @@ if __name__ == '__main__':
     # 画图看看
     fig = plt.figure()  
     ax1 = fig.add_subplot(111)  
-    ax1.plot(ma20_jx_count[0])
-    ax1.plot(MAX_FACTOR_jx_count[0])
+
+    ax1.plot(hb10.data.index.get_level_values(level=0), hb10.data.close.values)
+    #ax1.plot(MAX_FACTOR_jx_count[0])
     ax1.plot(ma20_jx_count['DUAL_CROSS_JX_MARK'],'ro')
     ax1.plot(ma20_jx_count['DUAL_CROSS_SX_MARK'],'bx')
     plt.show()

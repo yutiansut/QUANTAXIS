@@ -2140,6 +2140,9 @@ class QA_DataStruct_Crypto_Asset_min(_quotation_base):
         '返回结构体中的代码 重载方法'
         return self.index.levels[2]
 
+    def reset_index(self):
+        return self.data.reset_index([1, 2])
+
     def add_func(self, func, *arg, **kwargs):
         """QADATASTRUCT的指标/函数apply入口
 
@@ -2159,6 +2162,31 @@ class QA_DataStruct_Crypto_Asset_min(_quotation_base):
         add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
         """
         return self.groupby(['market', 'code'], sort=False).apply(lambda x:func(x.reset_index([1,2]), *arg, **kwargs))
+
+    def select_code(self, market, code):
+        """
+        选择股票
+
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
+        """
+
+        def _select_code(market, code):
+            return self.data.loc[(slice(None), market, code), :]
+
+        try:
+            return self.new(_select_code(market, code), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
 
     def __repr__(self):
         return '< QA_DataStruct_Crypto_Asset_min with {} securities >'.format(
