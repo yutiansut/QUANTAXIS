@@ -2158,8 +2158,7 @@ class QA_DataStruct_Crypto_Asset_min(_quotation_base):
 
         add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
         """
-
-        return self.groupby(level=2, sort=False).apply(lambda x: func(x.reset_index(1), *arg, **kwargs))
+        return self.groupby(['market', 'code'], sort=False).apply(lambda x:func(x.reset_index([1,2]), *arg, **kwargs))
 
     def __repr__(self):
         return '< QA_DataStruct_Crypto_Asset_min with {} securities >'.format(

@@ -3,16 +3,15 @@
 # The MIT License (MIT)
 # Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
-# Author:           604829050@qq.com
-# Date:             2018-05-11
-# Description:      Unit test for the fetch data
-
+# Author: 604829050@qq.com
+# Date: 2018-05-11
+# Description: Unit test for the fetch data
 import unittest
 
 import fnmatch
 import os
 import struct
-from QUANTAXIS import *;
+from QUANTAXIS import *
 import sqlite3
 
 import ctypes
@@ -444,8 +443,9 @@ class Test_Query_Advance(unittest.TestCase):
         #time.sleep(1)
         file_size = os.path.getsize(day_file_path)
         assert((file_size % 40) == 0)
-        #print(("%s 文件大小 %d Bytes"%(day_file_path, file_size)) + ("40Bytes/recrod, found %d records!"%(file_size / 40)))
-        item_len = file_size // 40;
+        #print(("%s 文件大小 %d Bytes"%(day_file_path, file_size)) +
+        #("40Bytes/recrod, found %d records!"%(file_size / 40)))
+        item_len = file_size // 40
 
         db_file_save_file = db_file_save_dir
         db_file_save_file = db_file_save_file + "/" + day_file[0:6] + '.sqlite_db'
@@ -462,8 +462,7 @@ class Test_Query_Advance(unittest.TestCase):
             for i in range(item_len):
                 read_data_section = f.read(40)
                 values = struct.unpack("<LLLLLLL",read_data_section[0:28])
-                c.execute("INSERT INTO stocks(date,open_price,high_price,low_price,close_price,volumn,amount)  VALUES (%d,%f,%f,%f,%f,%d,%d)"
-                          %(values[0], values[1]/1000, values[2]/1000, values[3]/1000, values[4]/1000,values[5],values[6]))
+                c.execute("INSERT INTO stocks(date,open_price,high_price,low_price,close_price,volumn,amount)  VALUES (%d,%f,%f,%f,%f,%d,%d)" % (values[0], values[1] / 1000, values[2] / 1000, values[3] / 1000, values[4] / 1000,values[5],values[6]))
             f.closed
         conn.commit()
         c.close()
@@ -543,10 +542,11 @@ class Test_Query_Advance(unittest.TestCase):
         LTG As Long '流通股- 单位是万股
         Memo As Long '备注
         '''
-        assert ((file_size % (9*4)) == 0)
+        assert ((file_size % (9 * 4)) == 0)
 
-        #print(("%s 文件大小 %d Bytes"%(weight_file_path, file_size)) + ("40Bytes/recrod, found %d records!"%(file_size / (9*4))))
-        item_len = file_size // (9*4);
+        #print(("%s 文件大小 %d Bytes"%(weight_file_path, file_size)) +
+        #("40Bytes/recrod, found %d records!"%(file_size / (9*4))))
+        item_len = file_size // (9 * 4)
 
 
         db_file_save_file = db_file_save_dir
@@ -556,36 +556,38 @@ class Test_Query_Advance(unittest.TestCase):
         c = conn.cursor()
 
         c.execute('''DROP TABLE IF EXISTS stocks_weight''')
-        c.execute(
-            '''CREATE TABLE stocks_weight (date int, shares_dividend real, shares_rationed real, shares_rationed_price real, cash_bonus real, transferOfstock real, totalStockIssue int,outstandingShares int, memo int )''')
+        c.execute('''CREATE TABLE stocks_weight (date int, shares_dividend real, shares_rationed real, shares_rationed_price real, cash_bonus real, transferOfstock real, totalStockIssue int,outstandingShares int, memo int )''')
 
 
         with open(file=weight_file_path, mode='rb') as f:
         #     # 读取每条记录， 然后写到 mysql lite 数据库中
             for i in range(item_len):
-                read_data_section = f.read((9*4))
+                read_data_section = f.read((9 * 4))
                 values = struct.unpack('<LLLLLLLLL', read_data_section)
 
                 date_raw = values[0]
                 #print(type(date_raw))
                 #print('%#x' % date_raw)
 
-                year = date_raw >> (32-12) #前12位表示年
+                year = date_raw >> (32 - 12) #前12位表示年
                 #print('%#x' % (date_raw >> (32-12)) )
-                #print(year)
-                #
-                # # https://stackoverflow.com/questions/12163875/python-left-shift-sign-issue
-                # # https://stackoverflow.com/questions/5832982/how-to-get-the-logical-right-binary-shift-in-python/5833119#5833119
-                # month = (date_raw << (12)) >> (64 - 4)  # 前12位表示年
+                                                            #print(year)
+                                                            #
+                # #
+                                                            # https://stackoverflow.com/questions/12163875/python-left-shift-sign-issue
+                                                            # #
+                                                            # https://stackoverflow.com/questions/5832982/how-to-get-the-logical-right-binary-shift-in-python/5833119#5833119
+                                                            # month = (date_raw << (12)) >> (64 - 4) # 前12位表示年
                 #print('%#x' % (date_raw << (12)))
-                #print('%#x' % (date_raw << (12+4*100)))
-                #😱奇怪的shift 操作，0x7c8b80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+                                                            #print('%#x' % (date_raw << (12+4*100)))
+                                                            #😱奇怪的shift
+                                                            #操作，0x7c8b80000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
                 # python 的数据类型 长度无限大 ？
 
-                month = (date_raw & (0x000F0000)) >> (32 - (12+4))
+                month = (date_raw & (0x000F0000)) >> (32 - (12 + 4))
                 #print(month)
 
-                day = (date_raw & (0x0000F800)) >> (32 - (12+4+5))
+                day = (date_raw & (0x0000F800)) >> (32 - (12 + 4 + 5))
                 #print(day)
                 #print('%04d-%02d-%02d'%(year, month,day))
 
@@ -615,20 +617,21 @@ class Test_Query_Advance(unittest.TestCase):
                 memo = values[8]
                 #print('备注%d' % memo)
 
-                day_number = year*10000 + month*100 + day
+                day_number = year * 10000 + month * 100 + day
 
-                c.execute(
-                    "INSERT INTO stocks_weight(date,shares_dividend,shares_rationed,shares_rationed_price,cash_bonus,transferOfstock,totalStockIssue,outstandingShares,memo)  "
-                    " VALUES (%d,%f,%f,%f,%f,%f,%d,%d,%d)"
-                    % (day_number,shares_dividend,shares_rationed,shares_rationed_price,cash_bonus,transferOfstock,totalStockIssue,outstandingShares,memo ))
+                c.execute("INSERT INTO stocks_weight(date,shares_dividend,shares_rationed,shares_rationed_price,cash_bonus,transferOfstock,totalStockIssue,outstandingShares,memo)  "
+                    " VALUES (%d,%f,%f,%f,%f,%f,%d,%d,%d)" % (day_number,shares_dividend,shares_rationed,shares_rationed_price,cash_bonus,transferOfstock,totalStockIssue,outstandingShares,memo))
 
                 #流通股
                 #备注
         #         read_data_section = f.read(40)
         #         values = struct.unpack("<LLLLLLL", read_data_section[0:28])
         #         c.execute(
-        #             "INSERT INTO stocks(date,open_price,high_price,low_price,close_price,volumn,amount)  VALUES (%d,%f,%f,%f,%f,%d,%d)"
-        #             % (values[0], values[1] / 1000, values[2] / 1000, values[3] / 1000, values[4] / 1000, values[5],
+        #             "INSERT INTO
+        #             stocks(date,open_price,high_price,low_price,close_price,volumn,amount)
+        #             VALUES (%d,%f,%f,%f,%f,%d,%d)"
+        #             % (values[0], values[1] / 1000, values[2] / 1000,
+        #             values[3] / 1000, values[4] / 1000, values[5],
         #                values[6]))
             f.closed
         conn.commit()
@@ -672,7 +675,8 @@ class Test_Query_Advance(unittest.TestCase):
                 fullPathFileName = self.strQianLong_SHASE_weight_dir + weight_file
                 self.parse_weight_file_to_mysql_lite_db(fullPathFileName, path_for_save_data, weight_file)
 
-                #self.parse_weight_file_to_mysql_lite_db(self.strQianLong_SHASE_weight_dir+'600000.wgt', path_for_save_data, '600000.wgt')
+                #self.parse_weight_file_to_mysql_lite_db(self.strQianLong_SHASE_weight_dir+'600000.wgt',
+                #path_for_save_data, '600000.wgt')
 
                 iCount = iCount + 1
         print("\n😇读取  上海证券交易所 日线数据完成")
@@ -695,7 +699,8 @@ class Test_Query_Advance(unittest.TestCase):
 
 
     def test_QA_fetch_stock_min_adv(self):
-        # dataStruct = QA_fetch_stock_min_adv(start='2018-05-28 00:00:00',code = '300439')
+        # dataStruct = QA_fetch_stock_min_adv(start='2018-05-28 00:00:00',code
+        # = '300439')
         # print("获取1分钟数据")
         # print(dataStruct)
         # #dataStruct.show()
@@ -739,3 +744,204 @@ class Test_Query_Advance(unittest.TestCase):
 
 '''
 '''
+if __name__ == '__main__':
+    # -*- coding: utf-8 -*-
+    #import numpy as np
+    #import pandas as pd
+    #import matplotlib as mpl
+    #import matplotlib.pyplot as plt
+    #import seaborn as sns
+    #import warnings; warnings.filterwarnings(action='once')
+    #import tushare as ts
+    #'''
+    #36 带波峰波谷标记的时序图 （Time Series with Peaks and Troughs Annotated）
+    #下面的时间序列绘制了所有峰值和低谷，并注释了所选特殊事件的发生。
+    #'''
+    #df = ts.get_hist_data('600006',start='2019-06-01')
+    #df = df.sort_index(0)
+    ##直接保存
+    #df.to_csv('600006.csv')
+    ## Import Data
+    #df = pd.read_csv('600006.csv')
+    ##('https://github.com/selva86/datasets/raw/master/AirPassengers.csv')
+    ##df.to_csv('AirPassengers.csv')
+    #print(df.info())
+    ##df['value']=df['close']
+    ## Get the Peaks and Troughs
+    #data = df['close'].values
+    #doublediff = np.diff(np.sign(np.diff(data)))
+    #peak_locations = np.where(doublediff == -2)[0] + 1
+
+    #doublediff2 = np.diff(np.sign(np.diff(-1*data)))
+    #trough_locations = np.where(doublediff2 == -2)[0] + 1
+
+    ## Draw Plot
+    #plt.figure(figsize=(16,10), dpi= 80)
+    #plt.plot('date', 'close', data=df, color='tab:blue', label='close')
+    #plt.scatter(df.date[peak_locations], df.close[peak_locations],
+    #marker=mpl.markers.CARETUPBASE, color='tab:green', s=100, label='Peaks')
+    #plt.scatter(df.date[trough_locations], df.close[trough_locations],
+    #marker=mpl.markers.CARETDOWNBASE, color='tab:red', s=100, label='Troughs')
+
+    ## Annotate
+    #for t, p in zip(trough_locations[1::5], peak_locations[::3]):
+    #    plt.text(df.date[p], df.close[p], df.date[p],
+    #    horizontalalignment='center', color='darkgreen')#df.close1[p]*(1+0.05)
+    #    plt.text(df.date[t], df.close[t], df.date[t],
+    #    horizontalalignment='center', color='darkred')#df.close1[t]*(1.0-0.05)
+
+    ## Decoration
+    ##plt.ylim(50,750)
+    #xtick_location = df.index.tolist()[::6]
+    #xtick_labels = df.date.tolist()[::6]
+    #plt.xticks(ticks=xtick_location, labels=xtick_labels, rotation=45,
+    #fontsize=12, alpha=.7)
+    #plt.title("Peak and Troughs of 600006", fontsize=22)
+    #plt.yticks(fontsize=12, alpha=.7)
+
+    ## Lighten borders
+    #plt.gca().spines["top"].set_alpha(.0)
+    #plt.gca().spines["bottom"].set_alpha(.3)
+    #plt.gca().spines["right"].set_alpha(.0)
+    #plt.gca().spines["left"].set_alpha(.3)
+
+    #plt.legend(loc='upper left')
+    #plt.grid(axis='y', alpha=.3)
+    #plt.show()
+
+    #st = QA_fetch_stock_block_adv(None, ["北京", "计算机"])
+    #QA_fetch_stock_realtime_adv(['000001', '000002'], num=10)
+    import QUANTAXIS as QA
+    from QUANTAXIS.QAFetch.QAhuobi import FIRST_PRIORITY
+    codelist = ['BCHUSDT', 'BSVUSDT', 'BTCUSDT', 'EOSUSDT', 'ETHUSDT', 'ETCUSDT', 'DASHUSDT', 'LTCUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT']
+    data1 = QA_fetch_crypto_asset_min_adv(
+            ['binance','huobi'],
+            symbol=codelist + FIRST_PRIORITY,
+            start='2019-11-21',
+            end='2020-05-28 18:10:00',
+            frequence='60min')
+    #codelist = QA.QA_fetch_stock_block_adv().get_block('沪深300').code
+    print(codelist[0:30])
+
+    # 获取全市场数据 QADataStruct格式
+    #data1 = QA.QA_fetch_stock_day_adv(codelist, '2018-11-01','2020-05-29')            
+
+    #print(data1.data)
+    #data1 = QA.QA_fetch_crypto_asset_min_adv(
+    #    ['binance','huobi'],
+    #    symbol=codelist+FIRST_PRIORITY,
+    #    start='2019-08-21',
+    #    end='2020-05-28 18:10:00',
+    #    frequence='60min'
+    #)
+    data1.data = data1.resample('4h')
+
+    import numpy as np
+    import talib
+    import pandas as pd
+    import scipy.signal as signal
+    import matplotlib.pyplot as plt
+    from QUANTAXIS.QAIndicator.talib_indicators_np import *
+
+    def ifup20_TA(data):
+        # TA-lib计算
+        return (talib.MA(data.close, 5) - talib.MA(data.close, 20)).dropna() > 0
+
+    # 写个自定义指标 MAX_FACTOR TA-lib计算
+    def ifmaxfactor_greater_TA(data):
+        RSI = TA_RSI(data.close)
+        CCI = TA_CCI(data.high, data.low, data.close)
+        KDJ = TA_KDJ(data.high, data.low, data.close)    
+        MAX_FACTOR = CCI[:,0] + (RSI[:,0] - 50) * 4 + (KDJ[:,2] - 50) * 4
+        MAX_FACTOR_delta = np.r_[np.nan, np.diff(MAX_FACTOR)]
+        REGRESSION_BASELINE = (RSI[:,0] - 50) * 4
+        return pd.DataFrame(((MAX_FACTOR + MAX_FACTOR_delta) - (REGRESSION_BASELINE - 133)), index=data.index).dropna() > 0
+
+    # apply到 QADataStruct上
+
+    ind1 = data1.add_func(ifup20_TA)
+    #ind1.rename({0:'buy_ma20'}, inplace=True, axis=1)
+    #ind1.dropna().groupby(level=0).apply(lambda x:print(x.name, x.sum()))
+    ind2 = data1.add_func(ifmaxfactor_greater_TA)
+    #ind2.rename({0:'buy_maxfactor'}, inplace=True, axis=1)
+
+    # 对于指标 groupby 日期 求和
+    ma20_jx_count = ind1.dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
+    MAX_FACTOR_jx_count = ind2.dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
+
+    # 自定义指标极值点查找
+    MA20_tp_min, MA20_tp_max = signal.argrelextrema(ma20_jx_count.values, np.less)[0], signal.argrelextrema(ma20_jx_count.values, np.greater)[0]
+    MA20_tp_max = np.sort(np.r_[MA20_tp_max, signal.find_peaks(ma20_jx_count.values, width=8)[0]])
+    MAX_FACTOR_tp_min, MAX_FACTOR_tp_max = signal.argrelextrema(MAX_FACTOR_jx_count.values, np.less)[0], signal.argrelextrema(MAX_FACTOR_jx_count.values, np.greater)[0]
+
+    # 将极值点坐标标记写回 DataFrame 方便画图观察
+    ma20_jx_count = pd.DataFrame(ma20_jx_count)
+    ma20_jx_count = ma20_jx_count.assign(MA20_TP_CROSS_JX_MARK=None)
+    ma20_jx_count.iloc[MA20_tp_min, ma20_jx_count.columns.get_loc('MA20_TP_CROSS_JX_MARK')] = ma20_jx_count.iloc[MA20_tp_min][0]
+    ma20_jx_count = ma20_jx_count.assign(MA20_TP_CROSS_SX_MARK=None)
+    ma20_jx_count.iloc[MA20_tp_max, ma20_jx_count.columns.get_loc('MA20_TP_CROSS_SX_MARK')] = ma20_jx_count.iloc[MA20_tp_max][0]
+
+    MAX_FACTOR_jx_count = MAX_FACTOR_jx_count.assign(MAX_FACTOR_TP_CROSS_JX_MARK=None)
+    MAX_FACTOR_jx_count.iloc[MAX_FACTOR_tp_min, MAX_FACTOR_jx_count.columns.get_loc('MAX_FACTOR_TP_CROSS_JX_MARK')] = MAX_FACTOR_jx_count.iloc[MAX_FACTOR_tp_min][0]
+    MAX_FACTOR_jx_count = MAX_FACTOR_jx_count.assign(MAX_FACTOR_TP_CROSS_SX_MARK=None)
+    MAX_FACTOR_jx_count.iloc[MAX_FACTOR_tp_max, MAX_FACTOR_jx_count.columns.get_loc('MAX_FACTOR_TP_CROSS_SX_MARK')] = MAX_FACTOR_jx_count.iloc[MAX_FACTOR_tp_max][0]
+
+    # 利用极值点进行金叉死叉状态和趋势方向判断
+    ma20_jx_count = ma20_jx_count.assign(MA20_TP_CROSS_JX=0)
+    ma20_jx_count.iloc[MA20_tp_min, ma20_jx_count.columns.get_loc('MA20_TP_CROSS_JX')] = 1
+    ma20_jx_count = ma20_jx_count.assign(MA20_TP_CROSS_SX=0)
+    ma20_jx_count.iloc[MA20_tp_max, ma20_jx_count.columns.get_loc('MA20_TP_CROSS_SX')] = 1
+
+    MAX_FACTOR_jx_count = MAX_FACTOR_jx_count.assign(MAX_FACTOR_TP_CROSS_JX=0)
+    MAX_FACTOR_jx_count.iloc[MAX_FACTOR_tp_min, MAX_FACTOR_jx_count.columns.get_loc('MAX_FACTOR_TP_CROSS_JX')] = 1
+    MAX_FACTOR_jx_count = MAX_FACTOR_jx_count.assign(MAX_FACTOR_TP_CROSS_SX=0)
+    MAX_FACTOR_jx_count.iloc[MAX_FACTOR_tp_max, MAX_FACTOR_jx_count.columns.get_loc('MAX_FACTOR_TP_CROSS_SX')] = 1
+
+    # 这个函数我一直没法不使用For循环来实现，求天神指导
+    def Timeline_Integral_with_cross_before(Tm,):
+        """
+        计算时域金叉/死叉信号的累积卷积和(死叉不清零)
+        """
+        T = [Tm[0]]
+        for i in range(1,len(Tm)):
+            if (Tm[i] == 0):
+                T.append(T[i - 1] + 1)
+            else:
+                T.append(0)
+        return np.array(T)
+
+    ma20_jx_count['MA20_TP_CROSS_JX'] = Timeline_Integral_with_cross_before(ma20_jx_count['MA20_TP_CROSS_JX'])
+    ma20_jx_count['MA20_TP_CROSS_SX'] = Timeline_Integral_with_cross_before(ma20_jx_count['MA20_TP_CROSS_SX'])
+
+    MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'] = Timeline_Integral_with_cross_before(MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'])
+    MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'] = Timeline_Integral_with_cross_before(MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'])
+
+    #照例，上面的自创指标出现 双金叉，就是买入点信号
+    BUY_ACTION = (MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'] < MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'])
+    SELL_ACTION = (MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_SX'] < MAX_FACTOR_jx_count['MAX_FACTOR_TP_CROSS_JX'])
+    BUY_ACTION2 = (ma20_jx_count['MA20_TP_CROSS_JX'] < ma20_jx_count['MA20_TP_CROSS_SX'])
+    SELL_ACTION2 = (ma20_jx_count['MA20_TP_CROSS_SX'] < ma20_jx_count['MA20_TP_CROSS_JX'])
+    BUY_ACTION = BUY_ACTION.tail(len(BUY_ACTION2))
+    BUY_ACTION_DUAL = BUY_ACTION & BUY_ACTION2
+    SELL_ACTION_DUAL = SELL_ACTION & SELL_ACTION2 | SELL_ACTION2 & ((MAX_FACTOR_jx_count[0] - ma20_jx_count[0]) < 0)
+    #BUY_ACTION_DUAL = BUY_ACTION2
+    BUY_ACTION_DUAL = BUY_ACTION_DUAL[BUY_ACTION_DUAL.apply(lambda x: x == True)]
+    SELL_ACTION_DUAL = SELL_ACTION_DUAL[SELL_ACTION_DUAL.apply(lambda x: x == True)]
+    ma20_jx_count = ma20_jx_count.assign(DUAL_CROSS_JX_MARK=None)
+    ma20_jx_count.loc[BUY_ACTION_DUAL.index, 'DUAL_CROSS_JX_MARK'] = ma20_jx_count.loc[BUY_ACTION_DUAL.index][0]
+    ma20_jx_count = ma20_jx_count.assign(DUAL_CROSS_SX_MARK=None)
+    ma20_jx_count.loc[SELL_ACTION_DUAL.index, 'DUAL_CROSS_SX_MARK'] = ma20_jx_count.loc[SELL_ACTION_DUAL.index][0]
+
+    # 打印出买入点信号日期
+    print(BUY_ACTION_DUAL.index)
+    print('sell')
+    print(SELL_ACTION_DUAL.index)
+
+    # 画图看看
+    fig = plt.figure()  
+    ax1 = fig.add_subplot(111)  
+    ax1.plot(ma20_jx_count[0])
+    ax1.plot(MAX_FACTOR_jx_count[0])
+    ax1.plot(ma20_jx_count['DUAL_CROSS_JX_MARK'],'ro')
+    ax1.plot(ma20_jx_count['DUAL_CROSS_SX_MARK'],'bx')
+    plt.show()
