@@ -404,7 +404,15 @@ def QA_SU_save_okex_symbol(
             axis=1,
             inplace=True
         )
-
+        if ('_id' in symbol_lists.columns.values):
+            # 有时有，必须单独删除
+            symbol_lists.drop(
+                [
+                    '_id',
+                ],
+                axis=1,
+                inplace=True
+            )
         symbol_lists['created_at'] = int(
             time.mktime(datetime.datetime.now().utctimetuple())
         )

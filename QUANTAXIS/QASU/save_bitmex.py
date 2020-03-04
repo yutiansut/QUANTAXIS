@@ -406,6 +406,15 @@ def QA_SU_save_bitmex_symbol(
             'price_precision',
             'desc'
         ]]
+        if ('_id' in symbol_lists.columns.values):
+            # 有时有，必须单独删除
+            symbol_lists.drop(
+                [
+                    '_id',
+                ],
+                axis=1,
+                inplace=True
+            )
         symbol_lists['created_at'] = int(
             time.mktime(datetime.datetime.now().utctimetuple())
         )

@@ -402,7 +402,6 @@ def QA_SU_save_bitfinex_symbol(market="bitfinex", client=DATABASE, ):
         # 数据中读取。
         symbol_lists.drop(
             [
-                '_id',
                 'price_precision',
                 'baseCommissionPrecision',
                 'quotePrecision',
@@ -418,7 +417,15 @@ def QA_SU_save_bitfinex_symbol(market="bitfinex", client=DATABASE, ):
             axis=1,
             inplace=True
         )
-
+        if ('_id' in symbol_lists.columns.values):
+            # 有时有，必须单独删除
+            symbol_lists.drop(
+                [
+                    '_id',
+                ],
+                axis=1,
+                inplace=True
+            )
         # 删除不交易的交易对
         symbol_lists = symbol_lists[symbol_lists['state'].isin(['TRADING'])]
         symbol_lists['created_at'] = int(

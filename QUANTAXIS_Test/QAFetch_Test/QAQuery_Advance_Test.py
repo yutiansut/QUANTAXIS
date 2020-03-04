@@ -984,16 +984,44 @@ if __name__ == '__main__':
         BOLL_CROSS['BOLL_CROSS_SX'] = QA.Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_SX'])
         return BOLL_CROSS
 
+    def maxfactor_cross(data):
+        RSI = QA.TA_RSI(data.close, timeperiod=12)
+        CCI = QA.TA_CCI(data.high, data.low, data.close)
+        KDJ = QA.TA_KDJ(data.high, data.low, data.close)    
+        MAX_FACTOR = CCI[:,0] + (RSI[:,0] - 50) * 4 + (KDJ[:,2] - 50) * 4
+        MAX_FACTOR_delta = np.r_[np.nan, np.diff(MAX_FACTOR)]
+        REGRESSION_BASELINE = pd.Series((RSI[:,0] - 50) * 4, index=data.index)
+
+        MAXFACTOR_CROSS = pd.DataFrame(columns=['MAXFACTOR_CROSS', 'MAXFACTOR_CROSS_JX', 'MAXFACTOR_CROSS_SX'], index=data.index)
+        MAXFACTOR_CROSS = MAXFACTOR_CROSS.assign(MAXFACTOR=MAX_FACTOR)
+        MAXFACTOR_CROSS = MAXFACTOR_CROSS.assign(MAXFACTOR_DELTA=MAX_FACTOR_delta)
+        MAXFACTOR_CROSS = MAXFACTOR_CROSS.assign(REGRESSION_BASELINE=REGRESSION_BASELINE)
+
+        MAXFACTOR_CROSS_JX1 = CROSS(MAX_FACTOR + MAX_FACTOR_delta, REGRESSION_BASELINE - 133)
+        MAXFACTOR_CROSS_JX2 = CROSS(MAX_FACTOR + MAX_FACTOR_delta, REGRESSION_BASELINE)
+        MAXFACTOR_CROSS_JX3 = CROSS(MAX_FACTOR + MAX_FACTOR_delta, REGRESSION_BASELINE + 133)
+        MAXFACTOR_CROSS_JX = (MAXFACTOR_CROSS_JX1 | MAXFACTOR_CROSS_JX2 | MAXFACTOR_CROSS_JX3)
+        MAXFACTOR_CROSS_SX1 = CROSS(REGRESSION_BASELINE + 133, MAX_FACTOR + MAX_FACTOR_delta)
+        MAXFACTOR_CROSS_SX2 = CROSS(REGRESSION_BASELINE, MAX_FACTOR + MAX_FACTOR_delta)
+        MAXFACTOR_CROSS_SX3 = CROSS(REGRESSION_BASELINE - 133, MAX_FACTOR + MAX_FACTOR_delta)
+        MAXFACTOR_CROSS_SX = (MAXFACTOR_CROSS_SX1 | MAXFACTOR_CROSS_SX2 | MAXFACTOR_CROSS_SX3)
+        MAXFACTOR_CROSS.loc[(MAXFACTOR_CROSS_JX1 | MAXFACTOR_CROSS_JX2 | MAXFACTOR_CROSS_JX3) == 1, 'MAXFACTOR_CROSS'] = 1
+        MAXFACTOR_CROSS.loc[(MAXFACTOR_CROSS_SX1 | MAXFACTOR_CROSS_SX2 | MAXFACTOR_CROSS_SX3) == 1, 'MAXFACTOR_CROSS'] = -1
+        MAXFACTOR_CROSS['MAXFACTOR_CROSS_JX'] = Timeline_Integral_with_cross_before(MAXFACTOR_CROSS_JX)
+        MAXFACTOR_CROSS['MAXFACTOR_CROSS_SX'] = Timeline_Integral_with_cross_before(MAXFACTOR_CROSS_SX)
+        return MAXFACTOR_CROSS
+
     # apply到 QADataStruct上
 
     ind1 = data_1h.add_func(ifup20_TA)
     ind2 = data_1h.add_func(ifmaxfactor_greater_TA)
     ind4 = data_1h.add_func(dual_cross)
+    data_4h_maxfactor_cross = data_4h.add_func(maxfactor_cross)
     DUAL_CROSS_count = ind4['DUAL_CROSS'].dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
     #print(DUAL_CROSS_count)
 
     # 对于指标 groupby 日期 求和
-    ma20_jx_count = ind1.dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
+    ma20_jx_count = ind1.dropna().groupby(level=0).sum() / ind1.get_code()
     MAX_FACTOR_jx_count = ind2.dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
 
     # 自定义指标极值点查找
@@ -1050,8 +1078,8 @@ if __name__ == '__main__':
 
     hb10_ma30_cross = hb10_1h.add_func(ma30_cross)
     hb10_boll_cross = hb10_1h.add_func(boll_cross)
-    %timeit hb10_day_boll_cross = hb10_day.add_func(boll_cross_lf)
-    %timeit hb10_day_boll_cross = hb10_day.add_func(boll_cross)
+    #hb10_day_boll_cross = hb10_day.add_func(boll_cross_lf)
+    hb10_day_boll_cross = hb10_day.add_func(boll_cross)
 
     # select_code 筛选过的单一代码数据，拆掉索引，免得计算过程中麻烦
     hb10_boll_cross = hb10_boll_cross.reset_index([1,2])
@@ -1067,6 +1095,7 @@ if __name__ == '__main__':
     data_4h_boll_cross.assign(ACTION=None)
     data_4h_boll_cross['ACTION'] = (data_4h_boll_cross['BOLL_CROSS_JX'] > 0)
     data_4h_boll_cross = data_4h_boll_cross.reset_index([1,2])
+    hb10_day_boll_cross_to_1h = hb10_day_boll_cross.resample('1h').ffill()
     data_4h_boll_CROSS_to_1h = data_4h_boll_cross.resample('1h').ffill()
     print(data_4h_boll_cross.loc[[pd.Timestamp('2020-02-16 16:00:00'), pd.Timestamp('2020-02-16 20:00:00'), pd.Timestamp('2020-02-17 00:00:00')]])
     print(data_4h_boll_CROSS_to_1h.loc[[pd.Timestamp('2020-02-16 16:00:00'), pd.Timestamp('2020-02-16 17:00:00'), pd.Timestamp('2020-02-16 18:00:00'), pd.Timestamp('2020-02-16 19:00:00'), 
