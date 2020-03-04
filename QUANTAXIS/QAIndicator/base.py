@@ -130,6 +130,13 @@ def CROSS(A, B):
     return (pd.Series(var, index=index).diff() < 0).apply(int)
 
 
+def CROSS_STATUS(A, B):
+    """
+    A 穿过 B 产生持续的 1 序列信号
+    """
+    return np.where(A > B, 1, 0)
+
+
 def FILTER(COND, N):
 
     k1 = pd.Series(np.where(COND, 1, 0), index=COND.index)

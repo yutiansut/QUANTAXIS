@@ -1674,7 +1674,8 @@ def QA_fetch_crypto_asset_day(
             _data = DataFrame(
                 _data,
                 columns=[
-                    'symbol',
+                    # 原抓取时候存入mongdb本来按照交易所叫法为'symbol'，但是考虑兼容DataStruct，读取的时候字段改名叫'code'
+                    'code', # symbol
                     'market',
                     'open',
                     'high',
@@ -1685,7 +1686,7 @@ def QA_fetch_crypto_asset_day(
                     'amount',
                     'date'
                 ]
-            ).drop_duplicates()
+            ).drop_duplicates((['date', 'market', 'code']))
             _data['date'] = pd.to_datetime(_data['date'])
             _data = _data.set_index('date', drop=False)
         else:
@@ -1764,7 +1765,8 @@ def QA_fetch_crypto_asset_min(
     _data = DataFrame(
         _data,
         columns=[
-            'symbol',
+            # 原抓取时候存入mongdb本来按照交易所叫法为'symbol'，但是考虑兼容DataStruct，读取的时候字段改名叫'code'，并非拼写错误。
+            'code', # symbol
             'market',
             'open',
             'high',
@@ -1780,8 +1782,8 @@ def QA_fetch_crypto_asset_min(
         ]
     )
     _data = _data.assign(datetime=pd.to_datetime(_data['datetime'])
-                        ).drop_duplicates((['datetime',
-                                            'symbol'])).set_index(
+                        ).drop_duplicates((['datetime', 'market',
+                                            'code'])).set_index(
                                                 'datetime',
                                                 drop=False
                                             )
