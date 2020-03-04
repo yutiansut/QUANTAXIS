@@ -896,21 +896,23 @@ def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
     """
 
     CONVERSION = {
-        'symbol': 'first',
         'market': 'first',
+        'code': 'first',
         'open': 'first',
         'high': 'max',
         'low': 'min',
         'close': 'last',
+        'trade': 'sum',
         'vol': 'sum',
         'amount': 'sum'
     } if 'vol' in min_data.columns else {
-        'symbol': 'first',
         'market': 'first',
+        'code': 'first',
         'open': 'first',
         'high': 'max',
         'low': 'min',
         'close': 'last',
+        'trade': 'sum',
         'volume': 'sum',
         'amount': 'sum'
     }
@@ -921,10 +923,10 @@ def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
         closed='right',
         loffset=type_
     ).apply(CONVERSION).dropna()
-    return data.assign(datetime=pd.to_datetime(data.datetime)
+    return data.assign(datetime=pd.to_datetime(data.index)
                       ).set_index(['datetime',
-                                   'symbol',
-                                   'market'])
+                                   'market',
+                                   'code'])
 
 
 if __name__ == '__main__':

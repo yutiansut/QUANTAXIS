@@ -46,11 +46,13 @@ from QUANTAXIS.QAFetch.QAhuobi import (
     QA_fetch_huobi_symbols,
     QA_fetch_huobi_kline,
     QA_fetch_huobi_kline_subscription,
-    Huobi2QA_FREQUENCY_DICT,
     FIRST_PRIORITY,
+)
+from QUANTAXIS.QAFetch.QAhuobi_realtime import (
+    QA_Fetch_Huobi,
+    Huobi2QA_FREQUENCY_DICT,
     CandlestickInterval
 )
-from QUANTAXIS.QAFetch.QAhuobi_realtime import (QA_Fetch_Huobi)
 from QUANTAXIS.QAUtil.QAcrypto import (
     QA_util_save_raw_symbols,
     QA_util_find_missing_kline
@@ -318,7 +320,7 @@ def QA_SU_save_huobi_min(
             for i in range(len(missing_data_list)):
                 reqParams['from'] = missing_data_list[i][expected]
                 reqParams['to'] = missing_data_list[i][between]
-                if (reqParams['to'] >
+                if (reqParams['from'] >
                     (QA_util_datetime_to_Unix_timestamp() + 3600)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
                     raise Exception(
@@ -326,7 +328,7 @@ def QA_SU_save_huobi_min(
                         .format(
                             symbol_info['symbol'],
                             frequency,
-                            QA_util_print_timestamp(reqParams['to']),
+                            QA_util_print_timestamp(reqParams['from']),
                             QA_util_print_timestamp(
                                 QA_util_datetime_to_Unix_timestamp()
                             )
@@ -407,7 +409,7 @@ def QA_SU_save_huobi_1hour(fetch_range='all'):
     )
 
 
-def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
+def QA_SU_save_huobi_symbol(market="huobi", client=DATABASE,):
     """
     保存火币交易对信息
     """
@@ -440,7 +442,6 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
         # 数据中读取。火币网超有个性的，注意字段里面的减号，不是下划线！！！
         symbol_lists.drop(
             [
-                '_id',
                 'amount-precision',
                 'leverage-ratio',
                 'max-order-amt',
@@ -452,6 +453,14 @@ def QA_SU_save_huobi_symbol(client=DATABASE, market="huobi"):
             axis=1,
             inplace=True
         )
+        if ('_id' in symbol_lists.columns.values):
+            symbol_lists.drop(
+                [
+                    '_id',
+                ],
+                axis=1,
+                inplace=True
+            )
 
         symbol_lists['created_at'] = int(
             time.mktime(datetime.datetime.now().utctimetuple())
@@ -496,21 +505,25 @@ def QA_SU_save_data_huobi_callback(data, freq):
     """
     异步获取数据回调用的 MongoDB 存储函数
     """
-    QA_util_log_info(
-        'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
-            data.iloc[0].symbol,
-            freq,
-            time.strftime(
-                '%Y-%m-%d %H:%M:%S',
-                time.localtime(data.iloc[0].time_stamp)
-            )[2:16],
-            time.strftime(
-                '%Y-%m-%d %H:%M:%S',
-                time.localtime(data.iloc[-1].time_stamp)
-            )[2:16],
-            len(data)
+    if ((len(data) == 1)):
+        # 减少统计刷屏
+        pass
+    else:
+        QA_util_log_info(
+            'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
+                data.iloc[0].symbol,
+                freq,
+                time.strftime(
+                    '%Y-%m-%d %H:%M:%S',
+                    time.localtime(data.iloc[0].time_stamp)
+                )[2:16],
+                time.strftime(
+                    '%Y-%m-%d %H:%M:%S',
+                    time.localtime(data.iloc[-1].time_stamp)
+                )[2:16],
+                len(data)
+            )
         )
-    )
     if (freq not in ['1day', '86400', 'day', '1d']):
         col = DATABASE.crypto_asset_min
         col.create_index(
@@ -604,12 +617,12 @@ def QA_SU_save_huobi_realtime():
     fetch_huobi_history.add_subscription_batch_jobs(
         FIRST_PRIORITY,
         [
-            FREQUENCE.ONE_MIN,
-            FREQUENCE.FIVE_MIN,
-            FREQUENCE.FIFTEEN_MIN,
-            FREQUENCE.THIRTY_MIN,
-            FREQUENCE.SIXTY_MIN,
-            FREQUENCE.DAY
+            CandlestickInterval.MIN1,
+            CandlestickInterval.MIN5,
+            CandlestickInterval.MIN15,
+            CandlestickInterval.MIN30,
+            CandlestickInterval.MIN60,
+            CandlestickInterval.DAY1
         ],
         '2017-10-26 02:00:00'
     )
@@ -618,10 +631,10 @@ def QA_SU_save_huobi_realtime():
 
 
 if __name__ == '__main__':
-    QA_SU_save_huobi_1day()
-    QA_SU_save_huobi_min('1min', ['adausdt'])
+    QA_SU_save_huobi_min('60min', ['bchbtc'])
     QA_SU_save_huobi_symbol()
     QA_SU_save_huobi('30min')
+    QA_SU_save_huobi_1day()
     QA_SU_save_huobi_1hour(fetch_range=FIRST_PRIORITY)
     QA_SU_save_huobi_30min(fetch_range=FIRST_PRIORITY)
     QA_SU_save_huobi_15min(fetch_range=FIRST_PRIORITY)

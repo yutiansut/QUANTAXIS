@@ -411,7 +411,6 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
         # 数据中读取。
         symbol_lists.drop(
             [
-                '_id',
                 'baseCommissionPrecision',
                 'quotePrecision',
                 'filters',
@@ -426,7 +425,14 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
             axis=1,
             inplace=True
         )
-
+        if ('_id' in symbol_lists.columns.values):
+            symbol_lists.drop(
+                [
+                    '_id',
+                ],
+                axis=1,
+                inplace=True
+            )
         # 删除不交易的交易对
         symbol_lists = symbol_lists[symbol_lists['state'].isin(['TRADING'])]
 

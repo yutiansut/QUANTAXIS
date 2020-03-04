@@ -76,8 +76,8 @@ def QA_SU_save_bitfinex_day(frequency, ui_log=None, ui_progress=None):
     """
     print('Under construction... I will test and debug soon...')
     return False
-    market = 'Bitfinex'
-    symbol_list = QA_fetch_crypto_asset_list(market='Bitfinex')
+    market = 'bitfinex'
+    symbol_list = QA_fetch_crypto_asset_list(market=market)
     col = DATABASE.crypto_asset_day
     col.create_index(
         [
@@ -100,7 +100,6 @@ def QA_SU_save_bitfinex_day(frequency, ui_log=None, ui_progress=None):
     )
     for index in range(len(symbol_list)):
         symbol_info = symbol_list.iloc[index]
-        # 上架仅处理交易对
         QA_util_log_info(
             'The "{}" #{} of total in {}'.format(
                 symbol_info['symbol'],
@@ -182,8 +181,8 @@ def QA_SU_save_bitfinex_min(frequency, ui_log=None, ui_progress=None):
     """
     print('Under construction... I will test and debug soon...')
     return False
-    market = 'Bitfinex'
-    symbol_list = QA_fetch_crypto_asset_list(market='Bitfinex')
+    market = 'bitfinex'
+    symbol_list = QA_fetch_crypto_asset_list(market=market)
     col = DATABASE.crypto_asset_min
     col.create_index(
         [
@@ -281,8 +280,8 @@ def QA_SU_save_bitfinex_min(frequency, ui_log=None, ui_progress=None):
             miss_kline = pd.DataFrame(
                 [
                     [
-                        QA_util_datetime_to_Unix_timestamp(start_time),
-                        QA_util_datetime_to_Unix_timestamp(end),
+                        int(QA_util_datetime_to_Unix_timestamp(start_time)),
+                        int(QA_util_datetime_to_Unix_timestamp(end)),
                         '{} 到 {}'.format(start_time,
                                          end)
                     ]
@@ -300,17 +299,17 @@ def QA_SU_save_bitfinex_min(frequency, ui_log=None, ui_progress=None):
             missing = 2
             reqParams = {}
             for i in range(len(missing_data_list)):
-                reqParams['from'] = missing_data_list[i][expected]
-                reqParams['to'] = missing_data_list[i][between]
-                if (reqParams['to'] >
-                    (QA_util_datetime_to_Unix_timestamp() + 3600)):
+                reqParams['from'] = int(missing_data_list[i][expected])
+                reqParams['to'] = int(missing_data_list[i][between])
+                if (reqParams['from'] >
+                    (QA_util_datetime_to_Unix_timestamp() + 120)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
                     raise Exception(
                         'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                         .format(
                             symbol_info['symbol'],
                             frequency,
-                            QA_util_print_timestamp(reqParams['to']),
+                            QA_util_print_timestamp(reqParams['from']),
                             QA_util_print_timestamp(
                                 QA_util_datetime_to_Unix_timestamp()
                             )
@@ -363,17 +362,15 @@ def QA_SU_save_bitfinex_1hour():
     QA_SU_save_bitfinex("1h")
 
 
-def QA_SU_save_bitfinex_symbol(market="Bitfinex", client=DATABASE, ):
+def QA_SU_save_bitfinex_symbol(market="bitfinex", client=DATABASE, ):
     """
     保存Bitfinex交易对信息
     """
-    print('Under construction... I will test and debug soon...')
-    return False
     QA_util_log_info('Downloading {:s} symbol list...'.format(market))
 
     # 保存 Bitfinex API 原始 Symbol 数据备查阅，自动交易用得着
     raw_symbol_lists = QA_util_save_raw_symbols(
-        QA_fetch_Bitfinex_symbols,
+        QA_fetch_bitfinex_symbols,
         market
     )
     if (len(raw_symbol_lists) > 0):
@@ -400,18 +397,11 @@ def QA_SU_save_bitfinex_symbol(market="Bitfinex", client=DATABASE, ):
             axis=1
         )
         symbol_lists['desc'] = symbol_lists['name']
-        symbol_lists['created_at'] = int(
-            time.mktime(datetime.datetime.now().utctimetuple())
-        )
-        symbol_lists['updated_at'] = int(
-            time.mktime(datetime.datetime.now().utctimetuple())
-        )
 
         # 移除非共性字段，这些字段只有 broker 才关心，做对应交易所 broker 接口的时候在交易所 raw_symbol_lists
         # 数据中读取。
         symbol_lists.drop(
             [
-                '_id',
                 'price_precision',
                 'baseCommissionPrecision',
                 'quotePrecision',
@@ -427,9 +417,23 @@ def QA_SU_save_bitfinex_symbol(market="Bitfinex", client=DATABASE, ):
             axis=1,
             inplace=True
         )
-
+        if ('_id' in symbol_lists.columns.values):
+            # 有时有，必须单独删除
+            symbol_lists.drop(
+                [
+                    '_id',
+                ],
+                axis=1,
+                inplace=True
+            )
         # 删除不交易的交易对
         symbol_lists = symbol_lists[symbol_lists['state'].isin(['TRADING'])]
+        symbol_lists['created_at'] = int(
+            time.mktime(datetime.datetime.now().utctimetuple())
+        )
+        symbol_lists['updated_at'] = int(
+            time.mktime(datetime.datetime.now().utctimetuple())
+        )
 
         coll_crypto_asset_list = client.crypto_asset_list
         coll_crypto_asset_list.create_index(
@@ -456,7 +460,7 @@ def QA_SU_save_bitfinex_symbol(market="Bitfinex", client=DATABASE, ):
             return symbol_lists
         except:
             QA_util_log_expection(
-                'QA_SU_save_Bitfinex_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception {}'
+                'QA_SU_save_bitfinex_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception {}'
                 .format(len(data))
             )
             pass
@@ -561,6 +565,6 @@ def QA_SU_save_data_bitfinex_callback(data, freq):
 
 
 if __name__ == '__main__':
-    QA_SU_save_Bitfinex_symbol()
-    #QA_SU_save_Bitfinex_1day()
-    QA_SU_save_Bitfinex_1hour()
+    QA_SU_save_bitfinex_symbol()
+    #QA_SU_save_bitfinex_1day()
+    QA_SU_save_bitfinex_1hour()
