@@ -81,7 +81,7 @@ def TA_BBANDS(prices, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
 def TA_KDJ(hight, low, close, fastk_period=9, slowk_matype=0, slowk_period=3, slowd_period=3):
     '''
     参数设置:
-        fastk_period = 0
+        fastk_period = 9
         lowk_matype = 0, 
         slowk_period = 3, 
         slowd_period = 3
@@ -94,6 +94,15 @@ def TA_KDJ(hight, low, close, fastk_period=9, slowk_matype=0, slowk_period=3, sl
     return np.c_[K, D, J, delta]
 
 
+def TA_ADXR(high, low, close, timeperiod=14):
+    """
+    名称：平均趋向指数的趋向指数
+    简介：使用ADXR指标，指标判断ADX趋势。
+    """
+    real = talib.ADXR(high, low, close, timeperiod=14)
+    return np.c_[real]
+
+
 def TA_CCI(high, low, close, timeperiod=14):
     """
     名称：平均趋向指数的趋向指数
@@ -102,3 +111,4 @@ def TA_CCI(high, low, close, timeperiod=14):
     real = talib.CCI(high, low, close, timeperiod=14)
     delta = np.r_[np.nan, np.diff(real)]
     return np.c_[real, delta]
+

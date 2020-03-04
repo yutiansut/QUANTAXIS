@@ -1906,8 +1906,32 @@ class QA_DataStruct_Crypto_Asset_day(_quotation_base):
 
         add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
         """
+        return self.groupby(['market', 'code'], sort=False).apply(lambda x:func(x.reset_index([1,2]), *arg, **kwargs))
 
-        return self.groupby(level=2, sort=False).apply(lambda x: func(x.reset_index(1), *arg, **kwargs))
+    def select_code(self, market, code):
+        """
+        选择股票
+
+        @2018/06/03 pandas 的索引问题导致
+        https://github.com/pandas-dev/pandas/issues/21299
+
+        因此先用set_index去重做一次index
+        影响的有selects,select_time,select_month,get_bar
+
+        @2018/06/04
+        当选择的时间越界/股票不存在,raise ValueError
+
+        @2018/06/04 pandas索引问题已经解决
+        全部恢复
+        """
+
+        def _select_code(market, code):
+            return self.data.loc[(slice(None), market, code), :]
+
+        try:
+            return self.new(_select_code(market, code), self.type, self.if_fq)
+        except:
+            raise ValueError('QA CANNOT FIND THIS CODE {}'.format(code))
 
     @property
     @lru_cache()

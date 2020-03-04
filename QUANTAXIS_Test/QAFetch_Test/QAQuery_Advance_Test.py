@@ -827,19 +827,22 @@ if __name__ == '__main__':
     import QUANTAXIS as QA
     from QUANTAXIS.QAFetch.QAhuobi import FIRST_PRIORITY
     codelist = ['BCHUSDT', 'BSVUSDT', 'BTCUSDT', 'EOSUSDT', 'ETHUSDT', 'ETCUSDT', 'DASHUSDT', 'LTCUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT']
-    data1 = QA_fetch_crypto_asset_min_adv(['binance','huobi'],
+    data_1h = QA_fetch_crypto_asset_min_adv(['binance','huobi'],
             symbol=codelist + FIRST_PRIORITY,
             start='2020-02-01',
             end='2020-05-28 18:10:00',
             frequence='60min')
-    data2 = QA_fetch_crypto_asset_min(['huobi'],
+    data_day = QA_fetch_crypto_asset_day_adv(['binance','huobi'],
+            symbol=codelist + FIRST_PRIORITY,
+            start='2019-10-01',
+            end='2020-05-28 18:10:00')
+    data2 = QA_fetch_crypto_asset_min_adv(['huobi'],
             symbol=['btcusdt'],
             start='2020-02-01',
             end='2020-05-28 18:10:00',
-            frequence='60min',
-            format='pd')
+            frequence='60min')
     #codelist = QA.QA_fetch_stock_block_adv().get_block('沪深300').code
-    print(codelist[0:30])
+    #print(codelist[0:30])
 
     # 获取全市场数据 QADataStruct格式
     #data1 = QA.QA_fetch_stock_day_adv(codelist, '2018-11-01','2020-05-29')
@@ -852,8 +855,8 @@ if __name__ == '__main__':
     #    end='2020-05-28 18:10:00',
     #    frequence='60min'
     #)
-    data_4h = data1
-    #QA.QA_DataStruct_Crypto_Asset_min(data1.resample('4h'))
+    #data_4h = QA.QA_DataStruct_Crypto_Asset_min(data2.resample('4h'))
+    data_4h = QA.QA_DataStruct_Crypto_Asset_min(data2.resample('4h'))
 
     import numpy as np
     import talib
@@ -926,6 +929,35 @@ if __name__ == '__main__':
     def boll_cross(data):
         BBANDS = QA.TA_BBANDS(data.close, timeperiod=20, nbdevup=2)
 
+        BOLL_CROSS = pd.DataFrame(columns=['min_peak', 'max_peak', 'BOLL_CROSS', 'BOLL_CROSS_JX', 'BOLL_CROSS_SX'], index=data.index)
+        
+        # 防止插针行情突然搞乱
+        data['smooth_low'] = talib.MA(data.low, 2)
+        data['smooth_high'] = talib.MA(data.high, 2)
+
+        BOLL_CROSS['min_peak'] = data.apply(lambda x: min(x['open'], x['close'], x['smooth_low']), axis=1)
+        BOLL_CROSS['max_peak'] = data.apply(lambda x: max(x['open'], x['close'], x['smooth_high']), axis=1)
+
+        BOLL_CROSS_JX = CROSS(BOLL_CROSS['min_peak'], BBANDS[:,2])
+        BOLL_CROSS_SX = CROSS(BBANDS[:,0], BOLL_CROSS['max_peak'])
+
+        BOLL_CROSS.loc[BOLL_CROSS_JX == 1, 'BOLL_CROSS'] = 1
+        BOLL_CROSS.loc[BOLL_CROSS_SX == 1, 'BOLL_CROSS'] = -1
+        BOLL_TP_CROSS = pd.DataFrame(columns=['BOLL_TP_CROSS_JX', 'BOLL_TP_CROSS_SX'], index=data.index)
+        BOLL_TP_CROSS['BOLL_TP_CROSS_SX'] = BOLL_TP_CROSS['BOLL_TP_CROSS_JX'] = 0
+        BOLL_TP_CROSS.loc[BOLL_CROSS_JX == 1, 'BOLL_TP_CROSS_JX'] = 1
+        BOLL_TP_CROSS.loc[BOLL_CROSS_SX == 1, 'BOLL_TP_CROSS_SX'] = 1
+
+        BOLL_CROSS = BOLL_CROSS.assign(BOLL_UB=BBANDS[:,0])
+        BOLL_CROSS = BOLL_CROSS.assign(BOLL_MA=BBANDS[:,1])
+        BOLL_CROSS = BOLL_CROSS.assign(BOLL_LB=BBANDS[:,2])
+        BOLL_CROSS['BOLL_CROSS_JX'] = QA.Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_JX'])
+        BOLL_CROSS['BOLL_CROSS_SX'] = QA.Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_SX'])
+        return BOLL_CROSS
+
+    def boll_cross_lf(data):
+        BBANDS = QA.TA_BBANDS(data.close, timeperiod=20, nbdevup=2)
+
         BOLL_CROSS_JX1 = CROSS(data.open, BBANDS[:,2])
         BOLL_CROSS_JX2 = CROSS(data.close, BBANDS[:,2])
         BOLL_CROSS_JX3 = CROSS(talib.MA(data.low, 2), BBANDS[:,2])
@@ -945,17 +977,20 @@ if __name__ == '__main__':
         BOLL_TP_CROSS.loc[(BOLL_CROSS_JX1 | BOLL_CROSS_JX2 | BOLL_CROSS_JX3) == 1, 'BOLL_TP_CROSS_JX'] = 1
         BOLL_TP_CROSS.loc[(BOLL_CROSS_SX1 | BOLL_CROSS_SX2 | BOLL_CROSS_SX3) == 1, 'BOLL_TP_CROSS_SX'] = 1
 
+        BOLL_CROSS = BOLL_CROSS.assign(BOLL_UB=BBANDS[:,0])
+        BOLL_CROSS = BOLL_CROSS.assign(BOLL_MA=BBANDS[:,1])
+        BOLL_CROSS = BOLL_CROSS.assign(BOLL_LB=BBANDS[:,2])
         BOLL_CROSS['BOLL_CROSS_JX'] = QA.Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_JX'])
         BOLL_CROSS['BOLL_CROSS_SX'] = QA.Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_SX'])
         return BOLL_CROSS
 
     # apply到 QADataStruct上
 
-    ind1 = data_4h.add_func(ifup20_TA)
-    ind2 = data_4h.add_func(ifmaxfactor_greater_TA)
-    ind4 = data_4h.add_func(dual_cross)
+    ind1 = data_1h.add_func(ifup20_TA)
+    ind2 = data_1h.add_func(ifmaxfactor_greater_TA)
+    ind4 = data_1h.add_func(dual_cross)
     DUAL_CROSS_count = ind4['DUAL_CROSS'].dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
-    print(DUAL_CROSS_count)
+    #print(DUAL_CROSS_count)
 
     # 对于指标 groupby 日期 求和
     ma20_jx_count = ind1.dropna().groupby(level=0).sum() / len(codelist + QA.QAFetch.QAhuobi.FIRST_PRIORITY)
@@ -1008,35 +1043,57 @@ if __name__ == '__main__':
     SELL_ACTION_DUAL = SELL_ACTION_DUAL[SELL_ACTION_DUAL.apply(lambda x: x == True)]
 
     # 画图看看
-    hb10 = data_4h.select_code(['huobi'], ['btcusdt'])
-    hb10_ma30_cross = hb10.add_func(ma30_cross)
-    hb10_boll_cross = hb10.add_func(boll_cross)
+    data_4h_boll_cross = data_4h.add_func(boll_cross)
+
+    hb10_1h = data_1h.select_code(['huobi'], ['btcusdt'])
+    hb10_day = data_day.select_code(['huobi'], ['btcusdt'])
+
+    hb10_ma30_cross = hb10_1h.add_func(ma30_cross)
+    hb10_boll_cross = hb10_1h.add_func(boll_cross)
+    %timeit hb10_day_boll_cross = hb10_day.add_func(boll_cross_lf)
+    %timeit hb10_day_boll_cross = hb10_day.add_func(boll_cross)
+
+    # select_code 筛选过的单一代码数据，拆掉索引，免得计算过程中麻烦
     hb10_boll_cross = hb10_boll_cross.reset_index([1,2])
-    hb10_ma20_cross = hb10.add_func(ifup20_TA).T
+    hb10_day_boll_cross = hb10_day_boll_cross.reset_index([1,2])
+
+    hb10_ma20_cross = hb10_1h.add_func(ifup20_TA).T
     hb10_ma20_cross.columns = [x[1] for x in hb10_ma20_cross.columns]
     hb10_ma20_cross = hb10_ma20_cross.reset_index([1,2])
-    #print(hb10_boll_cross)
+    print(hb10_day_boll_cross.loc[pd.date_range('2020-02-01', periods=20, freq='D')])
     #print(hb10_ma20_cross)
-    DUAL_CROSS_ACTION = ((hb10_boll_cross['BOLL_CROSS_JX'] > 0) & (hb10_ma20_cross['btcusdt'] == True) & (hb10_boll_cross['BOLL_CROSS_JX'] < hb10_boll_cross['BOLL_CROSS_SX']))
+
+    # 4H ——> 1H 跨周期策略比较，计算结果重采样到一致。
+    data_4h_boll_cross.assign(ACTION=None)
+    data_4h_boll_cross['ACTION'] = (data_4h_boll_cross['BOLL_CROSS_JX'] > 0)
+    data_4h_boll_cross = data_4h_boll_cross.reset_index([1,2])
+    data_4h_boll_CROSS_to_1h = data_4h_boll_cross.resample('1h').ffill()
+    print(data_4h_boll_cross.loc[[pd.Timestamp('2020-02-16 16:00:00'), pd.Timestamp('2020-02-16 20:00:00'), pd.Timestamp('2020-02-17 00:00:00')]])
+    print(data_4h_boll_CROSS_to_1h.loc[[pd.Timestamp('2020-02-16 16:00:00'), pd.Timestamp('2020-02-16 17:00:00'), pd.Timestamp('2020-02-16 18:00:00'), pd.Timestamp('2020-02-16 19:00:00'), 
+                                        pd.Timestamp('2020-02-16 20:00:00'), pd.Timestamp('2020-02-16 21:00:00'), pd.Timestamp('2020-02-16 22:00:00'), pd.Timestamp('2020-02-16 23:00:00'), 
+                                        pd.Timestamp('2020-02-17 00:00:00'), pd.Timestamp('2020-02-17 01:00:00'), pd.Timestamp('2020-02-17 02:00:00'), pd.Timestamp('2020-02-17 03:00:00'), ]])
+    
+    data_4h_boll_CROSS_to_1h_action = data_4h_boll_CROSS_to_1h[data_4h_boll_CROSS_to_1h.apply(lambda x: x['ACTION'] == True, axis=1)]  # 去掉 False
+    print(data_4h_boll_CROSS_to_1h_action)
+    BOLL_CROSS_ACTION = ((hb10_boll_cross['BOLL_CROSS_JX'] > 0) & (data_4h_boll_CROSS_to_1h_action['ACTION'] == True) & (hb10_ma20_cross['btcusdt'] == True) & (hb10_boll_cross['BOLL_CROSS_JX'] < hb10_boll_cross['BOLL_CROSS_SX']))
     #DUAL_CROSS_ACTION = ((DUAL_CROSS_count > 0) &
     #(hb10_boll_cross['BOLL_CROSS_JX'] > 1))
-    DUAL_CROSS_ACTION = DUAL_CROSS_ACTION[DUAL_CROSS_ACTION.apply(lambda x: x == True)]  # 去掉 False
-    print(DUAL_CROSS_ACTION)
+    BOLL_CROSS_ACTION = BOLL_CROSS_ACTION[BOLL_CROSS_ACTION.apply(lambda x: x == True)]  # 去掉 False
     #DUAL_CROSS_SX = (DUAL_CROSS_count < 0) & (hb10_ma30_cross['MA30_CROSS_SX']
     #< hb10_ma30_cross['MA30_CROSS_JX']) & (hb10_ma20_cross['btcusdt'] ==
     #False)
     #DUAL_CROSS_SX = DUAL_CROSS_SX[DUAL_CROSS_SX.apply(lambda x: x == True)] #
     #去掉 False
-    hb10.data = hb10.data.reset_index([1,2], drop=False)
-    hb10.data = hb10.data.assign(DUAL_CROSS_JX_MARK=None)
-    hb10.data.loc[DUAL_CROSS_ACTION.index, 'DUAL_CROSS_JX_MARK'] = hb10.data.loc[DUAL_CROSS_ACTION.index].close
-    hb10.data = hb10.data.assign(DUAL_CROSS_SX_MARK=None)
+    hb10_1h.data = hb10_1h.data.reset_index([1,2], drop=False)
+    hb10_1h.data = hb10_1h.data.assign(BOLL_CROSS_JX_MARK=None)
+    hb10_1h.data.loc[BOLL_CROSS_ACTION.index, 'DUAL_CROSS_JX_MARK'] = hb10_1h.data.loc[BOLL_CROSS_ACTION.index].close
+    hb10_1h.data = hb10_1h.data.assign(BOLL_CROSS_SX_MARK=None)
     #hb10.data.loc[DUAL_CROSS_SX.index.get_level_values(level=0),
     #'DUAL_CROSS_SX_MARK'] =
     #hb10.data.loc[DUAL_CROSS_SX.index.get_level_values(level=0)].close
     
     # 打印出买入点信号日期
-    print(BUY_ACTION_DUAL.index)
+    #print(BUY_ACTION_DUAL.index)
     print('sell')
     print(SELL_ACTION_DUAL.index)
 
@@ -1044,18 +1101,18 @@ if __name__ == '__main__':
     fig = plt.figure()  
     ax1 = fig.add_subplot(111)  
 
-    hb10_boll = TA_BBANDS(hb10.data.close, timeperiod=20, nbdevup=2)
-    print(data2.close)
-    print(hb10.data.close)
-    hb10_kline = QA_Timekline(data2)
+    hb10_boll = TA_BBANDS(hb10_1h.data.close, timeperiod=20, nbdevup=2)
+    #print(data2.data.close)
+    #print(hb10.data.close)
+    #hb10_kline = QA_Timekline(data2.data)
     #print(hb10_kline.indices['BOLL_UB'])
     #print(hb10_boll[:,0])
-    ax1.plot(hb10.data.index.get_level_values(level=0), hb10.data.close.values,)
-    ax1.plot(hb10.data.index.get_level_values(level=0), hb10_boll[:,0], lw=1)
-    ax1.plot(hb10.data.index.get_level_values(level=0), hb10_boll[:,1], lw=1)
-    ax1.plot(hb10.data.index.get_level_values(level=0), hb10_boll[:,2], lw=1)
+    ax1.plot(hb10_1h.data.index.get_level_values(level=0), hb10_1h.data.close.values,)
+    ax1.plot(hb10_1h.data.index.get_level_values(level=0), hb10_boll[:,0], lw=1)
+    ax1.plot(hb10_1h.data.index.get_level_values(level=0), hb10_boll[:,1], lw=1)
+    ax1.plot(hb10_1h.data.index.get_level_values(level=0), hb10_boll[:,2], lw=1)
     #ax1.plot(MAX_FACTOR_jx_count[0])
-    ax1.plot(hb10.data['DUAL_CROSS_JX_MARK'],'ro')
+    ax1.plot(hb10_1h.data['DUAL_CROSS_JX_MARK'],'ro')
     #ax1.plot(hb10.data['DUAL_CROSS_SX_MARK'],'bx')
-    hb10_kline.plot()
+    #hb10_kline.plot()
     plt.show()
