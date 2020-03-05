@@ -36,6 +36,8 @@ import time
 from dateutil.relativedelta import relativedelta
 import pandas as pd
 import numpy as np
+from dateutil.parser import parse
+from dateutil.relativedelta import relativedelta
 from requests.exceptions import ConnectTimeout, SSLError, ReadTimeout, ConnectionError
 from retrying import retry
 
@@ -56,43 +58,18 @@ from QUANTAXIS.QAFetch.QAhuobi_realtime import (
     QA_Fetch_Job_Status,
     QA_Fetch_Job_Type,
     QA_Fetch_Job,
-    QA_Fetch_Huobi
+    QA_Fetch_Huobi,
+    format_huobi_data_fields,
+    Huobi2QA_FREQUENCY_DICT,
+    CandlestickInterval,
+    FREQUENCY_SHIFTING,
 )
 
+# from QUANTAXIS.QAUtil.QAcrypto import TIMEOUT, ILOVECHINA
+TIMEOUT = 10
+ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！蓝灯，喵帕斯，VPS，阴阳师，v2ray，随便什么来一个！我翻墙我骄傲！"
 Huobi_base_url = 'https://api.huobi.pro/'
 
-
-class CandlestickInterval:
-    MIN1 = "1min"
-    MIN5 = "5min"
-    MIN15 = "15min"
-    MIN30 = "30min"
-    MIN60 = "60min"
-    HOUR4 = "4hour"
-    DAY1 = "1day"
-    MON1 = "1mon"
-    WEEK1 = "1week"
-    YEAR1 = "1year"
-    INVALID = None
-
-
-Huobi2QA_FREQUENCY_DICT = {
-    CandlestickInterval.MIN1: '1min',
-    CandlestickInterval.MIN5: '5min',
-    CandlestickInterval.MIN15: '15min',
-    CandlestickInterval.MIN30: '30min',
-    CandlestickInterval.MIN60: '60min',
-    CandlestickInterval.DAY1: '1day'
-}
-
-FREQUENCY_SHIFTING = {
-    CandlestickInterval.MIN1: 14400,
-    CandlestickInterval.MIN5: 72000,
-    CandlestickInterval.MIN15: 216000,
-    CandlestickInterval.MIN30: 432000,
-    CandlestickInterval.MIN60: 864000,
-    CandlestickInterval.DAY1: 207360000
-}
 
 FIRST_PRIORITY = [
     'atomusdt',
@@ -119,10 +96,6 @@ FIRST_PRIORITY = [
     'xrpusdt',
     'zecusdt'
 ]
-
-# from QUANTAXIS.QAUtil.QAcrypto import TIMEOUT, ILOVECHINA
-TIMEOUT = 10
-ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！蓝灯，喵帕斯，VPS，阴阳师，v2ray，随便什么来一个！我翻墙我骄傲！"
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
@@ -207,37 +180,17 @@ def QA_fetch_huobi_kline(
                 return None
             for kline in msg_dict["data"]:
                 datas.append(kline)
-        # 狗日huobi.pro的REST API kline时间戳排序居然是倒序向前获取，必须从后向前获取，而且有数量限制，Request
-        # < 2000,
+            # 狗日huobi.pro的REST API kline时间戳排序居然是倒序向前获取，必须从后向前获取，而且有数量限制，
+            # Request < 2000,
+            if (callback_save_data_func is not None):
+                frame = format_huobi_data_fields(datas, symbol, frequency)
+                callback_save_data_func(frame, freq=Huobi2QA_FREQUENCY_DICT[frequency])
 
     if len(datas) == 0:
         return None
 
     # 归一化数据字段，转换填充必须字段，删除多余字段
-    frame = pd.DataFrame(datas)
-    frame['symbol'] = symbol
-    frame['market'] = 'huobi'
-    # UTC时间转换为北京时间
-    frame['date'] = pd.to_datetime(
-        frame['id'],
-        unit='s'
-    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-    frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
-    frame['datetime'] = pd.to_datetime(
-        frame['id'],
-        unit='s'
-    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-    frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    # 北京时间转换为 UTC Timestamp
-    frame['date_stamp'] = pd.to_datetime(
-        frame['date']
-    ).dt.tz_localize('Asia/Shanghai').astype(np.int64) // 10**9
-    frame['created_at'] = time.mktime(datetime.datetime.now().utctimetuple())
-    frame['updated_at'] = time.mktime(datetime.datetime.now().utctimetuple())
-    frame.rename({'count': 'trade', 'id': 'time_stamp', 'vol': 'volume'}, axis=1, inplace=True)
-    if (frequency not in [CandlestickInterval.DAY1, Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1], '1d']):
-        frame['type'] = Huobi2QA_FREQUENCY_DICT[frequency]
-    callback_save_data_func(frame, freq=frequency)
+    frame = format_huobi_data_fields(datas, symbol, frequency)
     return frame
 
 
@@ -252,34 +205,35 @@ def QA_fetch_huobi_kline_subscription(
     """
     Get the symbol‘s candlestick data by subscription
     """
-    def print_timestamp(ts_epoch):
-        return '{}({})'.format(
-            QA_util_timestamp_to_str(ts_epoch)[2:16],
-            ts_epoch
-        )
-
     reqParams = {}
-    reqParams['from'] = end_time - FREQUENCY_SHIFTING[frequency]
-    reqParams['to'] = end_time
-    if (reqParams['to'] > QA_util_datetime_to_Unix_timestamp()):
-        # 出现“未来”时间，一般是默认时区设置错误造成的
-        raise Exception(
-            'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set'
-        )
+    reqParams['from'] = int(end_time - FREQUENCY_SHIFTING[frequency])
+    reqParams['to'] = int(end_time)
 
-    data = []
     requested_counter = 1
     sub_client = QA_Fetch_Huobi(
         callback_save_data_func=callback_save_data_func,
         find_missing_kline_func=QA_util_find_missing_kline
     )
+    datas = list()
+    retries = 1
     while (reqParams['to'] > start_time):
-        if (reqParams['to'] > QA_util_datetime_to_Unix_timestamp()):
-            # 出现“未来”时间，一般是默认时区设置错误造成的
+        if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
+            ((reqParams['from'] > reqParams['to'])):
+            # 出现“未来”时间，一般是默认时区设置，或者时间窗口滚动前移错误造成的
             raise Exception(
-                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set'
+                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
+                .format(
+                    symbol,
+                    frequency,
+                    QA_util_print_timestamp(reqParams['from']),
+                    QA_util_print_timestamp(
+                        QA_util_datetime_to_Unix_timestamp()
+                    )
+                )
             )
+
         retries = 1
+        frame = None
         while (retries != 0):
             try:
                 frame = sub_client.run_request_historical_kline(
@@ -304,16 +258,19 @@ def QA_fetch_huobi_kline_subscription(
                 time.sleep(0.5)
             if (retries == 0):
                 # 等待3秒，请求下一个时间段的批量K线数据
-                reqParams['to'] = reqParams['from'] - 1
+                reqParams['to'] = int(reqParams['from'] - 1)
                 reqParams['from'
-                         ] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
+                         ] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
                 requested_counter = requested_counter + 1
                 # 这一步冗余，如果是开启实时抓取会自动被 WebSocket.on_messgae_callback 事件处理函数保存，
                 # 但不确定不开启实时行情抓取会不会绑定on_messgae事件，所以保留冗余。
                 callback_save_data_func(data=frame, freq=frequency)
         time.sleep(0.5)
-
-    return data
+    
+    if ((retries == 0) and (len(frame) > 0)):
+        return frame
+    else:
+        return None
 
 
 if __name__ == '__main__':

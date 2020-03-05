@@ -56,7 +56,7 @@ from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
 
 import pymongo
 
-# OKEx的历史数据只是从2017年10月开始有，9.4以前的貌似都没有保留
+# OKEx的历史数据只提供2000个bar
 OKEx_MIN_DATE = datetime.datetime(2017, 10, 1, tzinfo=tzutc())
 
 
@@ -178,7 +178,7 @@ def QA_SU_save_okex_min(frequency='60', ui_log=None, ui_progress=None):
     Save OKEx min kline 分钟线数据，统一转化字段保存数据为 crypto_asset_min
     """
     market = 'okex'
-    symbol_list = QA_fetch_crypto_asset_list(market='okex')
+    symbol_list = QA_fetch_crypto_asset_list(market=market)
     col = DATABASE.crypto_asset_min
     col.create_index(
         [
@@ -276,8 +276,8 @@ def QA_SU_save_okex_min(frequency='60', ui_log=None, ui_progress=None):
             miss_kline = pd.DataFrame(
                 [
                     [
-                        QA_util_datetime_to_Unix_timestamp(start_time),
-                        QA_util_datetime_to_Unix_timestamp(end),
+                        int(QA_util_datetime_to_Unix_timestamp(start_time)),
+                        int(QA_util_datetime_to_Unix_timestamp(end)),
                         '{} 到 {}'.format(start_time,
                                          end)
                     ]
@@ -295,17 +295,17 @@ def QA_SU_save_okex_min(frequency='60', ui_log=None, ui_progress=None):
             missing = 2
             reqParams = {}
             for i in range(len(missing_data_list)):
-                reqParams['from'] = missing_data_list[i][expected]
-                reqParams['to'] = missing_data_list[i][between]
-                if (reqParams['to'] >
-                    (QA_util_datetime_to_Unix_timestamp() + 3600)):
+                reqParams['from'] = int(missing_data_list[i][expected])
+                reqParams['to'] = int(missing_data_list[i][between])
+                if (reqParams['from'] >
+                    (QA_util_datetime_to_Unix_timestamp() + 120)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
                     raise Exception(
                         'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                         .format(
                             symbol_info['symbol'],
                             frequency,
-                            QA_util_print_timestamp(reqParams['to']),
+                            QA_util_print_timestamp(reqParams['from']),
                             QA_util_print_timestamp(
                                 QA_util_datetime_to_Unix_timestamp()
                             )
@@ -404,7 +404,15 @@ def QA_SU_save_okex_symbol(
             axis=1,
             inplace=True
         )
-
+        if ('_id' in symbol_lists.columns.values):
+            # 有时有，必须单独删除
+            symbol_lists.drop(
+                [
+                    '_id',
+                ],
+                axis=1,
+                inplace=True
+            )
         symbol_lists['created_at'] = int(
             time.mktime(datetime.datetime.now().utctimetuple())
         )
@@ -438,7 +446,7 @@ def QA_SU_save_okex_symbol(
         except:
             QA_util_log_expection(
                 'QA_SU_save_okex_symbol(): Insert_many(symbol) to "crypto_asset_list" got Exception with {} klines'
-                .format(len(data))
+                .format(len(symbol_lists))
             )
             pass
         return []
@@ -446,7 +454,7 @@ def QA_SU_save_okex_symbol(
 
 def QA_SU_save_data_okex_callback(data, freq):
     """
-    异步获取数据回调用的 MongoDB 存储函数
+    异步获取数据回调用的 MongoDB 存储函数，okex返回数据也是时间倒序排列
     """
     QA_util_log_info(
         'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
@@ -454,11 +462,11 @@ def QA_SU_save_data_okex_callback(data, freq):
             freq,
             time.strftime(
                 '%Y-%m-%d %H:%M:%S',
-                time.localtime(data.iloc[0].time_stamp)
+                time.localtime(data.iloc[-1].time_stamp)
             )[2:16],
             time.strftime(
                 '%Y-%m-%d %H:%M:%S',
-                time.localtime(data.iloc[-1].time_stamp)
+                time.localtime(data.iloc[0].time_stamp)
             )[2:16],
             len(data)
         )
@@ -542,6 +550,7 @@ def QA_SU_save_data_okex_callback(data, freq):
 
 
 if __name__ == '__main__':
+    QA_SU_save_okex_min('900')
     QA_SU_save_okex_symbol()
     #QA_SU_save_okex_1day()
     #QA_SU_save_okex_1hour()
