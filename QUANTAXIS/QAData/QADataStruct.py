@@ -1648,16 +1648,7 @@ class QA_DataStruct_Crypto_Asset_day(_quotation_base):
     def __init__(self, DataFrame, dtype='crypto_asset_day', if_fq=''):
         super().__init__(DataFrame, dtype, if_fq)
         self.type = 'crypto_asset_day'
-        self.data = self.data.loc[:,
-                                  [
-                                      'open',
-                                      'high',
-                                      'low',
-                                      'close',
-                                      'volume',
-                                      'trade',
-                                      'amount'
-                                  ]]
+        self.data = self.data.sort_index()
         self.if_fq = if_fq
 
     # 抽象类继承
@@ -1954,17 +1945,7 @@ class QA_DataStruct_Crypto_Asset_min(_quotation_base):
     def __init__(self, DataFrame, dtype='crypto_asset_min', if_fq=''):
         super().__init__(DataFrame, dtype, if_fq)
         self.type = dtype
-        self.data = self.data.loc[:,
-                                  [
-                                      'open',
-                                      'high',
-                                      'low',
-                                      'close',
-                                      'volume',
-                                      'trade',
-                                      'amount',
-                                      'type'
-                                  ]]
+        self.data = self.data.sort_index()
         self.if_fq = if_fq
 
     # 抽象类继承
