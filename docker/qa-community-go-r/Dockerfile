@@ -33,8 +33,7 @@ ARG CMAKE_VERSION=3.12.0
 WORKDIR /tmp
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
-&& mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake \
-&& cmake -version
+&& mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake 
 
 RUN apt-get install -y --allow-downgrades pkg-config zlib1g=1:1.2.8.dfsg-2ubuntu4.1 && apt-get install pkg-config libssl-dev -y
 
