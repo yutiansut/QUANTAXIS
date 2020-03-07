@@ -282,7 +282,7 @@ def QA_SU_save_bitfinex_min(frequency, ui_log=None, ui_progress=None):
                     [
                         int(QA_util_datetime_to_Unix_timestamp(start_time)),
                         int(QA_util_datetime_to_Unix_timestamp(end)),
-                        '{} 到 {}'.format(start_time,
+                        '{} to {}'.format(start_time,
                                          end)
                     ]
                 ],

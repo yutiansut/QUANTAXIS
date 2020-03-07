@@ -278,7 +278,7 @@ def QA_SU_save_bitmex_min(frequency='1m', ui_log=None, ui_progress=None):
                     [
                         QA_util_datetime_to_Unix_timestamp(start_time),
                         QA_util_datetime_to_Unix_timestamp(end),
-                        '{} 到 {}'.format(start_time,
+                        '{} to {}'.format(start_time,
                                          end)
                     ]
                 ],
