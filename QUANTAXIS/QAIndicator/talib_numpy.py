@@ -35,6 +35,12 @@ except:
 """
 完全用nparray传递参数的talib库，原因是用nparray因为没有 Series MultiIndex 的问题。
 处理和补完速度都比pandas更快，转 pd.DataFrame/pd.Series 只需要一个构造函数。
+
+我还引入了一些talib没有，但是写出来不超过10行代码，很容易实现好指标，源自外网(TradingView或者MQ4/5)找到的。
+例如
+Moving Average ADX
+Hull Moving Average
+Volume HMA(未完成)
 """
 
 # 定义MACD函数
@@ -178,22 +184,18 @@ def TA_ADXm(data, period=10, smooth=10, limit=18):
         ADXm indicator and thread directions sequence. (-1, 0, 1) means for (Negatice, No Trend, Postive)
 
     """
-    lenadx = period
-    lensig = smooth
-    limadx = limit
-
     up = data.high.pct_change()
     down = data.low.pct_change() * -1
 
-    trur = TA_HMA(talib.TRANGE(data.high.values, data.low.values, data.close.values) , lenadx)
-    plus = 100 * TA_HMA(np.where(((up > down) & (up > 0)), up, 0), lenadx) / trur
-    minus = 100 * TA_HMA(np.where(((down > up) & (down > 0)), down, 0), lenadx) / trur
+    trur = TA_HMA(talib.TRANGE(data.high.values, data.low.values, data.close.values) , period)
+    plus = 100 * TA_HMA(np.where(((up > down) & (up > 0)), up, 0), period) / trur
+    minus = 100 * TA_HMA(np.where(((down > up) & (down > 0)), down, 0), period) / trur
 
     # 这里是dropna的替代解决办法，因为我觉得nparray的传递方式如果随便drop了可能会跟 data.index 对不上，所以我选择补零替代dropna
-    plus = np.r_[np.zeros(lenadx + 2), plus[(lenadx + 2):]]
-    minus = np.r_[np.zeros(lenadx + 2), minus[(lenadx + 2):]]
+    plus = np.r_[np.zeros(period + 2), plus[(period + 2):]]
+    minus = np.r_[np.zeros(period + 2), minus[(period + 2):]]
     sum = plus + minus 
-    adx = 100 * TA_HMA(abs(plus - minus) / (np.where((sum == 0), 1, sum)), lensig)
-    adx = np.r_[np.zeros(lensig + 2), adx[(lensig + 2):]]
-    ADXm = np.where(((adx > limadx) & (plus > minus)), 1, np.where(((adx > limadx) & (plus < minus)), -1, 0))
+    adx = 100 * TA_HMA(abs(plus - minus) / (np.where((sum == 0), 1, sum)), smooth)
+    adx = np.r_[np.zeros(smooth + 2), adx[(smooth + 2):]]
+    ADXm = np.where(((adx > limit) & (plus > minus)), 1, np.where(((adx > limit) & (plus < minus)), -1, 0))
     return adx, ADXm
