@@ -841,6 +841,7 @@ if __name__ == '__main__':
             start='2020-02-01',
             end='2020-05-28 18:10:00',
             frequence='60min')
+    
     #codelist = QA.QA_fetch_stock_block_adv().get_block('沪深300').code
     #print(codelist[0:30])
 
