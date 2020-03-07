@@ -33,8 +33,8 @@ if __name__ == '__main__':
         High = price.high.values
         Low = price.low.values
         Close = price.close.values
-        Time
-
+        Time = price.index.get_level_values(Level=0)
+        return False
 
     data_day = QA.QA_fetch_crypto_asset_day_adv(['huobi'],
         symbol=['btcusdt'],
@@ -46,9 +46,11 @@ if __name__ == '__main__':
     dual_cross_day = data_day.add_func(dual_cross_func).reset_index([1,2])
     boll_bands_day = data_day.add_func(boll_cross_func).reset_index([1,2])
     tmom_day = time_series_momemtum(data_day.data.close, 10).reset_index([1,2])
+
     tmom_negative = ((tmom_day['close'] < 0) & (price_predict_day['DEA'] < 0)) | \
         ((tmom_day['close'] < 0) & (price_predict_day['DELTA'] < 0)) | \
         ((tmom_day['close'] < 0) & (price_predict_day['MACD_CROSS_SX'] < price_predict_day['MACD_CROSS_JX']))
+
     tmom_negative = tmom_negative[tmom_negative.apply(lambda x: x == True)]  # eqv.  Trim(x == False)
     x_tp_min = price_predict_day[price_predict_day.apply(lambda x: x['PRICE_PRED_CROSS'] > 0, axis = 1)]['PRICE_PRED_CROSS'].values  # eqv.  Trim(x < 0)
     x_tp_max = price_predict_day[price_predict_day.apply(lambda x: x['PRICE_PRED_CROSS'] < 0, axis = 1)]['PRICE_PRED_CROSS'].values * -1  # eqv.  Trim(x > 0)
