@@ -32,6 +32,10 @@ except:
     pass
     #print('PLEASE install TALIB to call these methods')
 
+"""
+完全用nparray传递参数的talib库，原因是用nparray因为没有 Series MultiIndex 的问题。
+处理和补完速度都比pandas更快，转 pd.DataFrame/pd.Series 只需要一个构造函数。
+"""
 
 # 定义MACD函数
 def TA_MACD(prices, fastperiod=12, slowperiod=26, signalperiod=9):
@@ -184,6 +188,8 @@ def TA_ADXm(data, period=10, smooth=10, limit=18):
     trur = TA_HMA(talib.TRANGE(data.high.values, data.low.values, data.close.values) , lenadx)
     plus = 100 * TA_HMA(np.where(((up > down) & (up > 0)), up, 0), lenadx) / trur
     minus = 100 * TA_HMA(np.where(((down > up) & (down > 0)), down, 0), lenadx) / trur
+
+    # 这里是dropna的替代解决办法，因为我觉得nparray的传递方式如果随便drop了可能会跟 data.index 对不上，所以我选择补零替代dropna
     plus = np.r_[np.zeros(lenadx + 2), plus[(lenadx + 2):]]
     minus = np.r_[np.zeros(lenadx + 2), minus[(lenadx + 2):]]
     sum = plus + minus 
