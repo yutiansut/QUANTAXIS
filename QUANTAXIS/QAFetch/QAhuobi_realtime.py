@@ -62,8 +62,6 @@ huobi Python官方客户端文档参考: https://github.com/HuobiRDCenter/huobi_
 pip install huobi-client 的不是最新版(v0.32)，需要自己去 git 下载安装，测试基于
 本模块开发为了更好的解耦合，移除 huobi-client 依赖，使用我最早裸写的原生代码版本实现，直接导入CandlestickInterval类
 """
-
-
 class CandlestickInterval:
     MIN1 = "1min"
     MIN5 = "5min"
@@ -77,6 +75,30 @@ class CandlestickInterval:
     YEAR1 = "1year"
     INVALID = None
 
+"""
+QUANTAXIS 和 Huobi.pro 的 frequency 常量映射关系
+"""
+Huobi2QA_FREQUENCY_DICT = {
+    CandlestickInterval.MIN1: FREQUENCE.ONE_MIN,
+    CandlestickInterval.MIN5: FREQUENCE.FIVE_MIN,
+    CandlestickInterval.MIN15: FREQUENCE.FIFTEEN_MIN,
+    CandlestickInterval.MIN30: FREQUENCE.THIRTY_MIN,
+    CandlestickInterval.MIN60: FREQUENCE.SIXTY_MIN,
+    CandlestickInterval.DAY1: FREQUENCE.DAY
+}
+
+"""
+Huobi 只允许一次获取 300bar，时间请求超过范围则不返回数据
+"""
+FREQUENCY_SHIFTING = {
+    CandlestickInterval.MIN1: 14400,
+    CandlestickInterval.MIN5: 72000,
+    CandlestickInterval.MIN15: 216000,
+    CandlestickInterval.MIN30: 432000,
+    CandlestickInterval.MIN60: 864000,
+    CandlestickInterval.DAY1: 20736000
+}
+
 
 class QA_Fetch_Job_Status(object):
     """
@@ -87,6 +109,47 @@ class QA_Fetch_Job_Status(object):
     FINISHED = 'STATUS_FINISHED'
     RUNNING = 'STATUS_RUNNING'
     ERROR = 'STATUS_ERROR'
+
+
+def format_huobi_data_fields(datas, symbol, frequency):
+    """
+    # 归一化数据字段，转换填充必须字段，删除多余字段
+    字段名称 	数据类型 	描述
+    id 	long 	调整为新加坡时间的时间戳，单位秒，并以此作为此K线柱的id
+    amount 	float 	以基础币种计量的交易量
+    count 	integer 	交易次数
+    open 	float 	本阶段开盘价
+    close 	float 	本阶段收盘价
+    low 	float 	本阶段最低价
+    high 	float 	本阶段最高价
+    vol 	float 	以报价币种计量的交易量
+    """
+    # 归一化数据字段，转换填充必须字段，删除多余字段
+    frame = pd.DataFrame(datas)
+    frame['id'] = frame.apply(lambda x: int(x.loc['id']), axis=1)
+    frame['symbol'] = symbol
+    frame['market'] = 'huobi'
+    # UTC时间转换为北京时间
+    frame['date'] = pd.to_datetime(
+        frame['id'],
+        unit='s'
+    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
+    frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
+    frame['datetime'] = pd.to_datetime(
+        frame['id'],
+        unit='s'
+    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
+    frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    # 北京时间转换为 UTC Timestamp
+    frame['date_stamp'] = pd.to_datetime(
+        frame['date']
+    ).dt.tz_localize('Asia/Shanghai').astype(np.int64) // 10**9
+    frame['created_at'] = time.mktime(datetime.now().utctimetuple())
+    frame['updated_at'] = time.mktime(datetime.now().utctimetuple())
+    frame.rename({'count': 'trade', 'id': 'time_stamp', 'vol': 'volume'}, axis=1, inplace=True)
+    if (frequency not in [CandlestickInterval.DAY1, Huobi2QA_FREQUENCY_DICT[CandlestickInterval.DAY1], '1d']):
+        frame['type'] = Huobi2QA_FREQUENCY_DICT[frequency]
+    return frame
 
 
 class QA_Fetch_Job_Type(object):
@@ -102,18 +165,17 @@ class QA_Fetch_Job(object):
     行情数据获取批处理任务，此为公共抽象类
     """
     FREQUENCE_PERIOD_TIME = {
-        FREQUENCE.ONE_MIN: 60,
-        FREQUENCE.FIVE_MIN: 300,
-        FREQUENCE.FIFTEEN_MIN: 900,
-        FREQUENCE.THIRTY_MIN: 1800,
-        FREQUENCE.SIXTY_MIN: 3600,
-        FREQUENCE.HOUR: 3600,
-        FREQUENCE.DAY: 86400,
+        CandlestickInterval.MIN1: 60,
+        CandlestickInterval.MIN5: 300,
+        CandlestickInterval.MIN15: 900,
+        CandlestickInterval.MIN30: 1800,
+        CandlestickInterval.MIN60: 3600,
+        CandlestickInterval.DAY1: 86400,
     }
 
     __request = None
 
-    def __init__(self, symbol, period=FREQUENCE.ONE_MIN):
+    def __init__(self, symbol, period=CandlestickInterval.MIN1):
         """
         初始化的时候 会初始化
         """
@@ -211,7 +273,7 @@ class QA_Tick_Summary(object):
     行情数据获取统计类，负责统计和输出日志
     """
 
-    def __init__(self, countdown=5):
+    def __init__(self, countdown=30):
         """
         初始化的时候 会初始化
         """
@@ -249,19 +311,6 @@ class QA_Fetch_Huobi(object):
     火币Pro行情数据 WebSocket 接口，基础类
     """
     HUOBIPRO_WEBSOCKET_URL = "wss://api.huobi.pro/ws"
-    """
-    QUANTAXIS 系统定义的时间跟火币网WebSocket 接口的有一点偏差 day 火币叫 1day，hour 火币定义为 60min，需要查表映射转换。
-    """
-    Huobi2QA_FREQUENCE_DICT = {
-        CandlestickInterval.MIN1: FREQUENCE.ONE_MIN,
-        CandlestickInterval.MIN5: FREQUENCE.FIVE_MIN,
-        CandlestickInterval.MIN15: FREQUENCE.FIFTEEN_MIN,
-        CandlestickInterval.MIN30: FREQUENCE.THIRTY_MIN,
-        CandlestickInterval.MIN60: FREQUENCE.SIXTY_MIN,
-        FREQUENCE.HOUR: FREQUENCE.SIXTY_MIN,
-        FREQUENCE.DAY: '1day',
-        '1day': FREQUENCE.DAY,
-    }
 
     def __init__(
         self,
@@ -352,35 +401,7 @@ class QA_Fetch_Huobi(object):
                 )
 
                 # 处理返回的行情数据
-                ohlcvData = pd.DataFrame(
-                    columns=[
-                        'symbol',
-                        'market',
-                        'type',
-                        'time_stamp',
-                        'open',
-                        'high',
-                        'low',
-                        'close',
-                        'amount',
-                        'trade',
-                        'volume'
-                    ]
-                )
-                for t in range(len(msg_dict['data'])):
-                    ohlcvData = ohlcvData.append({'symbol': self.__batchReqJobs[msg_dict['rep']].Symbol,  # stock ID
-                        'market': 'huobi',
-                        'type': self.Huobi2QA_FREQUENCE_DICT[self.__batchReqJobs[msg_dict['rep']].Period],
-                        'time_stamp': msg_dict['data'][t]['id'],  # timestamp
-                        'open': msg_dict['data'][t]['open'],  # open,
-                        'high': msg_dict['data'][t]['high'],  # high,
-                        'low': msg_dict['data'][t]['low'],  # low,
-                        'close': msg_dict['data'][t]['close'],  # close,
-                        'amount': msg_dict['data'][t]['amount'],  # volume
-                        'trade': msg_dict['data'][t]['count'],  # volume
-                        'volume': msg_dict['data'][t]['vol'],  # amount
-                    }, ignore_index=True)
-                if (len(ohlcvData) == 0):
+                if (len(msg_dict['data']) == 0):
                     # 没有缺漏数据，神完气足，当前时间分段的K线数据全部获取完毕，转入实时K线数据获取模式。
                     QA_util_log_info(
                         "'%s' 时间的K线数据全部获取完毕，转入实时K线数据获取模式。" %
@@ -391,29 +412,7 @@ class QA_Fetch_Huobi(object):
                     )
                 else:
                     # 归一化数据字段，转换填充必须字段，删除多余字段 GMT+8
-                    ohlcvData['date'] = pd.to_datetime(
-                        ohlcvData['time_stamp'],
-                        unit='s'
-                    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-                    ohlcvData['date'] = ohlcvData['date'].dt.strftime(
-                        '%Y-%m-%d'
-                    )
-                    ohlcvData['datetime'] = pd.to_datetime(
-                        ohlcvData['time_stamp'],
-                        unit='s'
-                    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-                    ohlcvData['datetime'] = ohlcvData['datetime'].dt.strftime(
-                        '%Y-%m-%d %H:%M:%S'
-                    )
-                    ohlcvData['date_stamp'] = pd.to_datetime(
-                        ohlcvData['date']
-                    ).astype(np.int64) // 10**9
-                    ohlcvData['created_at'] = int(
-                        time.mktime(datetime.now().utctimetuple())
-                    )
-                    ohlcvData['updated_at'] = int(
-                        time.mktime(datetime.now().utctimetuple())
-                    )
+                    ohlcvData = format_huobi_data_fields(msg_dict['data'], symbol=self.__batchReqJobs[msg_dict['rep']].Symbol, frequency=self.__batchReqJobs[msg_dict['rep']].Period)
 
                     QA_util_log_info(
                         "rep: %s, id: %s, return %d records." %
@@ -423,7 +422,7 @@ class QA_Fetch_Huobi(object):
                     )
                     self.callback_save_data_func(
                         ohlcvData,
-                        freq=self.Huobi2QA_FREQUENCE_DICT[self.__batchSubJobs[
+                        freq=Huobi2QA_FREQUENCY_DICT[self.__batchSubJobs[
                             msg_dict['rep']].Period]
                     )
             else:
@@ -439,59 +438,13 @@ class QA_Fetch_Huobi(object):
                 self.__tick_summary.Tick(msg_dict['ch'])
 
                 # 处理返回的行情数据
-                ohlcvData = pd.DataFrame(
-                    columns=[
-                        'symbol',
-                        'market',
-                        'type',
-                        'time_stamp',
-                        'open',
-                        'high',
-                        'low',
-                        'close',
-                        'amount',
-                        'trade',
-                        'volume'
-                    ]
-                )
-                ohlcvData = ohlcvData.append({'symbol': self.__batchSubJobs[msg_dict['ch']].Symbol,  # stock ID
-                        'market': 'huobi',
-                        'type': self.Huobi2QA_FREQUENCE_DICT[self.__batchSubJobs[msg_dict['ch']].Period],
-                        'time_stamp': msg_dict['tick']['id'],  # timestamp
-                        'open': msg_dict['tick']['open'],  # open,
-                        'high': msg_dict['tick']['high'],  # high,
-                        'low': msg_dict['tick']['low'],  # low,
-                        'close': msg_dict['tick']['close'],  # close,
-                        'amount': msg_dict['tick']['amount'],  # amount
-                        'trade': msg_dict['tick']['count'],  # tradecount
-                        'volume': msg_dict['tick']['vol'],  # volume
-                }, ignore_index=True)
+                if (len(msg_dict['tick']) > 0):
+                    # 归一化数据字段，转换填充必须字段，删除多余字段 GMT+8
+                    ohlcvData = format_huobi_data_fields(pd.DataFrame.from_dict(msg_dict['tick'],orient='index').T, symbol=self.__batchSubJobs[msg_dict['ch']].Symbol, frequency=self.__batchSubJobs[msg_dict['ch']].Period)
 
-                # 归一化数据字段，转换填充必须字段，删除多余字段 GMT+8
-                ohlcvData['date'] = pd.to_datetime(
-                    ohlcvData['time_stamp'],
-                    unit='s'
-                ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-                ohlcvData['date'] = ohlcvData['date'].dt.strftime('%Y-%m-%d')
-                ohlcvData['datetime'] = pd.to_datetime(
-                    ohlcvData['time_stamp'],
-                    unit='s'
-                ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-                ohlcvData['datetime'] = ohlcvData['datetime'].dt.strftime(
-                    '%Y-%m-%d %H:%M:%S'
-                )
-                ohlcvData['date_stamp'] = pd.to_datetime(
-                    ohlcvData['date']
-                ).astype(np.int64) // 10**9
-                ohlcvData['created_at'] = int(
-                    time.mktime(datetime.now().utctimetuple())
-                )
-                ohlcvData['updated_at'] = int(
-                    time.mktime(datetime.now().utctimetuple())
-                )
                 self.callback_save_data_func(
                     ohlcvData,
-                    freq=self.Huobi2QA_FREQUENCE_DICT[self.__batchSubJobs[msg_dict['ch']
+                    freq=Huobi2QA_FREQUENCY_DICT[self.__batchSubJobs[msg_dict['ch']
                                                                 ].Period]
                 )
                 if ((msg_dict['ch'] in self.__batchReqJobs)
@@ -577,7 +530,7 @@ class QA_Fetch_Huobi(object):
             for i in range(len(missing_data_list)):
                 reqParams['from'] = int(missing_data_list[i][
                     between] - initalParams['shifting_time'])
-                reqParams['to'] = (missing_data_list[i][between])
+                reqParams['to'] =  int(missing_data_list[i][between])
                 if (reqParams['to'] >
                     (QA_util_datetime_to_Unix_timestamp() + 120)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
@@ -613,14 +566,14 @@ class QA_Fetch_Huobi(object):
                             initalParams['id'],
                             requested_counter
                         )
-                        if (reqParams['to'] >
+                        if (reqParams['from'] >
                             (QA_util_datetime_to_Unix_timestamp() + 120)):
                             # 出现“未来”时间，一般是默认时区设置错误造成的
                             raise Exception(
-                                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
+                                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s} at {:s} but current time is {}'
                                 .format(
                                     initalParams['req'],
-                                    QA_util_print_timestamp(reqParams['to']),
+                                    QA_util_print_timestamp(reqParams['from']),
                                     QA_util_print_timestamp(
                                         QA_util_datetime_to_Unix_timestamp()
                                     )
@@ -681,7 +634,7 @@ class QA_Fetch_Huobi(object):
             # 查询到 Kline 缺漏，点抓取模式，按缺失的时间段精确请求K线数据
             missing_data_list = self.find_missing_kline_func(
                 currentJob.Symbol,
-                currentJob.Period,
+                Huobi2QA_FREQUENCY_DICT[currentJob.Period],
                 market='huobi'
             )
             if len(missing_data_list) > 0:
@@ -719,7 +672,7 @@ class QA_Fetch_Huobi(object):
         # 60min，需要查表映射转换。
         requestStr = "market.%s.kline.%s" % (
             symbol,
-            self.Huobi2QA_FREQUENCE_DICT[period]
+            period
         )
 
         # 订阅K线记录
@@ -826,7 +779,7 @@ class QA_Fetch_Huobi(object):
         reqParams = {}
         reqParams['req'] = requestStr = "market.%s.kline.%s" % (
             symbol,
-            self.Huobi2QA_FREQUENCE_DICT[period]
+            period
         )
         reqParams['from'] = int(start_epoch)
         reqParams['to'] = int(end_epoch)
@@ -873,35 +826,7 @@ class QA_Fetch_Huobi(object):
             )
 
             # 处理返回的行情数据
-            ohlcvData = pd.DataFrame(
-                columns=[
-                    'symbol',
-                    'market',
-                    'type',
-                    'time_stamp',
-                    'open',
-                    'high',
-                    'low',
-                    'close',
-                    'amount',
-                    'trade',
-                    'volume'
-                ]
-            )
-            for t in range(len(msg_dict['data'])):
-                ohlcvData = ohlcvData.append({'symbol': symbol,  # stock ID
-                    'market': 'huobi',
-                    'type': self.Huobi2QA_FREQUENCE_DICT[period],
-                    'time_stamp': msg_dict['data'][t]['id'],  # timestamp
-                    'open': msg_dict['data'][t]['open'],  # open,
-                    'high': msg_dict['data'][t]['high'],  # high,
-                    'low': msg_dict['data'][t]['low'],  # low,
-                    'close': msg_dict['data'][t]['close'],  # close,
-                    'amount': msg_dict['data'][t]['amount'],  # volume
-                    'trade': msg_dict['data'][t]['count'],  # volume
-                    'volume': msg_dict['data'][t]['vol'],  # amount
-                }, ignore_index=True)
-            if (len(ohlcvData) == 0):
+            if (len(msg_dict['data']) == 0):
                 # 火币网的 WebSocket 接口机制很奇特，返回len(data)==0
                 # 就说明已经超越这个交易对的上架时间，不再有更多数据了。
                 # 当前 Symbol Klines 抓取已经结束了
@@ -909,27 +834,7 @@ class QA_Fetch_Huobi(object):
                 return None
             else:
                 # 归一化数据字段，转换填充必须字段，删除多余字段 GMT+8
-                ohlcvData['date'] = pd.to_datetime(
-                    ohlcvData['time_stamp'],
-                    unit='s'
-                ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-                ohlcvData['date'] = ohlcvData['date'].dt.strftime('%Y-%m-%d')
-                ohlcvData['datetime'] = pd.to_datetime(
-                    ohlcvData['time_stamp'],
-                    unit='s'
-                ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-                ohlcvData['datetime'] = ohlcvData['datetime'].dt.strftime(
-                    '%Y-%m-%d %H:%M:%S'
-                )
-                ohlcvData['date_stamp'] = pd.to_datetime(
-                    ohlcvData['date']
-                ).astype(np.int64) // 10**9
-                ohlcvData['created_at'] = int(
-                    time.mktime(datetime.now().utctimetuple())
-                )
-                ohlcvData['updated_at'] = int(
-                    time.mktime(datetime.now().utctimetuple())
-                )
+                ohlcvData = format_huobi_data_fields(msg_dict['data'], symbol=symbol, frequency=period)
 
                 QA_util_log_info(
                     "rep: %s, id: %s, return %d kiline bar(s)." %
@@ -946,7 +851,12 @@ if __name__ == "__main__":
     fetch_huobi_history = QA_Fetch_Huobi(callback_save_data_func=QA_SU_save_data_huobi_callback, find_missing_kline_func=QA_util_find_missing_kline)
 
     # 添加抓取行情数据任务，将会开启多线程抓取。
-    fetch_huobi_history.add_subscription_batch_jobs(['hb10usdt'], [FREQUENCE.DAY], '2017-10-26 02:00:00')
+    fetch_huobi_history.add_subscription_batch_jobs(['hb10usdt'], [CandlestickInterval.MIN1,
+            CandlestickInterval.MIN5,
+            CandlestickInterval.MIN15,
+            CandlestickInterval.MIN30,
+            CandlestickInterval.MIN60,
+            CandlestickInterval.DAY1], '2017-10-26 02:00:00')
 
     fetch_huobi_history.run_subscription_batch_jobs()
     pass
