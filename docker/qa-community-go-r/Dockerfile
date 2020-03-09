@@ -58,6 +58,7 @@ RUN set -eux; \
     rustc --version;
 
 RUN set -eux; \
+    apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32 40976EAF437D05B5\
     apt-get update; \
     apt-get install -y build-essential libzmq3-dev pkg-config;
 
