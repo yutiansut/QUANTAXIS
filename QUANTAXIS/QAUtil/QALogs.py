@@ -76,21 +76,71 @@ logging.getLogger('').addHandler(console)
 
 
 def QA_util_log_debug(logs, ui_log=None, ui_progress=None):
+    
     """
-    QUANTAXIS Log Module
-    @yutiansut
+    explanation:
+        QUANTAXIS DEBUG级别日志接口	
 
-    QA_util_log_x is under [QAStandard#0.0.2@602-x] Protocol
+    params:
+        * logs ->:
+            meaning: log信息
+            type: null
+            optional: [null]
+        * ui_log ->:
+            meaning:
+            type: null
+            optional: [null]
+        * ui_progress ->:
+            meaning:
+            type: null
+            optional: [null]
+
+    return:
+        None
+	
+    demonstrate:
+        Not described
+	
+    output:
+        Not described
     """
     logging.debug(logs)
 
 
-def QA_util_log_info(
-        logs,
-        ui_log=None,
-        ui_progress=None,
-        ui_progress_int_value=None,
-):
+def QA_util_log_info(logs, ui_log=None, ui_progress=None, ui_progress_int_value=None):
+
+    """
+    explanation:
+        QUANTAXIS INFO级别日志接口	
+
+    params:
+        * logs ->:
+            meaning: 日志信息
+            type: null
+            optional: [null]
+        * ui_log ->:
+            meaning: 
+            type: null
+            optional: [null]
+        * ui_progress ->:
+            meaning: 
+            type: null
+            optional: [null]
+        * ui_progress_int_value ->:
+            meaning:
+            type: null
+            optional: [null]
+
+    return:
+        None
+	
+    demonstrate:
+        Not described
+	
+    output:
+        Not described
+    """
+
     """
     QUANTAXIS Log Module
     @yutiansut
@@ -112,10 +162,33 @@ def QA_util_log_info(
 
 
 def QA_util_log_expection(logs, ui_log=None, ui_progress=None):
+    
     """
-    QUANTAXIS Log Module
-    @yutiansut
+    explanation:
+        QUANTAXIS ERROR级别日志接口		
 
-    QA_util_log_x is under [QAStandard#0.0.2@602-x] Protocol
+    params:
+        * logs ->:
+            meaning: 日志信息
+            type: null
+            optional: [null]
+        * ui_log ->:
+            meaning:
+            type: null
+            optional: [null]
+        * ui_progress ->:
+            meaning:
+            type: null
+            optional: [null]
+
+    return:
+        None
+	
+    demonstrate:
+        Not described
+	
+    output:
+        Not described
     """
+
     logging.exception(logs)

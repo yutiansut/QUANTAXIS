@@ -3,6 +3,27 @@ import os
 
 
 def QA_util_file_md5(filename):
+    
+    """
+    explanation:
+        获取文件的MD5值		
+
+    params:
+        * filename ->:
+            meaning: 文件路径
+            type: null
+            optional: [null]
+
+    return:
+        str
+	
+    demonstrate:
+        Not described
+	
+    output:
+        Not described
+    """
+
     with open(filename, mode='rb') as f:
         d = hashlib.md5()
         while True:
