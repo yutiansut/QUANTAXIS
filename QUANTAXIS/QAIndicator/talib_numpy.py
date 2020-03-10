@@ -24,14 +24,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 import numpy as np
+import pandas as pd
 try:
     import talib
 except:
     pass
     #print('PLEASE install TALIB to call these methods')
-
 """
 完全用nparray传递参数的talib库，原因是用nparray因为没有 Series MultiIndex 的问题。
 处理和补完速度都比pandas更快，转 pd.DataFrame/pd.Series 只需要一个构造函数。
@@ -199,3 +198,79 @@ def TA_ADXm(data, period=10, smooth=10, limit=18):
     adx = np.r_[np.zeros(smooth + 2), adx[(smooth + 2):]]
     ADXm = np.where(((adx > limit) & (plus > minus)), 1, np.where(((adx > limit) & (plus < minus)), -1, 0))
     return adx, ADXm
+
+
+def TA_ATR_Stops(data, period=10):
+    """
+    ATR 趋势判断指标
+
+    Parameters
+    ----------
+    data : (N,) array_like
+        传入 OHLC Kline 序列。
+        The OHLC Kline.
+    period : int or None, optional
+        DI 统计周期 默认值为 10
+        DI Length period. Default value is 10. 
+
+    Returns
+    -------
+    adx, ADXm : ndarray
+        ADXm 指标和趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
+        ADXm indicator and thread directions sequence. (-1, 0, 1) means for (Negatice, No Trend, Postive)
+
+    """
+    rsi_ma = talib.EMA((data.open + data.high + data.low + data.close) / 4, 10)
+    ATR = talib.ATR(data.high, data.low, data.close, 10)
+    top_line = rsi_ma + ATR
+    bottom_line = rsi_ma - ATR
+    rsi_ma = pd.Series(rsi_ma, index=data.index)
+    PRICE_PREDICT = pd.DataFrame(columns=['POSITION'], index=data.index)
+    PREDICT_JX = (CROSS(data.close, top_line) == 1)
+    PREDICT_SX = (CROSS(bottom_line, data.close) == 1)
+    PREDICT_JX = PREDICT_JX[PREDICT_JX.apply(lambda x: x == True)]  # eqv.  Trim(x == False)
+    PREDICT_SX = PREDICT_SX[PREDICT_SX.apply(lambda x: x == True)]  # eqv.  Trim(x == False)
+    PRICE_PREDICT.loc[PREDICT_JX.index, 'POSITION'] = 1
+    PRICE_PREDICT.loc[PREDICT_SX.index, 'POSITION'] = -1
+    PRICE_PREDICT['POSITION'] = PRICE_PREDICT['POSITION'].ffill()
+    stop_line = rsi_ma - PRICE_PREDICT['POSITION'] * ATR
+    return rsi_ma, stop_line, PRICE_PREDICT['POSITION'].values
+
+
+def TA_ATR_SuperTrend(klines, length=12, Factor=3):
+    src = klines.close.values
+    Factor = 3 # Factor of Super Trend
+    ATR_period = 12 # ATR period
+    #################### Super Trend ####################
+
+    Up = (klines.high + klines.low) / 2 - (Factor * talib.ATR(klines.high, 
+                                   klines.low, 
+                                   klines.close, 
+                                   ATR_period))
+    Dn = (klines.high + klines.low) / 2 + (Factor * talib.ATR(klines.high, 
+                                   klines.low, 
+                                   klines.close, 
+                                   ATR_period))
+    TUp = np.full([len(src)], np.nan)
+    for i in np.arange(1, len(src)):
+        TUp[i] = max(Up[i], TUp[i - 1]) if (src[i - 1] > TUp[i - 1]) else Up[i] 
+    TDown = np.full([len(src)], np.nan)
+    for i in np.arange(1, len(src)):
+        TDown[i] = min(Dn[i], TDown[i - 1]) if (src[i - 1] < TDown[i - 1]) else Dn[i]
+
+    #TUp = np.where(np.r_[np.nan, src[0:-1]] > np.r_[np.nan, TUp[0:-1]],
+    #               np.maximum(Up.values, np.r_[np.nan, TUp[0:-1]]), Up.values)
+    #TDown = np.where(np.r_[np.nan, src[0:-1]] < np.r_[np.nan, TDown[0:-1]],
+    #                 np.minimum(Dn, np.r_[np.nan, TDown[0:-1]]), Dn.values)
+        #Trend = np.where(src > np.r_[np.nan, TDown[0:-1]],
+        #             1, np.where(src < np.r_[np.nan, TUp[0:-1]],
+        #                         -1, np.nan_to_num(np.r_[np.nan, Trend[0:-1]],
+        #                   nan=1)))
+    # if throw exception with numpy.nan_to_num - 'nan' keyword not recorgnized
+    # Check numpy version=>1.17, pip install numpy --upgrade
+    Trend = np.full([len(src)], np.nan)
+    for i in np.arange(1, len(src)):
+        Trend[i] = 1 if (src[i] > TDown[i - 1]) else (-1 if (src[i] < TUp[i - 1]) else Trend[i - 1])
+
+    Tsl = np.where(Trend == 1, TUp, TDown)
+    return Tsl, Trend

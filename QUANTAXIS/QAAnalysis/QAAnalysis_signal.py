@@ -44,19 +44,21 @@ def time_series_momemtum(price, n=24, rf=0.02):
     return (price / price.shift(n) - 1) - rf
 
 
-def find_peak_vextors_eagerly(price, offest=0):
+def find_peak_vextors_eagerly(price, smooth_ma5=[], offest=0):
     """
     （饥渴的）在 MACD 上坡的时候查找更多的极值点
     """
     xn = price
 
     # pass 0
-    window_size, poly_order = 5, 1
-    yy_sg = savgol_filter(xn, window_size, poly_order)
+    if (len(smooth_ma5) == len(price)):
+        yy_sg = smooth_ma5
+    else:
+        yy_sg = np.r_[np.zeros(11), TA_HMA(xn, 10)[11:]]
 
     # pass 1
     x_tp_min, x_tp_max = signal.argrelextrema(yy_sg, np.less)[0], signal.argrelextrema(yy_sg, np.greater)[0]
-    n = int(len(price) / (len(x_tp_min) + len(x_tp_max))) * 2
+    n = int(len(price) / (len(x_tp_min) + len(x_tp_max)))
 
     # peakutils 似乎一根筋只能查最大极值，通过曲线反相的方式查找极小点
     mirrors = (yy_sg * -1) + np.mean(price) * 2
@@ -246,6 +248,37 @@ def LDS(X):
     return S[::-1],pos[::-1]
 
 
+def price_predict_with_rolling_integral(kline, indices, indices_tp_min, indices_tp_max, offest=11):
+    """
+    对预算折返点的价格进行趋势计算，预测价格趋势
+    """
+    # pass 1
+    PRICE_PREDICT = pd.DataFrame(columns=['POSITION', 'PRICE_PRED_CROSS', 'PRICE_PRED_CROSS_JX', 'PRICE_PRED_CROSS_SX', 'returns'], index=kline.index)
+    PRICE_PREDICT.iloc[indices_tp_min, PRICE_PREDICT.columns.get_loc('PRICE_PRED_CROSS')] = indices_tp_min
+    PRICE_PREDICT.iloc[indices_tp_max, PRICE_PREDICT.columns.get_loc('PRICE_PRED_CROSS')] = -indices_tp_max
+    PRICE_PREDICT.iloc[indices_tp_min, PRICE_PREDICT.columns.get_loc('PRICE_PRED_CROSS_JX')] = 1
+    PRICE_PREDICT.iloc[indices_tp_max, PRICE_PREDICT.columns.get_loc('PRICE_PRED_CROSS_SX')] = 1
+    PRICE_PREDICT['PRICE_PRED_CROSS_JX'] = Timeline_Integral_with_cross_before(PRICE_PREDICT['PRICE_PRED_CROSS_JX'])
+    PRICE_PREDICT['PRICE_PRED_CROSS_SX'] = Timeline_Integral_with_cross_before(PRICE_PREDICT['PRICE_PRED_CROSS_SX'])
+
+    # 策略判断
+    PRICE_PREDICT = PRICE_PREDICT.assign(POSITION_RAW=PRICE_PREDICT.apply(lambda x: 1 if (x['PRICE_PRED_CROSS_JX'] < x['PRICE_PRED_CROSS_SX']) else -1, axis=1))
+
+    indices_s = pd.Series(indices, index=kline.index)
+    PRICE_PREDICT['returns'] = np.log(indices_s / indices_s.shift(1))
+    PRICE_PREDICT['returns_raw'] = PRICE_PREDICT['returns'].apply(lambda x: 1 if (x > 0) else -1)
+    PRICE_PREDICT['POSITION'] = PRICE_PREDICT['POSITION_RAW'].rolling(4).apply(lambda x: x.sum(), raw=False).apply(lambda x:0 if np.isnan(x) else int(x))
+    PRICE_PREDICT['POSITION_RETURNS'] = PRICE_PREDICT['returns_raw'].rolling(4).apply(lambda x: x.sum(), raw=False).apply(lambda x:0 if np.isnan(x) else int(x))
+    PRICE_PREDICT['POSITION_JUNTION'] = (PRICE_PREDICT['POSITION'] + PRICE_PREDICT['POSITION_RETURNS']).apply(lambda x:0 if np.isnan(x) else int(x))
+
+    if (len(PRICE_PREDICT.index.names) > 2):
+        return PRICE_PREDICT.reset_index([1,2])
+    elif (len(PRICE_PREDICT.index.names) > 1):
+        return PRICE_PREDICT.reset_index([1])
+    else:
+        return PRICE_PREDICT
+
+
 def price_predict_with_macd_trend_func(data):
     """
     价格趋势，基于巴特沃斯带通滤波器和scipy.Gaussian机器学习统计算法预测
@@ -332,9 +365,9 @@ def maxfactor_cross_func(data):
     """
     自创指标：MAXFACTOR
     """
-    RSI = QA.TA_RSI(data.close, timeperiod=12)
-    CCI = QA.TA_CCI(data.high, data.low, data.close)
-    KDJ = QA.TA_KDJ(data.high, data.low, data.close)    
+    RSI = TA_RSI(data.close, timeperiod=12)
+    CCI = TA_CCI(data.high, data.low, data.close)
+    KDJ = TA_KDJ(data.high, data.low, data.close)    
     MAX_FACTOR = CCI[:,0] + (RSI[:,0] - 50) * 4 + (KDJ[:,2] - 50) * 4
     MAX_FACTOR_delta = np.r_[np.nan, np.diff(MAX_FACTOR)]
     REGRESSION_BASELINE = pd.Series((RSI[:,0] - 50) * 4, index=data.index)
