@@ -182,7 +182,7 @@ def ADX_MA(data, period=10, smooth=10, limit=18):
     -------
     adx, ADXm : ndarray
         ADXm 指标和趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
-        ADXm indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Postive)
+        ADXm indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Positive)
 
     """
     up = data.high.pct_change()
@@ -227,7 +227,7 @@ def ATR_RSI_Stops(data, period=10):
     -------
     rsi_ma, stop_line, directions : ndarray
         rsi_ma, stop_line 指标和 directions 趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
-        rsi_ma, stop_line indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Postive)
+        rsi_ma, stop_line indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Positive)
 
     """
     rsi_ma = talib.EMA((data.open + data.high + data.low + data.close) / 4, 10)
@@ -268,7 +268,7 @@ def ATR_SuperTrend(klines, length=12, Factor=3):
     -------
     Tsl, Trend : ndarray
         Tsl 指标和 Trend 趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
-        the Tsl indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Postive)
+        the Tsl indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Positive)
 
     """
     src = klines.close.values
@@ -319,7 +319,7 @@ def Volume_HMA(klines, period=5):
     -------
     vhma, Trend : ndarray
         vhma 指标和 Trend 趋势指示方向 (-1/-2, 0, 1/2) 分别代表 (下跌, 无明显趋势, 上涨)
-        the vhma indicator and thread directions sequence. (-1/-2, 0, 1/2) means for (Neagtive, No Trend, Postive)
+        the vhma indicator and thread directions sequence. (-1/-2, 0, 1/2) means for (Neagtive, No Trend, Positive)
 
     """
     src1 = talib.EMA(klines.close * klines.volume, period) / talib.EMA(klines.volume, period)
