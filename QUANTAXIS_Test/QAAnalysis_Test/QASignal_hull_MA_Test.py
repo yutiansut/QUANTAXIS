@@ -21,7 +21,7 @@ def smooth_demo():
     price_predict = price_predict_with_rolling_integral(data_day.data, hma5, hma_tp_min, hma_tp_max,)
 
     kama5 = TA_KAMA(data_day.close.values, 10)
-    vhma = VHMA(data_day.data)
+    vhma, directions = Volume_HMA(data_day.data, 5)
     
     vhma_tp_min, vhma_tp_max = find_peak_vextors_eagerly(np.r_[np.zeros(7), vhma[7:]], smooth_ma5=np.r_[np.zeros(7), vhma[7:]])
 
@@ -30,15 +30,20 @@ def smooth_demo():
 
     plt.figure(figsize = (22,9))
     ax1 = plt.subplot(111)
-    #mpf.candlestick2_ochl(ax1, data2.data.open.values,
-    #data2.data.close.values, data2.data.high.values, data2.data.low.values,
-    #width=0.6, colorup='r', colordown='green', alpha=0.5)
+    mpf.candlestick2_ochl(ax1, data_day.data.open.values, data_day.data.close.values, data_day.data.high.values, data_day.data.low.values, width=0.6, colorup='r', colordown='green', alpha=0.3)
+    DATETIME_LABEL=data_day.index.get_level_values(level=0).to_series().apply(lambda x: x.strftime("%Y-%m-%d")[2:13])
+
+    ax1.set_xticks(range(0, len(DATETIME_LABEL), round(len(data_day)/12)))
+    ax1.set_xticklabels(DATETIME_LABEL[::round(len(data_day)/12)])
 
     #ax1.title("The smoothing windows")
     #plt.plot(xn, lw=1, alpha=0.8)
-    ax1.plot(data_day.index.get_level_values(level=0), np.where((price_predict['POSITION_JUNTION'].values > 0), hma5, np.nan), lw=2, color='lime', alpha=0.6)
-    ax1.plot(data_day.index.get_level_values(level=0), np.where((price_predict['POSITION_JUNTION'].values < 0), hma5, np.nan), lw=2, color='red', alpha=0.6)
-    ax1.plot(data_day.index.get_level_values(level=0), np.where((price_predict['POSITION_JUNTION'].values == 0), hma5, np.nan), lw=2, color='black', alpha=0.6)
+    #ax1.plot(data_day.index.get_level_values(level=0), np.where((price_predict['POSITION_JUNTION'].values > 0), hma5, np.nan), lw=2, color='lime', alpha=0.6)
+    #ax1.plot(data_day.index.get_level_values(level=0), np.where((price_predict['POSITION_JUNTION'].values < 0), hma5, np.nan), lw=2, color='red', alpha=0.6)
+    #ax1.plot(data_day.index.get_level_values(level=0), np.where((price_predict['POSITION_JUNTION'].values == 0), hma5, np.nan), lw=2, color='black', alpha=0.6)
+    ax1.plot(DATETIME_LABEL, np.where((directions > 0), vhma, np.nan), lw=2, color='lime', alpha=0.8)
+    ax1.plot(DATETIME_LABEL, np.where((directions < 0), vhma, np.nan), lw=2, color='red', alpha=0.8)
+    ax1.plot(DATETIME_LABEL, np.where((directions == 0), vhma, np.nan), lw=2, color='black', alpha=0.8)
     #ax1.plot(yy_sg, lw=1, color='darkcyan', alpha=0.2)
     #ax1.plot(data_day.index.get_level_values(level=0), ma5, lw=1,
     #color='orange', alpha=0.2)

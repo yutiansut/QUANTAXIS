@@ -27,14 +27,14 @@ def ATR_SuperTrend_demo():
 
     ax1.set_xticks(range(0, len(DATETIME_LABEL), round(len(klines)/12)))
     ax1.set_xticklabels(DATETIME_LABEL[::round(len(klines)/12)])
-    #ax1.plot(np.where(Trend == 1, TUp, np.NaN), lw=2, color='lime', alpha=0.6)
-    #ax1.plot(np.where(Trend != 1, TDown, np.NaN), lw=2, color='red', alpha=0.6)
+    ax1.plot(DATETIME_LABEL, np.where(Trend == 1, tsl, np.NaN), lw=2, color='lime', alpha=0.6)
+    ax1.plot(DATETIME_LABEL, np.where(Trend != 1, tsl, np.NaN), lw=2, color='red', alpha=0.6)
     ax1.plot(DATETIME_LABEL, np.where(Trend == 1, bb[:,1], np.NaN), lw=1, color='lime', alpha=0.6)
     ax1.plot(DATETIME_LABEL, np.where(Trend != 1, bb[:,1], np.NaN), lw=1, color='red', alpha=0.6)
-    p1u = ax1.plot(DATETIME_LABEL, np.where(Trend == 1, bb[:,0], np.NaN), lw=0.75, color='green', alpha=0.35)
-    p1d = ax1.plot(DATETIME_LABEL, np.where(Trend != 1, bb[:,0], np.NaN), lw=2, color='red', alpha=0.6)
-    p2u = ax1.plot(DATETIME_LABEL, np.where(Trend == 1, bb[:,2], np.NaN), lw=2, color='green', alpha=0.6)
-    p2d = ax1.plot(DATETIME_LABEL, np.where(Trend != 1, bb[:,2], np.NaN), lw=0.75, color='red', alpha=0.35)
+    p1u = ax1.plot(DATETIME_LABEL, np.where(Trend == 1, bb[:,0], np.NaN), lw=0.75, color='darkblue', alpha=0.35)
+    p1d = ax1.plot(DATETIME_LABEL, np.where(Trend != 1, bb[:,0], np.NaN), lw=0.75, color='red', alpha=0.35)
+    p2u = ax1.plot(DATETIME_LABEL, np.where(Trend == 1, bb[:,2], np.NaN), lw=0.75, color='lime', alpha=0.35)
+    p2d = ax1.plot(DATETIME_LABEL, np.where(Trend != 1, bb[:,2], np.NaN), lw=0.75, color='fuchsia', alpha=0.35)
     l = ['Bollinger Band Upper', 'Bollinger Band Lower', 'Bollinger MA']
     #ax1.plot(data_day.close.iloc[vhma_tp_min].index.get_level_values(level=0),
     #hma5[vhma_tp_min], 'ro')

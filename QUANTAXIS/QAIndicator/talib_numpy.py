@@ -182,7 +182,7 @@ def ADX_MA(data, period=10, smooth=10, limit=18):
     -------
     adx, ADXm : ndarray
         ADXm 指标和趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
-        ADXm indicator and thread directions sequence. (-1, 0, 1) means for (Negatice, No Trend, Postive)
+        ADXm indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Postive)
 
     """
     up = data.high.pct_change()
@@ -192,7 +192,8 @@ def ADX_MA(data, period=10, smooth=10, limit=18):
     plus = 100 * TA_HMA(np.where(((up > down) & (up > 0)), up, 0), period) / trur
     minus = 100 * TA_HMA(np.where(((down > up) & (down > 0)), down, 0), period) / trur
 
-    # 这里是dropna的替代解决办法，因为我觉得nparray的传递方式如果随便drop了可能会跟 data.index 对不上，所以我选择补零替代dropna
+    # 这里是dropna的替代解决办法，因为我觉得nparray的传递方式如果随便drop了可能会跟 data.index
+    # 对不上，所以我选择补零替代dropna
     plus = np.r_[np.zeros(period + 2), plus[(period + 2):]]
     minus = np.r_[np.zeros(period + 2), minus[(period + 2):]]
     sum = plus + minus 
@@ -226,7 +227,7 @@ def ATR_RSI_Stops(data, period=10):
     -------
     rsi_ma, stop_line, directions : ndarray
         rsi_ma, stop_line 指标和 directions 趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
-        rsi_ma, stop_line indicator and thread directions sequence. (-1, 0, 1) means for (Negatice, No Trend, Postive)
+        rsi_ma, stop_line indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Postive)
 
     """
     rsi_ma = talib.EMA((data.open + data.high + data.low + data.close) / 4, 10)
@@ -267,7 +268,7 @@ def ATR_SuperTrend(klines, length=12, Factor=3):
     -------
     Tsl, Trend : ndarray
         Tsl 指标和 Trend 趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
-        the Tsl indicator and thread directions sequence. (-1, 0, 1) means for (Negatice, No Trend, Postive)
+        the Tsl indicator and thread directions sequence. (-1, 0, 1) means for (Neagtive, No Trend, Postive)
 
     """
     src = klines.close.values
@@ -295,3 +296,36 @@ def ATR_SuperTrend(klines, length=12, Factor=3):
 
     Tsl = np.where(Trend == 1, TUp, TDown)
     return Tsl, Trend
+
+
+def Volume_HMA(klines, period=5):
+    """
+    交易量加权船型移动平均线 HMA，方向指示性类似于 Moving Average ADX，但它们通过不同的指标实现。
+    Hull Moving Average with Volume weighted, diretions similar like ADX_MA
+
+    Source: https://www.tradingview.com/script/XTViDINu-VHMA/
+    Translator: 阿财（Rgveda@github）（4910163#qq.com）
+
+    Parameters
+    ----------
+    klines : (N,) array_like
+        传入 OHLC Kline 序列。
+        The OHLC Kline.
+    period : int or None, optional
+        DI 统计周期 默认值为 10
+        DI Length period. Default value is 10. 
+
+    Returns
+    -------
+    vhma, Trend : ndarray
+        vhma 指标和 Trend 趋势指示方向 (-1/-2, 0, 1/2) 分别代表 (下跌, 无明显趋势, 上涨)
+        the vhma indicator and thread directions sequence. (-1/-2, 0, 1/2) means for (Neagtive, No Trend, Postive)
+
+    """
+    src1 = talib.EMA(klines.close * klines.volume, period) / talib.EMA(klines.volume, period)
+    vhma = TA_HMA(src1, period)
+    vhma_s = pd.Series(vhma)
+
+    lineDirection = np.where((vhma > vhma_s.shift(1).values), 1, -1)
+    hu = np.where((vhma > vhma_s.shift(2).values), 1, -1)
+    return vhma, lineDirection + hu 
