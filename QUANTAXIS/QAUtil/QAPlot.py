@@ -25,9 +25,9 @@ import os
 import webbrowser
 
 try:
-  from pyecharts import Kline
+    from pyecharts import Kline
 except:
-  from pyecharts.charts import Kline
+    from pyecharts.charts import Kline
 
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
@@ -87,6 +87,34 @@ def plot_datastruct(_quotation_base, code=None):
 
 
 def QA_plot_save_html(pic_handle, path, if_open_web):
+    """
+    explanation:
+        将绘图结果保存至指定位置		
+
+    params:
+        * pic_handle ->:
+            meaning: 绘图
+            type: null
+            optional: [null]
+        * path ->:
+            meaning: 保存地址
+            type: null
+            optional: [null]
+        * if_open_web ->:
+            meaning: 是否调用浏览器打开
+            type: bool
+            optional: [null]
+
+    return:
+        None
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
+    """
+
     pic_handle.render(path)
     if if_open_web:
         webbrowser.open(path)
