@@ -273,10 +273,10 @@ def QA_util_find_missing_kline(
             ignore_index=True
         )
     miss_kline.sort_values(by='expected', ascending=True, inplace=True)
-    if (len(miss_kline) > 0) and \
-        (miss_kline[0]['expected'] > QA_util_datetime_to_Unix_timestamp()) and \
-        (miss_kline[0]['between'] > QA_util_datetime_to_Unix_timestamp()):
-        del miss_kline[0]
+    if (len(miss_kline) > 0):
+        if (miss_kline.iloc[0].expected > QA_util_datetime_to_Unix_timestamp()) and \
+            (miss_kline.iloc[0].between > QA_util_datetime_to_Unix_timestamp()):
+            miss_kline.drop(miss_kline.iloc[0], inplace=True)
     return miss_kline.values
 
 
