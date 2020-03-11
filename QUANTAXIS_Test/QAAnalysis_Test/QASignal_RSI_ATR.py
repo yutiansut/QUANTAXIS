@@ -10,14 +10,14 @@ import scipy.signal as signal
 from QUANTAXIS.QAAnalysis.QAAnalysis_signal import *
 
 def ATR_Stops_demo():
-    data_day = QA.QA_fetch_index_day_adv('000905', '2019-01-01','2020-03-30')
+    data_day = QA.QA_fetch_index_day_adv('000905', '2019-01-01','2020-06-30')
     #QA.QA_fetch_crypto_asset_day_adv(['huobi'],
     #    symbol=['btcusdt'],
     #    start='2017-10-01',
     #    end='2020-06-30 23:59:59')
 
     xn = data_day.close.values
-    rsi_ma, stop_line, direction = TA_ATR_Stops(data_day.data.reset_index([1]), 27)
+    rsi_ma, stop_line, direction = ATR_RSI_Stops(data_day.data.reset_index([1]), 27)
 
     plt.figure(figsize = (22,9))
     ax1 = plt.subplot(111)
@@ -43,7 +43,7 @@ def ATR_Stops_demo():
     #ax1.plot(data_day.close.iloc[vhma_tp_max].index.get_level_values(level=0), hma5[vhma_tp_max], 'gx')
 
     ax1.legend(l)
-    plt.title("Smoothing a MA10 line")
+    plt.title("RSI_MA with ATR Trend direction")
     plt.show()
 
 if __name__ == '__main__':

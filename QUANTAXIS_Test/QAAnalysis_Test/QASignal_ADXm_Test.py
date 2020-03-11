@@ -13,9 +13,9 @@ def smooth_demo():
     #    symbol=['btcusdt'],
     #    start='2017-10-01',
     #    end='2020-06-30 23:59:59')
-    data2 = QA.QA_fetch_index_day_adv('000905', '2015-01-01','2020-03-30')
+    data2 = QA.QA_fetch_index_day_adv('000905', '2015-01-01','2020-06-30')
 
-    adxm, adxm_pos = TA_ADXm(data2.data)
+    adxm, adxm_pos = ADX_MA(data2.data)
 
     out = TA_HMA(data2.close.values, 10)
     plt.figure(figsize = (22,9))

@@ -10,14 +10,14 @@ import scipy.signal as signal
 from QUANTAXIS.QAAnalysis.QAAnalysis_signal import *
 
 def ATR_SuperTrend_demo():
-    #data_day = QA.QA_fetch_index_day_adv('000905', '2019-01-01','2020-03-30')
-    data_day = QA.QA_fetch_crypto_asset_day_adv(['huobi'],
-        symbol=['btcusdt'],
-        start='2017-10-01',
-        end='2020-06-30 23:59:59')
+    data_day = QA.QA_fetch_index_day_adv('000905', '2019-01-01','2020-06-30')
+    #data_day = QA.QA_fetch_crypto_asset_day_adv(['huobi'],
+    #    symbol=['btcusdt'],
+    #    start='2017-10-01',
+    #    end='2020-06-30 23:59:59')
     klines =  data_day.data
     bb = TA_BBANDS(data_day.data.close, 20)
-    tsl, Trend = TA_ATR_SuperTrend(data_day.data)
+    tsl, Trend = ATR_SuperTrend(data_day.data)
 
     #################### Plot ####################
     plt.figure(figsize = (22,9))

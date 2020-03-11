@@ -1,5 +1,5 @@
 # coding:utf-8
-# Author: 阿财（Rgveda@github）（11652964@qq.com）
+# Author: 阿财（Rgveda@github）（4910163#qq.com）
 # Created date: 2020-02-27
 #
 # The MIT License (MIT)
@@ -155,12 +155,13 @@ def TA_HMA(close, period):
     return hma
 
 
-def TA_ADXm(data, period=10, smooth=10, limit=18):
+def ADX_MA(data, period=10, smooth=10, limit=18):
     """
     Moving Average ADX
     ADX Smoothing Trend Color Change on Moving Average and ADX Cross. Use on Hourly Charts - Green UpTrend - Red DownTrend - Black Choppy No Trend
 
     Source: https://www.tradingview.com/script/owwws7dM-Moving-Average-ADX/
+    Translator: 阿财（Rgveda@github）（4910163#qq.com）
 
     Parameters
     ----------
@@ -201,9 +202,16 @@ def TA_ADXm(data, period=10, smooth=10, limit=18):
     return adx, ADXm
 
 
-def TA_ATR_Stops(data, period=10):
+def ATR_RSI_Stops(data, period=10):
     """
-    ATR 趋势判断指标
+    ATR 趋势判断指标 RSI在40~60区间实现牛熊趋势变化指示
+    This simple indicator gives you a bias on the market that can be used as a filter, an entry indicator for pullbacks,...
+
+    It shows the special relationship I discovered between the rsi and the 27 period ema
+    and the relation between the 40/60 levels of the rsi and the atr offset of the 27 ema line 
+
+    Source: https://cn.tradingview.com/script/rqzryhZ2-Rsi-Stops-JD/
+    Translator: 阿财（Rgveda@github）（4910163#qq.com）
 
     Parameters
     ----------
@@ -216,9 +224,9 @@ def TA_ATR_Stops(data, period=10):
 
     Returns
     -------
-    adx, ADXm : ndarray
-        ADXm 指标和趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
-        ADXm indicator and thread directions sequence. (-1, 0, 1) means for (Negatice, No Trend, Postive)
+    rsi_ma, stop_line, directions : ndarray
+        rsi_ma, stop_line 指标和 directions 趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
+        rsi_ma, stop_line indicator and thread directions sequence. (-1, 0, 1) means for (Negatice, No Trend, Postive)
 
     """
     rsi_ma = talib.EMA((data.open + data.high + data.low + data.close) / 4, 10)
@@ -238,11 +246,33 @@ def TA_ATR_Stops(data, period=10):
     return rsi_ma, stop_line, PRICE_PREDICT['POSITION'].values
 
 
-def TA_ATR_SuperTrend(klines, length=12, Factor=3):
+def ATR_SuperTrend(klines, length=12, Factor=3):
+    """
+    ATR 趋势判断指标，可以实现快速而精准的牛熊趋势判断
+    the Super Trend ATR allows you to quickly identify trends and the acceleration phase and accumulation
+
+    Source: https://cn.tradingview.com/script/alvd6EHP-Bollinger-Bands-V2-Super-Trend/
+    Translator: 阿财（Rgveda@github）（4910163#qq.com）
+
+    Parameters
+    ----------
+    data : (N,) array_like
+        传入 OHLC Kline 序列。
+        The OHLC Kline.
+    period : int or None, optional
+        DI 统计周期 默认值为 10
+        DI Length period. Default value is 10. 
+
+    Returns
+    -------
+    Tsl, Trend : ndarray
+        Tsl 指标和 Trend 趋势指示方向 (-1, 0, 1) 分别代表 (下跌, 无明显趋势, 上涨)
+        the Tsl indicator and thread directions sequence. (-1, 0, 1) means for (Negatice, No Trend, Postive)
+
+    """
     src = klines.close.values
     Factor = 3 # Factor of Super Trend
     ATR_period = 12 # ATR period
-    #################### Super Trend ####################
 
     Up = (klines.high + klines.low) / 2 - (Factor * talib.ATR(klines.high, 
                                    klines.low, 
@@ -259,16 +289,6 @@ def TA_ATR_SuperTrend(klines, length=12, Factor=3):
     for i in np.arange(1, len(src)):
         TDown[i] = min(Dn[i], TDown[i - 1]) if (src[i - 1] < TDown[i - 1]) else Dn[i]
 
-    #TUp = np.where(np.r_[np.nan, src[0:-1]] > np.r_[np.nan, TUp[0:-1]],
-    #               np.maximum(Up.values, np.r_[np.nan, TUp[0:-1]]), Up.values)
-    #TDown = np.where(np.r_[np.nan, src[0:-1]] < np.r_[np.nan, TDown[0:-1]],
-    #                 np.minimum(Dn, np.r_[np.nan, TDown[0:-1]]), Dn.values)
-        #Trend = np.where(src > np.r_[np.nan, TDown[0:-1]],
-        #             1, np.where(src < np.r_[np.nan, TUp[0:-1]],
-        #                         -1, np.nan_to_num(np.r_[np.nan, Trend[0:-1]],
-        #                   nan=1)))
-    # if throw exception with numpy.nan_to_num - 'nan' keyword not recorgnized
-    # Check numpy version=>1.17, pip install numpy --upgrade
     Trend = np.full([len(src)], np.nan)
     for i in np.arange(1, len(src)):
         Trend[i] = 1 if (src[i] > TDown[i - 1]) else (-1 if (src[i] < TUp[i - 1]) else Trend[i - 1])
