@@ -26,6 +26,7 @@
 # SOFTWARE.
 import numpy as np
 import pandas as pd
+from QUANTAXIS.QAIndicator.base import *
 try:
     import talib
 except:
