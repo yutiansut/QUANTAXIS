@@ -129,6 +129,18 @@ services:
         command:
             ['/root/QUANTAXIS_RealtimeCollector/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'/root/QUANTAXIS_RealtimeCollector/docker/start_collector.sh']
 
+            
+    # qamarketcollector:
+    #     image: daocloud.io/quantaxis/qamarket-rs:latest
+    #     depends_on:
+    #         - mgdb
+    #         - qaeventmq
+    #     environment:
+    #         - MONGODB=mgdb
+    #         - EventMQ_IP=qaeventmq
+    #     networks:
+    #         qanetwork:
+    #             ipv4_address: 172.19.0.8
 
     qatrader:
         image: daocloud.io/quantaxis/qatrader:latest
