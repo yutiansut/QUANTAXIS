@@ -27,6 +27,26 @@ from subprocess import PIPE, Popen
 
 
 def QA_util_web_ping(url):
+    """
+    explanation:
+        获取本地到该URL的延时		
+
+    params:
+        * url ->:
+            meaning: url地址
+            type: null
+            optional: [null]
+
+    return:
+        None
+	
+    demonstrate:
+        Not described
+	
+    output:
+        Not described
+    """
+
     ms_list = []
     p = Popen(["ping", url],
               stdin=PIPE, stdout=PIPE, stderr=PIPE,

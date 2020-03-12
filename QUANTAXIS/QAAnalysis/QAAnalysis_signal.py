@@ -133,73 +133,157 @@ def find_peak_vextors(price, return_ref=False, offest=0):
 
 def Timeline_Integral_with_lambda(Tm,):
     """
-    计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)清零)
+    explanation:
+       计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)清零)		
+
+    params:
+        * Tm ->:
+            meaning: 数据
+            type: null
+            optional: [null]
+
+    return:
+        np.array
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
     """
     T = [Tm[0]]
     #Ti = list(map(lambda x: reduce(lambda z,y: y * (z + y), Tm[0:x]), Tm))
     #Ti = list(map(lambda x,y: x * (y + x), Ti[1:], Tm))
-    #print(Ti)
+    # print(Ti)
     #list(map(lambda x,y: x * (y + x), Tm[1:], T))
     return np.array(T)
 
 
 def Timeline_Integral(Tm,):
     """
-    计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)清零)，经测试for实现最快，比reduce快
+    explanation:
+        计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)清零)，经测试for实现最快，比reduce快	
+
+    params:
+        * Tm ->:
+            meaning:
+            type: null
+            optional: [null]
+
+    return:
+        np.array
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
     """
     T = [Tm[0]]
-    for i in range(1,len(Tm)):
+    for i in range(1, len(Tm)):
         T.append(Tm[i] * (T[i - 1] + Tm[i]))
     return np.array(T)
 
 
 def Timeline_Integral_with_reduce(Tm,):
     """
-    计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)清零)，经测试for实现最快，比reduce快
+    explanation:
+        计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)清零)，经测试for实现最快，比reduce快		
+
+    params:
+        * Tm ->:
+            meaning: 数据
+            type: null
+            optional: [null]
+
+    return:
+        np.array
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
+    """
+
+    """
+    
     """
     T = []
-    for i in range(1,len(Tm)):
-        T.append(reduce(lambda x,y: y * (y + x), Tm[0:i]))
+    for i in range(1, len(Tm)):
+        T.append(reduce(lambda x, y: y * (y + x), Tm[0:i]))
     return np.array(T)
 
 
 # 经测试for最快，比reduce快
 def Timeline_Integral_with_cross_before(Tm,):
     """
-    计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)不清零，金叉(0-->1)清零)
+    explanation:
+         计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)不清零，金叉(0-->1)清零)		
+
+    params:
+        * Tm ->:
+            meaning: 数据
+            type: null
+            optional: [null]
+
+    return:
+        np.array
+	
+    demonstrate:
+        Not described
+	
+    output:
+        Not described
     """
     T = [Tm[0]]
-    for i in range(1,len(Tm)):
+    for i in range(1, len(Tm)):
         T.append(T[i - 1] + 1) if (Tm[i] != 1) else T.append(0)
     return np.array(T)
 
 
 def LIS(X):
     """
-    计算最长递增子序列
-    Longest increasing subsequence
+    explanation:
+        计算最长递增子序列		
+
+    params:
+        * X ->:
+            meaning: 序列
+            type: null
+            optional: [null]
+
+    return:
+        (子序列开始位置, 子序列结束位置)
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
     """
+
     N = len(X)
     P = [0] * N
     M = [0] * (N + 1)
     L = 0
     for i in range(N):
-       lo = 1
-       hi = L
-       while lo <= hi:
-           mid = (lo + hi) // 2
-           if (X[M[mid]] < X[i]):
-               lo = mid + 1
-           else:
-               hi = mid - 1
- 
-       newL = lo
-       P[i] = M[newL - 1]
-       M[newL] = i
- 
-       if (newL > L):
-           L = newL
- 
+        lo = 1
+        hi = L
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            if (X[M[mid]] < X[i]):
+                lo = mid + 1
+            else:
+                hi = mid - 1
+
+        newL = lo
+        P[i] = M[newL - 1]
+        M[newL] = i
+
+        if (newL > L):
+            L = newL
+
     S = []
     pos = []
     k = M[L]
@@ -207,13 +291,29 @@ def LIS(X):
         S.append(X[k])
         pos.append(k)
         k = P[k]
-    return S[::-1],pos[::-1]
+    return S[::-1], pos[::-1]
 
 
 def LDS(X):
     """
-    计算最长递减子序列
-    Longest decreasing subsequence
+    explanation:
+        计算最长递减子序列		
+
+    params:
+        * X ->:
+            meaning: 序列
+            type: null
+            optional: [null]
+
+    return:
+         (子序列开始位置, 子序列结束位置)
+
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
     """
     N = len(X)
     P = [0] * N
@@ -228,14 +328,14 @@ def LDS(X):
                 lo = mid + 1
             else:
                 hi = mid - 1
- 
+
         newL = lo
         P[i] = M[newL - 1]
         M[newL] = i
- 
+
         if (newL > L):
             L = newL
- 
+
     S = []
     pos = []
     k = M[L]
@@ -243,7 +343,8 @@ def LDS(X):
         S.append(X[k])
         pos.append(k)
         k = P[k]
-    return S[::-1],pos[::-1]
+    return S[::-1], pos[::-1]
+
 
 
 def price_predict_with_macd_trend_func(data):
@@ -448,3 +549,4 @@ def boll_cross_func(data):
     BOLL_CROSS['BOLL_CROSS_JX'] = Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_JX'])
     BOLL_CROSS['BOLL_CROSS_SX'] = Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_SX'])
     return BOLL_CROSS
+
