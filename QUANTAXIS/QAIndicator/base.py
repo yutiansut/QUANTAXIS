@@ -130,6 +130,13 @@ def CROSS(A, B):
     return (pd.Series(var, index=index).diff() < 0).apply(int)
 
 
+def CROSS_STATUS(A, B):
+    """
+    A 穿过 B 产生持续的 1 序列信号
+    """
+    return np.where(A > B, 1, 0)
+
+
 def FILTER(COND, N):
 
     k1 = pd.Series(np.where(COND, 1, 0), index=COND.index)
@@ -245,6 +252,25 @@ def BARLAST(cond, yes=True):
     """支持MultiIndex的cond和DateTimeIndex的cond
     条件成立  yes= True 或者 yes=1 根据不同的指标自己定
 
+    最后一次条件成立  到 当前到周期数
+
+    Arguments:
+        cond {[type]} -- [description]
+    """
+    if isinstance(cond.index, pd.MultiIndex):
+        return len(cond)-cond.index.levels[0].tolist().index(cond[cond == yes].index[-1][0])-1
+    elif isinstance(cond.index, pd.DatetimeIndex):
+        return len(cond)-cond.index.tolist().index(cond[cond == yes].index[-1])-1
+
+
+def BARLAST_EXIST(cond, yes=True):
+    """
+    上一次条件成立   持续到当前到数量
+
+
+    支持MultiIndex的cond和DateTimeIndex的cond
+    条件成立  yes= True 或者 yes=1 根据不同的指标自己定
+
     Arguments:
         cond {[type]} -- [description]
     """
@@ -252,7 +278,6 @@ def BARLAST(cond, yes=True):
         return len(cond)-cond.index.levels[0].tolist().index(cond[cond != yes].index[-1][0])-1
     elif isinstance(cond.index, pd.DatetimeIndex):
         return len(cond)-cond.index.tolist().index(cond[cond != yes].index[-1])-1
-
 
 def XARROUND(x, y): return np.round(
     y*(round(x/y-math.floor(x/y)+0.00000000001) + math.floor(x/y)), 2)

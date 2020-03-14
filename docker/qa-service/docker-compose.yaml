@@ -144,7 +144,7 @@ services:
                 ipv4_address: 172.19.0.9
 
     editer:
-        image: yutiansut/qaeditor:latest
+        image: daocloud.io/quantaxis/qaeditor:latest
         container_name: qaeditor
         networks: 
             qanetwork:

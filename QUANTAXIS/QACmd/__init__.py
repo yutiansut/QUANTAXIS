@@ -75,11 +75,22 @@ from QUANTAXIS.QASU.main import (
     QA_SU_save_report_calendar_day,
     QA_SU_save_report_calendar_his,
     QA_SU_save_stock_divyield_day,
-    QA_SU_save_stock_divyield_his
+    QA_SU_save_stock_divyield_his,
+    QA_SU_save_bond_day,
+    QA_SU_save_single_bond_day,
+    QA_SU_save_bond_list,
+    QA_SU_save_bond_min,
+    QA_SU_save_single_bond_min
 )
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
+from QUANTAXIS.QASU.save_bitfinex import QA_SU_save_bitfinex_symbol, QA_SU_save_bitfinex_1hour, \
+    QA_SU_save_bitfinex_1day, QA_SU_save_bitfinex_1min, QA_SU_save_bitfinex
 from QUANTAXIS.QASU.save_bitmex import QA_SU_save_bitmex_symbol, QA_SU_save_bitmex
+from QUANTAXIS.QASU.save_huobi import QA_SU_save_huobi_symbol, QA_SU_save_huobi_1hour, \
+    QA_SU_save_huobi_1day, QA_SU_save_huobi_1min, QA_SU_save_huobi, QA_SU_save_huobi_realtime
+from QUANTAXIS.QASU.save_okex import QA_SU_save_okex_symbol, QA_SU_save_okex_1hour, \
+    QA_SU_save_okex_1day, QA_SU_save_okex_1min, QA_SU_save_okex
 
 # 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney)
@@ -267,6 +278,25 @@ class CLI(cmd.Cmd):
             命令格式：save index_list : 保存指数列表 \n\
             命令格式：save etf_list : 保存etf列表 \n\
             命令格式：save future_list : 保存期货列表 \n\
+            命令格式：save bond_day  : 保存债券日线数据 \n\
+            命令格式：save single_bond_day  : 保存单个债券日线数据 \n\
+            命令格式：save bond_min  : 保存债券分钟线数据 \n\
+            命令格式：save single_bond_min  : 保存单个债券分钟线数据 \n\
+            命令格式：save bond_list : 保存债券列表 \n\
+            命令格式：save bitmex : 保存bitmex交易所日线\现货交易对小时线数据 \n\
+            命令格式：save binance : 保存币安交易所数据 \n\
+            命令格式：save binance all : 一次性保存币安交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
+            命令格式：save binance 1day/1hour/1min : 单独保存币安交易所日/小时/分钟数据 \n\
+            命令格式：save bitfinex : 保存bitfinex交易所数据 \n\
+            命令格式：save bitfinex all : 一次性保存bitfinex交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
+            命令格式：save bitfinex 1day/1hour/1min : 单独保存bitfinex交易所日/小时/分钟数据 \n\
+            命令格式：save huobi : 保存火币Pro交易所日/小时/分钟现货交易对数据 \n\
+            命令格式：save huobi all : 一次性保存火币Pro交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
+            命令格式：save huobi 1day/1hour/1min/5min/15min/30min : 单独保存火币Pro交易所日/小时/分钟线数据 \n\
+            命令格式：save huobi realtime : 接收火币Pro交易所实时行情（仅排名前30的主要币种）\n\
+            命令格式：save okex : 保存OKEx交易所数据 \n\
+            命令格式：save okex all : 一次性保存OKEx交易所日/小时/30/15/5/1分钟线数据（耗时很长） \n\
+            命令格式：save okex 86400/3600/1800/900/300/60 : 单独保存OKEx交易所日/小时/30/15/5/1分钟数据 \n\
             ----------------------------------------------------------\n\
             if you just want to save daily data just\n\
                 save all+ save stock_block+save stock_info, it about 1G data \n\
@@ -403,18 +433,77 @@ class CLI(cmd.Cmd):
                 QA_SU_save_binance_symbol()
                 QA_SU_save_binance_1day()
                 QA_SU_save_binance_1hour()
-                QA_SU_save_binance_1day()
                 QA_SU_save_binance_1min()
             elif len(arg) == 2 and arg[0] == "binance":
-                frequency = arg[1]
-                QA_SU_save_binance(frequency)
+                if (arg[1] == 'all'):
+                    QA_SU_save_binance_symbol()
+                    QA_SU_save_binance_1day()
+                    QA_SU_save_binance_1hour()
+                    QA_SU_save_binance('30m')
+                    QA_SU_save_binance('15m')
+                    QA_SU_save_binance('5m')
+                    QA_SU_save_binance_1min()
+                else:
+                    frequency = arg[1]
+                    QA_SU_save_binance(frequency)
+            elif len(arg) == 1 and arg[0] == "bitfinex":
+                QA_SU_save_bitfinex_symbol()
+                QA_SU_save_bitfinex_1day()
+                QA_SU_save_bitfinex_1hour()
+                QA_SU_save_bitfinex_1min()
+            elif len(arg) == 2 and arg[0] == "bitfinex":
+                if (arg[1] == 'all'):
+                    QA_SU_save_bitfinex_symbol()
+                    QA_SU_save_bitfinex_1day()
+                    QA_SU_save_bitfinex_1hour()
+                    QA_SU_save_bitfinex('30m')
+                    QA_SU_save_bitfinex('15m')
+                    QA_SU_save_bitfinex('5m')
+                    QA_SU_save_bitfinex_1min()
+                else:
+                    frequency = arg[1]
+                    QA_SU_save_bitfinex(frequency)
             elif len(arg) == 1 and arg[0] == "bitmex":
                 QA_SU_save_bitmex_symbol()
-                QA_SU_save_bitmex('1m')
-                QA_SU_save_bitmex('1h')
                 QA_SU_save_bitmex('1d')
+                QA_SU_save_bitmex('1h')
+                QA_SU_save_bitmex('1m')
             elif len(arg) == 1 and arg[0] == "huobi":
-                pass
+                QA_SU_save_huobi_symbol()
+                QA_SU_save_huobi_1day()
+                QA_SU_save_huobi_1hour()
+                QA_SU_save_huobi_1min()
+            elif len(arg) == 2 and arg[0] == "huobi":
+                if (arg[1] == 'realtime'):
+                    QA_SU_save_huobi_realtime()
+                elif (arg[1] == 'all'):
+                    QA_SU_save_huobi_symbol()
+                    QA_SU_save_huobi_1day()
+                    QA_SU_save_huobi_1hour()
+                    QA_SU_save_huobi('30min')
+                    QA_SU_save_huobi('15min')
+                    QA_SU_save_huobi('5min')
+                    QA_SU_save_huobi_1min()
+                else:
+                    frequency = arg[1]
+                    QA_SU_save_huobi(frequency)
+            elif len(arg) == 1 and arg[0] == "okex":
+                QA_SU_save_okex_symbol()
+                QA_SU_save_okex_1day()
+                QA_SU_save_okex_1hour()
+                QA_SU_save_okex_1min()
+            elif len(arg) == 2 and arg[0] == "okex":
+                if (arg[1] == 'all'):
+                    QA_SU_save_okex_symbol()
+                    QA_SU_save_okex_1day()
+                    QA_SU_save_okex_1hour()
+                    QA_SU_save_okex('1800')
+                    QA_SU_save_okex('900')
+                    QA_SU_save_okex('300')
+                    QA_SU_save_okex_1min()
+                else:
+                    frequency = arg[1]
+                    QA_SU_save_okex(frequency)
             elif len(arg) == 1 and arg[0] == "financialfiles":
                 QA_SU_save_financialfiles()
 
@@ -464,6 +553,10 @@ class CLI(cmd.Cmd):
                 QA_SU_save_single_index_min(arg[1], 'tdx')
             elif len(arg) == 2 and arg[0] == 'single_etf_min':
                 QA_SU_save_single_etf_min(arg[1], 'tdx')
+            elif len(arg) == 2 and arg[0] == 'single_bond_day':
+                QA_SU_save_single_bond_day(arg[1], 'tdx')
+            elif len(arg) == 2 and arg[0] == 'single_bond_min':
+                QA_SU_save_single_bond_min(arg[1], 'tdx')
             else:
                 for i in arg:
                     if i == 'insert_user':
