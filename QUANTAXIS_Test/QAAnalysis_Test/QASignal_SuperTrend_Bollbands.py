@@ -23,6 +23,7 @@ def ATR_SuperTrend_demo():
     plt.figure(figsize = (22,9))
     ax1 = plt.subplot(111)
     mpf.candlestick2_ochl(ax1, data_day.data.open.values, data_day.data.close.values, data_day.data.high.values, data_day.data.low.values, width=0.6, colorup='r', colordown='green', alpha=0.5)
+    position = pd.Series(Trend, index=data_day.data.index.get_level_values(level=0))
     DATETIME_LABEL=klines.index.get_level_values(level=0).to_series().apply(lambda x: x.strftime("%Y-%m-%d")[2:13])
 
     ax1.set_xticks(range(0, len(DATETIME_LABEL), round(len(klines)/12)))
@@ -35,6 +36,15 @@ def ATR_SuperTrend_demo():
     p1d = ax1.plot(DATETIME_LABEL, np.where(Trend != 1, bb[:,0], np.NaN), lw=0.75, color='red', alpha=0.35)
     p2u = ax1.plot(DATETIME_LABEL, np.where(Trend == 1, bb[:,2], np.NaN), lw=0.75, color='lime', alpha=0.35)
     p2d = ax1.plot(DATETIME_LABEL, np.where(Trend != 1, bb[:,2], np.NaN), lw=0.75, color='fuchsia', alpha=0.35)
+    actions = (position.diff() != 0)
+    ax1.plot(DATETIME_LABEL, 
+             np.where((actions.values == True) & (position.values > 0), 
+                      data_day.data.close.values, np.nan), 
+             'g^', alpha = 0.8)
+    ax1.plot(DATETIME_LABEL, 
+             np.where((actions.values == True) & (position.values < 0), 
+                      data_day.data.close.values, np.nan), 
+             'rv', alpha=0.8)
     l = ['Bollinger Band Upper', 'Bollinger Band Lower', 'Bollinger MA']
     #ax1.plot(data_day.close.iloc[vhma_tp_min].index.get_level_values(level=0),
     #hma5[vhma_tp_min], 'ro')

@@ -24,10 +24,12 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import numpy as np
+from datetime import datetime, timezone, timedelta
 import scipy.signal as signal
 from scipy.signal import lfilter, lfilter_zi, filtfilt, butter, savgol_filter
-import numpy as np
 import peakutils
+import QUANTAXIS as QA
 from QUANTAXIS.QAIndicator.base import *
 from QUANTAXIS.QAIndicator.talib_numpy import *
 from QUANTAXIS.QAData.base_datastruct import *
@@ -248,7 +250,62 @@ def LDS(X):
     return S[::-1],pos[::-1]
 
 
-def price_predict_with_rolling_integral(kline, indices, indices_tp_min, indices_tp_max, offest=11):
+def kline_returns_func(data, format='pd'):
+    """
+    计算单个标的每 bar 跟前一bar的利润率差值
+    多用途函数，可以是 QA_DataStruct.add_func 调用（可以用于多标的计算），
+    也可以是函数式调用（切记单独函数式调用不能多个标的混合计算）。
+    Calculating a signal Stock/price timeseries kline's returns.
+    For each data[i]/data[i-1] at series value of percentage.
+
+    Parameters
+    ----------
+    data : (N,) array_like or pd.DataFrame or QA_DataStruct
+        传入 OHLC Kline 序列。参数类型可以为 numpy，pd.DataFrame 或者 QA_DataStruct
+        The OHLC Kline.
+        在传入参数中不可混入多标的数据，如果需要处理多标的价格数据，通过
+        QA_DataStruct.add_func 调用。
+        It can prossessing multi indices/stocks by QA_DataStruct.add_func
+        called. With auto splited into single price series 
+        by QA_DataStruct.add_func().
+        For standalone called, It should be only pass one stock/price series. 
+        If not the result will unpredictable.
+    format : str, optional
+        返回类型 默认值为 'pd' 将返回 pandas.DataFrame 格式的结果
+        可选类型，'np' 或 etc 返回 nparray 格式的结果
+        第一个 bar 会被填充为 0.
+        Return data format, default is 'pd'. 
+        It will return a pandas.DataFrame as result.
+        If seted as string: 'np' or etc string value, 
+        It will return a nparray as result.
+        The first bar will be fill with zero.
+
+    Returns
+    -------
+    kline returns : pandas.DataFrame or nparray
+        'returns' 跟前一收盘价格变化率的百分比
+
+    """
+    from QUANTAXIS.QAData.base_datastruct import _quotation_base
+    if isinstance(data, pd.DataFrame) or \
+        (isinstance(data, _quotation_base)):
+        data = data.close
+
+    if (format == 'pd'):
+        kline_returns = pd.DataFrame(np.nan_to_num(np.log(data / data.shift(1)), 
+                                                   nan=0),
+                                     columns=['returns'], 
+                                     index=data.index)
+        return kline_returns
+    else:
+        return np.nan_to_num(np.log(data / data.shift(1)), nan=0)
+
+
+def price_predict_with_rolling_integral(kline, 
+                                        indices, 
+                                        indices_tp_min, 
+                                        indices_tp_max, 
+                                        offest=11):
     """
     对预算折返点的价格进行趋势计算，预测价格趋势
     """
@@ -284,7 +341,7 @@ def price_predict_with_macd_trend_func(data):
     价格趋势，基于巴特沃斯带通滤波器和scipy.Gaussian机器学习统计算法预测
     它包含了macd_cross_func()全部功能（没办法，重复计算2次MACD似乎很蠢）
     """
-    MACD = TA_MACD(data.close)
+    MACD = QA.QA_indicator_MACD(data)
     
     PRICE_PREDICT = pd.DataFrame(columns=['PRICE_PRED_CROSS', 'PRICE_PRED_CROSS_JX', 'PRICE_PRED_CROSS_SX', 'MACD_CROSS', 'MACD_CROSS_JX', 'MACD_CROSS_SX'], index=data.index)
     PRICE_PREDICT = PRICE_PREDICT.assign(DIF=MACD[:,0])
@@ -292,15 +349,16 @@ def price_predict_with_macd_trend_func(data):
     PRICE_PREDICT = PRICE_PREDICT.assign(MACD=MACD[:,2])
     PRICE_PREDICT = PRICE_PREDICT.assign(DELTA=MACD[:,3])
 
-    dea_tp_min, dea_tp_max = find_peak_vextors(PRICE_PREDICT['DEA'].values[33:], offest=33)
-    PRICE_PREDICT.iloc[dea_tp_min, PRICE_PREDICT.columns.get_loc('MACD_CROSS')] = 1
-    PRICE_PREDICT.iloc[dea_tp_max, PRICE_PREDICT.columns.get_loc('MACD_CROSS')] = -1
     MACD_CROSS_JX = CROSS(PRICE_PREDICT['DIF'], PRICE_PREDICT['DEA'])
     DEA_CROSS_JX = CROSS(PRICE_PREDICT['DEA'], 0)
     MACD_CROSS_SX = CROSS(PRICE_PREDICT['DEA'], PRICE_PREDICT['DIF'])
     DEA_CROSS_SX = CROSS(0, PRICE_PREDICT['DEA'])
-    PRICE_PREDICT.loc[MACD_CROSS_JX == 1, 'MACD_CROSS_JX'] = 1
-    PRICE_PREDICT.loc[MACD_CROSS_SX == 1, 'MACD_CROSS_SX'] = -1
+    PRICE_PREDICT['MACD_CROSS'] = np.where(MACD_CROSS_JX.values == 1, 1, np.where(MACD_CROSS_SX.values == 1, -1, 0))
+    dea_tp_min, dea_tp_max = find_peak_vextors(PRICE_PREDICT['DEA'].values[33:], offest=33)
+    PRICE_PREDICT.iloc[dea_tp_min, PRICE_PREDICT.columns.get_loc('MACD_CROSS')] = 1
+    PRICE_PREDICT.iloc[dea_tp_max, PRICE_PREDICT.columns.get_loc('MACD_CROSS')] = -1
+    PRICE_PREDICT['MACD_CROSS_JX'] = np.where(MACD_CROSS_JX.values == 1, 1, 0)
+    PRICE_PREDICT['MACD_CROSS_SX'] = np.where(MACD_CROSS_SX.values == 1, 1, 0)
     PRICE_PREDICT.iloc[dea_tp_min, PRICE_PREDICT.columns.get_loc('MACD_CROSS_JX')] = 1
     PRICE_PREDICT.iloc[dea_tp_max, PRICE_PREDICT.columns.get_loc('MACD_CROSS_SX')] = 1
     PRICE_PREDICT['MACD_CROSS_JX'] = Timeline_Integral_with_cross_before(PRICE_PREDICT['MACD_CROSS_JX'])
@@ -316,13 +374,14 @@ def price_predict_with_macd_trend_func(data):
     # pass 2 MACD 金叉的时候寻找更多的极值点，创造更多买入条件
     x_tp_min, x_tp_max = find_peak_vextors_eagerly(data.close.values)
     macd_up_trend_PEAKPOINT_MIN = (PRICE_PREDICT.iloc[x_tp_min, PRICE_PREDICT.columns.get_loc('MACD_CROSS_JX')] < PRICE_PREDICT.iloc[x_tp_min, PRICE_PREDICT.columns.get_loc('MACD_CROSS_SX')])
-    macd_up_trend_PEAKPOINT_MAX = (PRICE_PREDICT.iloc[x_tp_max, PRICE_PREDICT.columns.get_loc('MACD_CROSS_JX')] < PRICE_PREDICT.iloc[x_tp_max, PRICE_PREDICT.columns.get_loc('MACD_CROSS_SX')])
-    macd_up_trend_PEAKPOINT_MIN = macd_up_trend_PEAKPOINT_MIN[macd_up_trend_PEAKPOINT_MIN.apply(lambda x: x == True)]  # eqv.  Trim(x == False)
-    macd_up_trend_PEAKPOINT_MAX = macd_up_trend_PEAKPOINT_MAX[macd_up_trend_PEAKPOINT_MAX.apply(lambda x: x == True)]  # eqv.  Trim(x == False)
-    PRICE_PREDICT.loc[macd_up_trend_PEAKPOINT_MIN.index, 'PRICE_PRED_CROSS_JX'] = 1
-    PRICE_PREDICT.loc[macd_up_trend_PEAKPOINT_MAX.index, 'PRICE_PRED_CROSS_SX'] = 1
-    PRICE_PREDICT.loc[macd_up_trend_PEAKPOINT_MIN.index, 'PRICE_PRED_CROSS'] = PRICE_PREDICT.loc[macd_up_trend_PEAKPOINT_MIN.index].apply(lambda x: PRICE_PREDICT.index.get_level_values(level=0).get_loc(x.name[0]), axis=1)
-    PRICE_PREDICT.loc[macd_up_trend_PEAKPOINT_MAX.index, 'PRICE_PRED_CROSS'] = PRICE_PREDICT.loc[macd_up_trend_PEAKPOINT_MAX.index].apply(lambda x: PRICE_PREDICT.index.get_level_values(level=0).get_loc(x.name[0]) * -1, axis=1)
+    #macd_up_trend_PEAKPOINT_MAX = (PRICE_PREDICT.iloc[x_tp_max,
+    #PRICE_PREDICT.columns.get_loc('MACD_CROSS_JX')] <
+    #PRICE_PREDICT.iloc[x_tp_max,
+    #PRICE_PREDICT.columns.get_loc('MACD_CROSS_SX')])
+    PRICE_PREDICT.iloc[x_tp_min, PRICE_PREDICT.columns.get_loc('PRICE_PRED_CROSS_JX')] = np.where(macd_up_trend_PEAKPOINT_MIN.values == True, 1, 0)
+    PRICE_PREDICT.iloc[x_tp_max, PRICE_PREDICT.columns.get_loc('PRICE_PRED_CROSS_SX')] = 1
+    PRICE_PREDICT.iloc[x_tp_min, PRICE_PREDICT.columns.get_loc('PRICE_PRED_CROSS')] = PRICE_PREDICT.iloc[x_tp_min].apply(lambda x: PRICE_PREDICT.index.get_level_values(level=0).get_loc(x.name[0]), axis=1)
+    PRICE_PREDICT.iloc[x_tp_max, PRICE_PREDICT.columns.get_loc('PRICE_PRED_CROSS')] = PRICE_PREDICT.iloc[x_tp_max].apply(lambda x: PRICE_PREDICT.index.get_level_values(level=0).get_loc(x.name[0]) * -1, axis=1)
 
     PRICE_PREDICT['PRICE_PRED_CROSS_JX'] = Timeline_Integral_with_cross_before(PRICE_PREDICT['PRICE_PRED_CROSS_JX'])
     PRICE_PREDICT['PRICE_PRED_CROSS_SX'] = Timeline_Integral_with_cross_before(PRICE_PREDICT['PRICE_PRED_CROSS_SX'])
@@ -338,24 +397,29 @@ def macd_cross_func(data):
     """
     神一样的指标：MACD
     """
-    MACD = TA_MACD(data.close)
+    MACD = QA.QA_indicator_MACD(data)
     
     MACD_CROSS = pd.DataFrame(columns=['MACD_CROSS', 'MACD_CROSS_JX', 'MACD_CROSS_SX'], index=data.index)
-    MACD_CROSS = MACD_CROSS.assign(DIF=MACD[:,0])
-    MACD_CROSS = MACD_CROSS.assign(DEA=MACD[:,1])
-    MACD_CROSS = MACD_CROSS.assign(MACD=MACD[:,2])
-    MACD_CROSS = MACD_CROSS.assign(DELTA=MACD[:,3])
+    MACD_CROSS = MACD_CROSS.assign(DIF=MACD['DIF'])
+    MACD_CROSS = MACD_CROSS.assign(DEA=MACD['DEA'])
+    MACD_CROSS = MACD_CROSS.assign(MACD=MACD['MACD'])
+    MACD_CROSS = MACD_CROSS.assign(ZERO=0)
+    # 新版考虑合并指标，将 DELTA 重命名为 MACD_DELTA
+    MACD_CROSS = MACD_CROSS.assign(MACD_DELTA=MACD['MACD'].diff())
+    # 为了兼容旧代码，继续保留 DELTA 字段数据一段时间
+    MACD_CROSS = MACD_CROSS.assign(DELTA=MACD['MACD'].diff())
 
     dea_tp_min, dea_tp_max = find_peak_vextors(MACD_CROSS['DEA'].values[33:], offest=33)
     MACD_CROSS.iloc[dea_tp_min, MACD_CROSS.columns.get_loc('MACD_CROSS')] = 1
     MACD_CROSS.iloc[dea_tp_max, MACD_CROSS.columns.get_loc('MACD_CROSS')] = -1
-    MACD_CROSS_JX = CROSS(MACD_CROSS['DIF'], MACD_CROSS['DEA'])
-    MACD_CROSS_SX = CROSS(MACD_CROSS['DEA'], MACD_CROSS['DIF'])
-    MACD_CROSS.loc[MACD_CROSS_JX == 1, 'MACD_CROSS_JX'] = 1
-    MACD_CROSS.loc[MACD_CROSS_SX == 1, 'MACD_CROSS_SX'] = -1
+    MACD_CROSS['MACD_CROSS_JX'] = CROSS(MACD_CROSS['DIF'], MACD_CROSS['DEA'])
+    MACD_CROSS['MACD_CROSS_SX'] = CROSS(MACD_CROSS['DEA'], MACD_CROSS['DIF'])
+    MACD_CROSS['MACD_CROSS'] = np.where(MACD_CROSS['MACD_CROSS_JX'] == 1, 1, np.where(MACD_CROSS['MACD_CROSS_SX'] == 1, -1, 0))
     MACD_CROSS.iloc[dea_tp_min, MACD_CROSS.columns.get_loc('MACD_CROSS_JX')] = 1
     MACD_CROSS.iloc[dea_tp_max, MACD_CROSS.columns.get_loc('MACD_CROSS_SX')] = 1
 
+    MACD_CROSS['DEA_CROSS_JX'] = Timeline_Integral_with_cross_before(CROSS(MACD_CROSS['DEA'], MACD_CROSS['ZERO']))
+    MACD_CROSS['DEA_CROSS_SX'] = Timeline_Integral_with_cross_before(CROSS(MACD_CROSS['ZERO'], MACD_CROSS['DEA']))
     MACD_CROSS['MACD_CROSS_JX'] = Timeline_Integral_with_cross_before(MACD_CROSS['MACD_CROSS_JX'])
     MACD_CROSS['MACD_CROSS_SX'] = Timeline_Integral_with_cross_before(MACD_CROSS['MACD_CROSS_SX'])
     return MACD_CROSS
@@ -385,13 +449,15 @@ def maxfactor_cross_func(data):
     MAXFACTOR_CROSS_SX2 = CROSS(REGRESSION_BASELINE, MAX_FACTOR + MAX_FACTOR_delta)
     MAXFACTOR_CROSS_SX3 = CROSS(REGRESSION_BASELINE - 133, MAX_FACTOR + MAX_FACTOR_delta)
     MAXFACTOR_CROSS_SX_JUNCTION = (MAXFACTOR_CROSS_SX1 | MAXFACTOR_CROSS_SX2 | MAXFACTOR_CROSS_SX3)
-    MAXFACTOR_CROSS.loc[(MAXFACTOR_CROSS_JX1 | MAXFACTOR_CROSS_JX2 | MAXFACTOR_CROSS_JX3) == 1, 'MAXFACTOR_CROSS'] = 1
-    MAXFACTOR_CROSS.loc[(MAXFACTOR_CROSS_SX1 | MAXFACTOR_CROSS_SX2 | MAXFACTOR_CROSS_SX3) == 1, 'MAXFACTOR_CROSS'] = -1
+    MAXFACTOR_CROSS['MAXFACTOR_CROSS'] = np.where(MAXFACTOR_CROSS_JX_JUNCTION.values == 1, 
+                                             1, 
+                                             np.where(MAXFACTOR_CROSS_SX_JUNCTION.values == 1,
+                                                     -1, 0))
     MAXFACTOR_CROSS['MAXFACTOR_CROSS_JX'] = Timeline_Integral_with_cross_before(MAXFACTOR_CROSS_JX_JUNCTION)
     MAXFACTOR_CROSS['MAXFACTOR_CROSS_SX'] = Timeline_Integral_with_cross_before(MAXFACTOR_CROSS_SX_JUNCTION)
     return MAXFACTOR_CROSS
 
-8
+
 def dual_cross_func(data):
     """
     自创指标：CCI/KDJ 对 偏移后的 RSI 双金叉
@@ -412,8 +478,7 @@ def dual_cross_func(data):
     DUAL_CROSS_SX = np.r_[np.zeros(13), CROSS_STATUS(CCI_CROSS_SX * (CCI_CROSS_SX + KDJ_J_CROSS_SX + KDJ_J_CROSS_SX_PLUS), 1)]
 
     DUAL_CROSS = pd.DataFrame(columns=['DUAL_CROSS', 'DUAL_CROSS_JX', 'DUAL_CROSS_SX'], index=data.index)
-    DUAL_CROSS.loc[DUAL_CROSS_JX == 1, 'DUAL_CROSS'] = 1
-    DUAL_CROSS.loc[DUAL_CROSS_SX == 1, 'DUAL_CROSS'] = -1
+    DUAL_CROSS['DUAL_CROSS'] = np.where(DUAL_CROSS_JX == 1, 1, np.where(DUAL_CROSS_SX == 1, -1, 0))
     DUAL_CROSS['DUAL_CROSS_JX'] = Timeline_Integral(DUAL_CROSS_JX)
     DUAL_CROSS['DUAL_CROSS_SX'] = Timeline_Integral(DUAL_CROSS_SX)
     return DUAL_CROSS
@@ -425,17 +490,15 @@ def ma30_cross_func(data):
     """
     MA5 = talib.MA(data.close, 5)
     MA30 = talib.MA(data.close, 30)
-    
-    MA30_CROSS_JX = CROSS(MA5, MA30)
-    MA30_CROSS_JX_Integral = Timeline_Integral_with_cross_before(MA30_CROSS_JX)
-    MA30_CROSS_SX = CROSS(MA30, MA5)
-    MA30_CROSS_SX_Integral = Timeline_Integral_with_cross_before(MA30_CROSS_SX)
-    
+        
     MA30_CROSS = pd.DataFrame(columns=['MA30_CROSS', 'MA30_CROSS_JX', 'MA30_CROSS_SX', 'MA30_TP_CROSS_JX', 'MA30_TP_CROSS_SX'], index=data.index)
-    MA30_CROSS.loc[MA30_CROSS_JX == 1, 'MA30_CROSS'] = 1
-    MA30_CROSS.loc[MA30_CROSS_SX == 1, 'MA30_CROSS'] = -1
-    MA30_CROSS['MA30_CROSS_JX'] = Timeline_Integral_with_cross_before(MA30_CROSS_JX)
-    MA30_CROSS['MA30_CROSS_SX'] = Timeline_Integral_with_cross_before(MA30_CROSS_SX)
+    MA30_CROSS = MA30_CROSS.assign(MA5=MA5)
+    MA30_CROSS = MA30_CROSS.assign(MA30=MA30)
+    MA30_CROSS['MA30_CROSS_JX'] = CROSS(MA5, MA30)
+    MA30_CROSS['MA30_CROSS_SX'] = CROSS(MA30, MA5)
+    MA30_CROSS['MA30_CROSS'] = np.where(MA30_CROSS['MA30_CROSS_JX'].values == 1, 1, np.where(MA30_CROSS['MA30_CROSS_SX'].values == 1, -1, 0))
+    MA30_CROSS['MA30_CROSS_JX'] = Timeline_Integral_with_cross_before(MA30_CROSS['MA30_CROSS_JX'])
+    MA30_CROSS['MA30_CROSS_SX'] = Timeline_Integral_with_cross_before(MA30_CROSS['MA30_CROSS_SX'])
     
     # MA30 前29个是 NaN，处理会抛出 Warning，使用 [29:] 则不会计算 NaN，相应的 return_index+29
     MA30_tp_min, MA30_tp_max = find_peak_vextors(MA30.values[29:], offest=29)
@@ -462,15 +525,10 @@ def boll_cross_func(data):
     BOLL_CROSS['min_peak'] = data.apply(lambda x: min(x['open'], x['close'], x['low'] if x['open'] < x['BOLL_MA'] else x['smooth_low']), axis=1)
     BOLL_CROSS['max_peak'] = data.apply(lambda x: max(x['open'], x['close'], x['high'] if x['open'] > x['BOLL_MA'] else x['smooth_high']), axis=1)
 
-    BOLL_CROSS_JX = CROSS(BOLL_CROSS['min_peak'], BBANDS[:,2])
-    BOLL_CROSS_SX = CROSS(BBANDS[:,0], BOLL_CROSS['max_peak'])
-    BOLL_CROSS.loc[BOLL_CROSS_JX == 1, 'BOLL_CROSS'] = 1
-    BOLL_CROSS.loc[BOLL_CROSS_SX == 1, 'BOLL_CROSS'] = -1
-    
     BOLL_TP_CROSS = pd.DataFrame(columns=['BOLL_TP_CROSS_JX', 'BOLL_TP_CROSS_SX'], index=data.index)
-    BOLL_TP_CROSS['BOLL_TP_CROSS_SX'] = BOLL_TP_CROSS['BOLL_TP_CROSS_JX'] = 0
-    BOLL_TP_CROSS.loc[BOLL_CROSS_JX == 1, 'BOLL_TP_CROSS_JX'] = 1
-    BOLL_TP_CROSS.loc[BOLL_CROSS_SX == 1, 'BOLL_TP_CROSS_SX'] = 1
+    BOLL_TP_CROSS['BOLL_TP_CROSS_JX'] = CROSS(BOLL_CROSS['min_peak'], BBANDS[:,2])
+    BOLL_TP_CROSS['BOLL_TP_CROSS_SX'] = CROSS(BBANDS[:,0], BOLL_CROSS['max_peak'])
+    BOLL_CROSS['BOLL_CROSS'] = np.where(BOLL_TP_CROSS['BOLL_TP_CROSS_JX'].values == 1, 1, np.where(BOLL_TP_CROSS['BOLL_TP_CROSS_SX'].values == 1, -1, 0))
 
     BOLL_CROSS = BOLL_CROSS.assign(BOLL_UB=BBANDS[:,0])
     BOLL_CROSS = BOLL_CROSS.assign(BOLL_MA=BBANDS[:,1])
@@ -481,3 +539,217 @@ def boll_cross_func(data):
     BOLL_CROSS['BOLL_CROSS_JX'] = Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_JX'])
     BOLL_CROSS['BOLL_CROSS_SX'] = Timeline_Integral_with_cross_before(BOLL_TP_CROSS['BOLL_TP_CROSS_SX'])
     return BOLL_CROSS
+
+
+def ma_power(price, range_list=range(5, 30)):
+    '''
+    多头排列能量强度定义
+    '''
+    def inv_num(series):
+        '''
+        计算逆序数个数
+        '''
+        series = np.array(series)  # 提升速度
+        return np.sum([np.sum(x < series[:i]) for i, x in enumerate(series)])
+
+    ma_pd = pd.DataFrame()
+    for r in range_list:
+        ma = talib.MA(price, r)
+        if len(ma_pd) == 0:
+            ma_pd = ma
+        else:
+            ma_pd = pd.concat([ma_pd, ma], axis=1)
+    ma_pd.columns = range_list
+    df_fixed = ma_pd.dropna()  # 前n个数据部分均线为空值，去除
+    num = df_fixed.apply(lambda x: inv_num(x), axis=1)  # 每排逆序个数
+    ratio = num / (len(range_list) * (len(range_list) - 1)) * 2
+    return pd.DataFrame({'MAPOWER':ratio.reindex(ma_pd.index)})
+
+
+def machine_learning_trend_func(data):
+    """
+    使用机器学习算法统计分析趋势
+    """
+    # 统计学习方法分析大趋势：数据准备
+    highp = data.high.values
+    lowp = data.low.values
+    openp = self._ticks[AKA.OPEN].values
+    closep = self._ticks[AKA.CLOSE].values
+
+    # DPGMM 聚类
+    X = []
+    idx = []
+    lag = 30
+    for i in range(len(closep)):
+        left = max(0,i - lag)
+        right = min(len(closep) - 1,i + lag)
+        l = max(0,i - 1)
+        r = min(len(closep) - 1,i + 1)
+        for j in range(left,right):
+            minP = min(closep[left:right])
+            maxP = max(closep[left:right])
+            low = 1 if closep[i] <= closep[l] and closep[i] < closep[r] else 0
+            high = 1 if closep[i] >= closep[l] and closep[i] > closep[r] else 0
+        x = [i, closep[i], minP, maxP, low, high]
+        X.append(x)
+        idx.append(i)
+    X = np.array(X)
+    idx = np.array(idx)
+
+    dpgmm = mixture.BayesianGaussianMixture(n_components=max(int(to_be_trimmed / 10), 16), max_iter=1000, covariance_type='spherical', weight_concentration_prior_type='dirichlet_process')
+    # 训练模型不含最后一个点
+    dpgmm.fit(X[:-1])
+    y_t = dpgmm.predict(X)
+
+    # 以DPGMM聚类进行分段，计算线性回归斜率
+    #dif_max_fatcor = self._ind[FLD.MAX_FACTOR_CROSS_SX] - self._ind[FLD.MAX_FACTOR_CROSS_JX]
+
+    lr = LinearRegression()       
+    for c in np.unique(y_t):
+        inV = []
+        outV = []
+        for i in range(len(closep)):
+            if y_t[i] - c == 0:
+                inV.append(i)
+                outV.append(closep[i])
+
+        inV = np.atleast_2d(np.array(inV)).T
+        outV = np.array(outV)
+        lr.fit(inV,outV)
+            
+        estV = lr.predict(inV)
+
+        # 数字索引降维
+        inV = np.reshape(inV, len(inV))
+        self._ind.iloc[inV, self._ind.columns.get_loc(FLD.REGRESSION_PRICE)] = estV
+        self._ind.iloc[inV, self._ind.columns.get_loc(FLD.REGRESSION_SLOPE)] = lr.coef_[0]
+        if (lr.coef_[0] > 0):
+            self._ind.iloc[inV, self._ind.columns.get_loc(FLD.REGRESSION_DIRECTION)] = estV
+
+        # 原使用线性回归拟近，后发现合并计算MAX_FACTOR金叉/死叉时间卷积平均值，得出曲线趋势（在小斜率状态比线性回归准确）
+        self._ind.iloc[inV, self._ind.columns.get_loc(FLD.REGRESSION_MAX_FACTOR)] = dif_max_fatcor.iloc[inV].mean()
+
+    self._ind = self._ind.assign(TREND_STATUS=y_t)
+
+        # DPGMM 聚类分析完毕
+        # 下降趋势检测
+        #if (self.Period_Time < timedelta(hours=1)):
+        #    bV = lowp[signal.argrelextrema(lowp,np.less)]
+        #    bP = signal.argrelextrema(lowp,np.less)[0]
+
+        #    d,p = LIS(bV)
+
+        #    idx = []
+        #    for i in range(len(p)):
+        #        idx.append(bP[p[i]])
+
+        #    qV = highp[signal.argrelextrema(highp,np.greater)]
+        #    qP = signal.argrelextrema(highp,np.greater)[0]
+
+        #    qd,qp = LDS(qV)
+
+        #    qidx = []
+        #    for i in range(len(qp)):
+        #        qidx.append(qP[qp[i]])
+
+        #    self._tick_events = self._tick_events.assign(ZEN_TIDE_CROSS = None)
+        #    self._tick_events.iloc[idx, self._tick_events.columns.get_loc(AKA.ZEN_TIDE_CROSS)] = ST.CROSS_JX
+        #    self._tick_events.iloc[qidx, self._tick_events.columns.get_loc(AKA.ZEN_TIDE_CROSS)] = ST.CROSS_SX
+        #    self._ind = self._ind.assign(ZEN_TIDE_CROSS_JX=0)
+        #    self._ind.iloc[idx, self._ind.columns.get_loc(AKA.ZEN_TIDE_CROSS_JX)] = 1
+        #    ZEN_TIDE_CROSS_JX_Integral = Timeline_Integral_with_cross_before(self._ind[AKA.ZEN_TIDE_CROSS_JX])
+        #    self._ind[AKA.ZEN_TIDE_CROSS_JX] = ZEN_TIDE_CROSS_JX_Integral
+        #    self._ind = self._ind.assign(ZEN_TIDE_CROSS_SX=0)
+        #    self._ind.iloc[qidx, self._ind.columns.get_loc(AKA.ZEN_TIDE_CROSS_SX)] = 1
+        #    ZEN_TIDE_CROSS_SX_Integral = Timeline_Integral_with_cross_before(self._ind[AKA.ZEN_TIDE_CROSS_SX])
+        #    self._ind[AKA.ZEN_TIDE_CROSS_SX] = ZEN_TIDE_CROSS_SX_Integral
+
+
+
+def ATR_SuperTrend_func(data):
+    """
+    ATR 超级趋势策略
+    """
+    rsi_ma, stop_line, direction = ATR_RSI_Stops(data, 27)
+    ATR_SuperTrend_cross = pd.DataFrame(columns=['min_peak', 'max_peak', 'BOLL_CROSS', 'BOLL_CROSS_JX', 'BOLL_CROSS_SX'], index=data.index)
+
+    return ATR_SuperTrend_cross
+
+
+class QA_Timekline_States():
+    '''
+    针对不同时间序列的K线数据分析工具类 
+    QA_Timeline 对象表示特定时间序列的K线蜡烛图数据分析工具
+    '''
+    _ind = None
+    _code = ''
+    _frequency = '1min'
+    _period_time = timedelta(hours = 1)
+    _xtick_each_hour = 0
+    _states = None
+
+    def __init__(self, baseline_kline, code, frequency,):
+        self._ind = pd.DataFrame(columns=['MA5', 'MA10', 'MA30', 'DIF', 'DEA', 'MACD', 'MAX'], index=baseline_kline.index)
+        self._states = pd.DataFrame(index=baseline_kline.index)
+        pass
+
+
+def bootstrap_trend_func(data, indices=None):
+    """
+    K线分型判断：逆浪，斜上坡，慢牛行情 出现MA30 长线机会，打开交易窗口成为买入点
+    """
+    if (indices is None):
+        # Todo: Cache indices in memory.
+        indices = pd.concat([ma30_cross_func(data), 
+                             macd_cross_func(data),
+                             boll_cross_func(data), 
+                             maxfactor_cross_func(data), 
+                             dual_cross_func(data)], 
+                            axis=1)
+        indices = indices.assign(ts_momemtum=time_series_momemtum(data.close, 5))
+        indices = indices.assign(ts_mom_returns=kline_returns_func(indices['ts_momemtum'], 'np'))
+        rsi_ma, stop_line, direction = ATR_RSI_Stops(data, 27)
+        indices = indices.assign(stop_line=stop_line)
+        indices = indices.assign(atr_direction=direction)
+        tsl, atr_super_trend = ATR_SuperTrend(data)
+        indices = indices.assign(atr_boll_trend=atr_super_trend)
+    states = lower_settle_price_func(data, indices)
+
+    bootstrap_trend_state = pd.DataFrame(((states['lower_settle_price'] == True) | (states['lower_settle_price'] == 1)) & (\
+        ((indices['MACD_CROSS_SX'] < indices['DEA_CROSS_SX']) & (indices['MACD_CROSS_SX'] > 4)) | \
+        (False & (indices['MA5'] > indices['BOLL_MA']) & (indices['atr_direction'] > 0)) | \
+        (False & (indices['MA5'] > indices['BOLL_MA']) & (indices['atr_boll_trend'] > 0)) | \
+        ((indices['MA5'] > indices['BOLL_MA']) & (indices['BOLL_CROSS_JX'] < indices['BOLL_CROSS_SX']) & (indices['atr_direction'] < 0)) | \
+        ((indices['MACD_CROSS_SX'] > 36) & ((indices['MACD'] < 0) | (indices['atr_direction'] > 0)))) & \
+        ((indices['BOLL_CROSS_SX'] > indices['MACD_CROSS_JX']) | ((indices['MACD'] > 0) & (indices['BOLL_CROSS_SX'] < indices['DUAL_CROSS_JX']))),
+        columns=['bootstrap'], index=data.index)
+    bootstrap_trend_state = pd.concat([bootstrap_trend_state, 
+                                       states], 
+                            axis=1)
+    return bootstrap_trend_state
+
+
+def lower_settle_price_func(data, indices=None):
+    """
+    K线分型判断：确定到达低价位的合适买入点。
+    （金科玉律：非长（半年以上）牛行情时只有低价位股才值得买入）
+    """
+    if (indices is None):
+        # Todo: Cache indices in memory.
+        indices = pd.concat([ma30_cross_func(data), 
+                             macd_cross_func(data), 
+                             boll_cross_func(data), 
+                             maxfactor_cross_func(data), 
+                             dual_cross_func(data)], 
+                            axis=1)
+        indices = indices.assign(ts_momemtum=time_series_momemtum(data.close, 5))
+        indices = indices.assign(ts_mom_returns=kline_returns_func(indices['ts_momemtum'], 'np'))
+
+    lower_settle_price_state = pd.DataFrame(((indices['ts_momemtum'].rolling(4).mean().values > 0) | (indices['ts_mom_returns'].rolling(4).mean().values > 0)) & (indices['DEA'] < 0) & \
+        (indices['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & \
+        (indices['MACD_DELTA'].rolling(4).mean().values > 0) & (\
+            (indices['MAXFACTOR_CROSS_JX'] < indices['MAXFACTOR_CROSS_SX']) | \
+            ((indices['MACD'] > 0) & (indices['DUAL_CROSS_JX'] > 0) & ~(indices['DEA'] > indices['MACD']))),
+        columns=['lower_settle_price'], index=data.index)
+
+    return lower_settle_price_state

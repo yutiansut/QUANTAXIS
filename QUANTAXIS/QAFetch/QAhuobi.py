@@ -46,7 +46,8 @@ from urllib.parse import urljoin
 from QUANTAXIS.QAUtil.QADate_Adv import (
     QA_util_str_to_Unix_timestamp,
     QA_util_datetime_to_Unix_timestamp,
-    QA_util_timestamp_to_str
+    QA_util_timestamp_to_str,
+    QA_util_print_timestamp,
 )
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_find_missing_kline
 from QUANTAXIS.QAUtil.QALogs import (

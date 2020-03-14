@@ -4,6 +4,7 @@ from scipy.signal import butter, lfilter
 import numpy as np
 import matplotlib.pyplot as plt
 from QUANTAXIS.QAIndicator.talib_numpy import *
+from QUANTAXIS.QAIndicator.base import *
 import mpl_finance as mpf
 import matplotlib.dates as mdates
 
@@ -25,15 +26,25 @@ if __name__ == '__main__':
     #        frequence='60min')
     #data_4h = QA.QA_DataStruct_Crypto_Asset_min(data_1h.resample('4h'))
     #massive_predict_1h = data_day.add_func(price_predict_with_macd_trend_func)
-    rsi_ma, stop_line, direction = ATR_RSI_Stops(data_day.data.reset_index([1,2]), 27)
-    tsl, atr_super_trend = ATR_SuperTrend(data_day.data.reset_index([1,2]))
-    price_predict_day = data_day.add_func(price_predict_with_macd_trend_func)
-    ma30_croos_day = data_day.add_func(ma30_cross_func).reset_index([1,2])
-    dual_cross_day = data_day.add_func(dual_cross_func).reset_index([1,2])
-    boll_bands_day = data_day.add_func(boll_cross_func).reset_index([1,2])
-    maxfactor_cross_day = data_day.add_func(maxfactor_cross_func).reset_index([1,2])
-    tmom_day = time_series_momemtum(data_day.data.close, 10).reset_index([1,2])
 
+    price_predict_day = data_day.add_func(price_predict_with_macd_trend_func)
+    if (len(data_day.index.names) > 2):
+        rsi_ma, stop_line, direction = ATR_RSI_Stops(data_day.data.reset_index([1,2]), 27)
+        tsl, atr_super_trend = ATR_SuperTrend(data_day.data.reset_index([1,2]))
+        ma30_croos_day = data_day.add_func(ma30_cross_func).reset_index([1,2])
+        dual_cross_day = data_day.add_func(dual_cross_func).reset_index([1,2])
+        boll_bands_day = data_day.add_func(boll_cross_func).reset_index([1,2])
+        maxfactor_cross_day = data_day.add_func(maxfactor_cross_func).reset_index([1,2])
+        tmom_day = time_series_momemtum(data_day.data.close, 10).reset_index([1,2])
+    elif (len(data_day.index.names) > 1):
+        rsi_ma, stop_line, direction = ATR_RSI_Stops(data_day.data.reset_index([1]), 27)
+        tsl, atr_super_trend = ATR_SuperTrend(data_day.data.reset_index([1]))
+        ma30_croos_day = data_day.add_func(ma30_cross_func).reset_index([1])
+        dual_cross_day = data_day.add_func(dual_cross_func).reset_index([1])
+        boll_bands_day = data_day.add_func(boll_cross_func).reset_index([1])
+        maxfactor_cross_day = data_day.add_func(maxfactor_cross_func).reset_index([1])
+        tmom_day = time_series_momemtum(data_day.data.close, 10).reset_index([1])
+    
     hma5 = TA_HMA(data_day.close.values, 10)
     hma5_returns = np.nan_to_num(np.log(hma5 / pd.Series(hma5).shift(1)), nan=0)
     hma_tp_min, hma_tp_max = signal.argrelextrema(np.r_[np.zeros(11), hma5[11:]], np.less)[0], signal.argrelextrema(np.r_[np.zeros(11), hma5[11:]], np.greater)[0]
@@ -61,6 +72,9 @@ if __name__ == '__main__':
 
     bootstrap_dual_cross = ((hma5_returns > 0) & (dual_cross_day['DUAL_CROSS_JX'].values > 0)) & (\
             ((maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values > 2) & (maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values)) | \
+            ((maxfactor_cross_day['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & (maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values) & (price_predict_day['DELTA'].values > 0)) | \
+            ((maxfactor_cross_day['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & (maxfactor_cross_day['MAXFACTOR_DELTA'].values > -61.8) & (price_predict_day['MACD_CROSS_JX'].values < price_predict_day['MACD_CROSS_SX'].values) & (price_predict_day['DELTA'].values > 0)) | \
+            ((maxfactor_cross_day['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & (maxfactor_cross_day['MAXFACTOR_DELTA'].values > -61.8) & (price_predict_day['DELTA'].rolling(4).mean().values > 0) & (price_predict_day['DELTA'].values > 0)) | \
             ((hma5 > boll_bands_day['BOLL_MA'].values) & (maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values)) | \
             ((hma5 > boll_bands_day['BOLL_MA'].values) & (boll_bands_day['BBW_MA20'].values < boll_bands_day['BOLL_WIDTH'].values)) | \
             (((boll_bands_day['BOLL_CROSS_JX'].values > 18) & (ma30_croos_day['MA30_CROSS_JX'].values < ma30_croos_day['MA30_CROSS_SX'].values)) & \
@@ -77,7 +91,12 @@ if __name__ == '__main__':
                                                                                            -1, 
                                                                                            np.where((hma5_returns < 0) & (maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values), 
                                                                                                     -1, 0))))
-
+    #print(strategy_POSITION.loc[strategy_POSITION.index.intersection(pd.date_range('2015-06-20', periods=40, freq='D'))])
+    #dual_cross_day = dual_cross_day.assign(RETURNS=hma5_returns)
+    #dual_cross_day = dual_cross_day.assign(BASELINE=price_predict_day['DELTA'].rolling(4).mean().values)
+    #dual_cross_day = dual_cross_day.assign(bootstrap_dual_cross=bootstrap_dual_cross)
+    #print(dual_cross_day.loc[dual_cross_day.index.intersection(pd.date_range('2015-06-20', periods=40, freq='D'))])
+    #print('fooo')
     #adxm, adxm_pos = TA_ADXm(data_day.data)
     strategy_POSITION = strategy_POSITION.assign(POSITION_HMA5=price_predict['POSITION_JUNTION'])
     strategy_POSITION = strategy_POSITION.assign(POSITION_ATR=(direction))
@@ -96,7 +115,8 @@ if __name__ == '__main__':
                                strategy_POSITION['POSITION_ATR'].values))
     strategy_POSITION['returns'] = np.nan_to_num(np.log(data_day.close / data_day.close.shift(1)), nan=0)
     strategy_POSITION['strategy_R5'] = np.where(strategy_POSITION['POSITION_BOOTSRTAP_DUAL_R5'].shift(1).values > 0, 1, 0) * strategy_POSITION['returns'].shift(1)
-    print(strategy_POSITION[['returns', 'POSITION_BOOTSRTAP_DUAL_R5', 'strategy_R5']].tail(60))
+    #print(strategy_POSITION[['returns', 'POSITION_BOOTSRTAP_DUAL_R5',
+    #'strategy_R5']].tail(60))
     strategy_POSITION[['returns', 'strategy_R5']].dropna().cumsum().apply(np.exp).plot(figsize=(10, 6))
 
 

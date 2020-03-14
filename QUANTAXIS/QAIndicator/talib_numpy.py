@@ -57,8 +57,9 @@ def TA_MACD(prices, fastperiod=12, slowperiod=26, signalperiod=9):
                                     fastperiod=fastperiod, 
                                     slowperiod=slowperiod, 
                                     signalperiod=signalperiod)
-    delta = np.r_[np.nan, np.diff(hist * 2)]
-    return np.c_[macd, signal, hist * 2, delta]
+    hist = (macd - signal) * 2
+    delta = np.r_[np.nan, np.diff(hist)]
+    return np.c_[macd, signal, hist, delta]
 
 
 # 定义RSI函数
