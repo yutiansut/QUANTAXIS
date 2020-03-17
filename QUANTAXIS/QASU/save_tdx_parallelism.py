@@ -50,20 +50,57 @@ def run(cls_instance, code):
     return cls_instance.do_working_1(code)
 
 
-def get_coll(client=None):
-    cache = QA_util_cache()
-    results = cache.get('tdx_coll')
-    if results:
-        return results
-    else:
-        _coll = client.index_day
+def get_coll(client=None, cacheName='tdx_coll', tableName="index_day"):
+    def stockxdxr():
+        _coll = client.stock_xdxr
         _coll.create_index(
             [('code',
               pymongo.ASCENDING),
-             ('date_stamp',
-              pymongo.ASCENDING)]
+             ('date',
+              pymongo.ASCENDING)],
+            unique=True
         )
-        cache.set('tdx_coll', _coll, age=86400)
+        return _coll
+
+    def stockadj():
+        coll_adj = client.stock_adj
+        coll_adj.create_index(
+            [('code',
+                pymongo.ASCENDING),
+                ('date',
+                pymongo.ASCENDING)],
+            unique=True
+        )
+        return coll_adj
+
+    cache = QA_util_cache()
+    results = cache.get(cacheName)
+    if results:
+        return results
+    else:
+        if tableName == "index_day":
+            _coll = client.index_day
+            _coll.create_index(
+                [('code',
+                  pymongo.ASCENDING),
+                 ('date_stamp',
+                  pymongo.ASCENDING)]
+            )
+        elif tableName == "stock_xdxr":
+            try:
+                _coll = stockxdxr()
+            except Exception as e:
+                client.drop_collection('stock_xdxr')
+                _coll = stockxdxr()
+        elif tableName == "stock_adj":
+            try:
+                _coll = stockadj()
+            except Exception as e:
+                client.drop_collection('stock_adj')
+                _coll = stockadj()
+        else:
+            raise Exception("参数tableName未定义：{}".format(tableName))
+        cache.set(cacheName, _coll, age=86400)
         return _coll
 
 
@@ -107,10 +144,11 @@ class QA_SU_save_day_parallelism(Parallelism):
             str += code
             QA_util_log_info(
                 '##JOB02 Now Saved STOCK_DAY==== {}'.format(
-                    ),
+                ),
                 self.ui_log
             )
             self._loginfolist.clear()
+
 
 class QA_SU_save_day_parallelism_thread(Parallelism_Thread):
     def __init__(self, processes=cpu_count(), client=DATABASE, ui_log=None,
@@ -152,10 +190,11 @@ class QA_SU_save_day_parallelism_thread(Parallelism_Thread):
             str += code
             QA_util_log_info(
                 '##JOB02 Now Saved STOCK_DAY==== {}'.format(
-                    ),
+                ),
                 self.ui_log
             )
             self._loginfolist.clear()
+
 
 class QA_SU_save_stock_day_parallelism(QA_SU_save_day_parallelism):
     def complete(self, result):
@@ -316,7 +355,7 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
             index_or_etf = 'INDEX'
         return index_or_etf
 
-    def __saving_work(self, code):
+    def _saving_work(self, code):
         def __QA_log_info(code, end_time, start_time):
             def loginfo(prefix='', astr='', listCounts=5):
                 if len(self._loginfolist) < listCounts:
@@ -349,7 +388,6 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
             #     log_info,
             #     ui_log=self.ui_log
             # )
-
 
         try:
             search_cond = {'code': str(code)[0:6]}
@@ -424,7 +462,7 @@ class QA_SU_save_index_day_parallelism(QA_SU_save_day_parallelism_thread):
                 ui_progress=self.ui_progress,
                 ui_progress_int_value=intLogProgress
             )
-        self.__saving_work(code)
+        self._saving_work(code)
         return code
 
     def complete(self, result):
@@ -454,7 +492,7 @@ def _QA_SU_save_index_or_etf_day(index__or_etf, client, ui_log, ui_progress):
         processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
         client=client, ui_log=ui_log)
     # 单线程测试
-    # ps = QA_SU_save_index_day_parallelism(
+    # ps = QA_SU_save_index_day_parallelism(get_coll
     #   processes=1 if len(ips) >= cpu_count() else len(ips),
     #   client=client, ui_log=ui_log)
     ps.total_counts = len(index_list)
@@ -472,6 +510,73 @@ def QA_SU_save_etf_day(client=DATABASE, ui_log=None, ui_progress=None):
     _QA_SU_save_index_or_etf_day(index__or_etf, client, ui_log, ui_progress)
 
 
+class QA_SU_save_stock_xdxr_parallelism(QA_SU_save_index_day_parallelism):
+
+    def _saving_work(self, code):
+        def __QA_log_info(code, end_time, start_time):
+            def loginfo(prefix='', astr='', listCounts=5):
+                if len(self._loginfolist) < listCounts:
+                    self._loginfolist.append(astr)
+                else:
+                    str = ''
+                    for i in range(len(self._loginfolist)):
+                        str += self._loginfolist[i] + ' '
+                    str += astr
+                    QA_util_log_info(
+                        prefix.format(str),
+                        self.ui_log
+                    )
+                    self._loginfolist.clear()
+
+            prefix = '##JOB02 Saving parallelism {}_DAY ==== Trying updating\n{}'.format("xdxr", '{}')
+            loginfo(prefix, ' {} from {} to {}'.format(
+                code,
+                start_time,
+                end_time
+            ))
+
+        try:
+            search_cond = {'code': str(code)[0:6]}
+            _col = get_coll(client=None, cacheName="stock_xdxr", tableName="stock_xdxr")
+            ref_ = _col.find(search_cond)
+            ref_count = _col.count_documents(search_cond)
+
+            end_time = str(now_time())[0:10]
+            _xdxr = QA_fetch_get_stock_xdxr(str(code))
+            if ref_count > 0:
+                start_time = ref_[ref_count - 1]['date']
+
+                __QA_log_info(code, end_time, start_time)
+
+                if start_time != end_time:
+                    _col.insert_many(
+                        QA_util_to_json_from_pandas(
+                            _xdxr.loc[slice(pd.Timestamp(start_time), pd.Timestamp(end_time))]
+                        ),
+                        ordered=False
+                    )
+            else:
+                try:
+                    start_time = '1990-01-01'
+                    __QA_log_info(code, end_time, start_time)
+                    _col.insert_many(
+                        QA_util_to_json_from_pandas(_xdxr),
+                        ordered=False
+                    )
+                except Exception as e:
+                    start_time = '2009-01-01'
+                    __QA_log_info(code, end_time, start_time)
+                    _col.insert_many(
+                        QA_util_to_json_from_pandas(
+                            _xdxr.loc[slice(pd.Timestamp(start_time), pd.Timestamp(end_time))]
+                        ),
+                        ordered=False
+                    )
+        except Exception as e:
+            QA_util_log_info(e.args, ui_log=self.ui_log)
+            self.err.append(str(code))
+            QA_util_log_info(self.err, ui_log=self.ui_log)
+
 
 def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
     """[summary]
@@ -479,59 +584,13 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
-    stock_list = QA_fetch_get_stock_list().code.unique().tolist()
-    # client.drop_collection('stock_xdxr')
-    try:
-
-        coll = client.stock_xdxr
-        coll.create_index(
-            [('code',
-              pymongo.ASCENDING),
-             ('date',
-              pymongo.ASCENDING)],
-            unique=True
-        )
-    except:
-        client.drop_collection('stock_xdxr')
-        coll = client.stock_xdxr
-        coll.create_index(
-            [('code',
-              pymongo.ASCENDING),
-             ('date',
-              pymongo.ASCENDING)],
-            unique=True
-        )
-    err = []
-
-    def __saving_work(code, coll):
-        QA_util_log_info(
-            '##JOB02 Now Saving XDXR INFO ==== {}'.format(str(code)),
-            ui_log=ui_log
-        )
-        try:
-            coll.insert_many(
-                QA_util_to_json_from_pandas(QA_fetch_get_stock_xdxr(str(code))),
-                ordered=False
-            )
-
-        except:
-
-            err.append(str(code))
-
-    for i_ in range(len(stock_list)):
-        QA_util_log_info(
-            'The {} of Total {}'.format(i_,
-                                        len(stock_list)),
-            ui_log=ui_log
-        )
-        strLogInfo = 'DOWNLOAD PROGRESS {} '.format(
-            str(float(i_ / len(stock_list) * 100))[0:4] + '%'
-        )
-        intLogProgress = int(float(i_ / len(stock_list) * 100))
-        QA_util_log_info(
-            strLogInfo,
-            ui_log=ui_log,
-            ui_progress=ui_progress,
-            ui_progress_int_value=intLogProgress
-        )
-        __saving_work(stock_list[i_], coll)
+    stock_list = QA_fetch_get_stock_list().code.unique().tolist()[:100]
+    coll = get_coll(client, "stock_xdxr", "stock_xdxr")
+    ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[
+          :cpu_count() * 2 + 1]
+    # 单线程测试
+    ps = QA_SU_save_stock_xdxr_parallelism(
+        processes=cpu_count() if len(ips) >= cpu_count() else len(ips),
+        client=client, ui_log=ui_log)
+    ps.total_counts = len(stock_list)
+    ps.run(stock_list)

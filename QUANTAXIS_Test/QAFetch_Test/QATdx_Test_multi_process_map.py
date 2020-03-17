@@ -13,6 +13,7 @@ import datetime, time
 import os
 from multiprocessing import cpu_count
 from QUANTAXIS.QACmd import QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_etf_day
+from QUANTAXIS.QACmd import QA_SU_save_stock_xdxr
 from QUANTAXIS.QAUtil import QA_util_cache
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 
@@ -184,7 +185,7 @@ class TestSelect_best_ip(TestCase):
     # 分钟数据测试
     # def __get_index_min_adv(code, start, end, frequence):
     #     if isinstance(code, list) is not True:
-    #         code = [str(code)]
+    #         code = [str(code)]QA.QA_fetch_stock_info(['000001', '000002'])     
     #     df = None
     #
     #     # todo: 启用多服务IP支持
@@ -276,11 +277,32 @@ class TestSelect_best_ip(TestCase):
     def test_QA_SU_save_etf_day_with_delete(self):
         #  删除部分数据
         indexDay = DATABASE.index_day
-        myquery = {"code": {"$regex": "^51"}}
+        myquery = {"code": {"$regex": "^510"}}
         x = indexDay.delete_many(myquery)
         print(x.deleted_count, " documents deleted.")
 
         self.test_QA_SU_save_etf_day()
+
+    def test_QA_SU_save_stock_xdxr_with_delete(self):
+        #  删除部分数据
+        table = DATABASE.stock_xdxr
+        startStr = "0000"
+        codelist = QA.QA_fetch_stock_list().code.tolist()
+        codelist = [i for i in codelist if i.startswith(startStr)]
+        myquery = {"code": {"$regex": "^{}".format(startStr)}}
+        x = table.delete_many(myquery)
+        print(x.deleted_count, " documents deleted(记录被删除).")
+
+        with self.assertRaises(Exception) as context:
+            data1 = QA.QA_fetch_stock_xdxr(codelist[:10])
+        self.assertTrue('not found' in str(context.exception.args), "删除后，数据应为空")
+
+        QA_SU_save_stock_xdxr('tdx', paralleled=True)
+        print('start test_QA_SU_save_xdxr')
+        data1 = QA.QA_fetch_stock_xdxr(codelist[:10])
+        self.assertTrue(len(data1) > 0, "未保存数据")
+        print("read from DB:", data1)
+        print('end test_QA_SU_save_xdxr')
 
     def test_save_day(self):
         from QUANTAXIS.QACmd import QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_save_etf_day, \

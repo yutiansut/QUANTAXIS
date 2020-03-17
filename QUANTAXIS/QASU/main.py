@@ -487,7 +487,8 @@ def QA_SU_save_single_etf_min(code, engine, client=DATABASE):
     engine.QA_SU_save_single_etf_min(code=code, client=client)
 
 
-def QA_SU_save_stock_xdxr(engine, client=DATABASE):
+@print_used_time
+def QA_SU_save_stock_xdxr(engine, client=DATABASE, paralleled=False):
     """save stock_xdxr
 
     Arguments:
@@ -497,7 +498,7 @@ def QA_SU_save_stock_xdxr(engine, client=DATABASE):
         client {[type]} -- [description] (default: {DATABASE})
     """
 
-    engine = select_save_engine(engine)
+    engine = select_save_engine(engine, paralleled=paralleled)
     engine.QA_SU_save_stock_xdxr(client=client)
 
 
