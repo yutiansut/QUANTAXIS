@@ -108,12 +108,7 @@ docker可以理解为一个高效的虚拟机环境(性能损失不到2%), 每�
 
 ### 使用
 
-对于初学者, 我们推荐直接上手```QAStrategy```来直接编写回测/模拟/实盘
-
-
-    QAStrategy传送门: 
-    
-    [QAStrategy](https://github.com/yutiansut/QAStrategy）
+对于初学者, 我们推荐直接上手[QAStrategy](https://github.com/yutiansut/QAStrategy)来直接编写回测/模拟/实盘
 
 PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件自行下载) 以外,  QAStrategy专属的APP也即将上架, 支持自定义的服务器后端连接, 实时的实盘账户手动干预, 行情处理, 持仓管理以及多策略的运行调整等 
 
