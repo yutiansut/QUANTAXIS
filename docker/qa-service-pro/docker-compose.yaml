@@ -49,7 +49,7 @@ services:
 
 
     qa:
-        image: daocloud.io/quantaxis/qacommunity:latest
+        image: daocloud.io/quantaxis/qa-community-go-r:latest
         container_name: qacommunity
         depends_on:
             - mgdb
@@ -60,6 +60,7 @@ services:
         ports:
             - "8888:8888"
             - "81:80"
+            - "8787:8787"
         environment:
             - TZ=Asia/Shanghai
             - LANG=C.UTF-8
@@ -69,9 +70,13 @@ services:
             - QAPUBSUB_PORT=5672
             - QAPUBSUB_USER=admin
             - QAPUBSUB_PWD=admin
+            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
         volumes:
             - qacode:/home
             - qadag:/dag
+            - qaconf:/home/otg/conf
+            - qauser:/home/otg/user
+            - qalog:/home/otg/log
         restart: always
 
     # qacron:
@@ -105,7 +110,22 @@ services:
           - mgdb
         command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "/root/runcelery.sh"]
 
+    open-trade-gateway:
+        image: daocloud.io/quantaxis/opentradegateway:latest
 
+        ports:
+          - "7788:7788"
+        command: ['open-trade-gateway']
+          
+        volumes:
+            - qaconf:/etc/open-trade-gateway
+            - qauser:/var/local/lib/open-trade-gateway
+            - qalog:/var/log/open-trade-gateway
+        networks:
+            qanetwork_pro:
+                ipv4_address: 172.19.3.13
+
+        restart: always
     qamonitor:
         image: daocloud.io/quantaxis/qa-monitor:latest
         ports:
@@ -265,6 +285,26 @@ services:
         command: worker
 
 
+    editer:
+        image: daocloud.io/quantaxis/qaeditor:latest
+        container_name: qaeditor
+        networks: 
+            qanetwork_pro:
+                ipv4_address: 172.19.3.14
+        ports: 
+            - "3001:3000"
+        environment:
+            - TZ=Asia/Shanghai
+            - LANG=C.UTF-8
+            - MONGODB=mgdb
+            - QARUN=qaweb
+            - QAPUBSUB_IP=qaeventmq
+            - QAPUBSUB_PORT=5672
+            - QAPUBSUB_USER=admin
+            - QAPUBSUB_PWD=admin
+        restart: always
+        volumes: 
+            - qacode:/home/project
 volumes:
     qamg:
         external:
@@ -273,11 +313,20 @@ volumes:
         external:
             name: qacode
     pg-data:
-            external:
-                name: pg-data
+        external:
+            name: pg-data
     qadag:
-            external:
-                name: qadag
+        external:
+            name: qadag
+    qaconf:
+        external:
+            name: qaconf
+    qauser:
+        external:
+            name: qauser
+    qalog:
+        external:
+            name: qalog
 networks:
     qanetwork_pro:
         ipam:

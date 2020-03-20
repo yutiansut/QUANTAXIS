@@ -48,7 +48,7 @@ class QAAnalysis_block():
     @property
     @lru_cache()
     def market_value(self):
-        return self.market_data.add_func(QA_data_marketvalue)
+        return QA_data_marketvalue(self.market_data.data)
 
     @property
     def week_data(self):
@@ -65,7 +65,7 @@ class QAAnalysis_block():
         return self.market_data.to_month()
 
     def block_index(self, methods='mv'):
-
+        
         if methods == 'mv':
             res = self.market_value.groupby(level=0).apply(
                 lambda x: np.average(x.close, weights=x.shares))

@@ -51,14 +51,13 @@ EOF
 
 conda install -n base python==3.6.9 -y
 conda update -n base conda -y
-conda install -n base tensorflow-gpu keras-gpu py-xgboost-gpu jupyterlab jupyter_console jupyter pillow seaborn pandas==0.24.2 numpy scikit-learn -y
+conda install -n base tensorflow-gpu==1.15.0 flask plotly cython pyinstaller simplejson lxml click six cryptography pylint pytest pypandoc gitpython requests aiohttp matplotlib pymysql pymongo gevent-websocket apscheduler protobuf retrying selenium scrapy attrs jinja2 future python-socketio SQLAlchemy appdirs ply keras-gpu py-xgboost-gpu jupyterlab pillow seaborn pandas==0.24.2 marshmallow==2.18.0 tzlocal=1.5.1 numpy scikit-learn -y
 
 
 pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-pip install TA-LIB tushare aioch redis dag-factory
-pip install pyecharts==0.5.11 quantaxis quantaxis-servicedetect quantaxis-pubsub jupyter_contrib_nbextensions
-pip install qifiaccount -U
-pip install QAStrategy -U
+pip install TA-LIB pytdx pyecharts==0.5.11 aioch redis dag-factory jupyter_contrib_nbextensions cufflinks
+pip install quantaxis-servicedetect quantaxis-pubsub qastrategy qifiaccount tqsdk tushare  quantaxis 
+
 
 mkdir ~/.jupyter/
 cat > ~/.jupyter/jupyter_notebook_config.py <<EOF
@@ -194,7 +193,9 @@ git clone https://gitee.com/yutiansut/QADESK_BASIC /var/www/html
 nginx
 
 PATH="/usr/local/conda/bin:\$PATH"
-pip install -U tushare quantaxis quantaxis-servicedetect quantaxis-pubsub
+pip install -U quantaxis quantaxis-servicedetect quantaxis-pubsub qastrategy qifiaccount tqsdk tushare 
 jupyter lab --allow-root
 EOF
 chmod u+x /entrypoint.sh
+
+

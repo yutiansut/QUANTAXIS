@@ -66,13 +66,13 @@ def get_pro():
 
 def QA_fetch_get_stock_adj(code, end=''):
     """获取股票的复权因子
-    
+
     Arguments:
         code {[type]} -- [description]
-    
+
     Keyword Arguments:
         end {str} -- [description] (default: {''})
-    
+
     Returns:
         [type] -- [description]
     """
@@ -123,7 +123,7 @@ def _get_subscription_type(if_fq):
     elif str(if_fq) in ['hfq', '02']:
         if_fq = 'hfq'
     elif str(if_fq) in ['bfq', '00']:
-        if_fq = 'bfq'
+        if_fq = None
     else:
         QA_util_log_info('wrong with fq_factor! using qfq')
         if_fq = 'qfq'
@@ -131,7 +131,6 @@ def _get_subscription_type(if_fq):
 
 
 def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
-    if_fq = _get_subscription_type(if_fq)
 
     def fetch_data():
         data = None
@@ -139,10 +138,10 @@ def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
             time.sleep(0.002)
             pro = get_pro()
             data = ts.pro_bar(
-                pro_api=pro,
+                api=pro,
                 ts_code=str(name),
                 asset='E',
-                adj=if_fq,
+                adj=_get_subscription_type(if_fq),
                 start_date=start,
                 end_date=end,
                 freq='D',
@@ -181,7 +180,7 @@ def QA_fetch_get_stock_realtime():
 def QA_fetch_get_stock_info(name):
     data = ts.get_stock_basics()
     try:
-        return data.loc[name]
+        return data if name == '' else data.loc[name]
     except:
         return None
 

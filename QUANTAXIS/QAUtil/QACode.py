@@ -28,10 +28,15 @@
 
 def QA_util_code_tostr(code):
     """
-    将所有沪深股票从数字转化到6位的代码
+    explanation:
+        将所有沪深股票从数字转化到6位的代码,因为有时候在csv等转换的时候,诸如 000001的股票会变成office强制转化成数字1,
+        同时支持聚宽股票格式,掘金股票代码格式,Wind股票代码格式,天软股票代码格式
 
-    因为有时候在csv等转换的时候,诸如 000001的股票会变成office强制转化成数字1
-
+    params:
+        * code ->
+            含义: 代码
+            类型: str
+            参数支持: []
     """
     if isinstance(code, int):
         return "{:>06d}".format(code)
@@ -57,16 +62,19 @@ def QA_util_code_tostr(code):
 
 
 def QA_util_code_tolist(code, auto_fill=True):
-    """转换code==> list
+    """
+    explanation:
+        将转换code==> list
 
-    Arguments:
-        code {[type]} -- [description]
-
-    Keyword Arguments:
-        auto_fill {bool} -- 是否自动补全(一般是用于股票/指数/etf等6位数,期货不适用) (default: {True})
-
-    Returns:
-        [list] -- [description]
+    params:
+        * code ->
+            含义: 代码
+            类型: str
+            参数支持: []
+        * auto_fill->
+            含义: 是否自动补全(一般是用于股票/指数/etf等6位数,期货不适用) (default: {True})
+            类型: bool
+            参数支持: [True]
     """
 
     if isinstance(code, str):
@@ -80,3 +88,44 @@ def QA_util_code_tolist(code, auto_fill=True):
             return [QA_util_code_tostr(item) for item in code]
         else:
             return [item for item in code]
+
+
+
+def QA_util_code_adjust_ctp(code, source):
+    """
+    explanation:
+        此函数用于在ctp和通达信之间来回转换
+
+    params:
+        * code ->
+            含义: 代码
+            类型: str
+            参数支持: []
+        * source->
+            含义: 转换至目的源
+            类型: str
+            参数支持: ["pytdx", "ctp"]
+
+    demonstrate:
+        a = QA_util_code_adjust_ctp('AP001', source='ctp')
+        b = QA_util_code_adjust_ctp('AP2001', source = 'tdx')
+        c = QA_util_code_adjust_ctp('RB2001', source = 'tdx')
+        d =  QA_util_code_adjust_ctp('rb2001', source = 'ctp')
+        print(a+"\n"+b+"\n"+c+"\n"+d)
+
+    output:    
+        >>AP2001
+        >>AP001
+        >>rb2001
+        >>RB2001
+    """
+    if source == 'ctp':
+        if len(re.search(r'[0-9]+', code)[0]) <4:
+            return re.search(r'[a-zA-z]+', code)[0] + '2' + re.search(r'[0-9]+', code)[0]
+        else:
+            return code.upper()
+    else:
+        if re.search(r'[a-zA-z]+', code)[0].upper() in ['RM', 'CJ', 'OI', 'CY', 'AP', 'SF', 'SA', 'UR', 'FG', 'LR', 'CF', 'WH', 'IPS', 'ZC', 'SPD', 'MA', 'TA', 'JR', 'SM', 'PM', 'RS', 'SR', 'RI']:
+            return re.search(r'[a-zA-z]+', code)[0] + re.search(r'[0-9]+', code)[0][1:]
+        else:
+            return re.search(r'[a-zA-z]+', code)[0].lower() + re.search(r'[0-9]+', code)[0]

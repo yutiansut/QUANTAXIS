@@ -190,9 +190,11 @@ def QA_SU_save_trade_date_all(client=DATABASE):
 
 
 def QA_SU_save_stock_info(client=DATABASE):
-    data = QA_fetch_get_stock_info('all')
+    data = QA_fetch_get_stock_info('')
+    client.drop_collection('stock_info')
     coll = client.stock_info
-    coll.insert_many(data)
+    coll.create_index('code')
+    coll.insert_many(QA_util_to_json_from_pandas(data.reset_index()))
 
 
 def QA_save_stock_day_all_bfq(client=DATABASE):
@@ -307,7 +309,7 @@ def _saving_work(code, coll_stock_day, ui_log=None, err=[]):
         )
 
         # 首选查找数据库 是否 有 这个代码的数据
-        ref = coll_stock_day.find({'code': str(code)[0:9]})
+        ref = coll_stock_day.find({'code': str(code)[0:6]})
         end_date = now_time()
 
         # 当前数据库已经包含了这个代码的数据， 继续增量更新
@@ -321,7 +323,7 @@ def _saving_work(code, coll_stock_day, ui_log=None, err=[]):
             QA_util_log_info(
                 'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
                 .format(code,
-                        start_date,
+                        start_date_new_format,
                         end_date),
                 ui_log
             )
@@ -334,7 +336,7 @@ def _saving_work(code, coll_stock_day, ui_log=None, err=[]):
                                 QA_util_get_next_day(start_date)
                             ),
                             end_date,
-                            'qfq'
+                            'bfq'
                         )
                     )
                 )
@@ -356,7 +358,7 @@ def _saving_work(code, coll_stock_day, ui_log=None, err=[]):
                             str(code),
                             start_date,
                             end_date,
-                            'qfq'
+                            'bfq'
                         )
                     )
                 )

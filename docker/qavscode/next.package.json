@@ -1,0 +1,72 @@
+{
+    "private": true,
+    "theia": {
+        "frontend": {
+            "config": {
+                "applicationName": "Theia Multi-Language Example",
+                "preferences": {
+                    "files.enableTrash": false
+                }
+            }
+        }
+    },
+    "dependencies": {
+        "@theia/callhierarchy": "next",
+        "@theia/core": "next",
+        "@theia/cpp": "next",
+        "@theia/debug": "next",
+        "@theia/debug-nodejs": "next",
+        "@theia/docker": "next",
+        "@theia/editor": "next",
+        "@theia/editorconfig": "next",
+        "@theia/editor-preview": "next",
+        "@theia/file-search": "next",
+        "@theia/filesystem": "next",
+        "@theia/git": "next",
+        "@theia/go": "next",
+        "@theia/getting-started": "next",
+        "@theia/java": "next",
+        "@theia/json": "next",
+        "@theia/keymaps": "next",
+        "@theia/languages": "next",
+        "@theia/markers": "next",
+        "@theia/merge-conflicts": "next",
+        "@theia/messages": "next",
+        "@theia/metrics": "next",
+        "@theia/mini-browser": "next",
+        "@theia/monaco": "next",
+        "@theia/navigator": "next",
+        "@theia/outline-view": "next",
+        "@theia/php": "next",
+        "@theia/output": "next",
+        "@theia/plantuml": "next",
+        "@theia/plugin": "next",
+        "@theia/plugin-ext": "next",
+        "@theia/plugin-ext-vscode": "next",
+        "@theia/preferences": "next",
+        "@theia/preview": "next",
+        "@theia/process": "next",
+        "@theia/python": "next",
+        "@theia/ruby": "next",
+        "@theia/rust": "next",
+        "@theia/search-in-workspace": "next",
+        "@theia/task": "next",
+        "@theia/terminal": "next",
+        "@theia/textmate-grammars": "next",
+        "@theia/tslint": "next",
+        "@theia/typescript": "next",
+        "@theia/userstorage": "next",
+        "@theia/variable-resolver": "next",
+        "@theia/workspace": "next",
+        "theia-yang-extension": "next",
+        "typescript": "latest"
+    },
+    "resolutions": {
+        "vscode-languageserver-protocol": "3.15.0-next.9",
+        "vscode-languageserver-types": "3.15.0-next.5",
+        "**/vscode-json-languageserver/**/vscode-languageserver": "6.0.0-next.1"
+    },
+    "devDependencies": {
+        "@theia/cli": "next"
+    }
+}

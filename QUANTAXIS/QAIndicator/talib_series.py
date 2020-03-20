@@ -26,7 +26,8 @@
 try:
     import talib
 except:
-    print('PLEASE install TALIB to call these methods')
+    pass
+    #print('PLEASE install TALIB to call these methods')
 import pandas as pd
 
 
