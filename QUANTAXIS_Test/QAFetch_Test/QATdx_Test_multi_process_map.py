@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from unittest import TestCase
+import pandas as pd
+import numpy as np
 import QUANTAXIS as QA
+import QUANTAXIS as qa
 from QUANTAXIS.QAFetch import QATdx
 from QUANTAXIS.QAFetch.QATdx import QA_fetch_get_stock_day, select_best_ip, \
     ping, get_ip_list_by_multi_process_ping
@@ -16,6 +19,28 @@ from QUANTAXIS.QACmd import QA_SU_save_stock_day, QA_SU_save_index_day, QA_SU_sa
 from QUANTAXIS.QACmd import QA_SU_save_stock_xdxr
 from QUANTAXIS.QAUtil import QA_util_cache
 from QUANTAXIS.QAUtil.QASetting import DATABASE
+
+
+def diff_pd(df1, df2):
+    """Identify differences between two pandas DataFrames"""
+    assert (df1.columns == df2.columns).all(), \
+        "DataFrame column names are different"
+    if any(df1.dtypes != df2.dtypes):
+        "Data Types are different, trying to convert"
+        df2 = df2.astype(df1.dtypes)
+    if df1.equals(df2):
+        return None
+    else:
+        # need to account for np.nan != np.nan returning True
+        diff_mask = (df1 != df2) & ~(df1.isnull() & df2.isnull())
+        ne_stacked = diff_mask.stack()
+        changed = ne_stacked[ne_stacked]
+        changed.index.names = ['id', 'col']
+        difference_locations = np.where(diff_mask)
+        changed_from = df1.values[difference_locations]
+        changed_to = df2.values[difference_locations]
+        return pd.DataFrame({'from': changed_from, 'to': changed_to},
+                            index=changed.index)
 
 
 class TestSelect_best_ip(TestCase):
@@ -283,8 +308,96 @@ class TestSelect_best_ip(TestCase):
 
         self.test_QA_SU_save_etf_day()
 
-    def test_QA_SU_save_stock_xdxr_with_delete(self):
-        #  删除部分数据
+    def test_QA_fetch_stock_xdxr(self):
+        """测试读取xdxr
+        和原始数据对不上,删除stock_day, stock_adj
+        """
+        # 股票代码以startStr开头
+        startStr = "0000"
+        codelist = QA.QA_fetch_stock_list().code.tolist()
+        codelist = [i for i in codelist if i.startswith(startStr)]
+        # 前十个股票
+        codes = codelist[:10]
+        self._checkQA_fetch_stock_xdxr(codes)
+
+    def _checkQA_fetch_stock_xdxr(self, codes):
+        """比较数据库中 stock_day, stock_adj中的记录数应该相同
+        若不相同，则删除stock_day, stock_adj对应的数据
+        备注：目前为找到不相同的原因。
+        和原始数据对不上：000001            date
+        345  1993-06-04
+        1568 1998-06-20
+        6673  documents deleted(记录被删除) stock_adj.
+        6673  documents deleted(记录被删除) stock_day.
+        和原始数据对不上：000002            date
+        1561 1998-06-20
+        6615  documents deleted(记录被删除) stock_adj.
+        6615  documents deleted(记录被删除) stock_day.
+        和原始数据对不上：000004            date
+        1570 1998-06-20
+        6493  documents deleted(记录被删除) stock_adj.
+        6493  documents deleted(记录被删除) stock_day.
+        000005 ok 5909
+        000006 ok 6583
+        000007 ok 6083
+        000008 ok 6390
+        和原始数据对不上：000009           date
+        148 1991-12-20
+        606 1993-10-11
+        6813  documents deleted(记录被删除) stock_adj.
+        6813  documents deleted(记录被删除) stock_day.
+        和原始数据对不上：000010           date
+        637 1998-06-20
+        4907  documents deleted(记录被删除) stock_adj.
+        4907  documents deleted(记录被删除) stock_day.
+        000011 ok 6565
+        """
+        data1 = QA.QA_fetch_stock_xdxr(codes)
+        self.assertTrue(len(data1) >= 0, "未保存数据")
+        if len(data1) > 0:
+            print(set(data1['code']))
+            # 保存xdxr后，xdxr和股票日线数据数量应该一致
+            start = '1990-01-01'
+            end_time = str(now_time())[0:10]
+            for code in codes:
+                try:
+                    data = qa.QA_fetch_stock_day_adv(code, start, end_time).data
+                except Exception as e:
+                    print("{} 本地无数据".format(code))
+                try:
+                    dataAdj = qa.QA_fetch_stock_adj(code, start, end_time)
+                    df1 = pd.DataFrame(data.index.levels[0])
+                    df2 = pd.DataFrame(dataAdj.index)
+                    # df1['a'] = df2['a'] = 1
+                    df = pd.concat([df1, df2]).drop_duplicates(keep=False)
+                    if len(df) > 0:
+                        print("和原始数据对不上：{}".format(code), df)
+                        df = df[df['date'] > '2000-01-01']
+                        if len(df) == 0:
+                            # 数据对不上的时间早于2000年，则pass
+                            continue
+                        # 和原始数据对不上,删除stock_day, stock_adj
+                        table = DATABASE.stock_adj
+                        self._delTableDocument(table, code)
+                        table = DATABASE.stock_day
+                        self._delTableDocument(table, code)
+                    else:
+                        print("{} ok {}".format(code, len(data)))
+                        self.assertTrue(data.iloc[-1].name[0] == dataAdj.iloc[-1].date, "最后日期不匹配，是否未保存xdxr？")
+                except Exception as e:
+                    # stock_adj 无数据
+                    print("跳过 {}".format(code))
+
+    def _delTableDocument(self, table, code):
+        myquery = {"code": {"$regex": "^{}".format(code)}}
+        x = table.delete_many(myquery)
+        if x.deleted_count > 0:
+            print(x.deleted_count, " documents deleted(记录被删除) {}.".format(table.name))
+
+    def test_QA_save_stock_xdxr_with_delete(self):
+        """测试多线程QA_SU_save_stock_xdxrk
+        """
+        #  删除部分数据(以startStr开头的股票)
         table = DATABASE.stock_xdxr
         startStr = "0000"
         codelist = QA.QA_fetch_stock_list().code.tolist()
@@ -309,7 +422,7 @@ class TestSelect_best_ip(TestCase):
             QA_SU_save_stock_xdxr, QA_SU_save_etf_list, QA_SU_save_index_list, QA_SU_save_stock_list, \
             QA_SU_save_stock_block
         QA_SU_save_stock_day('tdx', paralleled=True)
-        QA_SU_save_stock_xdxr('tdx')
+        QA_SU_save_stock_xdxr('tdx', paralleled=True)
         QA_SU_save_index_day('tdx', paralleled=True)
         QA_SU_save_etf_list('tdx')
         QA_SU_save_etf_day('tdx', paralleled=True)

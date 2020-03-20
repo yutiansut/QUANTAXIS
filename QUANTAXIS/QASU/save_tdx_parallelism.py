@@ -22,11 +22,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import datetime
 from QUANTAXIS.QAFetch.QATdx import (
     QA_fetch_get_index_day,
     QA_fetch_get_stock_day,
     QA_fetch_get_stock_list
 )
+from QUANTAXIS.QAData.data_fq import _QA_data_stock_to_fq
+from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_day
 from QUANTAXIS.QAUtil import (
     DATABASE,
     QA_util_get_next_day,
@@ -66,9 +69,9 @@ def get_coll(client=None, cacheName='tdx_coll', tableName="index_day"):
         coll_adj = client.stock_adj
         coll_adj.create_index(
             [('code',
-                pymongo.ASCENDING),
-                ('date',
-                pymongo.ASCENDING)],
+              pymongo.ASCENDING),
+             ('date',
+              pymongo.ASCENDING)],
             unique=True
         )
         return coll_adj
@@ -549,13 +552,17 @@ class QA_SU_save_stock_xdxr_parallelism(QA_SU_save_index_day_parallelism):
                 __QA_log_info(code, end_time, start_time)
 
                 if start_time != end_time:
-                    _col.insert_many(
-                        QA_util_to_json_from_pandas(
-                            _xdxr.loc[slice(pd.Timestamp(start_time), pd.Timestamp(end_time))]
-                        ),
-                        ordered=False
-                    )
+                    # 最后一次保存的数据之后的数据
+                    xdxrdata = _xdxr[_xdxr['date']>start_time]
+                    if len(xdxrdata) > 0:
+                        _col.insert_many(
+                                QA_util_to_json_from_pandas(
+                                    xdxrdata
+                                ),
+                                ordered=False
+                            )
             else:
+                # 第一次保存数据
                 try:
                     start_time = '1990-01-01'
                     __QA_log_info(code, end_time, start_time)
@@ -564,19 +571,51 @@ class QA_SU_save_stock_xdxr_parallelism(QA_SU_save_index_day_parallelism):
                         ordered=False
                     )
                 except Exception as e:
-                    start_time = '2009-01-01'
-                    __QA_log_info(code, end_time, start_time)
-                    _col.insert_many(
-                        QA_util_to_json_from_pandas(
-                            _xdxr.loc[slice(pd.Timestamp(start_time), pd.Timestamp(end_time))]
-                        ),
-                        ordered=False
-                    )
+                    pass
         except Exception as e:
             QA_util_log_info(e.args, ui_log=self.ui_log)
             self.err.append(str(code))
             QA_util_log_info(self.err, ui_log=self.ui_log)
 
+        try:
+            # 插入前复权数据
+            coll_adj = get_coll(client=None, cacheName="stock_adj", tableName="stock_adj")
+            data = QA_fetch_stock_day(str(code), '1990-01-01', str(datetime.date.today()), 'pd')
+            qfq = _QA_data_stock_to_fq(data, _xdxr, 'qfq')
+            qfq = qfq.assign(date=qfq.date.apply(lambda x: str(x)[0:10]))
+            adjdata = QA_util_to_json_from_pandas(qfq.loc[:, ['date', 'code', 'adj']])
+            # 如果没有新增幅圈数据，插入新增数据
+            ref_ = coll_adj.find(search_cond)
+            ref_count = coll_adj.count_documents(search_cond)
+            if ref_count > 0:
+                # 历史保存过数据
+                lastref = ref_[ref_count - 1]
+                del lastref['_id']
+                try:
+                    # 存在相同的数据，则保存最近数据
+                    adjdata.index(lastref)  # 找不到对应的数据，会出发异常
+                    start_time = lastref['date']
+                    adjdata2 = QA_util_to_json_from_pandas(
+                        qfq.loc[slice(pd.Timestamp(start_time), pd.Timestamp(end_time))].loc[:,
+                        ['date', 'code', 'adj']][1:])
+                    if (ref_count + len(adjdata2)) == len(adjdata):
+                        #
+                        if len(adjdata2) > 0:
+                            coll_adj.insert_many(adjdata2)
+                    else:
+                        raise Exception("数据总量不匹配，重新存储")
+                except Exception as e:
+                    # 分红数据有变化，删除以前保存的数据，重新保存新的数据
+                    coll_adj.delete_many({'code': code})
+                    coll_adj.insert_many(adjdata)
+            else:
+                # 第一次保存前复权数据
+                # print(adjdata)
+                coll_adj.insert_many(adjdata)
+
+        except Exception as e:
+            print(e)
+            # pass
 
 def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
     """[summary]
@@ -584,8 +623,10 @@ def QA_SU_save_stock_xdxr(client=DATABASE, ui_log=None, ui_progress=None):
     Keyword Arguments:
         client {[type]} -- [description] (default: {DATABASE})
     """
-    stock_list = QA_fetch_get_stock_list().code.unique().tolist()[:100]
+    # stock_list = QA_fetch_get_stock_list().code.unique().tolist()
+    stock_list = QA_fetch_get_stock_list().code.unique().tolist()
     coll = get_coll(client, "stock_xdxr", "stock_xdxr")
+    coll_adj = get_coll(client, cacheName="stock_adj", tableName="stock_adj")
     ips = get_ip_list_by_multi_process_ping(stock_ip_list, _type='stock')[
           :cpu_count() * 2 + 1]
     # 单线程测试
