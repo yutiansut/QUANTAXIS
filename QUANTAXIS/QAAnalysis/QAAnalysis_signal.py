@@ -34,6 +34,20 @@ from QUANTAXIS.QAIndicator.base import *
 from QUANTAXIS.QAIndicator.talib_numpy import *
 from QUANTAXIS.QAData.base_datastruct import *
 
+from sklearn import mixture
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.linear_model import LinearRegression
+
+try:
+    import jhtalib as jhta
+except:
+    pass
+    #print('PLEASE install jhtalib to call these methods')
+try:
+    import talib
+except:
+    pass
+    #print('PLEASE install TALIB to call these methods')
 """
 时序信号处理，公共函数
 """
@@ -44,6 +58,34 @@ def time_series_momemtum(price, n=24, rf=0.02):
     Time Series Momentum strategy
     """
     return (price / price.shift(n) - 1) - rf
+
+
+def find_peak_vextors_smoothly(price, offest=0):
+    """
+    （饥渴的）在 MACD 上坡的时候查找更多的极值点
+    """
+    xn = price
+
+    # Create an order 3 lowpass butterworth filter.
+    b, a = butter(3, 0.05)
+
+    # Apply the filter to xn.  Use lfilter_zi to choose the initial condition
+    # of the filter.
+    zi = lfilter_zi(b, a)
+    z, _ = lfilter(b, a, xn, zi=zi * xn[0])
+
+    # Apply the filter again, to have a result filtered at an order
+    # the same as filtfilt.
+    z2, _ = lfilter(b, a, z, zi=zi * z[0])
+
+    # Use filtfilt to apply the filter.  If you meet a Warning need upgrade to
+    # scipy=>1.2 but QUANTAXIS incompatible scipy=>1.2
+    y = filtfilt(b, a, xn)
+
+    # pass 1
+    x_tp_min, x_tp_max = signal.argrelextrema(y, np.less)[0], signal.argrelextrema(y, np.greater)[0]
+
+    return x_tp_min + offest, x_tp_max + offest
 
 
 def find_peak_vextors_eagerly(price, smooth_ma5=[], offest=0):
@@ -292,13 +334,13 @@ def kline_returns_func(data, format='pd'):
         data = data.close
 
     if (format == 'pd'):
-        kline_returns = pd.DataFrame(np.nan_to_num(np.log(data / data.shift(1)), 
+        kline_returns = pd.DataFrame(np.nan_to_num(np.log(data.ffill() / data.shift(1).ffill()), 
                                                    nan=0),
                                      columns=['returns'], 
                                      index=data.index)
         return kline_returns
     else:
-        return np.nan_to_num(np.log(data / data.shift(1)), nan=0)
+        return np.nan_to_num(np.log(data.ffill() / data.shift(1).ffill()), nan=0)
 
 
 def price_predict_with_rolling_integral(kline, 
@@ -344,23 +386,26 @@ def price_predict_with_macd_trend_func(data):
     MACD = QA.QA_indicator_MACD(data)
     
     PRICE_PREDICT = pd.DataFrame(columns=['PRICE_PRED_CROSS', 'PRICE_PRED_CROSS_JX', 'PRICE_PRED_CROSS_SX', 'MACD_CROSS', 'MACD_CROSS_JX', 'MACD_CROSS_SX'], index=data.index)
-    PRICE_PREDICT = PRICE_PREDICT.assign(DIF=MACD[:,0])
-    PRICE_PREDICT = PRICE_PREDICT.assign(DEA=MACD[:,1])
-    PRICE_PREDICT = PRICE_PREDICT.assign(MACD=MACD[:,2])
-    PRICE_PREDICT = PRICE_PREDICT.assign(DELTA=MACD[:,3])
+    PRICE_PREDICT = PRICE_PREDICT.assign(DIF=MACD['DIF'])
+    PRICE_PREDICT = PRICE_PREDICT.assign(DEA=MACD['DEA'])
+    PRICE_PREDICT = PRICE_PREDICT.assign(MACD=MACD['MACD'])
+    PRICE_PREDICT = PRICE_PREDICT.assign(ZERO=0)
+    # 新版考虑合并指标，将 DELTA 重命名为 MACD_DELTA
+    PRICE_PREDICT = PRICE_PREDICT.assign(MACD_DELTA=MACD['MACD'].diff())
+    # 为了兼容旧代码，继续保留 DELTA 字段数据一段时间
+    PRICE_PREDICT = PRICE_PREDICT.assign(DELTA=MACD['MACD'].diff())
 
-    MACD_CROSS_JX = CROSS(PRICE_PREDICT['DIF'], PRICE_PREDICT['DEA'])
-    DEA_CROSS_JX = CROSS(PRICE_PREDICT['DEA'], 0)
-    MACD_CROSS_SX = CROSS(PRICE_PREDICT['DEA'], PRICE_PREDICT['DIF'])
-    DEA_CROSS_SX = CROSS(0, PRICE_PREDICT['DEA'])
-    PRICE_PREDICT['MACD_CROSS'] = np.where(MACD_CROSS_JX.values == 1, 1, np.where(MACD_CROSS_SX.values == 1, -1, 0))
-    dea_tp_min, dea_tp_max = find_peak_vextors(PRICE_PREDICT['DEA'].values[33:], offest=33)
+    dea_tp_min, dea_tp_max = find_peak_vextors_smoothly(PRICE_PREDICT['DEA'].values[33:], offest=33)
     PRICE_PREDICT.iloc[dea_tp_min, PRICE_PREDICT.columns.get_loc('MACD_CROSS')] = 1
     PRICE_PREDICT.iloc[dea_tp_max, PRICE_PREDICT.columns.get_loc('MACD_CROSS')] = -1
-    PRICE_PREDICT['MACD_CROSS_JX'] = np.where(MACD_CROSS_JX.values == 1, 1, 0)
-    PRICE_PREDICT['MACD_CROSS_SX'] = np.where(MACD_CROSS_SX.values == 1, 1, 0)
+    PRICE_PREDICT['MACD_CROSS_JX'] = CROSS(PRICE_PREDICT['DIF'], PRICE_PREDICT['DEA'])
+    PRICE_PREDICT['MACD_CROSS_SX'] = CROSS(PRICE_PREDICT['DEA'], PRICE_PREDICT['DIF'])
+    PRICE_PREDICT['MACD_CROSS'] = np.where(PRICE_PREDICT['MACD_CROSS_JX'] == 1, 1, np.where(PRICE_PREDICT['MACD_CROSS_SX'] == 1, -1, 0))
     PRICE_PREDICT.iloc[dea_tp_min, PRICE_PREDICT.columns.get_loc('MACD_CROSS_JX')] = 1
     PRICE_PREDICT.iloc[dea_tp_max, PRICE_PREDICT.columns.get_loc('MACD_CROSS_SX')] = 1
+
+    PRICE_PREDICT['DEA_CROSS_JX'] = Timeline_Integral_with_cross_before(CROSS(PRICE_PREDICT['DEA'], PRICE_PREDICT['ZERO']))
+    PRICE_PREDICT['DEA_CROSS_SX'] = Timeline_Integral_with_cross_before(CROSS(PRICE_PREDICT['ZERO'], PRICE_PREDICT['DEA']))
     PRICE_PREDICT['MACD_CROSS_JX'] = Timeline_Integral_with_cross_before(PRICE_PREDICT['MACD_CROSS_JX'])
     PRICE_PREDICT['MACD_CROSS_SX'] = Timeline_Integral_with_cross_before(PRICE_PREDICT['MACD_CROSS_SX'])
 
@@ -409,7 +454,7 @@ def macd_cross_func(data):
     # 为了兼容旧代码，继续保留 DELTA 字段数据一段时间
     MACD_CROSS = MACD_CROSS.assign(DELTA=MACD['MACD'].diff())
 
-    dea_tp_min, dea_tp_max = find_peak_vextors(MACD_CROSS['DEA'].values[33:], offest=33)
+    dea_tp_min, dea_tp_max = find_peak_vextors_smoothly(MACD_CROSS['DEA'].values[33:], offest=33)
     MACD_CROSS.iloc[dea_tp_min, MACD_CROSS.columns.get_loc('MACD_CROSS')] = 1
     MACD_CROSS.iloc[dea_tp_max, MACD_CROSS.columns.get_loc('MACD_CROSS')] = -1
     MACD_CROSS['MACD_CROSS_JX'] = CROSS(MACD_CROSS['DIF'], MACD_CROSS['DEA'])
@@ -419,9 +464,12 @@ def macd_cross_func(data):
     MACD_CROSS.iloc[dea_tp_max, MACD_CROSS.columns.get_loc('MACD_CROSS_SX')] = 1
 
     MACD_CROSS['DEA_CROSS_JX'] = Timeline_Integral_with_cross_before(CROSS(MACD_CROSS['DEA'], MACD_CROSS['ZERO']))
+    #print(MACD_CROSS['DEA_CROSS_JX'].loc[MACD_CROSS.index.get_level_values(level=0).intersection(pd.date_range('2020-01-10',
+    #periods=960, freq='30min'))])
     MACD_CROSS['DEA_CROSS_SX'] = Timeline_Integral_with_cross_before(CROSS(MACD_CROSS['ZERO'], MACD_CROSS['DEA']))
     MACD_CROSS['MACD_CROSS_JX'] = Timeline_Integral_with_cross_before(MACD_CROSS['MACD_CROSS_JX'])
     MACD_CROSS['MACD_CROSS_SX'] = Timeline_Integral_with_cross_before(MACD_CROSS['MACD_CROSS_SX'])
+    MACD_CROSS['DEA_SLOPE'] = talib.LINEARREG_SLOPE(MACD['DEA'], timeperiod=14)
     return MACD_CROSS
 
 
@@ -491,7 +539,13 @@ def ma30_cross_func(data):
     MA5 = talib.MA(data.close, 5)
     MA30 = talib.MA(data.close, 30)
         
-    MA30_CROSS = pd.DataFrame(columns=['MA30_CROSS', 'MA30_CROSS_JX', 'MA30_CROSS_SX', 'MA30_TP_CROSS_JX', 'MA30_TP_CROSS_SX'], index=data.index)
+    MA30_CROSS = pd.DataFrame(columns=['MA30_CROSS', 
+                                       'MA30_CROSS_JX', 
+                                       'MA30_CROSS_SX', 
+                                       'MA30_TP_CROSS', 
+                                       'MA30_TP_CROSS_JX', 
+                                       'MA30_TP_CROSS_SX'], 
+                              index=data.index)
     MA30_CROSS = MA30_CROSS.assign(MA5=MA5)
     MA30_CROSS = MA30_CROSS.assign(MA30=MA30)
     MA30_CROSS['MA30_CROSS_JX'] = CROSS(MA5, MA30)
@@ -501,13 +555,15 @@ def ma30_cross_func(data):
     MA30_CROSS['MA30_CROSS_SX'] = Timeline_Integral_with_cross_before(MA30_CROSS['MA30_CROSS_SX'])
     
     # MA30 前29个是 NaN，处理会抛出 Warning，使用 [29:] 则不会计算 NaN，相应的 return_index+29
-    MA30_tp_min, MA30_tp_max = find_peak_vextors(MA30.values[29:], offest=29)
-    MA30_TP_CROSS = pd.DataFrame(columns=['MA30_TP_CROSS_JX', 'MA30_TP_CROSS_SX'], index=data.index)
-    MA30_TP_CROSS['MA30_TP_CROSS_SX'] = MA30_TP_CROSS['MA30_TP_CROSS_JX'] = 0
-    MA30_TP_CROSS.iloc[MA30_tp_min, MA30_TP_CROSS.columns.get_loc('MA30_TP_CROSS_JX')] = 1
-    MA30_TP_CROSS.iloc[MA30_tp_max, MA30_TP_CROSS.columns.get_loc('MA30_TP_CROSS_SX')] = 1
-    MA30_CROSS['MA30_TP_CROSS_JX'] = Timeline_Integral_with_cross_before(MA30_TP_CROSS['MA30_TP_CROSS_JX'])
-    MA30_CROSS['MA30_TP_CROSS_SX'] = Timeline_Integral_with_cross_before(MA30_TP_CROSS['MA30_TP_CROSS_SX'])
+    MA30_tp_min, MA30_tp_max = find_peak_vextors_smoothly(MA30.values[29:], offest=29)
+    MA30_CROSS.iloc[MA30_tp_min, MA30_CROSS.columns.get_loc('MA30_TP_CROSS')] = MA30_tp_min
+    MA30_CROSS.iloc[MA30_tp_max, MA30_CROSS.columns.get_loc('MA30_TP_CROSS')] = -MA30_tp_max
+    MA30_CROSS['MA30_TP_CROSS_SX'] = MA30_CROSS['MA30_TP_CROSS_JX'] = 0
+    MA30_CROSS.iloc[MA30_tp_min, MA30_CROSS.columns.get_loc('MA30_TP_CROSS_JX')] = 1
+    MA30_CROSS.iloc[MA30_tp_max, MA30_CROSS.columns.get_loc('MA30_TP_CROSS_SX')] = 1
+    MA30_CROSS['MA30_TP_CROSS_JX'] = Timeline_Integral_with_cross_before(MA30_CROSS['MA30_TP_CROSS_JX'])
+    MA30_CROSS['MA30_TP_CROSS_SX'] = Timeline_Integral_with_cross_before(MA30_CROSS['MA30_TP_CROSS_SX'])
+    MA30_CROSS['MA30_SLOPE'] = talib.LINEARREG_SLOPE(MA30, timeperiod=14)
     return MA30_CROSS
 
 
@@ -541,7 +597,7 @@ def boll_cross_func(data):
     return BOLL_CROSS
 
 
-def ma_power(price, range_list=range(5, 30)):
+def ma_power_func(price, range_list=range(5, 30)):
     '''
     多头排列能量强度定义
     '''
@@ -563,18 +619,65 @@ def ma_power(price, range_list=range(5, 30)):
     df_fixed = ma_pd.dropna()  # 前n个数据部分均线为空值，去除
     num = df_fixed.apply(lambda x: inv_num(x), axis=1)  # 每排逆序个数
     ratio = num / (len(range_list) * (len(range_list) - 1)) * 2
-    return pd.DataFrame({'MAPOWER':ratio.reindex(ma_pd.index)})
+    mapower = pd.DataFrame({'MAPOWER':ratio.reindex(ma_pd.index)})
+    mapower = mapower.assign(MAPOWER_DELTA=mapower['MAPOWER'].diff())
+    return mapower
 
 
 def machine_learning_trend_func(data):
     """
-    使用机器学习算法统计分析趋势
+    使用机器学习算法统计分析趋势，使用无监督学习的方法快速的识别出K线走势状态。
+    简单(不需要太精确，精确的买卖点由个人的指标策略控制完成)划分出波浪区间。
+    对不同的波浪就可以继续采用定制化的量化策略。
     """
+    def zen_in_wavelet_func(data):
+        """
+        Find zen trend in only one wavelet.
+        缠论 ——> 在一个波浪中。
+        这是很有效的算法，能用缠论(或者随便什么你们喜欢称呼的名字)在波浪中找到趋势，
+        问题是缠论有个毛病是波浪套波浪，波浪套波浪，而这个算法只会找出给定象限内的
+        最大趋势（划重点），所以需要提前把一条K线“切”成（可以盈利或者我们自己交易
+        系统所选择的波段区间内）最小波浪，然后函数送进来，Duang！趋势就判断出来了。
+        """
+        highp = data.high.values #np.r_[data.high.values[:5], TA_HMA(data.high.values, 5)[6:]]
+        lowp = data.high.values #np.r_[data.low.values[:5], TA_HMA(data.low.values, 5)[6:]]
+        openp = data.open.values
+        closep = data.close.values
+
+        bV = lowp[signal.argrelextrema(lowp,np.less)]
+        bP = signal.argrelextrema(lowp,np.less)[0]
+
+        d,p = LIS(bV)
+
+        idx = []
+        for i in range(len(p)):
+            idx.append(bP[p[i]])
+
+        qV = highp[signal.argrelextrema(highp,np.greater)]
+        qP = signal.argrelextrema(highp,np.greater)[0]
+
+        qd,qp = LDS(qV)
+
+        qidx = []
+        for i in range(len(qp)):
+            qidx.append(qP[qp[i]])
+
+        zen_cross = pd.DataFrame(columns=['ZEN_TIDE_CROSS', 
+                                          'ZEN_TIDE_CROSS_JX',
+                                          'ZEN_TIDE_CROSS_SX'], 
+                                 index=data.index)
+        zen_cross.iloc[idx, zen_cross.columns.get_loc('ZEN_TIDE_CROSS')] = 1
+        zen_cross.iloc[qidx, zen_cross.columns.get_loc('ZEN_TIDE_CROSS')] = -1
+        zen_cross.iloc[idx, zen_cross.columns.get_loc('ZEN_TIDE_CROSS_JX')] = 1
+        zen_cross.iloc[qidx, zen_cross.columns.get_loc('ZEN_TIDE_CROSS_SX')] = 1
+        return zen_cross
+
+
     # 统计学习方法分析大趋势：数据准备
     highp = data.high.values
     lowp = data.low.values
-    openp = self._ticks[AKA.OPEN].values
-    closep = self._ticks[AKA.CLOSE].values
+    openp = data.open.values
+    closep = data.close.values
 
     # DPGMM 聚类
     X = []
@@ -596,14 +699,30 @@ def machine_learning_trend_func(data):
     X = np.array(X)
     idx = np.array(idx)
 
-    dpgmm = mixture.BayesianGaussianMixture(n_components=max(int(to_be_trimmed / 10), 16), max_iter=1000, covariance_type='spherical', weight_concentration_prior_type='dirichlet_process')
+    dpgmm = mixture.BayesianGaussianMixture(n_components=max(int(len(closep) / 10), 16), 
+                                            max_iter=1000, 
+                                            covariance_type='spherical', 
+                                            weight_concentration_prior_type='dirichlet_process')
+
     # 训练模型不含最后一个点
     dpgmm.fit(X[:-1])
     y_t = dpgmm.predict(X)
 
-    # 以DPGMM聚类进行分段，计算线性回归斜率
-    #dif_max_fatcor = self._ind[FLD.MAX_FACTOR_CROSS_SX] - self._ind[FLD.MAX_FACTOR_CROSS_JX]
+    machine_learning_trend = pd.DataFrame(columns=['CLUSTER_GROUP', 
+                                                   'REGRESSION_PRICE',
+                                                   'REGRESSION_SLOPE',
+                                                   'CLUSTER_GROUP_DENSITY',
+                                                   'ZEN_TIDE_CROSS', 
+                                                   'ZEN_TIDE_CROSS_JX', 
+                                                   'ZEN_TIDE_CROSS_SX'], index=data.index)
+    machine_learning_trend['CLUSTER_GROUP'] = y_t
 
+    # (假设)我们对这条行情的走势一无所知，使用机器学习可以快速的识别出走势，划分出波浪。
+    # DPGMM聚类 将整条行情大致分块，这个随着时间变化会有轻微抖动。
+    # 所以不适合做精确买卖点控制。但是作为趋势判断已经足够了。
+    #print('自动划分为：{:d} 个形态走势'.format(len(np.unique(y_t))))
+
+    # 以DPGMM聚类进行分段，计算线性回归斜率
     lr = LinearRegression()       
     for c in np.unique(y_t):
         inV = []
@@ -620,50 +739,68 @@ def machine_learning_trend_func(data):
         estV = lr.predict(inV)
 
         # 数字索引降维
-        inV = np.reshape(inV, len(inV))
-        self._ind.iloc[inV, self._ind.columns.get_loc(FLD.REGRESSION_PRICE)] = estV
-        self._ind.iloc[inV, self._ind.columns.get_loc(FLD.REGRESSION_SLOPE)] = lr.coef_[0]
-        if (lr.coef_[0] > 0):
-            self._ind.iloc[inV, self._ind.columns.get_loc(FLD.REGRESSION_DIRECTION)] = estV
+        #inV = np.reshape(inV, len(inV))
+        #machine_learning_trend.iloc[inV,
+        #machine_learning_trend.columns.get_loc('REGRESSION_SLOPE')] =
+        #lr.coef_[0]
 
-        # 原使用线性回归拟近，后发现合并计算MAX_FACTOR金叉/死叉时间卷积平均值，得出曲线趋势（在小斜率状态比线性回归准确）
-        self._ind.iloc[inV, self._ind.columns.get_loc(FLD.REGRESSION_MAX_FACTOR)] = dif_max_fatcor.iloc[inV].mean()
+    # DPGMM 聚类分析完毕
 
-    self._ind = self._ind.assign(TREND_STATUS=y_t)
+    # 下降趋势检测，
+    # 再次价格回归。波浪下降趋势一定DEA下沉到零轴下方，所以依次扫描所有聚类，
+    # 在时间轴的近端发现有DEA下沉到零轴下方，作为一个分组进行统计学习进行趋势判断。
+    macd_cross = macd_cross_func(data)
+    machine_learning_trend = machine_learning_trend.assign(CLUSTER_GROUP_GAP=(machine_learning_trend['CLUSTER_GROUP'].diff() != 0).apply(int))
+    machine_learning_trend['CLUSTER_GROUP_BEFORE'] = Timeline_Integral_with_cross_before(machine_learning_trend['CLUSTER_GROUP_GAP'])
+    machine_learning_trend['CLUSTER_GROUP_GAP'] = ((machine_learning_trend['CLUSTER_GROUP_GAP'] == 1) & (macd_cross['DEA'] < 0))
 
-        # DPGMM 聚类分析完毕
-        # 下降趋势检测
-        #if (self.Period_Time < timedelta(hours=1)):
-        #    bV = lowp[signal.argrelextrema(lowp,np.less)]
-        #    bP = signal.argrelextrema(lowp,np.less)[0]
+    # 第一个bar自动成为首个趋势分段（可能DEA > 0）
+    machine_learning_trend.iloc[0, machine_learning_trend.columns.get_loc('CLUSTER_GROUP_GAP')] = True
 
-        #    d,p = LIS(bV)
+    # 现在机器学习程序自己划分出了可能的存在一个完整波浪趋势的区间（不用人干预，太特么感动了！）
+    trend_cluster_groups = machine_learning_trend[machine_learning_trend['CLUSTER_GROUP_GAP'].apply(lambda x: x == True)]
 
-        #    idx = []
-        #    for i in range(len(p)):
-        #        idx.append(bP[p[i]])
+    # 接下来逐个进行分析，再把结果装配起来。
+    trend_cluster_groups['CLUSTER_GROUP_FROM'] = trend_cluster_groups.apply(lambda x: machine_learning_trend.index.get_level_values(level=0).get_loc(x.name[0]), axis=1)
+    trend_cluster_groups['CLUSTER_GROUP_TO'] = trend_cluster_groups.apply(lambda x: machine_learning_trend.index.get_level_values(level=0).get_loc(x.name[0]), axis=1)
+    trend_cluster_groups['CLUSTER_GROUP_TO'] = trend_cluster_groups['CLUSTER_GROUP_TO'].shift(-1)
+    trend_cluster_groups.iloc[-1, trend_cluster_groups.columns.get_loc('CLUSTER_GROUP_TO')] = len(machine_learning_trend)
+    trend_cluster_groups['CLUSTER_GROUP_TO'] = trend_cluster_groups['CLUSTER_GROUP_TO'].apply(int)
+    zen_cross_columns_idx = [machine_learning_trend.columns.get_loc('ZEN_TIDE_CROSS'), 
+                            machine_learning_trend.columns.get_loc('ZEN_TIDE_CROSS_JX'),
+                            machine_learning_trend.columns.get_loc('ZEN_TIDE_CROSS_SX'),]
+    zen_cross = []
+    for index, trend_cluster_group in trend_cluster_groups.iterrows():
+        trend_cluster_group_range = range(trend_cluster_group['CLUSTER_GROUP_FROM'],trend_cluster_group['CLUSTER_GROUP_TO'])
+        trend_cluster_data = data.iloc[trend_cluster_group_range,]
+        zen_cross.append(zen_in_wavelet_func(trend_cluster_data))
+    zen_cross = pd.concat(zen_cross)
+    #print(trend_cluster_groups)
+    #print(machine_learning_trend.index.difference(zen_cross.index))
+    #print(len(zen_cross.index), len(machine_learning_trend.index))
+    machine_learning_trend.iloc[:, zen_cross_columns_idx] = zen_cross
+    machine_learning_trend.iloc[0, machine_learning_trend.columns.get_loc('ZEN_TIDE_CROSS_JX')] = 1
+    machine_learning_trend.iloc[0, machine_learning_trend.columns.get_loc('ZEN_TIDE_CROSS_SX')] = 1
+    machine_learning_trend['ZEN_TIDE_CROSS_JX'] = Timeline_Integral_with_cross_before(machine_learning_trend['ZEN_TIDE_CROSS_JX'])
+    machine_learning_trend['ZEN_TIDE_CROSS_SX'] = Timeline_Integral_with_cross_before(machine_learning_trend['ZEN_TIDE_CROSS_SX'])
+    machine_learning_trend['CLUSTER_GROUP_DENSITY'] = machine_learning_trend.assign()
+    for c in np.unique(y_t):
+        # 计算趋势密度
+        trend_cluster_group = machine_learning_trend.query('CLUSTER_GROUP=={}'.format(c))
+        machine_learning_trend.loc[trend_cluster_group.index, 'CLUSTER_GROUP_DENSITY'] = trend_cluster_group['ZEN_TIDE_CROSS_SX'].sum() / (trend_cluster_group['ZEN_TIDE_CROSS_JX'].sum() + trend_cluster_group['ZEN_TIDE_CROSS_SX'].sum())
+        #print(len(trend_cluster_group),
+        #trend_cluster_group['ZEN_TIDE_CROSS_JX'].sum(),
+        #trend_cluster_group['ZEN_TIDE_CROSS_SX'].sum(),)
+        #print('Gruop #{}'.format(c), 'density:',
+        #trend_cluster_group['ZEN_TIDE_CROSS_SX'].sum()/(trend_cluster_group['ZEN_TIDE_CROSS_JX'].sum()+trend_cluster_group['ZEN_TIDE_CROSS_SX'].sum()),
+        #trend_cluster_group['REGRESSION_SLOPE'].max())
 
-        #    qV = highp[signal.argrelextrema(highp,np.greater)]
-        #    qP = signal.argrelextrema(highp,np.greater)[0]
-
-        #    qd,qp = LDS(qV)
-
-        #    qidx = []
-        #    for i in range(len(qp)):
-        #        qidx.append(qP[qp[i]])
-
-        #    self._tick_events = self._tick_events.assign(ZEN_TIDE_CROSS = None)
-        #    self._tick_events.iloc[idx, self._tick_events.columns.get_loc(AKA.ZEN_TIDE_CROSS)] = ST.CROSS_JX
-        #    self._tick_events.iloc[qidx, self._tick_events.columns.get_loc(AKA.ZEN_TIDE_CROSS)] = ST.CROSS_SX
-        #    self._ind = self._ind.assign(ZEN_TIDE_CROSS_JX=0)
-        #    self._ind.iloc[idx, self._ind.columns.get_loc(AKA.ZEN_TIDE_CROSS_JX)] = 1
-        #    ZEN_TIDE_CROSS_JX_Integral = Timeline_Integral_with_cross_before(self._ind[AKA.ZEN_TIDE_CROSS_JX])
-        #    self._ind[AKA.ZEN_TIDE_CROSS_JX] = ZEN_TIDE_CROSS_JX_Integral
-        #    self._ind = self._ind.assign(ZEN_TIDE_CROSS_SX=0)
-        #    self._ind.iloc[qidx, self._ind.columns.get_loc(AKA.ZEN_TIDE_CROSS_SX)] = 1
-        #    ZEN_TIDE_CROSS_SX_Integral = Timeline_Integral_with_cross_before(self._ind[AKA.ZEN_TIDE_CROSS_SX])
-        #    self._ind[AKA.ZEN_TIDE_CROSS_SX] = ZEN_TIDE_CROSS_SX_Integral
-
+    machine_learning_trend['ZEN_TIDE_MEDIAN'] = int(min(machine_learning_trend['ZEN_TIDE_CROSS_JX'].median(), machine_learning_trend['ZEN_TIDE_CROSS_SX'].median()))
+    machine_learning_trend['REGRESSION_PRICE'] = jhta.LSMA(data, price='close', n = machine_learning_trend['ZEN_TIDE_MEDIAN'].min())
+    machine_learning_trend['ZEN_TIDE_DENSITY'] = machine_learning_trend['ZEN_TIDE_CROSS_SX'].rolling(int(machine_learning_trend['ZEN_TIDE_MEDIAN'].max() * 6.18)).sum() / (machine_learning_trend['ZEN_TIDE_CROSS_JX'].rolling(int(machine_learning_trend['ZEN_TIDE_MEDIAN'].max() * 6.18)).sum() + machine_learning_trend['ZEN_TIDE_CROSS_SX'].rolling(int(machine_learning_trend['ZEN_TIDE_MEDIAN'].max() * 6.18)).sum())
+    machine_learning_trend['ZEN_TIDE_DENSITY_RETURNS'] = kline_returns_func(machine_learning_trend['ZEN_TIDE_DENSITY'], 'np')
+    machine_learning_trend['REGRESSION_SLOPE'] = talib.LINEARREG_SLOPE(data.close, timeperiod=machine_learning_trend['ZEN_TIDE_MEDIAN'].min())
+    return machine_learning_trend
 
 
 def ATR_SuperTrend_func(data):
@@ -671,9 +808,14 @@ def ATR_SuperTrend_func(data):
     ATR 超级趋势策略
     """
     rsi_ma, stop_line, direction = ATR_RSI_Stops(data, 27)
-    ATR_SuperTrend_cross = pd.DataFrame(columns=['min_peak', 'max_peak', 'BOLL_CROSS', 'BOLL_CROSS_JX', 'BOLL_CROSS_SX'], index=data.index)
-
-    return ATR_SuperTrend_cross
+    ATR_SuperTrend_CROSS = pd.DataFrame(np.c_[stop_line.values, direction], columns=['stop_line', 'ATR_SuperTrend'], index=data.index)
+    ATR_SuperTrend_CROSS = ATR_SuperTrend_CROSS.assign(ATR_SuperTrend_CROSS_JX=np.where(np.nan_to_num(ATR_SuperTrend_CROSS['ATR_SuperTrend'].values, nan=0) > 0, 1, 0))
+    ATR_SuperTrend_CROSS = ATR_SuperTrend_CROSS.assign(ATR_SuperTrend_CROSS_SX=np.where(np.nan_to_num(ATR_SuperTrend_CROSS['ATR_SuperTrend'].values, nan=0) < 0, 1, 0))
+    ATR_SuperTrend_CROSS['ATR_SuperTrend_CROSS_JX'] = (ATR_SuperTrend_CROSS['ATR_SuperTrend_CROSS_JX'].apply(int).diff() > 0).apply(int)
+    ATR_SuperTrend_CROSS['ATR_SuperTrend_CROSS_SX'] = (ATR_SuperTrend_CROSS['ATR_SuperTrend_CROSS_SX'].apply(int).diff() > 0).apply(int)
+    ATR_SuperTrend_CROSS['ATR_SuperTrend_CROSS_JX'] = Timeline_Integral_with_cross_before(ATR_SuperTrend_CROSS['ATR_SuperTrend_CROSS_JX'])
+    ATR_SuperTrend_CROSS['ATR_SuperTrend_CROSS_SX'] = Timeline_Integral_with_cross_before(ATR_SuperTrend_CROSS['ATR_SuperTrend_CROSS_SX'])
+    return ATR_SuperTrend_CROSS
 
 
 class QA_Timekline_States():
@@ -704,28 +846,70 @@ def bootstrap_trend_func(data, indices=None):
                              macd_cross_func(data),
                              boll_cross_func(data), 
                              maxfactor_cross_func(data), 
-                             dual_cross_func(data)], 
+                             dual_cross_func(data), 
+                             ma_power_func(data.close),
+                             ATR_SuperTrend_func(data),
+                             machine_learning_trend_func(data)],
                             axis=1)
         indices = indices.assign(ts_momemtum=time_series_momemtum(data.close, 5))
         indices = indices.assign(ts_mom_returns=kline_returns_func(indices['ts_momemtum'], 'np'))
         rsi_ma, stop_line, direction = ATR_RSI_Stops(data, 27)
         indices = indices.assign(stop_line=stop_line)
         indices = indices.assign(atr_direction=direction)
-        tsl, atr_super_trend = ATR_SuperTrend(data)
+        tsl, atr_super_trend = ATR_SuperTrend_cross(data)
         indices = indices.assign(atr_boll_trend=atr_super_trend)
+
+    if ('RELATIVE_BOLL_MAPOWER' not in indices.columns):
+        sMAPOWER = indices['MAPOWER'].fillna(0)
+        sBOLLCROSS = indices['BOLL_CROSS_SX'].fillna(0)
+        indices['RELATIVE_BOLL_MAPOWER'] = sMAPOWER.rolling(3).corr(sBOLLCROSS)
+        sMAPOWER = indices['MAPOWER'].fillna(0)
+        sBOLLCROSS = np.maximum(indices['BOLL_CROSS_JX'].fillna(0), indices['BOLL_CROSS_SX'].fillna(0))
+        indices['RELATIVE_BOLL_MAPOWER'] = sMAPOWER.rolling(3).corr(sBOLLCROSS)
+
+    if ('drawdown' not in indices.columns):
+        indices['drawdown_today'] = np.nan_to_num(np.log(data.close / data.high), nan=0)
+        indices['drawdown'] = np.nan_to_num(np.log(data.close / data.high.shift(1)), nan=0)
+        worst_drawdown = (indices['drawdown'] <= indices['drawdown'].rolling(indices['ZEN_TIDE_MEDIAN'].max() * 2).min())
+        worst_drawdown = worst_drawdown[worst_drawdown.apply(lambda x: x == True)]
+
+    if ('ATR_UB' not in indices.columns):
+        scale, nATR = 1, max(14, indices['ZEN_TIDE_MEDIAN'].max())
+        atr = talib.ATR(data.high, data.low, data.close, timeperiod=nATR)
+        indices['ATR_UB'] = indices['REGRESSION_PRICE'] + scale * atr # 上轨
+        indices['ATR_LB'] = indices['REGRESSION_PRICE'] - scale * atr # 下轨
+        indices['ATR_PCT'] = np.nan_to_num(np.abs(atr / indices['REGRESSION_PRICE']), nan=0)
+
     states = lower_settle_price_func(data, indices)
 
-    bootstrap_trend_state = pd.DataFrame(((states['lower_settle_price'] == True) | (states['lower_settle_price'] == 1)) & (\
-        ((indices['MACD_CROSS_SX'] < indices['DEA_CROSS_SX']) & (indices['MACD_CROSS_SX'] > 4)) | \
-        (False & (indices['MA5'] > indices['BOLL_MA']) & (indices['atr_direction'] > 0)) | \
-        (False & (indices['MA5'] > indices['BOLL_MA']) & (indices['atr_boll_trend'] > 0)) | \
-        ((indices['MA5'] > indices['BOLL_MA']) & (indices['BOLL_CROSS_JX'] < indices['BOLL_CROSS_SX']) & (indices['atr_direction'] < 0)) | \
-        ((indices['MACD_CROSS_SX'] > 36) & ((indices['MACD'] < 0) | (indices['atr_direction'] > 0)))) & \
-        ((indices['BOLL_CROSS_SX'] > indices['MACD_CROSS_JX']) | ((indices['MACD'] > 0) & (indices['BOLL_CROSS_SX'] < indices['DUAL_CROSS_JX']))),
-        columns=['bootstrap'], index=data.index)
+    bootstrap_trend_state = pd.DataFrame(((states['lower_settle_price'] == True) | (states['lower_settle_price'] == 1)) & \
+        ((indices['DUAL_CROSS_JX'] > 0) | ((indices['ATR_SuperTrend'] > 0) & (states['lower_settle_price'].rolling(6).sum() > 2))) & (indices['RELATIVE_BOLL_MAPOWER'] > 0.8) & \
+        ((indices['ZEN_TIDE_DENSITY'] > 0.618) | (indices['ZEN_TIDE_DENSITY_RETURNS'].rolling(4).sum() > 0.0618) | \
+        (((indices['CLUSTER_GROUP_DENSITY'] - indices['ZEN_TIDE_DENSITY']) > 0.382) & (indices['ZEN_TIDE_DENSITY_RETURNS'] > 0.005)) | \
+        ((indices['ZEN_TIDE_DENSITY'].rolling(4).mean() > 0.432) & (indices['CLUSTER_GROUP_DENSITY'] > 0.382))) & \
+        ((indices['MACD'] > 0) | (data.open < indices['MA5'])) & (\
+        ((indices['ATR_UB'] < indices['BOLL_UB']) & (indices['ATR_LB'] > indices['BOLL_LB']) & (indices['ZEN_TIDE_CROSS_SX'] > indices['ZEN_TIDE_MEDIAN'] * 0.618)) | \
+        ((indices['DUAL_CROSS_JX'] > 0) & (indices['ATR_UB'] < indices['BOLL_UB']) & (indices['ts_momemtum'] > 0) & (indices['MAPOWER'] > 0.2)) | \
+        (((indices['ZEN_TIDE_CROSS_JX'] < indices['ZEN_TIDE_CROSS_SX']) | (indices['MAXFACTOR_CROSS_JX'] < indices['MAXFACTOR_CROSS_SX'])) & \
+        (indices['BOLL_CROSS_SX'] > indices['ZEN_TIDE_MEDIAN']) & (indices['BOLL_CROSS_JX'] > indices['ZEN_TIDE_MEDIAN'])) | \
+        ((indices['ATR_SuperTrend'] > 0) & (states['lower_settle_price'].rolling(6).sum() > 2) & (indices['ATR_LB'] < indices['MA30'])) | \
+        ((indices['ZEN_TIDE_DENSITY'] > 0.618) | (indices['ZEN_TIDE_DENSITY_RETURNS'].rolling(4).sum() > 0.168)) | \
+        (((indices['CLUSTER_GROUP_DENSITY'] - indices['ZEN_TIDE_DENSITY']) > 0.382) & (indices['ZEN_TIDE_DENSITY_RETURNS'] > 0.005) & (indices['BOLL_DELTA'] > 0)) | \
+        ((indices['ZEN_TIDE_DENSITY'].rolling(4).mean() > 0.432) & (indices['CLUSTER_GROUP_DENSITY'] > 0.382) & (indices['BOLL_CROSS_JX'] < 4)) | \
+        ((indices['BOLL_CROSS_JX'] < indices['BOLL_CROSS_SX']) & (indices['MACD_CROSS_JX'] < indices['BOLL_CROSS_JX']) & (indices['MAPOWER'] > 0.2) & (indices['MACD_CROSS_SX'] > 18) & (indices['MACD'] > 0) & (indices['RELATIVE_BOLL_MAPOWER'] > 0.8) & ~((indices['REGRESSION_SLOPE'] < indices['REGRESSION_SLOPE'].median()) & (indices['BOLL_CROSS_JX'] < indices['ZEN_TIDE_MEDIAN'] * 0.618)))),
+        columns = ['bootstrap'], index = data.index)
+
+    # 移除孤立点
+    bootstrap_trend_state['bootstrap'] = (bootstrap_trend_state['bootstrap'] == True) & \
+        ~((bootstrap_trend_state['bootstrap'].rolling(indices['ZEN_TIDE_MEDIAN'].max()).sum() <= 1) & \
+        (indices['REGRESSION_SLOPE'] < indices['REGRESSION_SLOPE'].median()) & (indices['BOLL_MA'] < data.close)) & \
+        ~((indices['ZEN_TIDE_DENSITY'].rolling(2).mean() < 0.2) & (indices['BOLL_WIDTH'] < indices['BBW_MA20']))
+
     bootstrap_trend_state = pd.concat([bootstrap_trend_state, 
                                        states], 
                             axis=1)
+    bootstrap_trend_state = bootstrap_trend_state.assign(BOOTSTRAP_BEFORE=(bootstrap_trend_state['bootstrap'].apply(int).diff() > 0).apply(int))
+    bootstrap_trend_state['BOOTSTRAP_BEFORE'] = Timeline_Integral_with_cross_before(bootstrap_trend_state['BOOTSTRAP_BEFORE'])
     return bootstrap_trend_state
 
 
@@ -737,19 +921,44 @@ def lower_settle_price_func(data, indices=None):
     if (indices is None):
         # Todo: Cache indices in memory.
         indices = pd.concat([ma30_cross_func(data), 
-                             macd_cross_func(data), 
+                             macd_cross_func(data),
                              boll_cross_func(data), 
                              maxfactor_cross_func(data), 
-                             dual_cross_func(data)], 
+                             dual_cross_func(data), 
+                             ma_power_func(data.close),
+                             ATR_SuperTrend_func(data),
+                             machine_learning_trend_func(data)],
                             axis=1)
         indices = indices.assign(ts_momemtum=time_series_momemtum(data.close, 5))
         indices = indices.assign(ts_mom_returns=kline_returns_func(indices['ts_momemtum'], 'np'))
+        rsi_ma, stop_line, direction = ATR_RSI_Stops(data, 27)
+        indices = indices.assign(stop_line=stop_line)
+        indices = indices.assign(atr_direction=direction)
+        tsl, atr_super_trend = ATR_SuperTrend_cross(data)
+        indices = indices.assign(atr_boll_trend=atr_super_trend)
 
-    lower_settle_price_state = pd.DataFrame(((indices['ts_momemtum'].rolling(4).mean().values > 0) | (indices['ts_mom_returns'].rolling(4).mean().values > 0)) & (indices['DEA'] < 0) & \
+    if ('RELATIVE_BOLL_MAPOWER' not in indices.columns):
+        sMAPOWER = indices['MAPOWER'].fillna(0)
+        sBOLLCROSS = indices['BOLL_CROSS_SX'].fillna(0)
+        indices['RELATIVE_BOLL_MAPOWER'] = sMAPOWER.rolling(3).corr(sBOLLCROSS)
+        sMAPOWER = indices['MAPOWER'].fillna(0)
+        sBOLLCROSS = np.maximum(indices['BOLL_CROSS_JX'].fillna(0), indices['BOLL_CROSS_SX'].fillna(0))
+        indices['RELATIVE_BOLL_MAPOWER'] = sMAPOWER.rolling(3).corr(sBOLLCROSS)
+
+    lower_settle_price_state = pd.DataFrame(((indices['ts_momemtum'].rolling(4).mean().values > 0) | \
+        (indices['ts_mom_returns'].rolling(4).mean().values > 0) | \
+        ((indices['RELATIVE_BOLL_MAPOWER'] > 0.8) & (indices['ZEN_TIDE_CROSS_SX'] > indices['BOLL_CROSS_JX']) & (indices['ZEN_TIDE_CROSS_JX'] < indices['ZEN_TIDE_CROSS_SX']) & (indices['BOLL_CROSS_JX'] > 8)) | \
+        ((indices['RELATIVE_BOLL_MAPOWER'] > 0.8) & ((indices['ZEN_TIDE_CROSS_JX'] < indices['ZEN_TIDE_CROSS_SX']) | (indices['MAXFACTOR_CROSS_JX'] < indices['MAXFACTOR_CROSS_SX'])) & \
+        (indices['BOLL_CROSS_SX'] > indices['ZEN_TIDE_CROSS_SX'].median()) & (indices['BOLL_CROSS_JX'] > indices['ZEN_TIDE_CROSS_SX'].median()))) & \
+        (indices['DEA'] < 0) & \
         (indices['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & \
-        (indices['MACD_DELTA'].rolling(4).mean().values > 0) & (\
+        ~((indices['ZEN_TIDE_DENSITY_RETURNS'].rolling(4).mean() < -0.001) & (indices['ZEN_TIDE_DENSITY'].rolling(indices['ZEN_TIDE_MEDIAN'].max()).mean() > 0.618)) & \
+        ~((indices['ZEN_TIDE_DENSITY_RETURNS'].rolling(4).sum() < -0.01) & (indices['ZEN_TIDE_DENSITY'].rolling(indices['ZEN_TIDE_MEDIAN'].max()).mean() > 0.618)) & \
+        (np.nan_to_num(indices['MACD_DELTA'].rolling(4).mean().values, nan=0) > 0) & (\
             (indices['MAXFACTOR_CROSS_JX'] < indices['MAXFACTOR_CROSS_SX']) | \
             ((indices['MACD'] > 0) & (indices['DUAL_CROSS_JX'] > 0) & ~(indices['DEA'] > indices['MACD']))),
         columns=['lower_settle_price'], index=data.index)
 
+    lower_settle_price_state = lower_settle_price_state.assign(LOWER_PRICE_SETTLE_BEFORE=(lower_settle_price_state['lower_settle_price'].apply(int).diff() > 0).apply(int))
+    lower_settle_price_state['LOWER_PRICE_SETTLE_BEFORE'] = Timeline_Integral_with_cross_before(lower_settle_price_state['LOWER_PRICE_SETTLE_BEFORE'])
     return lower_settle_price_state

@@ -41,16 +41,27 @@ def hma_cross_func(data):
     boll_bands_day = boll_cross_func(data)
     maxfactor_cross_day = maxfactor_cross_func(data)
     machine_learning_trend = machine_learning_trend_func(data)
+    settle_state = bootstrap_trend_func(data)
 
     ma30_croos_day = MA30_CROSS
     hma5_returns = ma30_croos_day['HMA_RETURNS'].values
-    
-    dealpool = (((ma30_croos_day['HMA_RETURNS'].values < 0) & (boll_bands_day['BOLL_CROSS_JX'].values > boll_bands_day['BOLL_CROSS_SX'].values)) | \
-        ((ma30_croos_day['HMA_RETURNS'].values < 0) & (price_predict_day['PRICE_PRED_CROSS_JX'].values > price_predict_day['PRICE_PRED_CROSS_SX'].values)) | \
-        ((ma30_croos_day['HMA_RETURNS'].values < 0) & (maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values) & (price_predict_day['DELTA'].values < 0)))
-    bootstrap = (hma5_returns > 0) & (machine_learning_trend['ZEN_TIDE_CROSS_JX'] <= machine_learning_trend['ZEN_TIDE_CROSS_SX']) & (\
-        (((atr_super_trend > 0) | (atr_super_trend > 0)) & (dual_cross_day['DUAL_CROSS_JX'].values > 0)) | (price_predict_day['PRICE_PRED_CROSS_JX'].values < price_predict_day['PRICE_PRED_CROSS_SX'].values)) & \
-        ~((atr_super_trend < 0) & (atr_super_trend < 0))
+    dealpool = ((hma5_returns < 0) & \
+        (ma30_croos_day['MA30_CROSS_JX'].values > ma30_croos_day['MA30_CROSS_SX'].values)) | \
+        ((ma30_croos_day['HMA_RETURNS'].values < 0) & (boll_bands_day['BOLL_CROSS_JX'].values > boll_bands_day['BOLL_CROSS_SX'].values)) | \
+        ((ma30_croos_day['HMA_RETURNS'].values < 0) & (maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values) & (price_predict_day['DELTA'].values < 0))
+    bootstrap = ((hma5_returns > 0) & (machine_learning_trend['ZEN_TIDE_CROSS_JX'] <= machine_learning_trend['ZEN_TIDE_CROSS_SX']) & (dual_cross_day['DUAL_CROSS_JX'].values > 0)) & (\
+            ((maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values > 2) & (maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values)) | \
+            ((maxfactor_cross_day['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & (maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values) & (price_predict_day['DELTA'].values > 0)) | \
+            ((maxfactor_cross_day['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & (maxfactor_cross_day['MAXFACTOR_DELTA'].values > -61.8) & (price_predict_day['MACD_CROSS_JX'].values < price_predict_day['MACD_CROSS_SX'].values) & (price_predict_day['DELTA'].values > 0)) | \
+            ((maxfactor_cross_day['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & (maxfactor_cross_day['MAXFACTOR_DELTA'].values > -61.8) & (price_predict_day['DELTA'].rolling(4).mean().values > 0) & (price_predict_day['DELTA'].values > 0)) | \
+            ((HMA10 > boll_bands_day['BOLL_MA'].values) & (maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values)) | \
+            ((HMA10 > boll_bands_day['BOLL_MA'].values) & (boll_bands_day['BBW_MA20'].values < boll_bands_day['BOLL_WIDTH'].values)) | \
+            (((boll_bands_day['BOLL_CROSS_JX'].values > 18) & (ma30_croos_day['MA30_CROSS_JX'].values < ma30_croos_day['MA30_CROSS_SX'].values)) & \
+            ~((boll_bands_day['BBW_MA20'].values > boll_bands_day['BOLL_WIDTH'].values) & (price_predict_day['MACD'].values > 0))) | \
+            ((boll_bands_day['BOLL_CROSS_JX'].values > 2) & (price_predict_day['MACD_CROSS_JX'].values < price_predict_day['MACD_CROSS_SX'].values)) & \
+            ((price_predict_day['PRICE_PRED_CROSS_JX'].values < price_predict_day['PRICE_PRED_CROSS_SX'].values)) & \
+            (((boll_bands_day['BOLL_CROSS_JX'].values > 8) & (ma30_croos_day['MA30_CROSS_JX'].values < ma30_croos_day['MA30_CROSS_SX'].values)) | (boll_bands_day['BOLL_CROSS_JX'].values < 6)) & \
+            ~((boll_bands_day['BBW_MA20'].values > boll_bands_day['BOLL_WIDTH'].values) & (price_predict_day['MACD'].values > 0)))
     MA30_CROSS = MA30_CROSS.assign(POSITION=np.where(dealpool == True, 
                                             -1, 
                                             np.where(bootstrap == True, 
@@ -64,11 +75,11 @@ def hma_cross_func(data):
                                                                                     x.sum(), raw=False).apply(lambda x:
                                                                                                                 0 if np.isnan(x) else int(x)))
     # 策略 Rolling合并后 1 加仓 0 不动， -1 直接清仓
-    MA30_CROSS['BOOTSRTAP_R5'] = np.where((ma30_croos_day['HMA_RETURNS'].values > 0) & (MA30_CROSS['BOOTSRTAP_R5'].values > 0), 
+    MA30_CROSS['BOOTSRTAP_R5'] = np.where((ma30_croos_day['HMA_RETURNS'].values > 0) & (machine_learning_trend['ZEN_TIDE_CROSS_SX'] > machine_learning_trend['ZEN_TIDE_CROSS_SX'].median() * 0.382) & (MA30_CROSS['BOOTSRTAP_R5'].values > 0), 
                       1, 
                       np.where((ma30_croos_day['HMA_RETURNS'].values < 0) & (MA30_CROSS['BOOTSRTAP_R5'].values < 0), 
                                -1, 
-                               direction)) # 这里 0 是代表本策略中无指向性的，为了降低代码复杂度去掉了 ATR 策略部分
+                               np.where((direction==True) & (machine_learning_trend['ZEN_TIDE_CROSS_SX'] > machine_learning_trend['ZEN_TIDE_CROSS_SX'].median() * 0.382), 1, 0))) # 这里 0 是代表本策略中无指向性的，为了降低代码复杂度去掉了 ATR 策略部分
     MA30_CROSS['BOOTSRTAP_R5'].ffill(inplace=True)
     MA30_CROSS['BOOTSRTAP_R5'].fillna(0, inplace=True)
     MA30_CROSS = MA30_CROSS.assign(close=data.close)
@@ -77,8 +88,11 @@ def hma_cross_func(data):
 if __name__ == '__main__':
     from QUANTAXIS.QAAnalysis.QAAnalysis_signal import *
     codelist = ['000905']
-    data_day = QA.QA_fetch_stock_day_adv(codelist, '2015-01-01','2020-03-30')
-    
+    #data_day = QA.QA_fetch_stock_day_adv(codelist, '2015-01-01','2020-03-30')
+    data_day = QA.QA.QA_fetch_stock_min_adv(codelist,
+                                          '2015-01-01','2020-03-30',
+                                          frequence='60min')
+
     hma_cross_day = data_day.add_func(hma_cross_func)
 
     # 这四行是我自己用来看收益率，因为我不会做到QABacktest和QAStrategy来评估策略好坏。只能自己写个简单版的。
@@ -102,7 +116,7 @@ if __name__ == '__main__':
 
     user = QA.QA_User(username='aaaa22', password='aaaa22')
     portfolio = user.new_portfolio('superme22')
-    stock_account = portfolio.new_account(account_cookie='stock',allow_t0=False,allow_margin=False,allow_sellopen=False,running_environment=QA.MARKET_TYPE.STOCK_CN)
+    stock_account = portfolio.new_account(account_cookie='BKTST_HMA01_C{}_T{}'.format(codes[0], QA_util_timestamp_to_str()[2:16]),allow_t0=False,allow_margin=False,allow_sellopen=False,running_environment=QA.MARKET_TYPE.STOCK_CN)
     for _, item in orders.iterrows():
         running_time = item.name[0]
         code = item.name[1]
@@ -129,7 +143,8 @@ if __name__ == '__main__':
                 print('择时：', running_time, 'SHORT: 当前标的 {} 空仓！'.format(code), '剩余资金总仓位：{:.1%}'.format(stock_account.freecash_precent))
 
     print(stock_account.history_table)
-    Risk = QA.QA_Risk(stock_account)
+    Risk = QA.QA_Risk(stock_account, benchmark_code=code,
+                        benchmark_type=QA.MARKET_TYPE.STOCK_CN)
     print(Risk().T)
     Risk.plot_assets_curve()
     #Risk.save()

@@ -104,11 +104,12 @@ def hma_cross_func(data):
     MA30_CROSS = MA30_CROSS.assign(HMA10=HMA10)
 
     rsi_ma, stop_line, direction = ATR_RSI_Stops(data, 27)
-    tsl, atr_super_trend = ATR_SuperTrend(data)
+    tsl, atr_super_trend = ATR_SuperTrend_cross(data)
     price_predict_day = price_predict_with_macd_trend_func(data)
     dual_cross_day = dual_cross_func(data)
     boll_bands_day = boll_cross_func(data)
     maxfactor_cross_day = maxfactor_cross_func(data)
+    machine_learning_trend = machine_learning_trend_func(data)
 
     ma30_croos_day = MA30_CROSS
     hma5_returns = ma30_croos_day['HMA_RETURNS'].values
@@ -116,7 +117,7 @@ def hma_cross_func(data):
         (ma30_croos_day['MA30_CROSS_JX'].values > ma30_croos_day['MA30_CROSS_SX'].values)) | \
         ((ma30_croos_day['HMA_RETURNS'].values < 0) & (boll_bands_day['BOLL_CROSS_JX'].values > boll_bands_day['BOLL_CROSS_SX'].values)) | \
         ((ma30_croos_day['HMA_RETURNS'].values < 0) & (maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values) & (price_predict_day['DELTA'].values < 0))
-    bootstrap = ((hma5_returns > 0) & (dual_cross_day['DUAL_CROSS_JX'].values > 0)) & (\
+    bootstrap = ((hma5_returns > 0) & (machine_learning_trend['ZEN_TIDE_CROSS_JX'] <= machine_learning_trend['ZEN_TIDE_CROSS_SX']) & (dual_cross_day['DUAL_CROSS_JX'].values > 0)) & (\
             ((maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values > 2) & (maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values)) | \
             ((maxfactor_cross_day['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & (maxfactor_cross_day['MAXFACTOR_CROSS_JX'].values < maxfactor_cross_day['MAXFACTOR_CROSS_SX'].values) & (price_predict_day['DELTA'].values > 0)) | \
             ((maxfactor_cross_day['MAXFACTOR_DELTA'].rolling(4).mean().values > 0) & (maxfactor_cross_day['MAXFACTOR_DELTA'].values > -61.8) & (price_predict_day['MACD_CROSS_JX'].values < price_predict_day['MACD_CROSS_SX'].values) & (price_predict_day['DELTA'].values > 0)) | \
@@ -149,6 +150,7 @@ def hma_cross_func(data):
                                direction)) # 这里 0 是代表本策略中无指向性的，为了降低代码复杂度去掉了 ATR 策略部分
     MA30_CROSS['BOOTSRTAP_R5'].ffill(inplace=True)
     MA30_CROSS['BOOTSRTAP_R5'].fillna(0, inplace=True)
+    MA30_CROSS = MA30_CROSS.assign(close=data.close)
     return MA30_CROSS
 
 

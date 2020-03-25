@@ -30,7 +30,7 @@ if __name__ == '__main__':
     price_predict_day = data_day.add_func(price_predict_with_macd_trend_func)
     if (len(data_day.index.names) > 2):
         rsi_ma, stop_line, direction = ATR_RSI_Stops(data_day.data.reset_index([1,2]), 27)
-        tsl, atr_super_trend = ATR_SuperTrend(data_day.data.reset_index([1,2]))
+        tsl, atr_super_trend = ATR_SuperTrend_cross(data_day.data.reset_index([1,2]))
         ma30_croos_day = data_day.add_func(ma30_cross_func).reset_index([1,2])
         dual_cross_day = data_day.add_func(dual_cross_func).reset_index([1,2])
         boll_bands_day = data_day.add_func(boll_cross_func).reset_index([1,2])
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         tmom_day = time_series_momemtum(data_day.data.close, 10).reset_index([1,2])
     elif (len(data_day.index.names) > 1):
         rsi_ma, stop_line, direction = ATR_RSI_Stops(data_day.data.reset_index([1]), 27)
-        tsl, atr_super_trend = ATR_SuperTrend(data_day.data.reset_index([1]))
+        tsl, atr_super_trend = ATR_SuperTrend_cross(data_day.data.reset_index([1]))
         ma30_croos_day = data_day.add_func(ma30_cross_func).reset_index([1])
         dual_cross_day = data_day.add_func(dual_cross_func).reset_index([1])
         boll_bands_day = data_day.add_func(boll_cross_func).reset_index([1])
@@ -118,7 +118,6 @@ if __name__ == '__main__':
     #print(strategy_POSITION[['returns', 'POSITION_BOOTSRTAP_DUAL_R5',
     #'strategy_R5']].tail(60))
     strategy_POSITION[['returns', 'strategy_R5']].dropna().cumsum().apply(np.exp).plot(figsize=(10, 6))
-
 
     x_tp_min = price_predict_day[price_predict_day.apply(lambda x: x['PRICE_PRED_CROSS'] > 0, axis = 1)]['PRICE_PRED_CROSS'].values  # eqv.  Trim(x < 0)
     x_tp_max = price_predict_day[price_predict_day.apply(lambda x: x['PRICE_PRED_CROSS'] < 0, axis = 1)]['PRICE_PRED_CROSS'].values * -1  # eqv.  Trim(x > 0)

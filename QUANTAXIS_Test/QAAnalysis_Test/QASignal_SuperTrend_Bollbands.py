@@ -17,7 +17,7 @@ def ATR_SuperTrend_demo():
     #    end='2020-06-30 23:59:59')
     klines =  data_day.data
     bb = TA_BBANDS(data_day.data.close, 20)
-    tsl, Trend = ATR_SuperTrend(data_day.data)
+    tsl, Trend = ATR_SuperTrend_cross(data_day.data)
 
     #################### Plot ####################
     plt.figure(figsize = (22,9))
