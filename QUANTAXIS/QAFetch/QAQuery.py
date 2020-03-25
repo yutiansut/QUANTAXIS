@@ -1547,19 +1547,19 @@ def QA_fetch_stock_divyield(
         )
 
 
-def QA_fetch_crypto_asset_list(
+def QA_fetch_cryptocurrency_list(
     market=None,
-    collections=DATABASE.crypto_asset_list
+    collections=DATABASE.cryptocurrency_list
 ):
     '''
     获取数字资产列表
     '''
     if (market is None):
-        crypto_asset_list = pd.DataFrame(
+        cryptocurrency_list = pd.DataFrame(
             [item for item in collections.find({})]
         )
-        if (len(crypto_asset_list) > 0):
-            return crypto_asset_list.drop(
+        if (len(cryptocurrency_list) > 0):
+            return cryptocurrency_list.drop(
                 '_id',
                 axis=1,
                 inplace=False
@@ -1582,11 +1582,11 @@ def QA_fetch_crypto_asset_list(
                 ]
             )
     else:
-        crypto_asset_list = pd.DataFrame(
+        cryptocurrency_list = pd.DataFrame(
             [item for item in collections.find({"market": market})]
         )
-        if (len(crypto_asset_list) > 0):
-            return crypto_asset_list.drop(
+        if (len(cryptocurrency_list) > 0):
+            return cryptocurrency_list.drop(
                 '_id',
                 axis=1,
                 inplace=False
@@ -1610,32 +1610,27 @@ def QA_fetch_crypto_asset_list(
             )
 
 
-def QA_fetch_crypto_asset_day(
-    market,
-    symbol,
+def QA_fetch_cryptocurrency_day(
+    code,
     start,
     end,
     format='numpy',
-    collections=DATABASE.crypto_asset_day
+    collections=DATABASE.cryptocurrency_day
 ):
     '''
     '获取数字资产日钟线'
     '''
     start = str(start)[0:10]
     end = str(end)[0:10]
-    symbol = QA_util_code_tolist(symbol, auto_fill=False)
-    market = QA_util_code_tolist(market, auto_fill=False)
+    code = QA_util_code_tolist(code, auto_fill=False)
 
     if QA_util_date_valid(end) == True:
 
         _data = []
         cursor = collections.find(
             {
-                'market': {
-                    '$in': market
-                },
                 'symbol': {
-                    '$in': symbol
+                    '$in': code
                 },
                 "date_stamp":
                     {
@@ -1653,7 +1648,6 @@ def QA_fetch_crypto_asset_day(
             _data.append(
                 [
                     str(item['symbol']),
-                    str(item['market']),
                     float(item['open']),
                     float(item['high']),
                     float(item['low']),
@@ -1676,7 +1670,6 @@ def QA_fetch_crypto_asset_day(
                 columns=[
                     # 原抓取时候存入mongdb本来按照交易所叫法为'symbol'，但是考虑兼容DataStruct，读取的时候字段改名叫'code'
                     'code', # symbol
-                    'market',
                     'open',
                     'high',
                     'low',
@@ -1686,12 +1679,12 @@ def QA_fetch_crypto_asset_day(
                     'amount',
                     'date'
                 ]
-            ).drop_duplicates((['date', 'market', 'code']))
+            ).drop_duplicates((['date', 'code']))
             _data['date'] = pd.to_datetime(_data['date'])
             _data = _data.set_index('date', drop=False)
         else:
             print(
-                "QA Error QA_fetch_future_day format parameter %s is none of  \"P, p, pandas, pd , n, N, numpy !\" "
+                "QA Error QA_fetch_cryptocurrency_day format parameter %s is none of  \"P, p, pandas, pd , n, N, numpy !\" "
                 % format
             )
         return _data
@@ -1699,14 +1692,13 @@ def QA_fetch_crypto_asset_day(
         QA_util_log_info('QA something wrong with date')
 
 
-def QA_fetch_crypto_asset_min(
-    market,
-    symbol,
+def QA_fetch_cryptocurrency_min(
+    code,
     start,
     end,
     format='numpy',
     frequence='1min',
-    collections=DATABASE.crypto_asset_min
+    collections=DATABASE.cryptocurrency_min
 ):
     '''
     '获取数字资产分钟线'
@@ -1722,15 +1714,11 @@ def QA_fetch_crypto_asset_min(
     elif frequence in ['60min', '60m']:
         frequence = '60min'
     _data = []
-    symbol = QA_util_code_tolist(symbol, auto_fill=False)
-    market = QA_util_code_tolist(market, auto_fill=False)
+    code = QA_util_code_tolist(code, auto_fill=False)
     cursor = collections.find(
         {
-            'market': {
-                '$in': market
-            },
             'symbol': {
-                '$in': symbol
+                '$in': code
             },
             "time_stamp":
                 {
@@ -1747,14 +1735,13 @@ def QA_fetch_crypto_asset_min(
         _data.append(
             [
                 str(item['symbol']),
-                str(item['market']),
-                float(item['open']),
-                float(item['high']),
-                float(item['low']),
-                float(item['close']),
-                float(item['volume']),
-                float(item['trade']),
-                float(item['amount']),
+                float(item['open']) if (item['open'] is not None) else item['open'],
+                float(item['high']) if (item['high'] is not None) else item['high'],
+                float(item['low']) if (item['low'] is not None) else item['low'],
+                float(item['close']) if (item['close'] is not None) else item['close'],
+                float(item['volume']) if (item['volume'] is not None) else item['volume'],
+                float(item['trade']) if (item['trade'] is not None) else item['trade'],
+                float(item['amount']) if (item['amount'] is not None) else item['amount'],
                 item['time_stamp'],
                 item['date'],
                 item['datetime'],
@@ -1767,7 +1754,6 @@ def QA_fetch_crypto_asset_min(
         columns=[
             # 原抓取时候存入mongdb本来按照交易所叫法为'symbol'，但是考虑兼容DataStruct，读取的时候字段改名叫'code'，并非拼写错误。
             'code', # symbol
-            'market',
             'open',
             'high',
             'low',
@@ -1782,8 +1768,7 @@ def QA_fetch_crypto_asset_min(
         ]
     )
     _data = _data.assign(datetime=pd.to_datetime(_data['datetime'])
-                        ).drop_duplicates((['datetime', 'market',
-                                            'code'])).set_index(
+                        ).drop_duplicates((['datetime', 'code'])).set_index(
                                                 'datetime',
                                                 drop=False
                                             )
@@ -1799,28 +1784,38 @@ def QA_fetch_crypto_asset_min(
 if __name__ == '__main__':
     #print(QA_fetch_lhb('2006-07-03'))
     print(
-        QA_fetch_crypto_asset_min(
-            'bitmex',
-            symbol=[
-                'ETHUSD',
-                'XRPUSD',
+        QA_fetch_cryptocurrency_min(
+            code=[
+                'BITMEX.ETHUSD',
+                'BITMEX.XRPUSD',
             ],
             start='2006-07-03',
             end='2020-02-24 02:10:00',
             frequence='60min',
-            format='pandas'
+            format='pd'
         )
     )
-    print(
-        QA_fetch_crypto_asset_day(
-            'huobi',
-            symbol=[
-                'btcusdt',
-                'ethusdt',
-                'eosusdt',
+    data_h01 = QA_fetch_cryptocurrency_min(
+            code=[
+                'HUOBI.btcusdt',
+                'HUOBI.ethusdt',
+                'HUOBI.eosusdt',
             ],
             start='2017-10-01',
-            end='2020-02-24 02:10:00',
-            format='pandas'
+            end='2020-03-24 02:10:00',
+            frequence='60min',
+            format='pd'
+        )
+    print(data_h01)
+    print(
+        QA_fetch_cryptocurrency_day(
+            code=[
+                'HUOBI.btcusdt',
+                'HUOBI.ethusdt',
+                'HUOBI.eosusdt',
+            ],
+            start='2017-10-01',
+            end='2020-03-24 02:10:00',
+            format='pd'
         )
     )

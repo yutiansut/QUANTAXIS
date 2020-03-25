@@ -65,6 +65,7 @@ from QUANTAXIS.QAData import (
     QA_data_stock_to_fq,
     QA_data_tick_resample,
     QA_data_tick_resample_1min,
+    QA_data_cryptocurrency_min_resample,
     QA_DataStruct_Day,
     QA_DataStruct_Financial,
     QA_DataStruct_Future_day,
@@ -79,6 +80,8 @@ from QUANTAXIS.QAData import (
     QA_DataStruct_Stock_min,
     QA_DataStruct_Stock_realtime,
     QA_DataStruct_Stock_transaction,
+    QA_DataStruct_CryptoCurrency_day,
+    QA_DataStruct_CryptoCurrency_min,
     QDS_IndexDayWarpper,
     QDS_IndexMinWarpper,
     QDS_StockDayWarpper,
@@ -192,9 +195,9 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_stock_name,
     QA_fetch_stock_xdxr,
     QA_fetch_trade_date,
-    QA_fetch_crypto_asset_day,
-    QA_fetch_crypto_asset_min,
-    QA_fetch_crypto_asset_list
+    QA_fetch_cryptocurrency_day,
+    QA_fetch_cryptocurrency_min,
+    QA_fetch_cryptocurrency_list
 )
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 from QUANTAXIS.QAIndicator import *

@@ -248,7 +248,7 @@ def ATR_RSI_Stops(data, period=10):
     return rsi_ma, stop_line, PRICE_PREDICT['POSITION'].values
 
 
-def ATR_SuperTrend(klines, length=12, Factor=3):
+def ATR_SuperTrend_cross(klines, length=12, Factor=3):
     """
     ATR 趋势判断指标，可以实现快速而精准的牛熊趋势判断
     the Super Trend ATR allows you to quickly identify trends and the acceleration phase and accumulation
