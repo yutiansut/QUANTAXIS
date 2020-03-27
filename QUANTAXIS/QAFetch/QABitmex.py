@@ -45,6 +45,7 @@ from urllib.parse import urljoin
 from QUANTAXIS.QAUtil.QADate_Adv import (
     QA_util_timestamp_to_str,
     QA_util_datetime_to_Unix_timestamp,
+    QA_util_timestamp_to_str,
     QA_util_print_timestamp,
 )
 
@@ -79,7 +80,7 @@ FREQUENCY_SHIFTING = {
 def format_btimex_data_fields(datas, frequency):
     # 归一化数据字段，转换填充必须字段，删除多余字段
     frame = pd.DataFrame(datas)
-    frame['market'] = 'bitmex'
+    frame['symbol'] = frame['symbol'].apply(lambda x:'BITMEX.{}'.format(x))
     # UTC时间转换为北京时间，接收到的数据有时候 tz-aware 有时候又是变成 non tz-aware，
     # 改了几次代码，既不能单纯 tz_localize 也不能单纯 tz_convert
     # dt.tz_localize(None) 是 Stackoverflow 的解决方案，先观察效果
@@ -222,7 +223,6 @@ def QA_fetch_bitmex_kline(
     会直接返回空值，只有将 start_epoch，end_epoch 切片细分到 200/300 bar 以内，才能正确返回 kline，
     火币和Bitmex，OKEx 均为如此，直接用跨年时间去直接请求上万bar 的 kline 数据永远只返回最近200条数据。
     """
-    market = 'bitmex'
     datas = list()
     reqParams = {}
     reqParams['from'] = end_time - FREQUENCY_SHIFTING[frequency]
@@ -232,7 +232,7 @@ def QA_fetch_bitmex_kline(
         if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
             ((reqParams['from'] > reqParams['to'])):
             # 出现“未来”时间，一般是默认时区设置，或者时间窗口滚动前移错误造成的
-            raise Exception(
+            QA_util_log_info(
                 'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                 .format(
                     symbol,
@@ -243,6 +243,11 @@ def QA_fetch_bitmex_kline(
                     )
                 )
             )
+            # 跳到下一个时间段
+            reqParams['to'] = int(reqParams['from'] - 1)
+            reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
+            continue
+
         klines = QA_fetch_bitmex_kline_with_auto_retry(
             symbol,
             reqParams['from'],
@@ -254,12 +259,12 @@ def QA_fetch_bitmex_kline(
             # 出错放弃
             break
 
-        reqParams['to'] = reqParams['from'] - 1
-        reqParams['from'] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
+        reqParams['to'] = int(reqParams['from'] - 1)
+        reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
 
         if (klines is None) or \
             (len(klines) == 0) or \
-            ((len(datas) > 0) and (len(klines) > 0) and (klines[-1][0] == datas[-1][0])):
+            ((len(datas) > 0) and (len(klines) > 0) and (klines[-1]['timestamp'] == datas[-1]['timestamp'])):
             # 没有更多数据
             break
 
@@ -295,14 +300,13 @@ def QA_fetch_bitmex_kline_min(
     reqParams['to'] = end_time
 
     requested_counter = 1
-    market = 'bitmex'
     retries = 1
     datas = list()
     while (reqParams['to'] > start_time):
         if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
             ((reqParams['from'] > reqParams['to'])):
             # 出现“未来”时间，一般是默认时区设置，或者时间窗口滚动前移错误造成的
-            raise Exception(
+            QA_util_log_info(
                 'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                 .format(
                     symbol,
@@ -313,6 +317,10 @@ def QA_fetch_bitmex_kline_min(
                     )
                 )
             )
+            # 跳到下一个时间段
+            reqParams['to'] = int(reqParams['from'] - 1)
+            reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
+            continue
 
         klines = QA_fetch_bitmex_kline_with_auto_retry(
             symbol,
@@ -325,8 +333,8 @@ def QA_fetch_bitmex_kline_min(
             # 出错放弃
             break
 
-        reqParams['to'] = reqParams['from'] - 1
-        reqParams['from'] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
+        reqParams['to'] = int(reqParams['from'] - 1)
+        reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
 
         if (callback_func is not None):
             frame = format_btimex_data_fields(klines, frequency)

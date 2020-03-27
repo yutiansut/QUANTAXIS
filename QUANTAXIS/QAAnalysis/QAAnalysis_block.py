@@ -65,7 +65,7 @@ class QAAnalysis_block():
         return self.market_data.to_month()
 
     def block_index(self, methods='mv'):
-
+        
         if methods == 'mv':
             res = self.market_value.groupby(level=0).apply(
                 lambda x: np.average(x.close, weights=x.shares))

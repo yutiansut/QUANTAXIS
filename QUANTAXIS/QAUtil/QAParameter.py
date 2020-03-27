@@ -77,6 +77,11 @@ class EXCHANGE_ID():
     CZCE = 'CZCE'  # 郑商所
     CFFEX = 'CFFEX'  # 中金所
     INE = 'INE'  # 能源中心
+    HUOBI = 'huobi' # 火币Pro
+    BINANCE = 'binance' # 币安
+    BITMEX = 'bitmex' # BITMEX
+    BITFINEX = 'BITFINEX' # BITFINEX
+    OKEX = 'OKEx' # OKEx
 
 
 class OFFSET():

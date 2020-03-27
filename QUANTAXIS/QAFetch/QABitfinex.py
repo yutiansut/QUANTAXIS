@@ -44,14 +44,18 @@ from urllib.parse import urljoin
 from QUANTAXIS.QAUtil.QADate_Adv import (
     QA_util_timestamp_to_str,
     QA_util_datetime_to_Unix_timestamp,
+    QA_util_timestamp_to_str,
     QA_util_print_timestamp,
+)
+from QUANTAXIS.QAUtil import (
+    QA_util_log_info,
 )
 
 TIMEOUT = 10
 ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！蓝灯，喵帕斯，VPS，阴阳师，v2ray，随便什么来一个！我翻墙我骄傲！"
 Bitfinex_base_url = "https://api-pub.bitfinex.com/"
 
-columne_names = [
+column_names = [
     'start_time',
     'open',
     'high',
@@ -90,7 +94,7 @@ FREQUENCY_SHIFTING = {
 }
 
 
-def format_okex_data_fields(datas, symbol, frequency):
+def format_bitfinex_data_fields(datas, symbol, frequency):
     """
     # 归一化数据字段，转换填充必须字段，删除多余字段
     参数名 	类型 	描述
@@ -102,8 +106,7 @@ def format_okex_data_fields(datas, symbol, frequency):
     volume 	String 	交易量
     """
     frame = pd.DataFrame(datas, columns=column_names)
-    frame['market'] = 'okex'
-    frame['symbol'] = symbol
+    frame['symbol'] = 'BITFINEX.{}'.format(symbol)
     # UTC时间转换为北京时间，接收到的数据有时候 tz-aware 有时候又是变成 non tz-aware，
     # 改了几次代码，既不能单纯 tz_localize 也不能单纯 tz_convert
     # dt.tz_localize(None) 是 Stackoverflow 的解决方案，先观察效果
@@ -236,9 +239,8 @@ def QA_fetch_bitfinex_kline(
     Get the latest symbol‘s candlestick data
     时间倒序切片获取算法，是各大交易所获取1min数据的神器，因为大部分交易所直接请求跨月跨年的1min分钟数据
     会直接返回空值，只有将 start_epoch，end_epoch 切片细分到 200/300 bar 以内，才能正确返回 kline，
-    火币和okex，OKEx 均为如此，直接用跨年时间去直接请求上万bar 的 kline 数据永远只返回最近200条数据。
+    火币和binance，OKEx 均为如此，直接用跨年时间去直接请求上万bar 的 kline 数据永远只返回最近200条数据。
     """
-    market = 'okex'
     datas = list()
     reqParams = {}
     reqParams['from'] = end_time - FREQUENCY_SHIFTING[frequency]
@@ -248,7 +250,7 @@ def QA_fetch_bitfinex_kline(
         if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
             ((reqParams['from'] > reqParams['to'])):
             # 出现“未来”时间，一般是默认时区设置，或者时间窗口滚动前移错误造成的
-            raise Exception(
+            QA_util_log_info(
                 'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                 .format(
                     symbol,
@@ -259,6 +261,10 @@ def QA_fetch_bitfinex_kline(
                     )
                 )
             )
+            # 跳到下一个时间段
+            reqParams['to'] = int(reqParams['from'] - 1)
+            reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
+            continue
 
         klines = QA_fetch_okex_kline_with_auto_retry(
             symbol,
@@ -266,13 +272,14 @@ def QA_fetch_bitfinex_kline(
             reqParams['to'],
             frequency,
         )
-        if (len(klines) == 0) or \
+        if (klines is None) or \
+            (len(klines) == 0) or \
             ('error' in klines):
             # 出错放弃
             break
 
-        reqParams['to'] = reqParams['from'] - 1
-        reqParams['from'] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
+        reqParams['to'] = int(reqParams['from'] - 1)
+        reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
 
         if (klines is None) or \
             ((len(datas) > 0) and (klines[-1][0] == datas[-1][0])):
@@ -304,21 +311,19 @@ def QA_fetch_bitfinex_kline_min(
     Get the latest symbol‘s candlestick data with time slices
     时间倒序切片获取算法，是各大交易所获取1min数据的神器，因为大部分交易所直接请求跨月跨年的1min分钟数据
     会直接返回空值，只有将 start_epoch，end_epoch 切片细分到 200/300 bar 以内，才能正确返回 kline，
-    火币和okex，OKEx 均为如此，用上面那个函数的方式去直接请求上万bar 的分钟 kline 数据是不会有结果的。
+    火币和binance，OKEx 均为如此，用上面那个函数的方式去直接请求上万bar 的分钟 kline 数据是不会有结果的。
     """
     reqParams = {}
     reqParams['from'] = end_time - FREQUENCY_SHIFTING[frequency]
     reqParams['to'] = end_time
 
     requested_counter = 1
-    market = 'okex'
-    retries = 1
     datas = list()
     while (reqParams['to'] > start_time):
         if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
             ((reqParams['from'] > reqParams['to'])):
             # 出现“未来”时间，一般是默认时区设置，或者时间窗口滚动前移错误造成的
-            raise Exception(
+            QA_util_log_info(
                 'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                 .format(
                     symbol,
@@ -329,6 +334,10 @@ def QA_fetch_bitfinex_kline_min(
                     )
                 )
             )
+            # 跳到下一个时间段
+            reqParams['to'] = int(reqParams['from'] - 1)
+            reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
+            continue
 
         klines = QA_fetch_okex_kline_with_auto_retry(
             symbol,
@@ -336,13 +345,14 @@ def QA_fetch_bitfinex_kline_min(
             reqParams['to'],
             frequency,
         )
-        if (len(klines) == 0) or \
+        if (klines is None) or \
+            (len(klines) == 0) or \
             ('error' in klines):
             # 出错放弃
             break
 
-        reqParams['to'] = reqParams['from'] - 1
-        reqParams['from'] = reqParams['from'] - FREQUENCY_SHIFTING[frequency]
+        reqParams['to'] = int(reqParams['from'] - 1)
+        reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
 
         if (callback_func is not None):
             frame = format_okex_data_fields(klines, symbol, frequency)

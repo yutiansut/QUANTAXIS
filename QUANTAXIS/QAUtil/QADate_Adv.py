@@ -33,7 +33,7 @@ import numpy as np
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
-def QA_util_datetime_to_Unix_timestamp(ts_epoch = datetime.now(timezone(timedelta(hours=8)))):
+def QA_util_datetime_to_Unix_timestamp(ts_epoch = datetime.now(timezone(timedelta(hours=8)))):  
     """
     返回当前UTC时间戳，默认时区为北京时间
     :return: 类型 int

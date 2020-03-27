@@ -37,7 +37,7 @@ from QUANTAXIS.QAData.data_resample import (
     QA_data_futuremin_resample_tb_kq,
     QA_data_futuremin_resample_tb_kq2,
     QA_data_tick_resample_1min,
-    QA_data_crypt_assetmin_resample
+    QA_data_cryptocurrency_min_resample
 )
 from QUANTAXIS.QAData.dsmethods import (
     QDS_IndexDayWarpper,
@@ -58,8 +58,8 @@ from QUANTAXIS.QAData.QADataStruct import (
     QA_DataStruct_Min,
     QA_DataStruct_Stock_day,
     QA_DataStruct_Stock_min,
-    QA_DataStruct_Crypto_Asset_day,
-    QA_DataStruct_Crypto_Asset_min,
+    QA_DataStruct_CryptoCurrency_day,
+    QA_DataStruct_CryptoCurrency_min,
     QA_DataStruct_Stock_realtime,
     QA_DataStruct_Stock_transaction
 )

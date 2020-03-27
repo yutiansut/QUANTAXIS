@@ -37,6 +37,15 @@ def QA_util_save_raw_symbols(fetch_symnol_func, exchange):
             .format(exchange)
         )
     else:
+        #if ('_id' in symbols):
+        #    # 有时有，必须单独删除
+        #    symbols.drop(
+        #        [
+        #            '_id',
+        #        ],
+        #        axis=1,
+        #        inplace=True
+        #    )
         QA_util_log_info(
             "Delete the original {} symbols collections".format(exchange)
         )
@@ -52,7 +61,6 @@ def QA_util_save_raw_symbols(fetch_symnol_func, exchange):
 def QA_util_find_missing_kline(
     symbol,
     freq,
-    market,
     start_epoch=datetime(2017,
                          10,
                          1,
@@ -73,11 +81,9 @@ def QA_util_find_missing_kline(
     }
 
     if (freq != FREQUENCE.DAY):
-        col = DATABASE.crypto_asset_min
+        col = DATABASE.cryptocurrency_min
         col.create_index(
             [
-                ('market',
-                 pymongo.ASCENDING),
                 ("symbol",
                  pymongo.ASCENDING),
                 ('time_stamp',
@@ -88,8 +94,6 @@ def QA_util_find_missing_kline(
         )
         col.create_index(
             [
-                ('market',
-                 pymongo.ASCENDING),
                 ("symbol",
                  pymongo.ASCENDING),
                 ("type",
@@ -108,7 +112,7 @@ def QA_util_find_missing_kline(
         col.create_index([('time_stamp', pymongo.ASCENDING)])
 
         # 查询历史数据
-        query_id = {"symbol": symbol, 'market': market, 'type': freq}
+        query_id = {"symbol": symbol, 'type': freq}
         refcount = col.count_documents(query_id)
         _data = []
         cursor = col.find(query_id).sort('time_stamp', 1)
@@ -116,7 +120,6 @@ def QA_util_find_missing_kline(
             _data.append(
                 [
                     str(item['symbol']),
-                    str(item['market']),
                     item['time_stamp'],
                     item['date'],
                     item['datetime'],
@@ -128,7 +131,6 @@ def QA_util_find_missing_kline(
             _data,
             columns=[
                 'symbol',
-                'market',
                 'time_stamp',
                 'date',
                 'datetime',
@@ -137,11 +139,9 @@ def QA_util_find_missing_kline(
         )
         _data = _data.set_index(pd.DatetimeIndex(_data['datetime']), drop=False)
     else:
-        col = DATABASE.crypto_asset_day
+        col = DATABASE.cryptocurrency_day
         col.create_index(
             [
-                ('market',
-                 pymongo.ASCENDING),
                 ("symbol",
                  pymongo.ASCENDING),
                 ("date_stamp",
@@ -151,7 +151,7 @@ def QA_util_find_missing_kline(
         )
 
         # 查询是否新 tick
-        query_id = {"symbol": symbol, 'market': market}
+        query_id = {"symbol": symbol}
         refcount = col.count_documents(query_id)
         cursor = col.find(query_id).sort('time_stamp', 1)
         _data = []
@@ -159,7 +159,6 @@ def QA_util_find_missing_kline(
             _data.append(
                 [
                     str(item['symbol']),
-                    str(item['market']),
                     item['time_stamp'],
                     item['date'],
                     item['datetime']
@@ -169,7 +168,6 @@ def QA_util_find_missing_kline(
         _data = pd.DataFrame(
             _data,
             columns=['symbol',
-                     'market',
                      'time_stamp',
                      'date',
                      'datetime']
@@ -178,7 +176,7 @@ def QA_util_find_missing_kline(
         _data = _data.set_index(pd.DatetimeIndex(_data['date']), drop=False)
 
     if (freq != FREQUENCE.DAY):
-        # crypto_asset_min 中的 Date/Datetime 字段均为北京时间
+        # cryptocurrency_min 中的 Date/Datetime 字段均为北京时间
         leak_datetime = pd.date_range(
             _data.index.min(),
             _data.index.max(),
@@ -233,9 +231,6 @@ def QA_util_find_missing_kline(
             between = int(
                 leak_datetime[x - 1].timestamp() + FREQUENCE_PERIOD_TIME[freq]
             )
-            if (int(expected) > int(between)):
-                print('fooo12')
-                print()
             miss_kline = miss_kline.append(
                 {
                     'expected':
@@ -243,7 +238,7 @@ def QA_util_find_missing_kline(
                     'between':
                         int(between),
                     'missing':
-                        '{} 到 {}'.format(
+                        '{} to {}'.format(
                             pd.to_datetime(expected,
                                            unit='s'
                                           ).tz_localize('Asia/Shanghai'),
@@ -273,6 +268,10 @@ def QA_util_find_missing_kline(
             ignore_index=True
         )
     miss_kline.sort_values(by='expected', ascending=True, inplace=True)
+    if (len(miss_kline) > 0):
+        if (miss_kline.iloc[0].expected > QA_util_datetime_to_Unix_timestamp()) and \
+            (miss_kline.iloc[0].between > QA_util_datetime_to_Unix_timestamp()):
+            miss_kline.drop(miss_kline.iloc[0], inplace=True)
     return miss_kline.values
 
 
