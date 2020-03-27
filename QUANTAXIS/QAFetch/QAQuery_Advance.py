@@ -37,8 +37,8 @@ from QUANTAXIS.QAData import (
     QA_DataStruct_Financial,
     QA_DataStruct_Stock_day,
     QA_DataStruct_Stock_min,
-    QA_DataStruct_Crypto_Asset_day,
-    QA_DataStruct_Crypto_Asset_min,
+    QA_DataStruct_CryptoCurrency_day,
+    QA_DataStruct_CryptoCurrency_min,
     QA_DataStruct_Stock_transaction,
     QA_DataStruct_Index_min,
     QA_DataStruct_Index_transaction
@@ -59,9 +59,9 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_future_list,
     QA_fetch_stock_financial_calendar,
     QA_fetch_stock_divyield,
-    QA_fetch_crypto_asset_day,
-    QA_fetch_crypto_asset_min,
-    QA_fetch_crypto_asset_list
+    QA_fetch_cryptocurrency_day,
+    QA_fetch_cryptocurrency_min,
+    QA_fetch_cryptocurrency_list
 )
 from QUANTAXIS.QAUtil.QADate import month_data
 from QUANTAXIS.QAUtil import (
@@ -899,24 +899,22 @@ def QA_fetch_stock_divyield_adv(
         )
 
 
-def QA_fetch_crypto_asset_day_adv(
-    market,
-    symbol,
+def QA_fetch_cryptocurrency_day_adv(
+    code,
     start,
     end=None,
     if_drop_index=True
 ):
     '''
     '获取数字加密资产日线'
-    :param market:
-    :param symbol:
+    :param code:
     :param start:  字符串str 开始日期 eg 2011-01-01
     :param end:  字符串str 结束日期 eg 2011-05-01
     :param if_drop_index: Ture False ， dataframe drop index or not
     :param collections:  mongodb 数据库
     :return:
     '''
-    '获取期货日线'
+    '获取数字加密资产日线'
     end = start if end is None else end
     start = str(start)[0:10]
     end = str(end)[0:10]
@@ -924,31 +922,29 @@ def QA_fetch_crypto_asset_day_adv(
     # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
     # 🛠 todo 如果相等
 
-    res = QA_fetch_crypto_asset_day(market, symbol, start, end, format='pd')
+    res = QA_fetch_cryptocurrency_day(code, start, end, format='pd')
     if res is None:
         print(
-            "QA Error QA_fetch_crypto_asset_day_adv parameter symbol=%s start=%s end=%s call QA_fetch_crypto_asset_day return None"
+            "QA Error QA_fetch_cryptocurrency_day_adv parameter symbol=%s start=%s end=%s call QA_fetch_cryptocurrency_day return None"
             % (code,
                start,
                end)
         )
     else:
-        res_set_index = res.set_index(['date', 'market', 'code'])
-        return QA_DataStruct_Crypto_Asset_day(res_set_index)
+        res_set_index = res.set_index(['date', 'code'])
+        return QA_DataStruct_CryptoCurrency_day(res_set_index)
 
 
-def QA_fetch_crypto_asset_min_adv(
-    market,
-    symbol,
+def QA_fetch_cryptocurrency_min_adv(
+    code,
     start,
     end=None,
     frequence='1min',
     if_drop_index=True,
-    collections=DATABASE.crypto_asset_min
+    collections=DATABASE.cryptocurrency_min
 ):
     '''
     '获取数字加密资产分钟线'
-    :param market:
     :param symbol:
     :param start:
     :param end:
@@ -974,18 +970,17 @@ def QA_fetch_crypto_asset_min_adv(
     if len(start) == 10:
         start = '{} 00:00:00'.format(start)
     if len(end) == 10:
-        end = '{} 15:00:00'.format(end)
+        end = '{} 23:59:59'.format(end)
 
     # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
 
     # if start == end:
-    # 🛠 todo 如果相等，根据 frequence 获取开始时间的 时间段 QA_fetch_index_min_adv， 不支持start end是相等的
-    # print("QA Error QA_fetch_index_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! " % (code, start, end))
+    # 🛠 todo 如果相等，根据 frequence 获取开始时间的 时间段 QA_fetch_cryptocurrency_min_adv， 不支持start end是相等的
+    # print("QA Error QA_fetch_cryptocurrency_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! " % (code, start, end))
     # return None
 
-    res = QA_fetch_crypto_asset_min(
-        market,
-        symbol,
+    res = QA_fetch_cryptocurrency_min(
+        code,
         start,
         end,
         format='pd',
@@ -993,8 +988,8 @@ def QA_fetch_crypto_asset_min_adv(
     )
     if res is None:
         print(
-            "QA Error QA_fetch_crypto_asset_min_adv parameter symbol=%s start=%s end=%s frequence=%s call QA_fetch_crypto_asset_min return None"
-            % (symbol,
+            "QA Error QA_fetch_cryptocurrency_min_adv parameter symbol=%s start=%s end=%s frequence=%s call QA_fetch_cryptocurrency_min return None"
+            % (code,
                start,
                end,
                frequence)
@@ -1002,54 +997,53 @@ def QA_fetch_crypto_asset_min_adv(
     else:
         res_reset_index = res.set_index(
             ['datetime',
-             'market',
              'code'],
             drop=if_drop_index
         )
         # if res_reset_index is None:
-        #     print("QA Error QA_fetch_index_min_adv set index 'date, code' return None")
-        return QA_DataStruct_Crypto_Asset_min(res_reset_index)
+        #     print("QA Error QA_fetch_cryptocurrency_min_adv set index 'date, code' return None")
+        return QA_DataStruct_CryptoCurrency_min(res_reset_index)
 
 
-def QA_fetch_crypto_asset_list_adv(
+def QA_fetch_cryptocurrency_list_adv(
     market,
-    collections=DATABASE.crypto_asset_list
+    collections=DATABASE.cryptocurrency_list
 ):
     '''
     '获取数字加密资产列表'
     :param collections: mongodb 数据库
     :return: DataFrame
     '''
-    crypto_asset_list_items = QA_fetch_crypto_asset_list(market)
-    if len(crypto_asset_list_items) == 0:
+    cryptocurrency_list_items = QA_fetch_cryptocurrency_list(market)
+    if len(cryptocurrency_list_items) == 0:
         print(
-            "QA Error QA_fetch_crypto_asset_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.crypto_asset_list is empty!"
+            "QA Error QA_fetch_cryptocurrency_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.cryptocurrency_list is empty!"
         )
         return None
-    return crypto_asset_list_items
+    return cryptocurrency_list_items
 
 
 if __name__ == '__main__':
     #st = QA_fetch_stock_block_adv(None, ["北京", "计算机"])
     #QA_fetch_stock_realtime_adv(['000001', '000002'], num=10)
     from QUANTAXIS.QAFetch.QAhuobi import FIRST_PRIORITY
-    codelist = ['BCHUSDT', 'BSVUSDT', 'BTCUSDT', 'EOSUSDT', 'ETHUSDT', 'ETCUSDT', 'DASHUSDT', 'LTCUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT']
-    data1 = QA_fetch_crypto_asset_day_adv(
-            ['binance','huobi'],
-            symbol=codelist+FIRST_PRIORITY,
+    import QUANTAXIS as QA
+    codelist = ['BINANCE.BCHUSDT', 'BINANCE.BSVUSDT', 'BINANCE.BTCUSDT', 'BINANCE.EOSUSDT', 'BINANCE.ETHUSDT', 'BINANCE.ETCUSDT', 'BINANCE.DASHUSDT', 'BINANCE.LTCUSDT', 'BINANCE.XMRUSDT', 'BINANCE.XRPUSDT', 'BINANCE.ZECUSDT']
+    data1 = QA_fetch_cryptocurrency_day_adv(
+            code=codelist+['HUOBI.{}'.format(code) for code in FIRST_PRIORITY],
             start='2019-08-21',
             end='2020-05-28 18:10:00',
         )
     print(data1.data)
-    #print(
-    #    QA_fetch_crypto_asset_min_adv(
-    #        'okex',
-    #        symbol=[
-    #            'BTC-USDT',
-    #            'ETH-USDT',
-    #        ],
-    #        start='2017-10-01',
-    #        end='2020-05-28 18:10:00',
-    #        frequence='60min'
-    #    ).data
-    #)
+    data2 = QA_fetch_cryptocurrency_min_adv(
+            code=[
+                'OKEX.BTC-USDT',
+                'OKEX.ETH-USDT',
+            ],
+            start='2017-10-01',
+            end='2020-05-28 18:10:00',
+            frequence='60min'
+        )
+    print(data2.data)
+    data_4h = QA.QA_DataStruct_CryptoCurrency_min(data2.resample('4h'))
+    print(data_4h.data)

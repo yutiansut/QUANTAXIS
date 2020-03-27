@@ -27,10 +27,18 @@
 import scipy.signal as signal
 from scipy.signal import lfilter, lfilter_zi, filtfilt, butter, savgol_filter
 import numpy as np
-import peakutils
 from QUANTAXIS.QAIndicator.base import *
-from QUANTAXIS.QAIndicator.talib_numpy import *
 from QUANTAXIS.QAData.base_datastruct import *
+try:
+    import peakutils
+except:
+    #print('PLEASE run "pip install peakutils" to call these modules')
+    pass
+try:
+    from QUANTAXIS.QAIndicator.talib_numpy import *
+except:
+    #print('PLEASE run "pip install TALIB" to call these modules')
+    pass
 
 """
 时序信号处理，公共函数

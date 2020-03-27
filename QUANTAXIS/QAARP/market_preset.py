@@ -821,6 +821,42 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.0001,
                 'commission_coeff_today_pervol': 0
             },
+            'HU': {
+                'name': '火币Pro',
+                'unit_table': 1.0,
+                'price_tick': 1.0,
+                'buy_frozen_coeff': 0.06,
+                'sell_frozen_coeff': 0.06,
+                'exchange': EXCHANGE_ID.HUOBI,
+                'commission_coeff_peramount': 0.002,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.002,
+                'commission_coeff_today_pervol': 0
+            },
+            'OK': {
+                'name': 'OKEx',
+                'unit_table': 1.0,
+                'price_tick': 1.0,
+                'buy_frozen_coeff': 0.06,
+                'sell_frozen_coeff': 0.06,
+                'exchange': EXCHANGE_ID.OKEX,
+                'commission_coeff_peramount': 0.002,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.002,
+                'commission_coeff_today_pervol': 0
+            },
+            'BI': {
+                'name': 'Bianace',
+                'unit_table': 1.0,
+                'price_tick': 1.0,
+                'buy_frozen_coeff': 0.06,
+                'sell_frozen_coeff': 0.06,
+                'exchange': EXCHANGE_ID.BINANCE,
+                'commission_coeff_peramount': 0.002,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.002,
+                'commission_coeff_today_pervol': 0
+            },
         }
 
     # 手续费比例

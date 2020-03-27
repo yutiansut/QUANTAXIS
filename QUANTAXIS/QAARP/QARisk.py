@@ -43,7 +43,8 @@ from pymongo import ASCENDING, DESCENDING
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_future_day_adv,
                                                QA_fetch_index_day_adv,
-                                               QA_fetch_stock_day_adv)
+                                               QA_fetch_stock_day_adv,
+                                               QA_fetch_cryptocurrency_day_adv)
 from QUANTAXIS.QASU.save_account import save_riskanalysis
 from QUANTAXIS.QAUtil.QADate_trade import (QA_util_get_trade_gap,
                                            QA_util_get_trade_range)
@@ -156,7 +157,8 @@ class QA_Risk():
         else:
             self.fetch = {
                 MARKET_TYPE.STOCK_CN: QA_fetch_stock_day_adv,
-                MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv
+                MARKET_TYPE.INDEX_CN: QA_fetch_index_day_adv,
+                MARKET_TYPE.CRYPTOCURRENCY: QA_fetch_cryptocurrency_day_adv
             }
             if market_data == None:
                 if self.account.market_type == MARKET_TYPE.STOCK_CN:
@@ -168,6 +170,12 @@ class QA_Risk():
                 elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
                     self.market_data = QA_fetch_future_day_adv(
                         [item.upper() for item in self.account.code],
+                        self.account.start_date,
+                        self.account.end_date
+                    )
+                elif self.account.market_type == MARKET_TYPE.CRYPTOCURRENCY:
+                    self.market_data = QA_fetch_cryptocurrency_day_adv(
+                        [item for item in self.account.code],
                         self.account.start_date,
                         self.account.end_date
                     )
@@ -382,6 +390,7 @@ class QA_Risk():
             'beta': self.beta,
             'alpha': self.alpha,
             'sharpe': self.sharpe,
+            'sortino': self.sortino,
             'init_cash': "%0.2f" % (float(self.assets[0])),
             'last_assets': "%0.2f" % (float(self.assets.iloc[-1])),
             'total_tax': self.total_tax,
@@ -722,7 +731,10 @@ class QA_Risk():
             i += length / 2.8
         plt.subplot(212)
         self.assets.plot()
-        self.benchmark_assets.xs(self.benchmark_code, level=1).plot()
+        if (self.benchmark_type == MARKET_TYPE.CRYPTOCURRENCY):
+            self.benchmark_assets.xs(self.benchmark_code, level=1).plot()
+        else:
+            self.benchmark_assets.xs(self.benchmark_code, level=1).plot()
 
         asset_p = mpatches.Patch(
             color='red',
