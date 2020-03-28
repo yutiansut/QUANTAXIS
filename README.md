@@ -225,6 +225,8 @@ QUANTAXIS 是一个开放的项目, 在开源的3年中有大量的小伙伴加�
 
 欢迎加群讨论: 563280067 [群链接](https://jq.qq.com/?_wv=1027&k=4CEKGzn) 
 
+DISCORD 社区  https://discord.gg/mkk5RgN
+
 QUANATXIS 前端开发群: 983499694 [群链接](https://jq.qq.com/?_wv=1027&k=5qYi8Fk)
 
 QUANATXIS 研报阅读/ 事件驱动分析群: 1045723486 [群链接](https://jq.qq.com/?_wv=1027&k=5Z3NVEW)
