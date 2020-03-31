@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,54 +31,48 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 
 
 """
-from . import QAWind as QAWind
-from . import QATushare as QATushare
-from . import QATdx as QATdx
-from . import QAThs as QAThs
-#import QAFetch.QAGmsdk as QAGmsdk
-#import QAFetch.QACrawlData as QACD
-
-
-class QA_Fetcher():
-    """
-    一个通用的数据获取方法类
-
-    
-    """
-    def __init__(self, *args, **kwargs):
-         pass
-    @property
-    def security_list(self):
-        return self.security_list
-
-
-
-
-
+from QUANTAXIS.QAFetch import QAWind as QAWind
+from QUANTAXIS.QAFetch import QATushare as QATushare
+from QUANTAXIS.QAFetch import QATdx as QATdx
+from QUANTAXIS.QAFetch import QAThs as QAThs
+from QUANTAXIS.QAFetch import QACrawler as QACL
+from QUANTAXIS.QAFetch import QAEastMoney as QAEM
+from QUANTAXIS.QAFetch import QAHexun as QAHexun
+from QUANTAXIS.QAFetch import QAfinancial
+from QUANTAXIS.QAFetch.base import get_stock_market
+from QUANTAXIS.QAFetch import QAQAWEB as QAWEB
+from QUANTAXIS.QAFetch import QAKQ as QAKQ
 
 def use(package):
     if package in ['wind']:
-        from WindPy import w
-        # w.start()
-        return QAWind
+        try:
+            from WindPy import w
+            # w.start()
+            return QAWind
+        except ModuleNotFoundError:
+            print('NO WIND CLIENT FOUND')
     elif package in ['tushare', 'ts']:
         return QATushare
     elif package in ['tdx', 'pytdx']:
         return QATdx
     elif package in ['ths', 'THS']:
         return QAThs
+    elif package in ['HEXUN', 'Hexun', 'hexun']:
+        return QAHexun
+    elif package in ['QA']:
+        return QAWEB
 
 
-def QA_fetch_get_stock_day(package, code, startDate, endDate, if_fq='01', level='day', type_='json'):
+def QA_fetch_get_stock_day(package, code, start, end, if_fq='00', level='day', type_='pd'):
     Engine = use(package)
     if package in ['ths', 'THS', 'wind']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq)
     elif package in ['ts', 'tushare']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, type_)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, type_)
     elif package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate, if_fq, level)
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, level)
     else:
-        return Engine.QA_fetch_get_stock_day(code, startDate, endDate)
+        return Engine.QA_fetch_get_stock_day(code, start, end)
 
 
 def QA_fetch_get_stock_realtime(package, code):
@@ -86,14 +80,14 @@ def QA_fetch_get_stock_realtime(package, code):
     return Engine.QA_fetch_get_stock_realtime(code)
 
 
-def QA_fetch_get_stock_indicator(package, code, startDate, endDate):
+def QA_fetch_get_stock_indicator(package, code, start, end):
     Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, startDate, endDate)
+    return Engine.QA_fetch_get_stock_indicator(code, start, end)
 
 
-def QA_fetch_get_trade_date(package, endDate, exchange):
+def QA_fetch_get_trade_date(package, end, exchange):
     Engine = use(package)
-    return Engine.QA_fetch_get_trade_date(endDate, exchange)
+    return Engine.QA_fetch_get_trade_date(end, exchange)
 
 
 def QA_fetch_get_stock_min(package, code, start, end, level='1min'):
@@ -104,18 +98,26 @@ def QA_fetch_get_stock_min(package, code, start, end, level='1min'):
         return 'Unsupport packages'
 
 
-def QA_fetch_get_stock_list(package, type_='stock'):
-    Engine = use(package)
-    if package in ['tdx', 'pytdx']:
-        return Engine.QA_fetch_get_stock_list(type_)
-    else:
-        return 'Unsupport packages'
-
-
 def QA_fetch_get_stock_transaction(package, code, start, end, retry=2):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_stock_transaction(code, start, end, retry)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_index_transaction(package, code, start, end, retry=2):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_index_transaction(code, start, end, retry)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_stock_transaction_realtime(package, code):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_stock_transaction_realtime(code)
     else:
         return 'Unsupport packages'
 
@@ -144,17 +146,239 @@ def QA_fetch_get_index_min(package, code, start, end, level='1min'):
         return 'Unsupport packages'
 
 
-def QA_fetch_get_stock_block(package):
+def QA_fetch_get_index_realtime(package, code):
+    Engine = use(package)
+    return Engine.QA_fetch_get_index_realtime(code)
+
+
+def QA_fetch_get_bond_day(package, code, start, end, level='day'):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_bond_day(code, start, end, level)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_bond_min(package, code, start, end, level='1min'):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_bond_min(code, start, end, level)
+    else:
+        return 'Unsupport packages'
+
+def QA_fetch_get_bond_realtime(package, code):
+    Engine = use(package)
+    return Engine.QA_fetch_get_bond_realtime(code)
+
+def QA_fetch_get_stock_block(package):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx', 'ths', 'QA']:
         return Engine.QA_fetch_get_stock_block()
     else:
         return 'Unsupport packages'
 
 
-def QA_fetch_get_stock_info(package,code):
+def QA_fetch_get_stock_info(package, code):
     Engine = use(package)
     if package in ['tdx', 'pytdx']:
         return Engine.QA_fetch_get_stock_info(code)
     else:
         return 'Unsupport packages'
+
+# LIST
+
+
+def QA_fetch_get_stock_list(package, type_='stock'):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_stock_list(type_)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_bond_list(package):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_bond_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_index_list(package):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_index_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_option_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_option_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_globalfuture_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_globalfuture_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_hkstock_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_hkstock_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_hkfund_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_hkfund_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_hkindex_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_hkindex_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_usstock_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_usstock_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_macroindex_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_macroindex_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_globalindex_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_globalindex_list()
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_exchangerate_list(package,):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_exchangerate_list()
+    else:
+        return 'Unsupport packages'
+
+
+#######################
+
+
+def QA_fetch_get_security_bars(code, _type, lens):
+    return QATdx.QA_fetch_get_security_bars(code, _type, lens)
+
+
+def QA_fetch_get_future_transaction(package, code, start, end):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_transaction(code, start, end)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_transaction_realtime(package, code):
+    """
+    期货实时tick
+    """
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_transaction_realtime(code)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_domain():
+    return QAKQ.QA_fetch_get_future_domain()
+
+def QA_fetch_get_future_realtime(package, code):
+    Engine = use(package)
+    return Engine.QA_fetch_get_future_realtime(code)
+
+
+def QA_fetch_get_future_day(package, code, start, end, frequence='day'):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_day(code, start, end, frequence=frequence)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_future_min(package, code, start, end, frequence='1min'):
+    Engine = use(package)
+    if package in ['tdx', 'pytdx']:
+        return Engine.QA_fetch_get_future_min(code, start, end, frequence=frequence)
+    else:
+        return 'Unsupport packages'
+
+
+def QA_fetch_get_chibor(package, frequence):
+    Engine = use(package)
+    if package in ['Hexun', 'hexun']:
+        return Engine.QA_fetch_get_chibor(frequence)
+    else:
+        return 'Unsupport packages'
+
+
+QA_fetch_get_option_day = QA_fetch_get_future_day
+QA_fetch_get_option_min = QA_fetch_get_future_min
+
+QA_fetch_get_hkstock_day = QA_fetch_get_future_day
+QA_fetch_get_hkstock_min = QA_fetch_get_future_min
+
+QA_fetch_get_hkfund_day = QA_fetch_get_future_day
+QA_fetch_get_hkfund_min = QA_fetch_get_future_min
+
+QA_fetch_get_hkindex_day = QA_fetch_get_future_day
+QA_fetch_get_hkindex_min = QA_fetch_get_future_min
+
+
+QA_fetch_get_usstock_day = QA_fetch_get_future_day
+QA_fetch_get_usstock_min = QA_fetch_get_future_min
+
+QA_fetch_get_option_day = QA_fetch_get_future_day
+QA_fetch_get_option_min = QA_fetch_get_future_min
+
+QA_fetch_get_globalfuture_day = QA_fetch_get_future_day
+QA_fetch_get_globalfuture_min = QA_fetch_get_future_min
+
+QA_fetch_get_exchangerate_day = QA_fetch_get_future_day
+QA_fetch_get_exchangerate_min = QA_fetch_get_future_min
+
+
+QA_fetch_get_macroindex_day = QA_fetch_get_future_day
+QA_fetch_get_macroindex_min = QA_fetch_get_future_min
+
+
+QA_fetch_get_globalindex_day = QA_fetch_get_future_day
+QA_fetch_get_globalindex_min = QA_fetch_get_future_min

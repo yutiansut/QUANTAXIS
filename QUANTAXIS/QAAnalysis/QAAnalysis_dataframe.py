@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,10 @@
 # SOFTWARE.
 
 
-import math
 import statistics
-
-import numpy as np
-import pandas as pd
 from functools import lru_cache
+
+
 #import scipy
 #import statsmodels
 #from scipy import integrate, optimize, stats
@@ -36,7 +34,7 @@ from functools import lru_cache
 #from QUANTAXIS.QAData.QADataStruct import QA_DataStruct_Index_day,QA_DataStruct_Index_min,QA_DataStruct_Stock_day,QA_DataStruct_Stock_min
 
 
-class QA_Analysis_stock:
+class QAAnalysis_stock():
     """
     行情分析器
 
@@ -51,12 +49,12 @@ class QA_Analysis_stock:
             self._data = dataStruct
         except AttributeError:
             # 如果是dataframe
-            self.data =dataStruct
+            self.data = dataStruct
 
         # self.data=DataSturct.data
 
     def __repr__(self):
-        return '< QA_Analysis_Stock >'
+        return '< QAAnalysis_Stock >'
 
     def __call__(self):
         return self.data
@@ -85,6 +83,7 @@ class QA_Analysis_stock:
             return self.data['volume']
         else:
             return self.data['vol']
+
     @property
     def volume(self):
         if 'volume' in self.data.columns:
@@ -126,6 +125,7 @@ class QA_Analysis_stock:
     def mean(self):
         return self.price.mean()
     # 一阶差分序列
+
     @property
     def price_diff(self):
         return self.price.diff(1)
@@ -141,15 +141,20 @@ class QA_Analysis_stock:
 
         return statistics.variance(self.price)
     # 标准差
+
+    @property
+    def day_pct_change(self):
+        return (self.open - self.close) / self.open
+
     @property
     def stdev(self):
 
         return statistics.stdev(self.price)
     # 样本标准差
+
     @property
     def pstdev(self):
         return statistics.pstdev(self.price)
-
 
     # 调和平均数
     @property
@@ -162,32 +167,74 @@ class QA_Analysis_stock:
         return statistics.mode(self.price)
 
     # 波动率
-    
 
     # 振幅
     @property
     def amplitude(self):
-        return self.max-self.min
+        return self.max - self.min
     # 偏度 Skewness
+
     @property
     def skewnewss(self):
         return self.price.skew()
     # 峰度Kurtosis
+
     @property
     def kurtosis(self):
         return self.price.kurt()
-    #百分数变化
+    # 百分数变化
+
     @property
     def pct_change(self):
         return self.price.pct_change()
-    
-    #平均绝对偏差 
+
+    # 平均绝对偏差
     @property
     def mad(self):
         return self.price.mad()
-
 
     # 函数 指标计算
     @lru_cache()
     def add_func(self, func, *arg, **kwargs):
         return func(self.data, *arg, **kwargs)
+
+
+def shadow_calc(data):
+    """
+    explanation:
+        计算上下影线		
+
+    params:
+        * data ->:
+            meaning: 行情切片
+            type: DataStruct.slice
+            optional: [null]
+
+    return:
+        (up_shadow: 上影线, down_shdow: 下影线, entity: 实体部分, date:时间, code: 代码)
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
+    """
+
+    up_shadow = abs(data.high - (max(data.open, data.close)))
+    down_shadow = abs(data.low - (min(data.open, data.close)))
+    entity = abs(data.open - data.close)
+    towards = True if data.open < data.close else False
+    print('=' * 15)
+    print('up_shadow : {}'.format(up_shadow))
+    print('down_shadow : {}'.format(down_shadow))
+    print('entity: {}'.format(entity))
+    print('towards : {}'.format(towards))
+    return up_shadow, down_shadow, entity, data.date, data.code
+
+
+class shadow():
+    def __init__(self, data):
+        self.data = data
+
+    def shadow_panel(self):
+        return

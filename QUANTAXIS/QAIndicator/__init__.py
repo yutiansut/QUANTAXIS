@@ -1,7 +1,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 from QUANTAXIS.QAIndicator.indicators import *
-from QUANTAXIS.QAIndicator.QAIndicator_Dataframe import *
-from QUANTAXIS.QAIndicator.QAIndicator_Series import *
-
+from QUANTAXIS.QAIndicator.base import *
+try:
+    from QUANTAXIS.QAIndicator.talib_series import *
+    from QUANTAXIS.QAIndicator.talib_numpy import *
+    from QUANTAXIS.QAIndicator import talib_indicators as talib_qa
+except:
+    print('PLEASE install TALIB to call these methods')
 """
 这个模块是对了对应QA_DataStruct
 
 可以被add_func来添加,所以 这个模块的函数必须有一个DataFrame的输入
 
 
-例如 
+例如
 
 import QUANTAXIS as QA
 data=QA.QA_fetch_stock_day_adv('000001','2017-01-01','2017-01-31')

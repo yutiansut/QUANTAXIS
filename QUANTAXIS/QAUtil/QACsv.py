@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2017 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import csv
 
 
@@ -28,15 +29,26 @@ def QA_util_save_csv(data, name, column=None, location=None):
     # 重写了一下保存的模式
     # 增加了对于可迭代对象的判断 2017/8/10
     """
-    QA_util_save_csv(data,name,column,location)
+    explanation:
+        将数据保存为csv
     
-    将list保存成csv
-    第一个参数是list
-    第二个参数是要保存的名字
-    第三个参数是行的名称(可选)
-    第四个是保存位置(可选)
-
-    @yutiansut
+    params:
+        * data->
+            含义: 需要被保存的数据
+            类型: List
+            参数支持: []
+        * name:
+            含义: 要保存的名字
+            类型: str
+            参数支持: []
+        * column:
+            含义: 行的名称(可选)
+            类型: str
+            参数支持: [None]
+        * location:
+            含义: 保存位置(可选)
+            类型: str
+            参数支持: []
     """
     assert isinstance(data, list)
     if location is None:

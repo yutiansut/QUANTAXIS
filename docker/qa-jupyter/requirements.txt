@@ -1,0 +1,6 @@
+jupyter-client
+jupyter
+jupyter-core
+jupyterlab
+jupyter-console
+ta-lib
