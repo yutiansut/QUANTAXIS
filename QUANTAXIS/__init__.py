@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.7.1'
+__version__ = '1.9.11'
 __author__ = 'yutiansut'
 
 import argparse
@@ -65,6 +65,7 @@ from QUANTAXIS.QAData import (
     QA_data_stock_to_fq,
     QA_data_tick_resample,
     QA_data_tick_resample_1min,
+    QA_data_cryptocurrency_min_resample,
     QA_DataStruct_Day,
     QA_DataStruct_Financial,
     QA_DataStruct_Future_day,
@@ -79,6 +80,8 @@ from QUANTAXIS.QAData import (
     QA_DataStruct_Stock_min,
     QA_DataStruct_Stock_realtime,
     QA_DataStruct_Stock_transaction,
+    QA_DataStruct_CryptoCurrency_day,
+    QA_DataStruct_CryptoCurrency_min,
     QDS_IndexDayWarpper,
     QDS_IndexMinWarpper,
     QDS_StockDayWarpper,
@@ -112,6 +115,7 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_bond_list,
     QA_fetch_get_bond_realtime,
     QA_fetch_get_future_realtime,
+    QA_fetch_get_future_domain,
     QA_fetch_get_future_transaction,
     QA_fetch_get_future_transaction_realtime,
     QA_fetch_get_globalfuture_day,
@@ -181,6 +185,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_quotations,
     QA_fetch_stock_block,
     QA_fetch_stock_day,
+    QA_fetch_stock_adj,
     QA_fetch_stock_full,
     QA_fetch_stock_info,
     QA_fetch_stock_list,
@@ -189,7 +194,10 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_index_transaction,
     QA_fetch_stock_name,
     QA_fetch_stock_xdxr,
-    QA_fetch_trade_date
+    QA_fetch_trade_date,
+    QA_fetch_cryptocurrency_day,
+    QA_fetch_cryptocurrency_min,
+    QA_fetch_cryptocurrency_list
 )
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 from QUANTAXIS.QAIndicator import *
@@ -265,7 +273,8 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     QA_util_to_datetime, QA_util_to_json_from_pandas,
     QA_util_to_list_from_numpy, QA_util_to_list_from_pandas,
     QA_util_to_pandas_from_json, QA_util_to_pandas_from_list, QA_util_web_ping,
-    QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse)
+    QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse,
+    QA_util_get_next_period)
 
 # Factor
 from QUANTAXIS.QAFactor.analyze import FactorAnalyzer

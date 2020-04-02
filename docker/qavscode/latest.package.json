@@ -1,0 +1,66 @@
+{
+    "private": true,
+    "theia": {
+        "frontend": {
+            "config": {
+                "applicationName": "Theia Multi-Language Example",
+                "preferences": {
+                    "files.enableTrash": false
+                }
+            }
+        }
+    },
+    "dependencies": {
+        "@theia/callhierarchy": "latest",
+        "@theia/core": "latest",
+        "@theia/cpp": "latest",
+        "@theia/debug": "latest",
+        "@theia/debug-nodejs": "latest",
+        "@theia/editor": "latest",
+        "@theia/editorconfig": "latest",
+        "@theia/file-search": "latest",
+        "@theia/filesystem": "latest",
+        "@theia/git": "latest",
+        "@theia/go": "latest",
+        "@theia/java": "latest",
+        "@theia/json": "latest",
+        "@theia/keymaps": "latest",
+        "@theia/languages": "latest",
+        "@theia/markers": "latest",
+        "@theia/merge-conflicts": "latest",
+        "@theia/messages": "latest",
+        "@theia/metrics": "latest",
+        "@theia/mini-browser": "latest",
+        "@theia/monaco": "latest",
+        "@theia/navigator": "latest",
+        "@theia/outline-view": "latest",
+        "@theia/output": "latest",
+        "@theia/plantuml": "latest",
+        "@theia/plugin": "latest",
+        "@theia/plugin-ext": "latest",
+        "@theia/plugin-ext-vscode": "latest",
+        "@theia/preferences": "latest",
+        "@theia/preview": "latest",
+        "@theia/process": "latest",
+        "@theia/python": "latest",
+        "@theia/rust": "latest",
+        "@theia/search-in-workspace": "latest",
+        "@theia/task": "latest",
+        "@theia/terminal": "latest",
+        "@theia/textmate-grammars": "latest",
+        "@theia/tslint": "latest",
+        "@theia/typescript": "latest",
+        "@theia/userstorage": "latest",
+        "@theia/variable-resolver": "latest",
+        "@theia/workspace": "latest",
+        "typescript": "latest"
+    },
+    "resolutions": {
+        "vscode-languageserver-protocol": "3.15.0-next.9",
+        "vscode-languageserver-types": "3.15.0-next.5",
+        "**/vscode-json-languageserver/**/vscode-languageserver": "6.0.0-next.1"
+    },
+    "devDependencies": {
+        "@theia/cli": "latest"
+    }
+}

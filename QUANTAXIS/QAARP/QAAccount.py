@@ -25,7 +25,7 @@
 import copy
 import datetime
 import warnings
-
+import random
 import numpy as np
 import pandas as pd
 from pymongo import DESCENDING, ASCENDING
@@ -38,8 +38,10 @@ from QUANTAXIS.QAMarket.QAPosition import QA_Position, QA_PMS
 from QUANTAXIS.QASU.save_account import save_account, update_account
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 from QUANTAXIS.QAUtil.QADate_trade import (
+    QA_util_if_trade,
     QA_util_get_next_day,
-    QA_util_get_trade_range
+    QA_util_get_trade_range,
+    QA_util_future_to_tradedatetime
 )
 from QUANTAXIS.QAUtil.QAParameter import (
     ACCOUNT_EVENT,
@@ -50,10 +52,12 @@ from QUANTAXIS.QAUtil.QAParameter import (
     MARKET_TYPE,
     ORDER_DIRECTION,
     ORDER_MODEL,
+    ORDER_STATUS,
     RUNNING_ENVIRONMENT,
     TRADE_STATUS,
     EXCHANGE_ID
 )
+from QUANTAXIS.QAFetch.Fetcher import QA_quotation
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
 
 # 2017/6/4修改: 去除总资产的动态权益计算
@@ -301,8 +305,6 @@ class QA_Account(QA_Worker):
         """
         super().__init__()
 
-        # warnings.warn('QUANTAXIS 1.0.46 has changed the init_assets ==> init_cash, please pay attention to this change if you using init_cash to initial an account class,\
-        #         ', DeprecationWarning, stacklevel=2)
         self._history_headers = [
             'datetime',  # 日期/时间
             'code',  # 品种
@@ -606,6 +608,12 @@ class QA_Account(QA_Worker):
         else:
             return self.end_
 
+    def set_end_date(self, date):
+        if QA_util_if_trade(date):
+            self.end_ = date
+        else:
+            print('error {} not a trade date'.format(date))
+
     @property
     def market_data(self):
         return self._market_data
@@ -662,10 +670,13 @@ class QA_Account(QA_Worker):
     @property
     def history_min(self):
         if len(self.history):
-            res_ = pd.DataFrame(self.history)
-            res_['date'] = [i[0:10] for i in res_[0]]
-            res_ = res_[res_['date'].isin(self.trade_range)]
-            return np.array(res_.drop(['date'], axis=1)).tolist()
+            res_ = self.history_table
+            if self.market_type == MARKET_TYPE.FUTURE_CN:
+                res_  = res_.assign(tradedate = res_.datetime.apply(lambda x: str(QA_util_future_to_tradedatetime(x))[0:10]))
+            else:
+                res_  = res_.assign(tradedate = res_.datetime.apply(lambda x: str(x)[0:10]))
+            res_ = res_[res_['tradedate'].isin(self.trade_range)]
+            return np.array(res_.drop(['tradedate'], axis=1)).tolist()
         else:
             return self.history
 
@@ -902,7 +913,7 @@ class QA_Account(QA_Worker):
 
         return pd.concat([self.init_hold,
                           hold_available]).groupby('code').sum().sort_index(
-                          ).apply(lambda x: x if x > 0 else None).dropna()
+                          )
 
     def current_hold_price(self):
         """计算目前持仓的成本  用于模拟盘和实盘查询
@@ -993,13 +1004,23 @@ class QA_Account(QA_Worker):
             ).sort_index().loc[:datetime].groupby('code').apply(weights
                                                                ).dropna()
 
-    def reset_assets(self, init_cash=None):
-        'reset_history/cash/'
+    def reset_assets(self, init_cash=1000000):
+        """重置账户
+        
+        Keyword Arguments:
+            init_cash {int} -- [description] (default: {1000000})
+        """
         self.sell_available = copy.deepcopy(self.init_hold)
         self.history = []
         self.init_cash = init_cash
         self.cash = [self.init_cash]
         self.cash_available = self.cash[-1] # 在途资金
+
+        self.time_index_max = []
+
+        self.frozen = {} # 冻结资金(保证金)
+        self.finishedOrderid = []
+
 
     def receive_simpledeal(
             self,
@@ -1079,6 +1100,28 @@ class QA_Account(QA_Worker):
             commission_fee_preset = self.market_preset.get_code(code)
             if trade_towards in [ORDER_DIRECTION.BUY_OPEN,
                                  ORDER_DIRECTION.BUY_CLOSE,
+                                 ORDER_DIRECTION.SELL_CLOSE,
+                                 ORDER_DIRECTION.SELL_OPEN]:
+                commission_fee = commission_fee_preset['commission_coeff_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_peramount'] * \
+                    abs(value)
+            elif trade_towards in [ORDER_DIRECTION.BUY_CLOSETODAY,
+                                   ORDER_DIRECTION.SELL_CLOSETODAY]:
+                commission_fee = commission_fee_preset['commission_coeff_today_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_today_peramount'] * \
+                    abs(value)
+
+            tax_fee = 0 # 买入不收印花税
+        elif self.market_type == MARKET_TYPE.CRYPTOCURRENCY:
+            # 数字币不收税
+            # 双边手续费 也没有最小手续费限制
+
+            # 数字币的 CODE 包含{1}.{2}, 1 为交易所，2 为交易对CODE 
+            commission_fee_preset = self.market_preset.get_code(code)
+            if trade_towards in [ORDER_DIRECTION.BUY,
+                                 ORDER_DIRECTION.BUY_OPEN,
+                                 ORDER_DIRECTION.BUY_CLOSE,
+                                 ORDER_DIRECTION.SELL,
                                  ORDER_DIRECTION.SELL_CLOSE,
                                  ORDER_DIRECTION.SELL_OPEN]:
                 commission_fee = commission_fee_preset['commission_coeff_pervol'] * trade_amount + \
@@ -1261,11 +1304,15 @@ class QA_Account(QA_Worker):
                 self.cash.append(
                     self.cash[-1] - trade_money - tax_fee - commission_fee
                 )
-            if self.allow_t0 or trade_towards == ORDER_DIRECTION.SELL:
+            if trade_towards in [ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
+                """平仓部分的sell_available已经被提前扣减了 在sendorder中
+                """
+
                 self.sell_available[code] = self.sell_available.get(
                     code,
                     0
                 ) + trade_amount * market_towards
+            if self.allow_t0:
                 self.buy_available = self.sell_available
 
             self.cash_available = self.cash[-1]
@@ -1344,7 +1391,7 @@ class QA_Account(QA_Worker):
             [type] -- [description]
         """
 
-        print('QAACCOUNT ==> receive deal')
+        print('QAACCOUNT ==> receive deal  Time {}/ Code:{}/ Price:{}/ TOWARDS:{}/ Amounts:{}'.format(trade_time, code, trade_price, trade_towards, trade_amount))
 
         trade_time = str(trade_time)
         code = str(code)
@@ -1502,6 +1549,7 @@ class QA_Account(QA_Worker):
         assert (int(towards) != 0)
         if int(towards) in [1, 2, 3]:
             # 是买入的情况(包括买入.买开.买平)
+
             if self.cash_available >= money:
                 if self.market_type == MARKET_TYPE.STOCK_CN: # 如果是股票 买入的时候有100股的最小限制
                     amount = int(amount / 100) * 100
@@ -1530,10 +1578,11 @@ class QA_Account(QA_Worker):
                             float(amount * price * (1 + self.commission_coeff))
                         )
 
-                        print(_hold)
+                        #print(_hold)
                         if self.cash_available >= _money:
-                            if _hold < 0:
+                            if _hold < 0 and abs(_hold) >= amount:
                                 self.cash_available -= _money
+                                self.sell_available[code] += amount
 
                                 flag = True
                             else:
@@ -1558,10 +1607,11 @@ class QA_Account(QA_Worker):
 
             # 如果你的hold> amount>0
             # 持仓数量>卖出数量
-            if _hold >= amount:
-                self.sell_available[code] -= amount
-                # towards = ORDER_DIRECTION.SELL
-                flag = True
+            if int(towards) in [-1, -3]:
+                if _hold >= amount:
+                    self.sell_available[code] -= amount
+                    # towards = ORDER_DIRECTION.SELL
+                    flag = True
             # 如果持仓数量<卖出数量
             else:
 
@@ -2023,6 +2073,227 @@ class QA_Account(QA_Worker):
             drop=False
         ).loc[slice(pd.Timestamp(start),
                     pd.Timestamp(end))]
+
+
+
+    def generate_randomtrade(self, code, start, end, frequence):
+        """快速生成一坨交易
+        
+        Arguments:
+            code {[type]} -- [description]
+            frequence {[type]} -- [description]
+            start {[type]} -- [description]
+            end {[type]} -- [description]
+        
+        Keyword Arguments:
+            num {int} -- [description] (default: {100})
+        """
+
+        # 先生成交易日
+        day =  start[0:9]
+
+        for idx, item in QA_quotation(code, start, end, frequence, self.market_type, 'mongo').iterrows():
+            
+            code = idx[1]
+            time = idx[0]
+
+            if self.market_type == MARKET_TYPE.STOCK_CN:
+                if time != day:
+                    self.settle()
+                    day = time
+            if self.market_type == MARKET_TYPE:
+                self.settle()
+                day =  time
+
+            
+            price = item['close']
+            mp = price* self.market_preset.get_frozen(code)* self.market_preset.get_unit(code)
+
+            amounts =  int(self.cash_available/(3*mp)) -1
+            holdamount =  self.sell_available.get(code, 0)
+
+            if random.random() < 0.5:
+                # open
+                
+                if holdamount == 0:
+                    if random.random() < 0.5:
+                        self.buy(code,price, amount=amounts, time = time, if_selfdeal=True)
+                    else:
+                        self.sell(code,price, amount=amounts, time = time,if_selfdeal=True)
+                else:
+                    pass
+            else:
+                
+                if holdamount>0:
+                    self.sell_close(code, price, amount=holdamount, time = time, if_selfdeal=True)
+                elif holdamount<0:
+                    holdamount =  abs(holdamount)
+                    self.buy_close(code, price, amount=holdamount, time = time, if_selfdeal=True)
+            
+    def buy(self, code:str, price:float, amount:int, time:str, order_model:str = ORDER_MODEL.LIMIT, amount_model:str = AMOUNT_MODEL.BY_AMOUNT, if_selfdeal:bool =False):
+        """self.buy == self.buy_open 自动识别股票/期货
+
+        一个方便使用的sendorder的二次封装 方便直接调用
+        
+        Arguments:
+            code {str} -- [description]
+            price {float} -- [description]
+            amount {int} -- [description]
+            time {str} -- [description]
+        
+        Keyword Arguments:
+            order_model {str} -- [description] (default: {ORDER_MODEL.LIMIT})
+            amount_model {str} -- [description] (default: {AMOUNT_MODEL.BY_AMOUNT})
+            if_selfdeal {bool} -- [description] (default: {False})
+        """
+
+        if self.market_type== MARKET_TYPE.FUTURE_CN:
+            towards=ORDER_DIRECTION.BUY_OPEN
+        else:
+            towards=ORDER_DIRECTION.BUY
+
+
+
+        order = self.send_order(
+                    code=code, time=time, amount=amount, 
+                    towards=towards, price=price, 
+                    order_model=order_model, 
+                    amount_model=amount_model
+                )
+
+        if if_selfdeal:
+            if order:
+                
+                order.trade('buy', order.price,
+                                order.amount, order.datetime)
+                self.orders.set_status(order.order_id, ORDER_STATUS.SUCCESS_ALL)
+
+        else:
+            return order
+
+    def sell(self, code:str, price:float, amount:int, time:str, order_model:str = ORDER_MODEL.LIMIT, amount_model:str = AMOUNT_MODEL.BY_AMOUNT, if_selfdeal:bool =False):
+        """self.sell == self.sell_open 自动识别股票/期货
+
+        一个方便使用的sendorder的二次封装 方便直接调用
+        
+        Arguments:
+            code {str} -- [description]
+            price {float} -- [description]
+            amount {int} -- [description]
+            time {str} -- [description]
+        
+        Keyword Arguments:
+            order_model {str} -- [description] (default: {ORDER_MODEL.LIMIT})
+            amount_model {str} -- [description] (default: {AMOUNT_MODEL.BY_AMOUNT})
+            if_selfdeal {bool} -- [description] (default: {False})
+        """
+
+        if self.market_type== MARKET_TYPE.FUTURE_CN:
+            towards=ORDER_DIRECTION.SELL_OPEN
+        else:
+            towards=ORDER_DIRECTION.SELL
+
+
+
+        order = self.send_order(
+                    code=code, time=time, amount=amount, 
+                    towards=towards, price=price, 
+                    order_model=order_model, 
+                    amount_model=amount_model
+                )
+
+        if if_selfdeal:
+            if order:
+                order.trade('sell', order.price,
+                                order.amount, order.datetime)
+                self.orders.set_status(order.order_id, ORDER_STATUS.SUCCESS_ALL)    
+        else:
+            return order
+
+
+    def buy_close(self, code:str, price:float, amount:int, time:str, order_model:str = ORDER_MODEL.LIMIT, amount_model:str = AMOUNT_MODEL.BY_AMOUNT, if_selfdeal:bool =False):
+        """自动识别股票/期货
+
+        一个方便使用的sendorder的二次封装 方便直接调用
+        
+        Arguments:
+            code {str} -- [description]
+            price {float} -- [description]
+            amount {int} -- [description]
+            time {str} -- [description]
+        
+        Keyword Arguments:
+            order_model {str} -- [description] (default: {ORDER_MODEL.LIMIT})
+            amount_model {str} -- [description] (default: {AMOUNT_MODEL.BY_AMOUNT})
+            if_selfdeal {bool} -- [description] (default: {False})
+        """
+
+        if self.market_type== MARKET_TYPE.FUTURE_CN:
+            towards=ORDER_DIRECTION.BUY_CLOSE
+        else:
+            print("WARING: 当前账户是股票账户, 不应该使用此接口")
+            towards = ORDER_DIRECTION.BUY
+
+
+
+        order = self.send_order(
+                    code=code, time=time, amount=amount, 
+                    towards=towards, price=price, 
+                    order_model=order_model, 
+                    amount_model=amount_model
+                )
+
+        if if_selfdeal:
+            if order:
+                order.trade('buyclose', order.price,
+                                order.amount, order.datetime)
+                self.orders.set_status(order.order_id, ORDER_STATUS.SUCCESS_ALL)
+        else:
+            return order
+
+    def sell_close(self, code:str, price:float, amount:int, time:str, order_model:str = ORDER_MODEL.LIMIT, amount_model:str = AMOUNT_MODEL.BY_AMOUNT, if_selfdeal:bool =False):
+        """self.buy == self.buy_open 自动识别股票/期货
+
+        一个方便使用的sendorder的二次封装 方便直接调用
+        
+        Arguments:
+            code {str} -- [description]
+            price {float} -- [description]
+            amount {int} -- [description]
+            time {str} -- [description]
+        
+        Keyword Arguments:
+            order_model {str} -- [description] (default: {ORDER_MODEL.LIMIT})
+            amount_model {str} -- [description] (default: {AMOUNT_MODEL.BY_AMOUNT})
+            if_selfdeal {bool} -- [description] (default: {False})
+        """
+
+        if self.market_type== MARKET_TYPE.FUTURE_CN:
+            towards=ORDER_DIRECTION.SELL_CLOSE
+        else:
+            print("WARING: 当前账户是股票账户, 不应该使用此接口")
+            towards=ORDER_DIRECTION.SELL
+
+
+
+        order = self.send_order(
+                    code=code, time=time, amount=amount, 
+                    towards=towards, price=price, 
+                    order_model=order_model, 
+                    amount_model=amount_model
+                )
+
+        if if_selfdeal:
+            if order:
+                order.trade('sellclose', order.price,
+                                order.amount, order.datetime)
+                self.orders.set_status(order.order_id, ORDER_STATUS.SUCCESS_ALL)
+        else:
+            return order
+
+
+    buy_open =  buy
+    sell_open = sell
 
 
 class Account_handler():

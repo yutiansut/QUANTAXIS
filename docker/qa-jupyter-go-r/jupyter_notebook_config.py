@@ -20,10 +20,12 @@ c.NotebookApp.port = int(os.getenv('PORT', 8888))
 c.NotebookApp.open_browser = False
 c.MultiKernelManager.default_kernel_name = 'python3'
 c.NotebookApp.token = ''
+c.NotebookApp.notebook_dir = '~/'
 c.NotebookApp.password = u'sha1:a658c59030b6:910b8fff6920f60a451b19a82e465c60f4880b60'
 c.NotebookApp.allow_credentials = True
 c.NotebookApp.allow_origin = '*'
 c.NotebookApp.allow_remote_access = True
+c.NotebookApp.disable_check_xsrf = True
 c.NotebookApp.tornado_settings = { 'headers': { 'Content-Security-Policy': "" }}
 # sets a password if PASSWORD is set in the environment
 # if 'PASSWORD' in os.environ:

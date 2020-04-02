@@ -35,32 +35,30 @@ def QA_data_calc_marketvalue(data, xdxr):
                                        ['shares_after',
                                         'liquidity_after']].dropna()
     res = pd.concat([data, mv], axis=1)
-
     res = res.assign(
-        shares=res.shares_after.fillna(method='ffill'),
-        lshares=res.liquidity_after.fillna(method='ffill')
+        shares=res.shares_after.groupby(level=1).fillna(method='ffill'),
+        lshares=res.liquidity_after.groupby(level=1).fillna(method='ffill')
     )
-    return res.assign(mv=res.close*res.shares*10000, liquidity_mv=res.close*res.lshares*10000).drop(['shares_after', 'liquidity_after'], axis=1)\
-            .loc[(slice(data.index.remove_unused_levels().levels[0][0],data.index.remove_unused_levels().levels[0][-1]),slice(None)),:]
-
+    return res.assign(mv=res.close*res.shares*10000, liquidity_mv=res.close*res.lshares*10000)\
+              .drop(['shares_after', 'liquidity_after'], axis=1)\
+              .loc[(slice(data.index.remove_unused_levels().levels[0][0],data.index.remove_unused_levels().levels[0][-1]),slice(None)),:]
 
 def QA_data_marketvalue(data):
 
     def __QA_fetch_stock_xdxr(
-            code,
+            code_list,
             format_='pd',
             collections=DATABASE.stock_xdxr
     ):
         '获取股票除权信息/数据库'
         try:
             data = pd.DataFrame(
-                [item for item in collections.find({'code': code})]
-            ).drop(['_id'],
-                   axis=1)
+                [item for item in collections.find({'code': {"$in": code_list}
+                                                   },{"_id": 0})])
             data['date'] = pd.to_datetime(data['date'])
 
             return data.drop_duplicates(
-                'date',
+                ['date', 'code'],
                 keep='last'
             ).set_index(['date',
                          'code'],
@@ -86,10 +84,6 @@ def QA_data_marketvalue(data):
                     'suogu',
                     'xingquanjia'
                 ]
-            )
-
-    code = data.index.remove_unused_levels().levels[1][0] if isinstance(
-        data.index,
-        pd.core.indexes.multi.MultiIndex
-    ) else data['code'][0]
-    return QA_data_calc_marketvalue(data, __QA_fetch_stock_xdxr(code))
+            )   
+    code_list = data.index.remove_unused_levels().levels[1].tolist()
+    return QA_data_calc_marketvalue(data, __QA_fetch_stock_xdxr(code_list))

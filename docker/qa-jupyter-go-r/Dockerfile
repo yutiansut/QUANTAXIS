@@ -17,9 +17,7 @@ ARG CMAKE_VERSION=3.12.0
 WORKDIR /tmp
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
-&& mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake \
-&& cmake -version
-
+&& mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake 
 
 RUN set -eux; \
     dpkgArch="$(dpkg --print-architecture)"; \
@@ -101,5 +99,7 @@ RUN cp /root/go/bin/gophernotes /usr/local/bin/ \
     && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
     ## clean
 EXPOSE 8888 
+
+WORKDIR /home
 
 CMD ["bash", "/root/runpy.sh"]

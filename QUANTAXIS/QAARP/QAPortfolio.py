@@ -186,6 +186,7 @@ class QA_Portfolio(QA_Account):
     def init_hold(self):
         return self.init_hold_table.groupby('code').sum()
 
+
     @property
     def cash_available(self):
         return self.cash[-1]
@@ -503,6 +504,36 @@ class QA_Portfolio(QA_Account):
         return sum(
             [account.cash_available for account in self.accounts.values()]
         )
+    def hold_table(self, datetime=None):
+        """返回每个acc的hold
+        
+        Keyword Arguments:
+            datetime {[type]} -- [description] (default: {None})
+        """
+        return pd.concat(
+            [account.hold_table(datetime).reset_index().assign(account_cookie= account.account_cookie) for account in self.accounts.values()]
+        ).set_index(['code', 'account_cookie']).sort_index()
+
+    @property
+    def daily_cash(self):
+        # res = pd.DataFrame(sum([account.daily_cash.set_index(
+        #     'datetime').cash for account in self.accounts]))
+        # res = res.assign(date=res.index)
+        # res.date = res.date.apply(lambda x: str(x)[0:10])
+
+        return pd.concat([item.daily_cash for item in list(self.accounts.values())]).groupby(level=0).sum()\
+            .assign(account_cookie=self.portfolio_cookie).reset_index().set_index(['date', 'account_cookie'], drop=False)
+
+    @property
+    def daily_hold(self):
+        return pd.concat([account.daily_hold for account in list(self.accounts.values())])\
+            .groupby('date').sum().assign(account_cookie=self.portfolio_cookie)\
+            .reset_index().set_index(['date', 'account_cookie'])
+
+
+    @property
+    def daily_frozen(self):
+        return pd.concat([account.daily_frozen for account in list(self.accounts.values())], axis=1).sum(axis=1)
 
     # def pull(self, account_cookie=None, collection=DATABASE.account):
     #     'pull from the databases'
@@ -676,12 +707,19 @@ class QA_PortfolioView():
         self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
         self.user_cookie = None
         self.market_type = account_list[0].market_type
+        self.allow_t0 = account_list[0].allow_t0
+        self.allow_sellopen = account_list[0].allow_sellopen
+        self.allow_margin = account_list[0].allow_margin
 
     def __repr__(self):
         return '< QA_PortfolioVIEW {} with {} Accounts >'.format(
             self.account_cookie,
             len(self.accounts)
         )
+
+    def set_end_date(self, date):
+        for item in self.accounts:
+            item.set_end_date(date)
 
     @property
     def contained_cookie(self):
@@ -722,7 +760,7 @@ class QA_PortfolioView():
     @property
     def code(self):
         return pd.concat(
-            [pd.Series(account.code) for account in self.accounts]
+            [pd.Series(account.code) for account in self.accounts], sort=False
         ).drop_duplicates().tolist()
 
     @property
@@ -750,32 +788,38 @@ class QA_PortfolioView():
         # res = res.assign(date=res.index)
         # res.date = res.date.apply(lambda x: str(x)[0:10])
 
-        return pd.concat([item.daily_cash for item in self.accounts]).groupby(level=0).sum()\
+        return pd.concat([item.daily_cash for item in self.accounts], sort=False).groupby(level=0).sum()\
             .assign(account_cookie=self.account_cookie).reset_index().set_index(['date', 'account_cookie'], drop=False)
 
     @property
     def daily_hold(self):
-        return pd.concat([account.daily_hold.xs(account.account_cookie, level=1) for account in self.accounts])\
+        return pd.concat([account.daily_hold for account in self.accounts], sort=False)\
             .groupby('date').sum().assign(account_cookie=self.account_cookie)\
             .reset_index().set_index(['date', 'account_cookie'])
 
+
+    @property
+    def daily_frozen(self):
+        return pd.concat([account.daily_frozen for account in self.accounts], axis=1, sort=False).sum(axis=1)
+
+
     @property
     def trade(self):
-        return pd.concat([item.trade for item in self.accounts]).groupby(level=0).sum()\
+        return pd.concat([item.trade for item in self.accounts], sort=False).groupby(level=0).sum()\
             .assign(account_cookie=self.account_cookie).reset_index().set_index(['datetime', 'account_cookie'])
 
     @property
     def history_table(self):
-        return pd.concat([item.history_table for item in self.accounts]
+        return pd.concat([item.history_table for item in self.accounts], sort=False
                          ).sort_index()
 
     @property
     def trade_day(self):
-        return pd.concat([pd.Series(item.trade_day) for item in self.accounts]
+        return pd.concat([pd.Series(item.trade_day) for item in self.accounts], sort=False
                          ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):
         return pd.concat(
-            [pd.Series(item.trade_range) for item in self.accounts]
+            [pd.Series(item.trade_range) for item in self.accounts], sort=False
         ).drop_duplicates().sort_values().tolist()

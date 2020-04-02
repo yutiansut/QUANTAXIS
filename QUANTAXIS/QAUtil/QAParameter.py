@@ -76,7 +76,12 @@ class EXCHANGE_ID():
     DCE = 'DCE'  # 大商所
     CZCE = 'CZCE'  # 郑商所
     CFFEX = 'CFFEX'  # 中金所
-    INE = 'INE' # 能源中心
+    INE = 'INE'  # 能源中心
+    HUOBI = 'huobi' # 火币Pro
+    BINANCE = 'binance' # 币安
+    BITMEX = 'bitmex' # BITMEX
+    BITFINEX = 'BITFINEX' # BITFINEX
+    OKEX = 'OKEx' # OKEx
 
 
 class OFFSET():
@@ -92,7 +97,6 @@ class OFFSET():
     CLOSE = 'CLOSE'
     CLOSETODAY = 'CLOSETODAY'
     REVERSE = 'REVERSE'
-
 
 
 class ORDER_MODEL():
@@ -409,6 +413,7 @@ class DATASOURCE():
     CHOICE = 'choice'  # choice金融终端
     CCXT = 'ccxt'  # github/ccxt 虚拟货币
     LOCALFILE = 'localfile'  # 本地文件
+    AUTO = 'auto'  # 优先从Mongodb中读取数据，不足的数据从tdx下载
 
 
 class OUTPUT_FORMAT():
