@@ -620,11 +620,18 @@ class QA_Account(QA_Worker):
 
     @property
     def trade_range(self):
-        return QA_util_get_trade_range(self.start_date, self.end_date)
+        if (self.market_type == MARKET_TYPE.CRYPTOCURRENCY):
+            # 数字币交易不停
+            return pd.date_range(self.start_date, self.end_date, freq='1D')
+        else:
+            return QA_util_get_trade_range(self.start_date, self.end_date)
 
     @property
     def trade_range_max(self):
-        if self.start_date < str(min(self.time_index_max))[0:10]:
+        if (self.market_type == MARKET_TYPE.CRYPTOCURRENCY):
+            # 数字币交易不停
+            return pd.date_range(self.start_date, self.end_date, freq='1D')
+        elif self.start_date < str(min(self.time_index_max))[0:10]:
             return QA_util_get_trade_range(self.start_date, self.end_date)
         else:
 
@@ -1331,7 +1338,7 @@ class QA_Account(QA_Worker):
                     str(trade_time),
                     code,
                     trade_price,
-                    market_towards * trade_amount,
+                    float(market_towards * trade_amount),
                     self.cash[-1],
                     order_id,
                     realorder_id,

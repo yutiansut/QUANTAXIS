@@ -182,7 +182,7 @@ class QA_Risk():
             else:
                 self.market_data = market_data.select_time(self.account.start_date, self.account.end_date)
             self.if_fq = if_fq
-            if self.account.market_type == MARKET_TYPE.FUTURE_CN:
+            if (self.account.market_type == MARKET_TYPE.FUTURE_CN) or (self.account.market_type == MARKET_TYPE.CRYPTOCURRENCY):
                 self.if_fq = False  # 如果是期货， 默认设为FALSE
 
             if self.market_value is not None:
@@ -518,7 +518,14 @@ class QA_Risk():
         索提诺比率 投资组合收益和下行风险比值
 
         """
-        pass
+        return round(
+            float(
+                self.calc_sortino(self.annualize_return,
+                                 self.volatility,
+                                 0.05)
+            ),
+            2
+        )
 
     @property
     def calmar(self):
@@ -586,6 +593,30 @@ class QA_Risk():
         if volatility_year == 0:
             return 0
         return (annualized_returns - r) / volatility_year
+
+    def calc_sortino(self, negative_returns, volatility_year, rfr=0.00):
+        """
+        计算索提诺比率
+        在网上找到代码，感觉计算的结果不太对，数值偏小 -阿财 2020/03/28
+        """
+        # Define risk free rate and target return of 0
+        rfr = 0
+        target_return = 0
+
+        # Calcualte the daily returns from price data
+        daily_returns = self.assets.pct_change()
+
+        # Select the negative returns only 
+        negative_returns = daily_returns.loc[daily_returns < target_return]
+
+        # Calculate expected return and std dev of downside returns
+        expected_return = daily_returns.mean()
+        down_stdev = negative_returns.std()
+        
+        # Calculate the sortino ratio
+        sortino_ratio = (expected_return - rfr)/down_stdev
+        # 这里不知道计算年化率如何
+        return sortino_ratio
 
     @property
     def max_holdmarketvalue(self):

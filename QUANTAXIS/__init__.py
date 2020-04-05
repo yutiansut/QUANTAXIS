@@ -181,6 +181,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_index_day,
     QA_fetch_index_list,
     QA_fetch_index_min,
+    QA_fetch_index_name,
     QA_fetch_quotation,
     QA_fetch_quotations,
     QA_fetch_stock_block,
