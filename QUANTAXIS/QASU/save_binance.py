@@ -46,15 +46,21 @@ from QUANTAXIS.QAUtil.QADate_Adv import (
 from QUANTAXIS.QAFetch.QAbinance import (
     QA_fetch_binance_symbols,
     QA_fetch_binance_kline,
+    QA_fetch_binance_kline_min,
     Binance2QA_FREQUENCY_DICT
 )
-from QUANTAXIS.QAUtil.QAcrypto import QA_util_save_raw_symbols
-from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_crypto_asset_list)
+from QUANTAXIS.QAUtil.QAcrypto import (
+    QA_util_save_raw_symbols,
+    QA_util_find_missing_kline
+)
+from QUANTAXIS.QAFetch.QAQuery import (QA_fetch_cryptocurrency_list)
 
 import pymongo
 
 # binance的历史数据只是从2017年7月开始有，以前的貌似都没有保留 .  author:Will
 BINANCE_MIN_DATE = datetime.datetime(2017, 7, 1, tzinfo=tzutc())
+Binance_EXCHANGE = 'BINANCE'
+Binance_SYMBOL = 'BINANCE.{}'
 
 
 def QA_SU_save_binance(frequency):
@@ -67,17 +73,18 @@ def QA_SU_save_binance(frequency):
         return QA_SU_save_binance_day(frequency)
 
 
-def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_binance_day(
+    frequency='1d', 
+    ui_log=None, 
+    ui_progress=None):
     """
     Save binance day kline
     """
-    market = 'binance'
-    symbol_list = QA_fetch_crypto_asset_list(market='binance')
-    col = DATABASE.crypto_asset_day
+    symbol_template = Binance_SYMBOL
+    symbol_list = QA_fetch_cryptocurrency_list(Binance_EXCHANGE)
+    col = DATABASE.cryptocurrency_day
     col.create_index(
         [
-            ('market',
-             pymongo.ASCENDING),
             ("symbol",
              pymongo.ASCENDING),
             ("date_stamp",
@@ -89,7 +96,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
     end = datetime.datetime.now(tzutc())
 
     QA_util_log_info(
-        'Starting DOWNLOAD PROGRESS of day Klines from binance... ',
+        'Starting DOWNLOAD PROGRESS of day Klines from {:s}... '.format(Binance_EXCHANGE),
         ui_log=ui_log,
         ui_progress=ui_progress
     )
@@ -98,7 +105,7 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
         # 上架仅处理交易对
         QA_util_log_info(
             'The "{}" #{} of total in {}'.format(
-                symbol_info['symbol'],
+                symbol_template.format(symbol_info['symbol']),
                 index,
                 len(symbol_list)
             ),
@@ -111,15 +118,17 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
             ui_log=ui_log,
             ui_progress=ui_progress
         )
-        query_id = {"symbol": symbol_info['symbol'], 'market': market}
-        ref = col.find(query_id).sort('time_stamp', -1)
+        query_id = {
+            "symbol": symbol_template.format(symbol_info['symbol']),
+        }
+        ref = col.find(query_id).sort('date_stamp', -1)
 
         if (col.count_documents(query_id) > 0):
             start_stamp = ref.next()['date_stamp']
             start_time = datetime.datetime.fromtimestamp(start_stamp)
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
-                    symbol_info['symbol'],
+                    symbol_template.format(symbol_info['symbol']),
                     Binance2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
@@ -127,11 +136,16 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
                 ui_log=ui_log,
                 ui_progress=ui_progress
             )
+            # 查询到 Kline 缺漏，点抓取模式，按缺失的时间段精确请求K线数据
+            missing_data_list = QA_util_find_missing_kline(
+                symbol_template.format(symbol_info['symbol']),
+                Binance2QA_FREQUENCY_DICT[frequency],
+            )[::-1]
         else:
             start_time = BINANCE_MIN_DATE
             QA_util_log_info(
                 'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
-                    symbol_info['symbol'],
+                    symbol_template.format(symbol_info['symbol']),
                     Binance2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
@@ -139,17 +153,72 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
                 ui_log=ui_log,
                 ui_progress=ui_progress
             )
+            
+            miss_kline = pd.DataFrame(
+                [
+                    [
+                        int(QA_util_datetime_to_Unix_timestamp(start_time)),
+                        int(QA_util_datetime_to_Unix_timestamp(end)),
+                        '{} to {}'.format(start_time,
+                                         end)
+                    ]
+                ],
+                columns=['expected',
+                         'between',
+                         'missing']
+            )
+            missing_data_list = miss_kline.values
 
-        data = QA_fetch_binance_kline(
-            symbol_info['symbol'],
-            time.mktime(start_time.utctimetuple()),
-            time.mktime(end.utctimetuple()),
-            frequency
-        )
+        if len(missing_data_list) > 0:
+            # 查询确定中断的K线数据起止时间，缺分时数据，补分时数据
+            expected = 0
+            between = 1
+            missing = 2
+            reqParams = {}
+            for i in range(len(missing_data_list)):
+                reqParams['from'] = int(missing_data_list[i][expected])
+                reqParams['to'] = int(missing_data_list[i][between])
+                if (reqParams['from'] >
+                    (QA_util_datetime_to_Unix_timestamp() + 120)):
+                    # 出现“未来”时间，一般是默认时区设置错误造成的
+                    QA_util_log_info(
+                        'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
+                        .format(
+                            symbol_template.format(symbol_info['symbol']),
+                            frequency,
+                            QA_util_print_timestamp(reqParams['from']),
+                            QA_util_print_timestamp(
+                                QA_util_datetime_to_Unix_timestamp()
+                            )
+                        )
+                    )
+                    # 跳到下一个时间段
+                    continue
+
+                QA_util_log_info(
+                    'Fetch "{:s}" slices "{:s}" kline：{:s} to {:s}'.format(
+                        symbol_template.format(symbol_info['symbol']),
+                        Binance2QA_FREQUENCY_DICT[frequency],
+                        QA_util_timestamp_to_str(
+                            missing_data_list[i][expected]
+                        )[2:16],
+                        QA_util_timestamp_to_str(
+                            missing_data_list[i][between]
+                        )[2:16]
+                    )
+                )
+                data = QA_fetch_binance_kline(
+                    symbol_info['symbol'],
+                    time.mktime(start_time.utctimetuple()),
+                    time.mktime(end.utctimetuple()),
+                    frequency,
+                    callback_func=QA_SU_save_data_binance_callback
+                )
+
         if data is None:
             QA_util_log_info(
                 'SYMBOL "{}" from {} to {} has no data'.format(
-                    symbol_info['symbol'],
+                    symbol_template.format(symbol_info['symbol']),
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 ),
@@ -157,62 +226,25 @@ def QA_SU_save_binance_day(frequency, ui_log=None, ui_progress=None):
                 ui_progress=ui_progress
             )
             continue
-        QA_util_log_info(
-            'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
-                symbol_info['symbol'],
-                Binance2QA_FREQUENCY_DICT[frequency],
-                time.strftime(
-                    '%Y-%m-%d %H:%M:%S',
-                    time.localtime(data[0]['time_stamp'])
-                ),
-                time.strftime(
-                    '%Y-%m-%d %H:%M:%S',
-                    time.localtime(data[-1]['time_stamp'])
-                ),
-                len(data)
-            )
-        )
-        query_id = {
-            "symbol": symbol_info['symbol'],
-            'market': market,
-            'date_stamp': {
-                '$in': list(map(lambda x: x['date_stamp'],
-                                data))
-            }
-        }
-        if (symbol_info['symbol'] == 'LRCETH'):
-            #print(len(data)) # To do: 这个会抛出异常，有空再解决
-            pass
-        if (col.count_documents(query_id) > 0):
-            # 删掉重复数据
-            col.delete_many(query_id)
-        try:
-            col.insert_many(data)
-        except:
-            QA_util_log_expection(
-                'QA_SU_save_binance_day():Insert_many(kline) to {} got Exception {}'
-                .format(symbol_info['symbol'],
-                        len(data))
-            )
-            pass
     QA_util_log_info(
-        'DOWNLOAD PROGRESS of day Klines from binance accomplished.',
+        'DOWNLOAD PROGRESS of day Klines from {:s} accomplished.'.format(Binance_EXCHANGE),
         ui_log=ui_log,
         ui_progress=ui_progress
     )
 
 
-def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
+def QA_SU_save_binance_min(
+    frequency='1m', 
+    ui_log=None, 
+    ui_progress=None):
     """
     Save binance min kline
     """
-    market = 'binance'
-    symbol_list = QA_fetch_crypto_asset_list(market='binance')
-    col = DATABASE.crypto_asset_min
+    symbol_template = Binance_SYMBOL
+    symbol_list = QA_fetch_cryptocurrency_list(Binance_EXCHANGE)
+    col = DATABASE.cryptocurrency_min
     col.create_index(
         [
-            ('market',
-             pymongo.ASCENDING),
             ("symbol",
              pymongo.ASCENDING),
             ('time_stamp',
@@ -223,8 +255,6 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
     )
     col.create_index(
         [
-            ('market',
-             pymongo.ASCENDING),
             ("symbol",
              pymongo.ASCENDING),
             ("type",
@@ -238,7 +268,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
     end = datetime.datetime.now(tzutc())
 
     QA_util_log_info(
-        'Starting DOWNLOAD PROGRESS of min Klines from binance... ',
+        'Starting DOWNLOAD PROGRESS of min Klines from {:s}... '.format(Binance_EXCHANGE),
         ui_log=ui_log,
         ui_progress=ui_progress
     )
@@ -247,7 +277,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
         # 上架仅处理交易对
         QA_util_log_info(
             'The "{}" #{} of total in {}'.format(
-                symbol_info['symbol'],
+                symbol_template.format(symbol_info['symbol']),
                 index,
                 len(symbol_list)
             ),
@@ -261,8 +291,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
             ui_progress=ui_progress
         )
         query_id = {
-            "symbol": symbol_info['symbol'],
-            'market': market,
+            "symbol": symbol_template.format(symbol_info['symbol']),
             'type': Binance2QA_FREQUENCY_DICT[frequency]
         }
         ref = col.find(query_id).sort('time_stamp', -1)
@@ -272,19 +301,7 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
             start_time = datetime.datetime.fromtimestamp(start_stamp)
             QA_util_log_info(
                 'UPDATE_SYMBOL "{}" Trying updating "{}" from {} to {}'.format(
-                    symbol_info['symbol'],
-                    Binance2QA_FREQUENCY_DICT[frequency],
-                    QA_util_timestamp_to_str(start_time),
-                    QA_util_timestamp_to_str(end)
-                ),
-                ui_log=ui_log,
-                ui_progress=ui_progress
-            )
-        else:
-            start_time = BINANCE_MIN_DATE
-            QA_util_log_info(
-                'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
-                    symbol_info['symbol'],
+                    symbol_template.format(symbol_info['symbol']),
                     Binance2QA_FREQUENCY_DICT[frequency],
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
@@ -293,61 +310,95 @@ def QA_SU_save_binance_min(frequency, ui_log=None, ui_progress=None):
                 ui_progress=ui_progress
             )
 
-        data = QA_fetch_binance_kline(
-            symbol_info['symbol'],
-            time.mktime(start_time.utctimetuple()),
-            time.mktime(end.utctimetuple()),
-            frequency
-        )
+            # 查询到 Kline 缺漏，点抓取模式，按缺失的时间段精确请求K线数据
+            missing_data_list = QA_util_find_missing_kline(
+                symbol_template.format(symbol_info['symbol']),
+                Binance2QA_FREQUENCY_DICT[frequency],
+            )[::-1]
+        else:
+            start_time = BINANCE_MIN_DATE
+            QA_util_log_info(
+                'NEW_SYMBOL "{}" Trying downloading "{}" from {} to {}'.format(
+                    symbol_template.format(symbol_info['symbol']),
+                    Binance2QA_FREQUENCY_DICT[frequency],
+                    QA_util_timestamp_to_str(start_time),
+                    QA_util_timestamp_to_str(end)
+                ),
+                ui_log=ui_log,
+                ui_progress=ui_progress
+            )
+            miss_kline = pd.DataFrame(
+                [
+                    [
+                        int(QA_util_datetime_to_Unix_timestamp(start_time)),
+                        int(QA_util_datetime_to_Unix_timestamp(end)),
+                        '{} to {}'.format(start_time,
+                                         end)
+                    ]
+                ],
+                columns=['expected',
+                         'between',
+                         'missing']
+            )
+            missing_data_list = miss_kline.values
+
+        if len(missing_data_list) > 0:
+            # 查询确定中断的K线数据起止时间，缺分时数据，补分时数据
+            expected = 0
+            between = 1
+            missing = 2
+            reqParams = {}
+            for i in range(len(missing_data_list)):
+                reqParams['from'] = int(missing_data_list[i][expected])
+                reqParams['to'] = int(missing_data_list[i][between])
+                if (reqParams['from'] >
+                    (QA_util_datetime_to_Unix_timestamp() + 120)):
+                    # 出现“未来”时间，一般是默认时区设置错误造成的
+                    QA_util_log_info(
+                        'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
+                        .format(
+                            symbol_template.format(symbol_info['symbol']),
+                            frequency,
+                            QA_util_print_timestamp(reqParams['from']),
+                            QA_util_print_timestamp(
+                                QA_util_datetime_to_Unix_timestamp()
+                            )
+                        )
+                    )
+                    # 跳到下一个时间段
+                    continue
+
+                QA_util_log_info(
+                    'Fetch "{:s}" slices "{:s}" kline：{:s} to {:s}'.format(
+                        symbol_template.format(symbol_info['symbol']),
+                        Binance2QA_FREQUENCY_DICT[frequency],
+                        QA_util_timestamp_to_str(
+                            missing_data_list[i][expected]
+                        )[2:16],
+                        QA_util_timestamp_to_str(
+                            missing_data_list[i][between]
+                        )[2:16]
+                    )
+                )
+                data = QA_fetch_binance_kline_min(
+                    symbol_info['symbol'],
+                    start_time=reqParams['from'],
+                    end_time=reqParams['to'],
+                    frequency=frequency,
+                    callback_func=QA_SU_save_data_binance_callback
+                )
+
         if data is None:
             QA_util_log_info(
-                'SYMBOL "{}" from {} to {} has no data'.format(
-                    symbol_info['symbol'],
+                'SYMBOL "{}" from {} to {} has no MORE data'.format(
+                    symbol_template.format(symbol_info['symbol']),
                     QA_util_timestamp_to_str(start_time),
                     QA_util_timestamp_to_str(end)
                 )
             )
             continue
-        QA_util_log_info(
-            'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
-                symbol_info['symbol'],
-                Binance2QA_FREQUENCY_DICT[frequency],
-                time.strftime(
-                    '%Y-%m-%d %H:%M:%S',
-                    time.localtime(data[0]['time_stamp'])
-                ),
-                time.strftime(
-                    '%Y-%m-%d %H:%M:%S',
-                    time.localtime(data[-1]['time_stamp'])
-                ),
-                len(data)
-            ),
-            ui_log=ui_log,
-            ui_progress=ui_progress
-        )
-        query_id = {
-            "symbol": symbol_info['symbol'],
-            'market': market,
-            'type': Binance2QA_FREQUENCY_DICT[frequency],
-            'time_stamp': {
-                '$in': list(map(lambda x: x['time_stamp'],
-                                data))
-            }
-        }
-        if (col.count_documents(query_id) > 0):
-            # 删掉重复数据
-            col.delete_many(query_id)
-        try:
-            col.insert_many(data)
-        except:
-            QA_util_log_expection(
-                'QA_SU_save_binance_min():Insert_many(kline) to {} got Exception {}'
-                .format(symbol_info['symbol'],
-                        len(data))
-            )
-            pass
     QA_util_log_info(
-        'DOWNLOAD PROGRESS of min Klines from binance accomplished.',
+        'DOWNLOAD PROGRESS of min Klines from {:s} accomplished.'.format(Binance_EXCHANGE),
         ui_log=ui_log,
         ui_progress=ui_progress
     )
@@ -365,10 +416,14 @@ def QA_SU_save_binance_1hour():
     QA_SU_save_binance("1h")
 
 
-def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
+def QA_SU_save_binance_symbol(
+    market=Binance_EXCHANGE,
+    client=DATABASE,
+):
     """
     保存币安交易对信息
     """
+    market =  market.upper()
     QA_util_log_info('Downloading {:s} symbol list...'.format(market))
 
     # 保存 Binance API 原始 Symbol 数据备查阅，自动交易用得着
@@ -400,12 +455,6 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
             axis=1
         )
         symbol_lists['desc'] = symbol_lists['name']
-        symbol_lists['created_at'] = int(
-            time.mktime(datetime.datetime.now().utctimetuple())
-        )
-        symbol_lists['updated_at'] = int(
-            time.mktime(datetime.datetime.now().utctimetuple())
-        )
 
         # 移除非共性字段，这些字段只有 broker 才关心，做对应交易所 broker 接口的时候在交易所 raw_symbol_lists
         # 数据中读取。
@@ -435,9 +484,15 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
             )
         # 删除不交易的交易对
         symbol_lists = symbol_lists[symbol_lists['state'].isin(['TRADING'])]
+        symbol_lists['created_at'] = int(
+            time.mktime(datetime.datetime.now().utctimetuple())
+        )
+        symbol_lists['updated_at'] = int(
+            time.mktime(datetime.datetime.now().utctimetuple())
+        )
 
-        coll_crypto_asset_list = client.crypto_asset_list
-        coll_crypto_asset_list.create_index(
+        coll_cryptocurrency_list = client.cryptocurrency_list
+        coll_cryptocurrency_list.create_index(
             [('market',
               pymongo.ASCENDING),
              ('symbol',
@@ -446,7 +501,7 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
         )
         try:
             query_id = {'market': market}
-            if (coll_crypto_asset_list.count_documents(query_id) > 0):
+            if (coll_cryptocurrency_list.count_documents(query_id) > 0):
                 # 删掉重复数据
                 query_id = {
                     'market': market,
@@ -454,21 +509,122 @@ def QA_SU_save_binance_symbol(client=DATABASE, market="binance"):
                         '$in': symbol_lists['symbol'].tolist()
                     }
                 }
-                coll_crypto_asset_list.delete_many(query_id)
-            coll_crypto_asset_list.insert_many(
+                coll_cryptocurrency_list.delete_many(query_id)
+            coll_cryptocurrency_list.insert_many(
                 QA_util_to_json_from_pandas(symbol_lists)
             )
             return symbol_lists
         except:
             QA_util_log_expection(
-                'QA_SU_save_binance_symbol: Insert_many(symbol) to "crypto_asset_list" got Exception {}'
-                .format(len(data))
+                'QA_SU_save_binance_symbol(): Insert_many(symbol) to "cryptocurrency_list" got Exception with {} klines'
+                .format(len(symbol_lists))
             )
             pass
         return []
 
 
+def QA_SU_save_data_binance_callback(data, freq):
+    """
+    异步获取数据回调用的 MongoDB 存储函数
+    """
+    symbol_template = Binance_SYMBOL
+    QA_util_log_info(
+        'SYMBOL "{}" Recived "{}" from {} to {} in total {} klines'.format(
+            data.iloc[0].symbol,
+            freq,
+            time.strftime(
+                '%Y-%m-%d %H:%M:%S',
+                time.localtime(data.iloc[0].time_stamp)
+            )[2:16],
+            time.strftime(
+                '%Y-%m-%d %H:%M:%S',
+                time.localtime(data.iloc[-1].time_stamp)
+            )[2:16],
+            len(data)
+        )
+    )
+    if (freq not in ['1day', '86400', 'day', '1d']):
+        col = DATABASE.cryptocurrency_min
+        col.create_index(
+            [
+                ("symbol",
+                 pymongo.ASCENDING),
+                ('time_stamp',
+                 pymongo.ASCENDING),
+                ('date_stamp',
+                 pymongo.ASCENDING)
+            ]
+        )
+        col.create_index(
+            [
+                ("symbol",
+                 pymongo.ASCENDING),
+                ("type",
+                 pymongo.ASCENDING),
+                ('time_stamp',
+                 pymongo.ASCENDING)
+            ],
+            unique=True
+        )
+
+        # 查询是否新 tick
+        query_id = {
+            "symbol": data.iloc[0].symbol,
+            'type': data.iloc[0].type,
+            'time_stamp': {
+                '$in': data['time_stamp'].tolist()
+            }
+        }
+        refcount = col.count_documents(query_id)
+    else:
+        col = DATABASE.cryptocurrency_day
+        col.create_index(
+            [
+                ("symbol",
+                 pymongo.ASCENDING),
+                ("date_stamp",
+                 pymongo.ASCENDING)
+            ],
+            unique=True
+        )
+
+        # 查询是否新 tick
+        query_id = {
+            "symbol": data.iloc[0].symbol,
+            'date_stamp': {
+                '$in': data['date_stamp'].tolist()
+            }
+        }
+        refcount = col.count_documents(query_id)
+
+    # 删除多余列
+    if ('_id' in data.columns.values):
+        data.drop(
+            [
+                '_id',
+            ],
+            axis=1,
+            inplace=True
+        )
+    if refcount > 0:
+        if (len(data) > 1):
+            # 删掉重复数据
+            col.delete_many(query_id)
+            data = QA_util_to_json_from_pandas(data)
+            col.insert_many(data)
+        else:
+            # 持续接收行情，更新记录
+            data.drop('created_at', axis=1, inplace=True)
+            data = QA_util_to_json_from_pandas(data)
+            col.replace_one(query_id, data[0])
+    else:
+        # 新 tick，插入记录
+        data = QA_util_to_json_from_pandas(data)
+        col.insert_many(data)
+
+
 if __name__ == '__main__':
-    QA_SU_save_binance_symbol()
-    #QA_SU_save_binance_1day()
+    #QA_SU_save_binance_symbol()
+    QA_SU_save_binance_1day()
     #QA_SU_save_binance_1hour()
+    #QA_SU_save_binance_1min()

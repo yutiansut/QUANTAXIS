@@ -1112,6 +1112,28 @@ class QA_Account(QA_Worker):
                     abs(value)
 
             tax_fee = 0 # 买入不收印花税
+        elif self.market_type == MARKET_TYPE.CRYPTOCURRENCY:
+            # 数字币不收税
+            # 双边手续费 也没有最小手续费限制
+
+            # 数字币的 CODE 包含{1}.{2}, 1 为交易所，2 为交易对CODE 
+            commission_fee_preset = self.market_preset.get_code(code)
+            if trade_towards in [ORDER_DIRECTION.BUY,
+                                 ORDER_DIRECTION.BUY_OPEN,
+                                 ORDER_DIRECTION.BUY_CLOSE,
+                                 ORDER_DIRECTION.SELL,
+                                 ORDER_DIRECTION.SELL_CLOSE,
+                                 ORDER_DIRECTION.SELL_OPEN]:
+                commission_fee = commission_fee_preset['commission_coeff_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_peramount'] * \
+                    abs(value)
+            elif trade_towards in [ORDER_DIRECTION.BUY_CLOSETODAY,
+                                   ORDER_DIRECTION.SELL_CLOSETODAY]:
+                commission_fee = commission_fee_preset['commission_coeff_today_pervol'] * trade_amount + \
+                    commission_fee_preset['commission_coeff_today_peramount'] * \
+                    abs(value)
+
+            tax_fee = 0 # 买入不收印花税
         elif self.market_type == MARKET_TYPE.STOCK_CN:
 
             commission_fee = self.commission_coeff * \
