@@ -25,8 +25,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 """
-币安api
-具体api文档参考:https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md
+OKEx api
+具体api文档参考:https://www.okex.com/docs/zh/#README
 """
 import requests
 import json
@@ -53,48 +53,42 @@ from QUANTAXIS.QAUtil import (
 
 TIMEOUT = 10
 ILOVECHINA = "同学！！你知道什么叫做科学上网么？ 如果你不知道的话，那么就加油吧！蓝灯，喵帕斯，VPS，阴阳师，v2ray，随便什么来一个！我翻墙我骄傲！"
-Binance_base_url = "https://api.binance.com"
+OKEx_base_url = "https://www.okex.com/"
 
 column_names = [
-    'start_time',
-    'open',
-    'high',
-    'low',
-    'close',
+    'time', 
+    'open', 
+    'high', 
+    'low', 
+    'close', 
     'volume',
-    'close_time',
-    'quote_asset_volume',
-    'num_trades',
-    'buy_base_asset_volume',
-    'buy_quote_asset_volume',
-    'Ignore'
 ]
 
 """
-QUANTAXIS 和 binance 的 frequency 常量映射关系
+QUANTAXIS 和 okex 的 frequency 常量映射关系
 """
-Binance2QA_FREQUENCY_DICT = {
-    "1m": '1min',
-    "5m": '5min',
-    "15m": '15min',
-    "30m": '30min',
-    "1h": '60min',
-    "1d": 'day',
+OKEx2QA_FREQUENCY_DICT = {
+    "60": '1min',
+    "300": '5min',
+    "900": '15min',
+    "1800": '30min',
+    "3600": '60min',
+    "86400": 'day',
 }
 """
-binance 只允许一次获取 500bar，时间请求超过范围则只返回最新500条
+OKEx 只允许一次获取 200bar，时间请求超过范围则只返回最新200条
 """
 FREQUENCY_SHIFTING = {
-    "1m": 30000,
-    "5m": 150000,
-    "15m": 450000,
-    "30m": 900000,
-    "1h": 1800000,
-    "1d": 43200000,
+    "60": 12000,
+    "300": 60000,
+    "900": 180000,
+    "1800": 360000,
+    "3600": 720000,
+    "86400": 17280000
 }
 
 
-def format_binance_data_fields(datas, symbol, frequency):
+def format_okex_data_fields(datas, symbol, frequency):
     """
     # 归一化数据字段，转换填充必须字段，删除多余字段
     参数名 	类型 	描述
@@ -106,56 +100,46 @@ def format_binance_data_fields(datas, symbol, frequency):
     volume 	String 	交易量
     """
     frame = pd.DataFrame(datas, columns=column_names)
-    frame['symbol'] = 'BINANCE.{}'.format(symbol)
-    # UTC时间转换为北京时间
-    frame['start_time'] = frame.apply(
-        lambda x: int(x['start_time'] / 1000),
-        axis=1
-    )
-    frame['date'] = pd.to_datetime(
-        frame['start_time'],
-        unit='s'
-    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-    frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
-    frame['datetime'] = pd.to_datetime(
-        frame['start_time'],
-        unit='s'
-    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
-    frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    frame['symbol'] = 'OKEX.{}'.format(symbol)
     # GMT+0 String 转换为 UTC Timestamp
-    frame['date_stamp'] = pd.to_datetime(frame['date']
+    frame['time_stamp'] = pd.to_datetime(frame['time']
                                         ).astype(np.int64) // 10**9
+    # UTC时间转换为北京时间 
+    frame['datetime'] = pd.to_datetime(
+        frame['time_stamp'], unit='s'
+    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
+    frame['date'] = frame['datetime'].dt.strftime('%Y-%m-%d')
+    frame['date_stamp'] = pd.to_datetime(
+        frame['date']
+    ).dt.tz_localize('Asia/Shanghai').astype(np.int64) // 10**9
+    frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
+
     frame['created_at'] = int(
         time.mktime(datetime.datetime.now().utctimetuple())
     )
     frame['updated_at'] = int(
         time.mktime(datetime.datetime.now().utctimetuple())
     )
-    frame.rename(
-        {
-            'num_trades': 'trade',
-            'start_time': 'time_stamp',
-            'buy_quote_asset_volume': 'amount'
-        },
-        axis=1,
-        inplace=True
+    frame.drop(['time'], axis=1, inplace=True)
+    frame['trade'] = 1
+    frame['amount'] = frame.apply(
+        lambda x: float(x['volume']) *
+        (float(x['open']) + float(x['close'])) / 2,
+        axis=1
     )
-    if (frequency not in ['1day', Binance2QA_FREQUENCY_DICT['1d'], '1d']):
-        frame['type'] = Binance2QA_FREQUENCY_DICT[frequency]
-    frame.drop(
-        ['close_time',
-         'quote_asset_volume',
-         'buy_base_asset_volume',
-         'Ignore'],
-        axis=1,
-        inplace=True
-    )
+    if (frequency not in ['1day', 'day', '86400', '1d']):
+        frame['type'] = OKEx2QA_FREQUENCY_DICT[frequency]
     return frame
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
-def QA_fetch_binance_symbols():
-    url = urljoin(Binance_base_url, "/api/v1/exchangeInfo")
+def QA_fetch_okex_symbols():
+    """
+    获取交易币对的列表，查询各币对的交易限制和价格步长等信息。
+    限速规则：20次/2s
+    HTTP请求 GET/api/spot/v3/instruments
+    """
+    url = urljoin(OKEx_base_url, "/api/spot/v3/instruments")
     retries = 1
     datas = list()
     while (retries != 0):
@@ -166,46 +150,51 @@ def QA_fetch_binance_symbols():
             retries = retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
-            print("Retry /api/v1/exchangeInfo #{}".format(retries - 1))
+            print("Retry /api/spot/v3/instruments #{}".format(retries - 1))
             time.sleep(0.5)
 
         if (retries == 0):
             # 成功获取才处理数据，否则继续尝试连接
             symbol_lists = json.loads(req.content)
-            if len(symbol_lists["symbols"]) == 0:
+            if len(symbol_lists) == 0:
                 return []
-            for symbol in symbol_lists["symbols"]:
-                # 只导入上架交易对
-                if (symbol['status'] == 'TRADING'):
-                    datas.append(symbol)
+            for symbol in symbol_lists:
+                datas.append(symbol)
 
     return datas
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
-def QA_fetch_binance_kline_with_auto_retry(
+def QA_fetch_okex_kline_with_auto_retry(
     symbol,
     start_time,
     end_time,
     frequency,
 ):
     """
-    Get the latest symbol‘s candlestick data
+    Get the latest symbol‘s candlestick data raw method
+    获取币对的K线数据。K线数据按请求的粒度分组返回，k线数据最多可获取200条(说明文档中2000条系错误)。
+    限速规则：20次/2s
+    HTTP请求 GET/api/spot/v3/instruments/<instrument_id>/candles
     """
-
+    url = urljoin(
+        OKEx_base_url,
+        "/api/spot/v3/instruments/{:s}/candles".format(symbol)
+    )
     retries = 1
-    start_time *= 1000
-    end_time *= 1000
-    while start_time < end_time:
-        url = urljoin(Binance_base_url, "/api/v1/klines")
+    while (retries != 0):
         try:
+            start_epoch = datetime.datetime.fromtimestamp(
+                start_time,
+                tz=tzutc()
+            )
+            end_epoch = datetime.datetime.fromtimestamp(end_time, tz=tzutc())
             req = requests.get(
                 url,
                 params={
-                    "symbol": symbol,
-                    "interval": frequency,
-                    "startTime": int(start_time),
-                    "endTime": int(end_time)
+                    "granularity": frequency,
+                    "start": start_epoch.isoformat().replace("+00:00", "Z"),   # Z结尾的ISO时间 String
+                    "end": end_epoch.isoformat() .replace("+00:00", "Z")       # Z结尾的ISO时间 String
                 },
                 timeout=TIMEOUT
             )
@@ -216,23 +205,23 @@ def QA_fetch_binance_kline_with_auto_retry(
             retries = retries + 1
             if (retries % 6 == 0):
                 print(ILOVECHINA)
-            print("Retry /api/v1/klines #{}".format(retries))
+            print("Retry /api/spot/v3/instruments #{}".format(retries - 1))
             time.sleep(0.5)
 
         if (retries == 0):
             # 成功获取才处理数据，否则继续尝试连接
-            klines = json.loads(req.content)
+            msg_dict = json.loads(req.content)
 
-            if len(klines) == 0:
-                print('Error', klines)
+            if ('error_code' in msg_dict):
+                print('Error', msg_dict)
                 return None
-            return klines
 
+            return msg_dict
 
     return None
 
 
-def QA_fetch_binance_kline(
+def QA_fetch_okex_kline(
     symbol,
     start_time,
     end_time,
@@ -270,7 +259,7 @@ def QA_fetch_binance_kline(
             reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
             continue
 
-        klines = QA_fetch_binance_kline_with_auto_retry(
+        klines = QA_fetch_okex_kline_with_auto_retry(
             symbol,
             reqParams['from'],
             reqParams['to'],
@@ -293,18 +282,18 @@ def QA_fetch_binance_kline(
         datas.extend(klines)
 
         if (callback_func is not None):
-            frame = format_binance_data_fields(klines, symbol, frequency)
-            callback_func(frame, Binance2QA_FREQUENCY_DICT[frequency])
+            frame = format_okex_data_fields(klines, symbol, frequency)
+            callback_func(frame, OKEx2QA_FREQUENCY_DICT[frequency])
 
     if len(datas) == 0:
         return None
 
     # 归一化数据字段，转换填充必须字段，删除多余字段
-    frame = format_binance_data_fields(datas, symbol, frequency)
+    frame = format_okex_data_fields(datas, symbol, frequency)
     return frame
 
 
-def QA_fetch_binance_kline_min(
+def QA_fetch_okex_kline_min(
     symbol,
     start_time,
     end_time,
@@ -343,7 +332,7 @@ def QA_fetch_binance_kline_min(
             reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
             continue
 
-        klines = QA_fetch_binance_kline_with_auto_retry(
+        klines = QA_fetch_okex_kline_with_auto_retry(
             symbol,
             reqParams['from'],
             reqParams['to'],
@@ -359,39 +348,17 @@ def QA_fetch_binance_kline_min(
         reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
 
         if (callback_func is not None):
-            frame = format_binance_data_fields(klines, symbol, frequency)
-            callback_func(frame, Binance2QA_FREQUENCY_DICT[frequency])
+            frame = format_okex_data_fields(klines, symbol, frequency)
+            callback_func(frame, OKEx2QA_FREQUENCY_DICT[frequency])
 
         if (len(klines) == 0):
             return None
 
 
 if __name__ == '__main__':
-    # url = urljoin(Binance_base_url, "/api/v1/exchangeInfo")
+    # url = urljoin(OKEx_base_url, "/api/v1/exchangeInfo")
     # print(url)
     # a = requests.get(url)
     # print(a.content)
     # print(json.loads(a.content))
-    import pytz
-    from dateutil.tz import *
-
-    tz = pytz.timezone("Asia/Shanghai")
-    url = urljoin(Binance_base_url, "/api/v1/klines")
-    start = time.mktime(
-        datetime.datetime(2018,
-                          6,
-                          13,
-                          tzinfo=tzutc()).timetuple()
-    )
-    end = time.mktime(
-        datetime.datetime(2018,
-                          6,
-                          14,
-                          tzinfo=tzutc()).timetuple()
-    )
-    print(start * 1000)
-    print(end * 1000)
-    data = QA_fetch_binance_kline("ETHBTC", start, end, '1d')
-    print(len(data))
-    print(data[0])
-    print(data[-1])
+    pass

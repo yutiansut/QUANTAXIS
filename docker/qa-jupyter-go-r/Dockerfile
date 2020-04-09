@@ -17,10 +17,7 @@ ARG CMAKE_VERSION=3.12.0
 WORKDIR /tmp
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
-&& mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake \
-&& apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32  40976EAF437D05B5\
-&& cmake -version
-
+&& mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake 
 
 RUN set -eux; \
     dpkgArch="$(dpkg --print-architecture)"; \
@@ -65,7 +62,8 @@ RUN set -eux; \
 # # && cmake -version
 # WORKDIR /
 
-RUN mkdir /root/go && cd /root/go \
+RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32 40976EAF437D05B5\
+  && mkdir /root/go && cd /root/go \
     && apt install -y build-essential \
     && apt update && apt upgrade \
     && apt install -y pkg-config\

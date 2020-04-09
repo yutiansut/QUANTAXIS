@@ -24,6 +24,7 @@ from QUANTAXIS.QAIndicator.indicators import *
 from QUANTAXIS.QAIndicator.base import *
 try:
     from QUANTAXIS.QAIndicator.talib_series import *
+    from QUANTAXIS.QAIndicator.talib_numpy import *
     from QUANTAXIS.QAIndicator import talib_indicators as talib_qa
 except:
     print('PLEASE install TALIB to call these methods')

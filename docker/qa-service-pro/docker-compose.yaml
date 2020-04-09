@@ -286,7 +286,7 @@ services:
 
 
     editer:
-        image: yutiansut/qaeditor:latest
+        image: daocloud.io/quantaxis/qaeditor:latest
         container_name: qaeditor
         networks: 
             qanetwork_pro:

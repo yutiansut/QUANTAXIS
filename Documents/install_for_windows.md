@@ -29,7 +29,7 @@
 
 ##  2. 下载PYTHON(可以跳过)
 
-QUANATXIS 支持的安装环境是python3以上 优先推荐3.6环境
+QUANTAXIS 支持的安装环境是python3以上 优先推荐3.6环境
 
 在windows下,推荐使用ANACONDA集成环境来安装python[推荐Anaconda3-5.0.1-Windows-x86_64.exe]
 
