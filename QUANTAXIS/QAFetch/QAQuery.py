@@ -1060,11 +1060,11 @@ def QA_fetch_stock_name(code, collections=DATABASE.stock_list):
     """
     获取股票名称
     """
-    collections.find_one({'code': code})['name']
     try:
         return collections.find_one({'code': code})['name']
     except Exception as e:
         QA_util_log_info(e)
+        return code
 
 
 def QA_fetch_index_name(code, collections=DATABASE.index_list):
