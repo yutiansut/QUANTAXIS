@@ -233,6 +233,8 @@ QUANATXIS 研报阅读/ 事件驱动分析群: 1045723486 [群链接](https://jq
 
 QUANTAXIS 开发群: 773602202 (如果想要贡献代码 请加这个群 需要备注你的GITHUB ID)
 
+QUANTAXIS 期货实盘多账户的本地部署群 (请勿浪费群资源 没有本地多账户部署的请勿加): 945822690
+
 ### 公共号
 
 欢迎关注公众号: ![公众号](http://data.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258.jpg)
