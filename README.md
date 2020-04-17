@@ -3,6 +3,12 @@
 
 ------------------
 
+
+## 震惊！ 居然有人说quantaxis偷策略？？？
+http://www.jiaoyizhe.com/forum.php?mod=viewthread&tid=2060144
+实在不能忍 放首页鞭尸
+
+
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
 [![Backers on Open Collective](https://opencollective.com/QUANTAXIS/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/QUANTAXIS/sponsors/badge.svg)](#sponsors) 
