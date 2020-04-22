@@ -4,9 +4,7 @@
 ------------------
 
 
-## 震惊！ 居然有人说quantaxis偷策略？？？
-http://www.jiaoyizhe.com/forum.php?mod=viewthread&tid=2060144
-实在不能忍 放首页鞭尸
+## QUANTAXIS 新版本客户端/手机终端 5月即将发布 
 
 
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
