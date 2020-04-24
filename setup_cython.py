@@ -50,7 +50,7 @@ with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
 try:
     if sys.platform in ['win32', 'darwin']:
         print(webbrowser.open(
-            'https://github.com/QUANTAXIS/QUANTAXIS/blob/master/CHANGELOG.md'))
+            'https://github.com/QUANTAXIS/QUANTAXIS/releases'))
         print('finish install')
 except:
     pass
@@ -96,7 +96,7 @@ LICENSE = "MIT"
 
 ext_modules = [
     Extension('QUANTAXIS.QAARP.QAAccount', ['QUANTAXIS/QAARP/QAAccount.pyx']),
-    Extension('QUANTAXIS.QAMARKET.QAOrder', ['QUANTAXIS/QAMARKET/QAOrder.pyx'])]
+    Extension('QUANTAXIS.QAMarket.QAOrder', ['QUANTAXIS/QAMarket/QAOrder.pyx'])]
 
 setup(
     name=NAME,

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,8 @@ from QUANTAXIS.QAUtil.QASql import (
 # 貌似yutian已经进行了，文件的创建步骤，他还会创建一个setting的dir
 # 需要与yutian讨论具体配置文件的放置位置 author:Will 2018.5.19
 
-DEFAULT_DB_URI = 'mongodb://localhost:27017'
+DEFAULT_MONGO = os.getenv('MONGODB', 'localhost')
+DEFAULT_DB_URI = 'mongodb://{}:27017'.format(DEFAULT_MONGO)
 CONFIGFILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'config.ini')
 INFO_IP_FILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'info_ip.json')
 STOCK_IP_FILE_PATH = '{}{}{}'.format(setting_path, os.sep, 'stock_ip.json')
@@ -68,7 +69,7 @@ class QA_Setting():
         else:
             config = configparser.ConfigParser()
             config.add_section('MONGODB')
-            config.set('MONGODB', 'uri', 'mongodb://localhost:27017')
+            config.set('MONGODB', 'uri', DEFAULT_DB_URI)
             f = open('{}{}{}'.format(setting_path, os.sep, 'config.ini'), 'w')
             config.write(f)
             res = DEFAULT_DB_URI
@@ -92,13 +93,18 @@ class QA_Setting():
             [type] -- [description]
         """
 
-
-        res = self.client.quantaxis.usersetting.find_one({'section': section})
-        if res:
-            return res.get(option, default_value)
-        else:
-            self.set_config(section, option, default_value)
-            return default_value
+        try:
+            config = configparser.ConfigParser()
+            config.read(CONFIGFILE_PATH)
+            return config.get(section, option)
+        except:
+            res = self.client.quantaxis.usersetting.find_one(
+                {'section': section})
+            if res:
+                return res.get(option, default_value)
+            else:
+                self.set_config(section, option, default_value)
+                return default_value
 
     def set_config(
             self,
@@ -118,7 +124,7 @@ class QA_Setting():
         """
         t = {'section': section, option: default_value}
         self.client.quantaxis.usersetting.update(
-            {'section': section}, {'$set':t}, upsert=True)
+            {'section': section}, {'$set': t}, upsert=True)
 
         # if os.path.exists(CONFIGFILE_PATH):
         #     config.read(CONFIGFILE_PATH)
@@ -207,11 +213,24 @@ DATABASE_ASYNC = QASETTING.client_async.quantaxis
 
 
 def exclude_from_stock_ip_list(exclude_ip_list):
-    """ 从stock_ip_list删除列表exclude_ip_list中的ip
-    从stock_ip_list删除列表future_ip_list中的ip
+    """
+    explanation:
+        从stock_ip_list删除列表exclude_ip_list中的ip,从stock_ip_list删除列表future_ip_list中的ip
 
-    :param exclude_ip_list:  需要删除的ip_list
-    :return: None
+    params:
+        * exclude_ip_list ->:
+            meaning: 需要删除的ip_list
+            type: list
+            optional: [null]
+
+    return:
+        None
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
     """
     for exc in exclude_ip_list:
         if exc in stock_ip_list:
@@ -351,6 +370,8 @@ else:
         {"ip": "119.97.185.5", "port": 7727, "name": "扩展市场武汉主站1"},
         {"ip": "120.24.0.77", "port": 7727, "name": "扩展市场深圳双线2"},
         {"ip": "124.74.236.94", "port": 7721},
+        {"ip": "14.215.128.18", "port": 7721, "name": "华泰证券深圳电信"},
+        {"ip": "139.219.103.190", "port": 7721, "name": "华泰证券云行情"},
         {"ip": "202.103.36.71", "port": 443, "name": "扩展市场武汉主站2"},
         {"ip": "47.92.127.181", "port": 7727, "name": "扩展市场北京主站"},
         {"ip": "59.175.238.38", "port": 7727, "name": "扩展市场武汉主站3"},

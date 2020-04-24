@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -252,7 +252,8 @@ def QA_indicator_CCI(DataFrame, N=14):
     CCI:(TYP-MA(TYP,N))/(0.015*AVEDEV(TYP,N));
     """
     typ = (DataFrame['high'] + DataFrame['low'] + DataFrame['close']) / 3
-    cci = ((typ - MA(typ, N)) / (0.015 * AVEDEV(typ, N)))
+    ## 此处AVEDEV可能为0值  因此导致出错 +0.0000000000001
+    cci = ((typ - MA(typ, N)) / (0.015 * AVEDEV(typ, N) + 0.00000001))
     a = 100
     b = -100
 

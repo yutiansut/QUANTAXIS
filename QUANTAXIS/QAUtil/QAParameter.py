@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,6 @@ class ORDER_DIRECTION():
     SELL = -1
     BUY_OPEN = 2
     BUY_CLOSE = 3
-    BUY_CLOSE = 3
     SELL_OPEN = -2
     SELL_CLOSE = -3
     SELL_CLOSETODAY = -4
@@ -55,13 +54,34 @@ class ORDER_DIRECTION():
     OTHER = 6
 
 
+class TIME_CONDITION():
+    IOC = 'IOC'  # 立即完成，否则撤销
+    GFS = 'GFS'  # 本节有效
+    GFD = 'GFD'  # 当日有效
+    GTD = 'GTD'  # 指定日期前有效
+    GTC = 'GTC'  # 撤销前有效
+    GFA = 'GFA'  # 集合竞价有效
+
+
+class VOLUME_CONDITION():
+    ANY = 'ANY'  # 任意数量
+    MIN = 'MIN'  # 最小数量
+    ALL = 'ALL'  # 全部数量
+
+
 class EXCHANGE_ID():
     SSE = 'sse'  # 上交所
     SZSE = 'szse'  # 深交所
-    SHFE = 'shfe'  # 上期所
-    DCE = 'dce'  # 大商所
-    CZCE = 'czce'  # 郑商所
-    CFFEX = 'cffex'  # 中金所
+    SHFE = 'SHFE'  # 上期所
+    DCE = 'DCE'  # 大商所
+    CZCE = 'CZCE'  # 郑商所
+    CFFEX = 'CFFEX'  # 中金所
+    INE = 'INE'  # 能源中心
+    HUOBI = 'huobi' # 火币Pro
+    BINANCE = 'binance' # 币安
+    BITMEX = 'bitmex' # BITMEX
+    BITFINEX = 'BITFINEX' # BITFINEX
+    OKEX = 'OKEx' # OKEx
 
 
 class OFFSET():
@@ -92,12 +112,13 @@ class ORDER_MODEL():
     """
 
     LIMIT = 'LIMIT'  # 限价
-    ANY = 'MARKET'  # 市价(otg兼容)
+    ANY = 'ANY'  # 市价(otg兼容)
     MARKET = 'MARKET'  # 市价/在回测里是下个bar的开盘价买入/实盘就是五档剩余最优成交价
     CLOSE = 'CLOSE'  # 当前bar的收盘价买入
     NEXT_OPEN = 'NEXT_OPEN'  # 下个bar的开盘价买入
     STRICT = 'STRICT'  # 严格模式/不推荐(仅限回测测试用)
-    BEST = 'MARKET'  # 中金所  最优成交剩余转限
+    BEST = 'BEST'  # 中金所  最优成交剩余转限
+    FIVELEVEL = 'FIVELEVEL'
 
 
 class ORDER_STATUS():
@@ -329,7 +350,23 @@ class ORDER_EVENT():
 class FREQUENCE():
     """查询的级别
 
-    [description]
+    YEAR = 'year'  # 年bar
+    QUARTER = 'quarter'  # 季度bar
+    MONTH = 'month'  # 月bar
+    WEEK = 'week'  # 周bar
+    DAY = 'day'  # 日bar
+    ONE_MIN = '1min'  # 1min bar
+    FIVE_MIN = '5min'  # 5min bar
+    FIFTEEN_MIN = '15min'  # 15min bar
+    THIRTY_MIN = '30min'  # 30min bar
+    HOUR = '60min'  # 60min bar
+    SIXTY_MIN = '60min'  # 60min bar
+    TICK = 'tick'  # transaction
+    ASKBID = 'askbid'  # 上下五档/一档
+    REALTIME_MIN = 'realtime_min' # 实时分钟线
+    LATEST = 'latest'  # 当前bar/latest
+
+    2019/08/06 @yutiansut
     """
 
     YEAR = 'year'  # 年bar
@@ -343,9 +380,10 @@ class FREQUENCE():
     THIRTY_MIN = '30min'  # 30min bar
     HOUR = '60min'  # 60min bar
     SIXTY_MIN = '60min'  # 60min bar
-    CURRENT = 'current'  # 当前bar
     TICK = 'tick'  # transaction
-    REALTIME = 'realtime'  # 上下五档/一档
+    ASKBID = 'askbid'  # 上下五档/一档
+    REALTIME_MIN = 'realtime_min'  # 实时分钟线
+    LATEST = 'latest'  # 当前bar/latest
 
 
 class CURRENCY_TYPE():
@@ -375,6 +413,7 @@ class DATASOURCE():
     CHOICE = 'choice'  # choice金融终端
     CCXT = 'ccxt'  # github/ccxt 虚拟货币
     LOCALFILE = 'localfile'  # 本地文件
+    AUTO = 'auto'  # 优先从Mongodb中读取数据，不足的数据从tdx下载
 
 
 class OUTPUT_FORMAT():
@@ -404,6 +443,7 @@ class RUNNING_STATUS():
     WRONG = 400
     STOPED = 500
     DROPED = 600
+
 
 DATABASE_TABLE = {
     (MARKET_TYPE.STOCK_CN, FREQUENCE.DAY): 'stock_day',

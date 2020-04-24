@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.5.3'
+__version__ = '1.9.14'
 __author__ = 'yutiansut'
 
 import argparse
@@ -56,11 +56,16 @@ from QUANTAXIS.QAData import (
     QA_data_calc_marketvalue,
     QA_data_ctptick_resample,
     QA_data_day_resample,
+    QA_data_futuremin_resample,
+    QA_data_futuremin_resample_series,
+    QA_data_futuremin_resample_tb_kq,
+    QA_data_futuremin_resample_tb_kq2,
     QA_data_marketvalue,
     QA_data_min_resample,
     QA_data_stock_to_fq,
     QA_data_tick_resample,
     QA_data_tick_resample_1min,
+    QA_data_cryptocurrency_min_resample,
     QA_DataStruct_Day,
     QA_DataStruct_Financial,
     QA_DataStruct_Future_day,
@@ -75,6 +80,8 @@ from QUANTAXIS.QAData import (
     QA_DataStruct_Stock_min,
     QA_DataStruct_Stock_realtime,
     QA_DataStruct_Stock_transaction,
+    QA_DataStruct_CryptoCurrency_day,
+    QA_DataStruct_CryptoCurrency_min,
     QDS_IndexDayWarpper,
     QDS_IndexMinWarpper,
     QDS_StockDayWarpper,
@@ -96,7 +103,6 @@ from QUANTAXIS.QAEngine import (
     QA_Worker
 )
 from QUANTAXIS.QAFetch import (
-    QA_fetch_get_bond_list,
     QA_fetch_get_chibor,
     QA_fetch_get_exchangerate_day,
     QA_fetch_get_exchangerate_list,
@@ -104,7 +110,12 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_future_day,
     QA_fetch_get_future_list,
     QA_fetch_get_future_min,
+    QA_fetch_get_bond_day,
+    QA_fetch_get_bond_min,
+    QA_fetch_get_bond_list,
+    QA_fetch_get_bond_realtime,
     QA_fetch_get_future_realtime,
+    QA_fetch_get_future_domain,
     QA_fetch_get_future_transaction,
     QA_fetch_get_future_transaction_realtime,
     QA_fetch_get_globalfuture_day,
@@ -125,6 +136,7 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_index_day,
     QA_fetch_get_index_list,
     QA_fetch_get_index_min,
+    QA_fetch_get_index_realtime,
     QA_fetch_get_macroindex_day,
     QA_fetch_get_macroindex_list,
     QA_fetch_get_macroindex_min,
@@ -141,6 +153,7 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_stock_realtime,
     QA_fetch_get_stock_transaction,
     QA_fetch_get_stock_transaction_realtime,
+    QA_fetch_get_index_transaction,
     QA_fetch_get_stock_xdxr,
     QA_fetch_get_trade_date,
     QA_fetch_get_usstock_day,
@@ -168,17 +181,24 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_index_day,
     QA_fetch_index_list,
     QA_fetch_index_min,
+    QA_fetch_index_name,
     QA_fetch_quotation,
     QA_fetch_quotations,
     QA_fetch_stock_block,
     QA_fetch_stock_day,
+    QA_fetch_stock_adj,
     QA_fetch_stock_full,
     QA_fetch_stock_info,
     QA_fetch_stock_list,
     QA_fetch_stock_min,
+    QA_fetch_stock_transaction,
+    QA_fetch_index_transaction,
     QA_fetch_stock_name,
     QA_fetch_stock_xdxr,
-    QA_fetch_trade_date
+    QA_fetch_trade_date,
+    QA_fetch_cryptocurrency_day,
+    QA_fetch_cryptocurrency_min,
+    QA_fetch_cryptocurrency_list
 )
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 from QUANTAXIS.QAIndicator import *
@@ -226,11 +246,12 @@ from QUANTAXIS.QASU.save_strategy import QA_SU_save_strategy
 from QUANTAXIS.QASU.user import QA_user_sign_in, QA_user_sign_up
 from QUANTAXIS.QAUtil import (  # QAPARAMETER
     AMOUNT_MODEL, BROKER_EVENT, BROKER_TYPE, DATABASE, DATASOURCE,
-    ENGINE_EVENT, EXCHANGE_ID, FREQUENCE, MARKET_ERROR, MARKET_EVENT, RUNNING_STATUS,
+    ENGINE_EVENT, EXCHANGE_ID, FREQUENCE, MARKET_ERROR, MARKET_EVENT,
     MARKET_TYPE, ORDER_DIRECTION, ORDER_EVENT, ORDER_MODEL, ORDER_STATUS,
-    OUTPUT_FORMAT, RUNNING_ENVIRONMENT, TRADE_STATUS, QA_Setting,
-    QA_util_calc_time, QA_util_cfg_initial, QA_util_code_tolist,
+    OUTPUT_FORMAT, RUNNING_ENVIRONMENT, RUNNING_STATUS, TRADE_STATUS,
+    QA_Setting, QA_util_calc_time, QA_util_cfg_initial, QA_util_code_tolist,
     QA_util_code_tostr, QA_util_date_gap, QA_util_date_int2str,
+    QA_util_code_adjust_ctp, QA_util_stamp2datetime,
     QA_util_date_stamp, QA_util_date_str2int, QA_util_date_today,
     QA_util_date_valid, QA_util_dict_remove_key, QA_util_diff_list,
     QA_util_file_md5, QA_util_format_date2str, QA_util_get_cfg,
@@ -248,12 +269,25 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     QA_util_save_csv, QA_util_select_hours, QA_util_select_min,
     QA_util_send_mail, QA_util_sql_async_mongo_setting,
     QA_util_sql_mongo_setting, QA_util_sql_mongo_sort_ASCENDING,
-    QA_util_sql_mongo_sort_DESCENDING, QA_util_time_delay, QA_util_time_gap,
-    QA_util_time_now, QA_util_time_stamp, QA_util_to_datetime,
-    QA_util_to_json_from_pandas, QA_util_to_list_from_numpy,
-    QA_util_to_list_from_pandas, QA_util_to_pandas_from_json,
-    QA_util_to_pandas_from_list, QA_util_web_ping, QATZInfo_CN, future_ip_list,
-    info_ip_list, stock_ip_list, trade_date_sse)
+    QA_util_sql_mongo_sort_DESCENDING, QA_util_tdxtimestamp,
+    QA_util_time_delay, QA_util_time_gap, QA_util_time_now, QA_util_time_stamp,
+    QA_util_to_datetime, QA_util_to_json_from_pandas,
+    QA_util_to_list_from_numpy, QA_util_to_list_from_pandas,
+    QA_util_to_pandas_from_json, QA_util_to_pandas_from_list, QA_util_web_ping,
+    QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse,
+    QA_util_get_next_period)
+
+# Factor
+from QUANTAXIS.QAFactor.analyze import FactorAnalyzer
+from QUANTAXIS.QAFactor.data import DataApi
+from QUANTAXIS.QAFactor.preprocess import (
+    QA_fmt_factor,
+    QA_fetch_factor_weight,
+    QA_fetch_get_factor_groupby,
+    QA_standardize_factor,
+    QA_winsorize_factor
+)
+from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
 
 # from QUANTAXIS.QASU.save_backtest import (
 #     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
