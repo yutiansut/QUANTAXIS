@@ -1311,7 +1311,7 @@ class QA_Account(QA_Worker):
                 self.cash.append(
                     self.cash[-1] - trade_money - tax_fee - commission_fee
                 )
-            if trade_towards in [ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
+            if trade_towards in [ ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
                 """平仓部分的sell_available已经被提前扣减了 在sendorder中
                 """
 
