@@ -2565,6 +2565,21 @@ def QA_fetch_get_future_realtime(code, ip=None, port=None):
         #                'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
         return __data.set_index(['datetime', 'code'])
 
+###############################################################
+# HKSTOCK
+###############################################################
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_hkstock_list(ip=None, port=None):
+    """hkstock
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    """
+    global extension_market_list
+    extension_market_list = QA_fetch_get_extensionmarket_list(ip, port
+    ) if extension_market_list is None else extension_market_list
+
+    return extension_market_list.query('category==2 and market==31')
 
 QA_fetch_get_option_day = QA_fetch_get_future_day
 QA_fetch_get_option_min = QA_fetch_get_future_min
@@ -2606,13 +2621,15 @@ def QA_fetch_get_wholemarket_list():
 
 
 if __name__ == '__main__':
-    rows = QA_fetch_get_commodity_option_CU_contract_time_to_market()
-    print(rows)
+    #rows = QA_fetch_get_commodity_option_CU_contract_time_to_market()
+    #print(rows)
 
-    print(QA_fetch_get_stock_day('000001', '2017-07-03', '2017-07-10'))
-    print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
+    #print(QA_fetch_get_stock_day('000001', '2017-07-03', '2017-07-10'))
+    #print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
     # print(QA_fetch_get_stock_realtime('000001'))
     # print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
     # print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
 
     # print(QA_fetch_get_stock_info('600116'))
+    rows = QA_fetch_get_hkstock_list()
+    print(rows)
