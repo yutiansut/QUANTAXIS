@@ -12,6 +12,11 @@
 
 4. 如果你还闲得慌想要深入学习下docker的话
 
+5. 看完这个教程以后 可以继续看
+
+http://www.yutiansut.com:3000/topic/5dc5da7dc466af76e9e3bc5d
+
+
 
 
 ## 1. 安装docker 

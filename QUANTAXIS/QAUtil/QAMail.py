@@ -30,17 +30,46 @@ import smtplib
 
 
 def QA_util_send_mail(msg, title, from_user, from_password, to_addr, smtp):
-    """邮件发送
     
-    Arguments:
-        msg {[type]} -- [description]
-        title {[type]} -- [description]
-        from_user {[type]} -- [description]
-        from_password {[type]} -- [description]
-        to_addr {[type]} -- [description]
-        smtp {[type]} -- [description]
     """
+    explanation:
+        邮件发送	
 
+    params:
+        * msg ->:
+            meaning: 邮件内容
+            type: str
+            optional: [null]
+        * title ->:
+            meaning: 标题
+            type: str
+            optional: [null]
+        * from_user ->:
+            meaning: 来自用户
+            type: str
+            optional: [null]
+        * from_password ->:
+            meaning: 密码
+            type: null
+            optional: [null]
+        * to_addr ->:
+            meaning: 邮件发送地址
+            type: null
+            optional: [null]
+        * smtp ->:
+            meaning: smtp地址
+            type: null
+            optional: [null]
+
+    return:
+        None
+	
+    demonstrate:
+        Not described
+	
+    output:
+        Not described
+    """
     msg = MIMEText(msg, 'plain', 'utf-8')
     msg['Subject'] = Header(title, 'utf-8').encode()
 

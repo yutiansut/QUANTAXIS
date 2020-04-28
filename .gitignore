@@ -169,3 +169,14 @@ selenium_driver/*
 QUANTAXIS_WEBDRIVER/*
 
 celerybeat*
+
+/data/
+
+/quantaxis_env/
+/huobi_client
+/inc/huobi_client
+/QUANTAXIS/QAFetch/__main__.py
+/QUANTAXIS.pyproj
+/QUANTAXIS/QAAnalysis/QABeyond.py
+/QUANTAXIS/QAAnalysis/QAAnalysis_kline.py
+/QUANTAXIS/.gitignore

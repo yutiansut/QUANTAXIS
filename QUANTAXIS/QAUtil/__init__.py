@@ -34,7 +34,7 @@ from QUANTAXIS.QAUtil.QACache import QA_util_cache
 # config
 from QUANTAXIS.QAUtil.QACfg import QA_util_cfg_initial, QA_util_get_cfg
 # code function
-from QUANTAXIS.QAUtil.QACode import QA_util_code_tolist, QA_util_code_tostr
+from QUANTAXIS.QAUtil.QACode import QA_util_code_tolist, QA_util_code_tostr, QA_util_code_adjust_ctp
 # csv
 from QUANTAXIS.QAUtil.QACsv import QA_util_save_csv
 # date
@@ -42,6 +42,7 @@ from QUANTAXIS.QAUtil.QADate import (QA_util_calc_time, QA_util_date_int2str,
                                      QA_util_date_stamp, QA_util_date_str2int,
                                      QA_util_date_today, QA_util_date_valid,
                                      QA_util_datetime_to_strdate,
+                                     QA_util_stamp2datetime,
                                      QA_util_get_date_index,
                                      QA_util_tdxtimestamp,
                                      QA_util_get_index_date, QA_util_id2date,
@@ -78,7 +79,8 @@ from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
                                            QA_util_get_trade_datetime,
                                            QA_util_future_to_realdatetime,
                                            QA_util_future_to_tradedatetime,
-                                           trade_date_sse)
+                                           trade_date_sse,
+                                           QA_util_get_next_period)
 # datetolls
 from QUANTAXIS.QAUtil.QADateTools import (QA_util_add_months,
                                           QA_util_get_1st_of_next_month,
@@ -106,8 +108,8 @@ from QUANTAXIS.QAUtil.QAMongo import (QA_util_mongo_infos,
 from QUANTAXIS.QAUtil.QAParameter import (
     ACCOUNT_EVENT, AMOUNT_MODEL, BROKER_EVENT, BROKER_TYPE, DATASOURCE,
     ENGINE_EVENT, EVENT_TYPE, EXCHANGE_ID, FREQUENCE, MARKET_ERROR,
-    MARKET_EVENT, MARKET_TYPE, ORDER_DIRECTION, ORDER_EVENT, ORDER_MODEL, 
-    TIME_CONDITION, VOLUME_CONDITION, 
+    MARKET_EVENT, MARKET_TYPE, ORDER_DIRECTION, ORDER_EVENT, ORDER_MODEL,
+    TIME_CONDITION, VOLUME_CONDITION,
     ORDER_STATUS, OUTPUT_FORMAT, RUNNING_ENVIRONMENT, TRADE_STATUS, RUNNING_STATUS)
 # RANDOM class
 from QUANTAXIS.QAUtil.QARandom import QA_util_random_with_topic
@@ -154,7 +156,6 @@ if not platform_flag:
     from resource import getrusage as resource_usage, RUSAGE_SELF
     from time import time as timestamp
 
-
     def print_used_time(func):
         ''' 打印运行时间
 
@@ -167,9 +168,9 @@ if not platform_flag:
             start_time, start_resources = timestamp(), resource_usage(RUSAGE_SELF)
             func(*args, **kwargs)
             end_resources, end_time = resource_usage(RUSAGE_SELF), timestamp()
-            print({'消耗时间':{'real': end_time - start_time,
-                    'sys': end_resources.ru_stime - start_resources.ru_stime,
-                    'user': end_resources.ru_utime - start_resources.ru_utime}})
+            print({'消耗时间': {'real': end_time - start_time,
+                            'sys': end_resources.ru_stime - start_resources.ru_stime,
+                            'user': end_resources.ru_utime - start_resources.ru_utime}})
             return True
         return wrapper
 else:
