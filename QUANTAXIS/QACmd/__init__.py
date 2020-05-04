@@ -36,51 +36,53 @@ from QUANTAXIS.QACmd.runner import run_backtest, run
 from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
 from QUANTAXIS.QAUtil import QA_util_log_info, QA_Setting, QA_util_mongo_initial
 from QUANTAXIS.QASU.main import (
-    QA_SU_save_stock_list,
-    QA_SU_save_stock_min,
-    QA_SU_save_stock_transaction,
-    QA_SU_save_index_transaction,
-    QA_SU_save_single_stock_min,
-    QA_SU_save_stock_xdxr,
-    QA_SU_save_stock_block,
-    QA_SU_save_stock_info,
-    QA_SU_save_stock_info_tushare,
-    QA_SU_save_stock_day,
-    QA_SU_save_single_stock_day,
-    QA_SU_save_index_day,
-    QA_SU_save_single_index_day,
-    QA_SU_save_index_min,
-    QA_SU_save_single_index_min,
-    QA_SU_save_future_list,
-    QA_SU_save_index_list,
-    QA_SU_save_etf_list,
+    QA_SU_save_bond_day,
+    QA_SU_save_bond_list,
+    QA_SU_save_bond_min,
     QA_SU_save_etf_day,
-    QA_SU_save_single_etf_day,
+    QA_SU_save_etf_list,
     QA_SU_save_etf_min,
-    QA_SU_save_single_etf_min,
     QA_SU_save_financialfiles,
-    QA_SU_save_option_50etf_day,
-    QA_SU_save_option_50etf_min,
+    QA_SU_save_future_day_all,
+    QA_SU_save_future_day,
+    QA_SU_save_future_list,
+    QA_SU_save_future_min_all,
+    QA_SU_save_future_min,
+    QA_SU_save_index_day,
+    QA_SU_save_index_list,
+    QA_SU_save_index_min,
+    QA_SU_save_index_transaction,
     QA_SU_save_option_300etf_day,
     QA_SU_save_option_300etf_min,
+    QA_SU_save_option_50etf_day,
+    QA_SU_save_option_50etf_min,
     QA_SU_save_option_commodity_day,
     QA_SU_save_option_commodity_min,
     QA_SU_save_option_contract_list,
     QA_SU_save_option_day_all,
     QA_SU_save_option_min_all,
-    QA_SU_save_future_day,
-    QA_SU_save_future_min,
-    QA_SU_save_future_min_all,
-    QA_SU_save_future_day_all,
     QA_SU_save_report_calendar_day,
     QA_SU_save_report_calendar_his,
+    QA_SU_save_single_bond_day,
+    QA_SU_save_single_bond_min,
+    QA_SU_save_single_etf_day,
+    QA_SU_save_single_etf_min,
+    QA_SU_save_single_future_day,
+    QA_SU_save_single_future_min,
+    QA_SU_save_single_index_day,
+    QA_SU_save_single_index_min,
+    QA_SU_save_single_stock_day,
+    QA_SU_save_single_stock_min,
+    QA_SU_save_stock_block,
+    QA_SU_save_stock_day,
     QA_SU_save_stock_divyield_day,
     QA_SU_save_stock_divyield_his,
-    QA_SU_save_bond_day,
-    QA_SU_save_single_bond_day,
-    QA_SU_save_bond_list,
-    QA_SU_save_bond_min,
-    QA_SU_save_single_bond_min
+    QA_SU_save_stock_info_tushare,
+    QA_SU_save_stock_info,
+    QA_SU_save_stock_list,
+    QA_SU_save_stock_min,
+    QA_SU_save_stock_transaction,
+    QA_SU_save_stock_xdxr
 )
 from QUANTAXIS.QASU.save_binance import QA_SU_save_binance_symbol, QA_SU_save_binance_1hour, \
     QA_SU_save_binance_1day, QA_SU_save_binance_1min, QA_SU_save_binance
@@ -249,16 +251,21 @@ class CLI(cmd.Cmd):
             命令格式: save ox: save option_contract_list/option_day/option_min/option_commodity_day/option_commodity_min \n\
             命令格式: save transaction: save stock_transaction and index_transaction (Warning: Large Disk Space Required) \n\
             ------------------------------------------------------------ \n\
+            命令格式：save stock_xdxr : 保存日除权除息数据 \n\
             命令格式：save stock_day  : 保存日线数据 \n\
             命令格式：save single_stock_day  : 保存单个股票日线数据 \n\
-            命令格式：save stock_xdxr : 保存日除权除息数据 \n\
             命令格式：save stock_min  : 保存分钟线数据 \n\
             命令格式：save single_stock_min  : 保存单个股票分钟线数据 \n\
             命令格式：save index_day  : 保存指数日线数据 \n\
+            命令格式：save single_index_day  : 保存单个指数日线数据 \n\
             命令格式：save index_min  : 保存指数分钟线数据 \n\
             命令格式：save single_index_min  : 保存单个指数分钟线数据 \n\
             命令格式：save future_day  : 保存期货日线数据 \n\
+            命令格式：save future_day_all  : 保存期货日线数据(含合约信息,不包括已经过期摘牌的合约数据) \n\
+            命令格式：save single_future_day  : 保存单个期货日线数据 \n\
             命令格式：save future_min  : 保存期货分钟线数据 \n\
+            命令格式：save future_min_all  : 保存期货分钟线数据(含合约信息,不包括已经过期摘牌的合约数据) \n\
+            命令格式：save single_future_min  : 保存单个期货分钟线数据 \n\
             命令格式：save etf_day    : 保存ETF日线数据 \n\
             命令格式：save single_etf_day    : 保存单个ETF日线数据 \n\
             命令格式：save etf_min    : 保存ET分钟数据 \n\
@@ -543,12 +550,16 @@ class CLI(cmd.Cmd):
                 QA_SU_save_option_commodity_min('tdx')
             elif len(arg) == 2 and arg[0] == 'single_stock_day':
                 QA_SU_save_single_stock_day(arg[1], 'tdx')
+            elif len(arg) == 2 and arg[0] == 'single_future_day':
+                QA_SU_save_single_future_day(arg[1], 'tdx')
             elif len(arg) == 2 and arg[0] == 'single_index_day':
                 QA_SU_save_single_index_day(arg[1], 'tdx')
             elif len(arg) == 2 and arg[0] == 'single_etf_day':
                 QA_SU_save_single_etf_day(arg[1], 'tdx')
             elif len(arg) == 2 and arg[0] == 'single_stock_min':
                 QA_SU_save_single_stock_min(arg[1], 'tdx')
+            elif len(arg) == 2 and arg[0] == 'single_future_min':
+                QA_SU_save_single_future_min(arg[1], 'tdx')
             elif len(arg) == 2 and arg[0] == 'single_index_min':
                 QA_SU_save_single_index_min(arg[1], 'tdx')
             elif len(arg) == 2 and arg[0] == 'single_etf_min':
