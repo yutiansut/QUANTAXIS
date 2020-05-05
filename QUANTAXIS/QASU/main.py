@@ -122,6 +122,21 @@ def QA_SU_save_future_list(engine, client=DATABASE):
     engine = select_save_engine(engine)
     engine.QA_SU_save_future_list(client=client)
 
+def QA_SU_save_single_future_day(code, engine, client=DATABASE, paralleled=False):
+    """save single_future_day
+
+    Arguments:
+        code: stock code
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+
+    :param paralleled: 是否并行处理(default: {True})
+    """
+
+    engine = select_save_engine(engine, paralleled=paralleled)
+    engine.QA_SU_save_single_future_day(code=code, client=client)
 
 def QA_SU_save_future_day(engine, client=DATABASE):
     """save future_day
@@ -150,6 +165,18 @@ def QA_SU_save_future_day_all(engine, client=DATABASE):
     engine = select_save_engine(engine)
     engine.QA_SU_save_future_day_all(client=client)
 
+def QA_SU_save_single_future_min(code, engine, client=DATABASE):
+    """save single_future_min
+
+    Arguments:
+        engine {[type]} -- [description]
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    engine = select_save_engine(engine)
+    engine.QA_SU_save_single_future_min(code=code, client=client)
 
 def QA_SU_save_future_min(engine, client=DATABASE):
     """save future_min
