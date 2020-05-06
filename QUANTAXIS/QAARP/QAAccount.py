@@ -621,16 +621,16 @@ class QA_Account(QA_Worker):
     @property
     def trade_range(self):
         if (self.market_type == MARKET_TYPE.CRYPTOCURRENCY):
-            # 数字币交易不停
-            return pd.date_range(self.start_date, self.end_date, freq='1D')
+            # 数字币交易不停 这个有个细节，DateIndex必须转换成Str否则保存到Mongdo会报错。 -- 阿财 2020.05.04
+            return [d.strftime('%Y-%m-%d') for d in pd.date_range(self.start_date, self.end_date, freq='1D')]
         else:
             return QA_util_get_trade_range(self.start_date, self.end_date)
 
     @property
     def trade_range_max(self):
         if (self.market_type == MARKET_TYPE.CRYPTOCURRENCY):
-            # 数字币交易不停
-            return pd.date_range(self.start_date, self.end_date, freq='1D')
+            # 数字币交易不停 这个有个细节，DateIndex必须转换成Str否则保存到Mongdo会报错。 -- 阿财 2020.05.04
+            return [d.strftime('%Y-%m-%d') for d in pd.date_range(self.start_date, self.end_date, freq='1D')]
         elif self.start_date < str(min(self.time_index_max))[0:10]:
             return QA_util_get_trade_range(self.start_date, self.end_date)
         else:
