@@ -107,6 +107,7 @@ def download_financialzip():
             res.append(item)
     return res
 
+
 def download_financialzip_fromtdx():
     """
     会创建一个download/文件夹
@@ -114,17 +115,16 @@ def download_financialzip_fromtdx():
     result = get_filename()
     res = []
     for item, md5 in result:
-        if item in os.listdir(download_path) and md5 == QA_util_file_md5('{}{}{}'.format(download_path, os.sep, item)):
+        if item in os.listdir(download_path) and \
+                md5 == QA_util_file_md5('{}{}{}'.format(download_path, os.sep, item)):
             print('FILE {} is already in {}'.format(item, download_path))
         else:
             print('CURRENTLY GET/UPDATE {}'.format(item[0:12]))
             downloadpath = download_path + '/' + item
             datacrawler = HistoryFinancialCrawler()
-            download_file = datacrawler.fetch_via_http(reporthook=None, filename=item, path_to_download=downloadpath)
-            try:
-                download_file.close()
-            except:
-                pass
+            datacrawler.fetch_and_parse(reporthook=None,
+                                        filename=item,
+                                        path_to_download=downloadpath)
             res.append(item)
     return res
 
@@ -426,5 +426,5 @@ financialmeans = ['基本每股收益',
                   '近一年净利润(元)']
 if __name__ == '__main__':
     # download()
-    #parse_all()
+    # parse_all()
     download_financialzip_fromtdx()
