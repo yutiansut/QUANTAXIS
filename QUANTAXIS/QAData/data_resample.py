@@ -482,7 +482,7 @@ def QA_data_min_to_day(min_data, type_='1D'):
         'amount': 'sum'
     }
 
-    return data.reset_index(1).resample(
+    return min_data.reset_index(1).resample(
         type_,
         base=0,
         closed='right'
