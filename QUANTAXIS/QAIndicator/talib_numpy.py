@@ -40,7 +40,7 @@ except:
 例如
 Moving Average ADX
 Hull Moving Average
-Volume HMA(未完成)
+Volume HMA(完成)
 """
 
 # 定义MACD函数
