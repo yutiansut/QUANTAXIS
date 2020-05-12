@@ -618,6 +618,8 @@ def QA_SU_crawl_eastmoney(action="zjlx", stockCode=None):
 def QA_SU_save_financialfiles():
     return save_financialfiles.QA_SU_save_financial_files()
 
+def QA_SU_save_financialfiles_fromtdx():
+    return save_financialfiles.QA_SU_save_financial_files_fromtdx(fromtdx=True)
 
 def QA_SU_save_report_calendar_day():
     return save_financial_calendar.QA_SU_save_report_calendar_day()
