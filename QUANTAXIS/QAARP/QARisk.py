@@ -467,7 +467,8 @@ class QA_Risk():
             2)
 
     def calc_profitpctchange(self, assets):
-        return assets[::-1].pct_change()[::-1]
+        #return assets[::-1].pct_change()[::-1]
+        return assets.diff().pct_change()
 
     def calc_beta(self, assest_profit, benchmark_profit):
 
