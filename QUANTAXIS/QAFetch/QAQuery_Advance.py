@@ -519,7 +519,7 @@ def QA_fetch_future_day_adv(
     end=None,
     if_drop_index=True,
                                    # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
-    collections=DATABASE.index_day
+    collections=DATABASE.future_day
 ):
     '''
     :param code: code:  字符串str eg 600085
