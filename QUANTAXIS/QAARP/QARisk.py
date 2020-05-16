@@ -409,9 +409,11 @@ class QA_Risk():
         beta比率 组合的系统性风险
         """
         try:
-            res = round(float(self.calc_beta(self.profit_pct.dropna(),
-                        self.benchmark_profitpct.dropna())),
-                2)
+            # res = round(float(self.calc_beta(self.profit_pct.dropna(),
+            #             self.benchmark_profitpct.dropna())),
+            #     2)
+
+            res = round(float(self.calc_beta(self.assets.pct_change().dropna().values, self.benchmark_assets.pct_change().dropna().values)),2)
         except:
             print('贝塔计算错误。。')
             res = 0
@@ -468,7 +470,7 @@ class QA_Risk():
 
     def calc_profitpctchange(self, assets):
         #return assets[::-1].pct_change()[::-1]
-        return assets.diff().pct_change()
+        return assets.diff().pct_change().fillna(0)
 
     def calc_beta(self, assest_profit, benchmark_profit):
 
