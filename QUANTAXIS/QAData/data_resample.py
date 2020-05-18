@@ -392,6 +392,7 @@ def QA_data_min_resample(min_data, type_='5min'):
         closed='right',
         loffset=type_
     ).agg(CONVERSION)
+    part_1_res['type'] = part_2_res['type'] = type_ if (type_ !='1D') else 'day'
     return pd.concat(
         [part_1_res,
          part_2_res]

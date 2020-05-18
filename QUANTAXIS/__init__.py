@@ -62,6 +62,7 @@ from QUANTAXIS.QAData import (
     QA_data_futuremin_resample_tb_kq2,
     QA_data_marketvalue,
     QA_data_min_resample,
+    QA_data_min_to_day,
     QA_data_stock_to_fq,
     QA_data_tick_resample,
     QA_data_tick_resample_1min,
