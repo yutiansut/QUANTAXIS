@@ -305,3 +305,8 @@ lab 投研
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
 
+
+
+致谢:
+
+感谢JetBrain 公司提供的开源社区全系列License
