@@ -131,7 +131,7 @@ def QA_fetch_stock_day_adv(
         start = '1990-01-01'
         end = str(datetime.date.today())
 
-    res = QA_fetch_stock_day(code, start, end, format='pd')
+    res = QA_fetch_stock_day(code, start, end, format='pd', collections= collections)
     if res is None:
         # 🛠 todo 报告是代码不合法，还是日期不合法
         print(
@@ -206,7 +206,7 @@ def QA_fetch_stock_min_adv(
 
     # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
 
-    res = QA_fetch_stock_min(code, start, end, format='pd', frequence=frequence)
+    res = QA_fetch_stock_min(code, start, end, format='pd', frequence=frequence, collections= collections)
     if res is None:
         print(
             "QA Error QA_fetch_stock_min_adv parameter code=%s , start=%s, end=%s frequence=%s call QA_fetch_stock_min return None"
@@ -269,7 +269,7 @@ def QA_fetch_index_day_adv(
     # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
     # 🛠 todo 如果相等
 
-    res = QA_fetch_index_day(code, start, end, format='pd')
+    res = QA_fetch_index_day(code, start, end, format='pd', collections= collections)
     if res is None:
         print(
             "QA Error QA_fetch_index_day_adv parameter code=%s start=%s end=%s call QA_fetch_index_day return None"
@@ -330,7 +330,7 @@ def QA_fetch_index_min_adv(
     # print("QA Error QA_fetch_index_min_adv parameter code=%s , start=%s, end=%s is equal, should have time span! " % (code, start, end))
     # return None
 
-    res = QA_fetch_index_min(code, start, end, format='pd', frequence=frequence)
+    res = QA_fetch_index_min(code, start, end, format='pd', frequence=frequence, collections= collections)
     if res is None:
         print(
             "QA Error QA_fetch_index_min_adv parameter code=%s start=%s end=%s frequence=%s call QA_fetch_index_min return None"
@@ -391,7 +391,8 @@ def QA_fetch_stock_transaction_adv(
         start,
         end,
         format='pd',
-        frequence=frequence
+        frequence=frequence, 
+        collections= collections
     )
     if res is None:
         print(
@@ -457,7 +458,7 @@ def QA_fetch_index_transaction_adv(
         start,
         end,
         format='pd',
-        frequence=frequence
+        frequence=frequence, collections= collections
     )
     if res is None:
         print(
@@ -518,7 +519,7 @@ def QA_fetch_future_day_adv(
     end=None,
     if_drop_index=True,
                                    # 🛠 todo collections 参数没有用到， 且数据库是固定的， 这个变量后期去掉
-    collections=DATABASE.index_day
+    collections=DATABASE.future_day
 ):
     '''
     :param code: code:  字符串str eg 600085
@@ -536,7 +537,7 @@ def QA_fetch_future_day_adv(
     # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
     # 🛠 todo 如果相等
 
-    res = QA_fetch_future_day(code, start, end, format='pd')
+    res = QA_fetch_future_day(code, start, end, format='pd', collections= collections)
     if res is None:
         print(
             "QA Error QA_fetch_future_day_adv parameter code=%s start=%s end=%s call QA_fetch_future_day return None"
@@ -601,7 +602,7 @@ def QA_fetch_future_min_adv(
         start,
         end,
         format='pd',
-        frequence=frequence
+        frequence=frequence, collections= collections
     )
     if res is None:
         print(
@@ -651,7 +652,7 @@ def QA_fetch_stock_block_adv(
     '''
     if isinstance(blockname, (list,)) and len(blockname) > 0:
         reg_join = "|".join(blockname)
-        df = DataFrame([i for i in DATABASE.stock_block.aggregate([ \
+        df = DataFrame([i for i in collections.aggregate([ \
             {"$match": {"blockname": {"$regex": reg_join}}}, \
             {"$group": {"_id": "$code", "count": {"$sum": 1}, "blockname": {"$push": "$blockname"}}}, \
             {"$match": {"count": {"$gte": len(blockname)}}}, \
@@ -903,7 +904,8 @@ def QA_fetch_cryptocurrency_day_adv(
     code,
     start,
     end=None,
-    if_drop_index=True
+    if_drop_index=True,
+    collections=DATABASE.cryptocurrency_day
 ):
     '''
     '获取数字加密资产日线'
@@ -922,7 +924,7 @@ def QA_fetch_cryptocurrency_day_adv(
     # 🛠 todo 报告错误 如果开始时间 在 结束时间之后
     # 🛠 todo 如果相等
 
-    res = QA_fetch_cryptocurrency_day(code, start, end, format='pd')
+    res = QA_fetch_cryptocurrency_day(code, start, end, format='pd', collections=collections)
     if res is None:
         print(
             "QA Error QA_fetch_cryptocurrency_day_adv parameter symbol=%s start=%s end=%s call QA_fetch_cryptocurrency_day return None"
@@ -984,7 +986,7 @@ def QA_fetch_cryptocurrency_min_adv(
         start,
         end,
         format='pd',
-        frequence=frequence
+        frequence=frequence, collections=collections
     )
     if res is None:
         print(
@@ -1014,7 +1016,7 @@ def QA_fetch_cryptocurrency_list_adv(
     :param collections: mongodb 数据库
     :return: DataFrame
     '''
-    cryptocurrency_list_items = QA_fetch_cryptocurrency_list(market)
+    cryptocurrency_list_items = QA_fetch_cryptocurrency_list(market, collections=collections)
     if len(cryptocurrency_list_items) == 0:
         print(
             "QA Error QA_fetch_cryptocurrency_list_adv call item for item in collections.find() return 0 item, maybe the DATABASE.cryptocurrency_list is empty!"

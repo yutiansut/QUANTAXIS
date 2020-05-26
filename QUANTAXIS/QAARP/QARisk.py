@@ -11,12 +11,13 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all
+# The above copyright notice and this permission notice shall be included in
+# all
 # copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -73,8 +74,9 @@ if platform.system() not in ['Windows',
                              'Darwin'] and os.environ.get('DISPLAY',
                                                           '') == '':
     print('you are using non-interactive mdoel quantaxis')
-    # print('no display found. Using non-interactive Agg backend')
-    # print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
+    # print('no display found.  Using non-interactive Agg backend')
+    # print("if you use ssh, you can use ssh with -X parmas to avoid this
+    # issue")
     # try:
     #     pass
     # except expression as identifier:
@@ -94,12 +96,8 @@ except ImportError:
     maybe you should install tk, tcl library
     '''
     print("ModuleNotFoundError: No module named 'tkinter'")
-    print(
-        "centos 6: sudo yum install tk-devel tcl-devel sqlite-devel gdbm-devel xz-devel readline-devel"
-    )
-    print(
-        "cnetos 7: sudo yum install tk-devel tcl-devel sqlite-devel gdbm-devel xz-devel readline-devel python3-tk"
-    )
+    print("centos 6: sudo yum install tk-devel tcl-devel sqlite-devel gdbm-devel xz-devel readline-devel")
+    print("cnetos 7: sudo yum install tk-devel tcl-devel sqlite-devel gdbm-devel xz-devel readline-devel python3-tk")
     print("ubuntu: sudo apt install python3-tk")
 finally:
     import matplotlib.patches as mpatches
@@ -120,15 +118,13 @@ class QA_Risk():
     预期PNL/统计学PNL
     """
 
-    def __init__(
-            self,
+    def __init__(self,
             account,
             benchmark_code='000300',
             benchmark_type=MARKET_TYPE.INDEX_CN,
             if_fq=True,
             market_data=None,
-            auto_reload=False
-    ):
+            auto_reload=False):
         """
         account: QA_Account类/QA_PortfolioView类
         benchmark_code: [str]对照参数代码
@@ -141,17 +137,13 @@ class QA_Risk():
         self.benchmark_type = benchmark_type
         self.client = DATABASE.risk
 
-        self.client.create_index(
-            [
-                ("account_cookie",
+        self.client.create_index([("account_cookie",
                  ASCENDING),
                 ("user_cookie",
                  ASCENDING),
                 ("portfolio_cookie",
-                 ASCENDING)
-            ],
-            unique=True
-        )
+                 ASCENDING)],
+            unique=True)
         if auto_reload:
             pass
         else:
@@ -162,52 +154,35 @@ class QA_Risk():
             }
             if market_data == None:
                 if self.account.market_type == MARKET_TYPE.STOCK_CN:
-                    self.market_data = QA_fetch_stock_day_adv(
-                        self.account.code,
+                    self.market_data = QA_fetch_stock_day_adv(self.account.code,
                         self.account.start_date,
-                        self.account.end_date
-                    )
+                        self.account.end_date)
                 elif self.account.market_type == MARKET_TYPE.FUTURE_CN:
-                    self.market_data = QA_fetch_future_day_adv(
-                        [item.upper() for item in self.account.code],
+                    self.market_data = QA_fetch_future_day_adv([item.upper() for item in self.account.code],
                         self.account.start_date,
-                        self.account.end_date
-                    )
+                        self.account.end_date)
                 elif self.account.market_type == MARKET_TYPE.CRYPTOCURRENCY:
-                    self.market_data = QA_fetch_cryptocurrency_day_adv(
-                        [item for item in self.account.code],
+                    self.market_data = QA_fetch_cryptocurrency_day_adv([item for item in self.account.code],
                         self.account.start_date,
-                        self.account.end_date
-                    )
+                        self.account.end_date)
             else:
                 self.market_data = market_data.select_time(self.account.start_date, self.account.end_date)
             self.if_fq = if_fq
-            if self.account.market_type == MARKET_TYPE.FUTURE_CN:
+            if (self.account.market_type == MARKET_TYPE.FUTURE_CN) or (self.account.market_type == MARKET_TYPE.CRYPTOCURRENCY):
                 self.if_fq = False  # 如果是期货， 默认设为FALSE
 
             if self.market_value is not None:
                 if self.account.market_type == MARKET_TYPE.FUTURE_CN and self.account.allow_margin == True:
                     print('margin!')
-                    self._assets = (
-                        self.account.daily_frozen +
-                        # self.market_value.sum(axis=1) +
-                        self.account.daily_cash.set_index('date').cash
-                    ).dropna()
+                    self._assets = (self.account.daily_frozen + # self.market_value.sum(axis=1) +
+                        self.account.daily_cash.set_index('date').cash).dropna()
                 else:
-                    self._assets = (
-                        self.market_value.sum(axis=1) +
-                        self.account.daily_cash.set_index('date').cash
-                    ).fillna(method='pad')
+                    self._assets = (self.market_value.sum(axis=1) + self.account.daily_cash.set_index('date').cash).fillna(method='pad')
             else:
-                self._assets = self.account.daily_cash.set_index('date'
-                                                                 ).cash.fillna(
-                    method='pad'
-                )
+                self._assets = self.account.daily_cash.set_index('date').cash.fillna(method='pad')
 
-            self.time_gap = QA_util_get_trade_gap(
-                self.account.start_date,
-                self.account.end_date
-            )
+            self.time_gap = QA_util_get_trade_gap(self.account.start_date,
+                self.account.end_date)
             self.init_cash = self.account.init_cash
             self.init_assets = self.account.init_assets
 
@@ -231,16 +206,9 @@ class QA_Risk():
         if self.account.daily_hold is not None:
             if self.if_fq:
 
-                return (
-                    self.market_data.to_qfq().pivot('close').fillna(
-                        method='ffill'
-                    ) * self.account.daily_hold.apply(abs)
-                ).fillna(method='ffill')
+                return (self.market_data.to_qfq().pivot('close').fillna(method='ffill') * self.account.daily_hold.apply(abs)).fillna(method='ffill')
             else:
-                return (
-                    self.market_data.pivot('close').fillna(method='ffill') *
-                    self.account.daily_hold.apply(abs)
-                ).fillna(method='ffill')
+                return (self.market_data.pivot('close').fillna(method='ffill') * self.account.daily_hold.apply(abs)).fillna(method='ffill')
         else:
             return None
 
@@ -265,27 +233,18 @@ class QA_Risk():
     def max_dropback(self):
         """最大回撤
         """
-        return round(
-            float(
-                max(
-                    [
-                        (self.assets.iloc[idx] - self.assets.iloc[idx::].min())
-                        / self.assets.iloc[idx]
+        return round(float(max([
+                        (self.assets.iloc[idx] - self.assets.iloc[idx::].min()) / self.assets.iloc[idx]
                         for idx in range(len(self.assets))
-                    ]
-                )
-            ),
-            2
-        )
+                    ])),
+            2)
 
     @property
     def total_commission(self):
         """总手续费
         """
-        return float(
-            -abs(round(self.account.history_table.commission.sum(),
-                       2))
-        )
+        return float(-abs(round(self.account.history_table.commission.sum(),
+                       2)))
 
     @property
     def total_tax(self):
@@ -305,10 +264,8 @@ class QA_Risk():
 
         return {
             'total_buyandsell':
-            round(
-                self.profit_money - self.total_commission - self.total_tax,
-                2
-            ),
+            round(self.profit_money - self.total_commission - self.total_tax,
+                2),
             'total_tax':
             self.total_tax,
             'total_commission':
@@ -351,11 +308,9 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return round(
-            float(self.calc_annualize_return(self.assets,
+        return round(float(self.calc_annualize_return(self.assets,
                                              self.time_gap)),
-            2
-        )
+            2)
 
     @property
     def volatility(self):
@@ -411,21 +366,16 @@ class QA_Risk():
         """
         基准组合的行情数据(一般是组合,可以调整)
         """
-        return self.fetch[self.benchmark_type](
-            self.benchmark_code,
+        return self.fetch[self.benchmark_type](self.benchmark_code,
             self.account.start_date,
-            self.account.end_date
-        )
+            self.account.end_date)
 
     @property
     def benchmark_assets(self):
         """
         基准组合的账户资产队列
         """
-        return (
-            self.benchmark_data.close /
-            float(self.benchmark_data.close.iloc[0]) * float(self.assets[0])
-        )
+        return (self.benchmark_data.close / float(self.benchmark_data.close.iloc[0]) * float(self.assets[0]))
 
     @property
     def benchmark_profit(self):
@@ -442,15 +392,9 @@ class QA_Risk():
             [type] -- [description]
         """
 
-        return round(
-            float(
-                self.calc_annualize_return(
-                    self.benchmark_assets,
-                    self.time_gap
-                )
-            ),
-            2
-        )
+        return round(float(self.calc_annualize_return(self.benchmark_assets,
+                    self.time_gap)),
+            2)
 
     @property
     def benchmark_profitpct(self):
@@ -465,15 +409,11 @@ class QA_Risk():
         beta比率 组合的系统性风险
         """
         try:
-            res = round(
-                float(
-                    self.calc_beta(
-                        self.profit_pct.dropna(),
-                        self.benchmark_profitpct.dropna()
-                    )
-                ),
-                2
-            )
+            # res = round(float(self.calc_beta(self.profit_pct.dropna(),
+            #             self.benchmark_profitpct.dropna())),
+            #     2)
+
+            res = round(float(self.calc_beta(self.assets.pct_change().dropna().values, self.benchmark_assets.pct_change().dropna().values)),2)
         except:
             print('贝塔计算错误。。')
             res = 0
@@ -485,17 +425,11 @@ class QA_Risk():
         """
         alpha比率 与市场基准收益无关的超额收益率
         """
-        return round(
-            float(
-                self.calc_alpha(
-                    self.annualize_return,
+        return round(float(self.calc_alpha(self.annualize_return,
                     self.benchmark_annualize_return,
                     self.beta,
-                    0.05
-                )
-            ),
-            2
-        )
+                    0.05)),
+            2)
 
     @property
     def sharpe(self):
@@ -503,14 +437,10 @@ class QA_Risk():
         夏普比率
 
         """
-        return round(
-            float(
-                self.calc_sharpe(self.annualize_return,
+        return round(float(self.calc_sharpe(self.annualize_return,
                                  self.volatility,
-                                 0.05)
-            ),
-            2
-        )
+                                 0.05)),
+            2)
 
     @property
     def sortino(self):
@@ -518,7 +448,10 @@ class QA_Risk():
         索提诺比率 投资组合收益和下行风险比值
 
         """
-        pass
+        return round(float(self.calc_sortino(self.annualize_return,
+                                 self.volatility,
+                                 0.05)),
+            2)
 
     @property
     def calmar(self):
@@ -532,14 +465,12 @@ class QA_Risk():
         self.benchmark_type = market_type
 
     def calc_annualize_return(self, assets, days):
-        return round(
-            (float(assets.iloc[-1]) / float(assets.iloc[0]) - 1) /
-            (float(days) / 250),
-            2
-        )
+        return round((float(assets.iloc[-1]) / float(assets.iloc[0]) - 1) / (float(days) / 250),
+            2)
 
     def calc_profitpctchange(self, assets):
-        return assets[::-1].pct_change()[::-1]
+        #return assets[::-1].pct_change()[::-1]
+        return assets.pct_change().fillna(1)
 
     def calc_beta(self, assest_profit, benchmark_profit):
 
@@ -547,15 +478,13 @@ class QA_Risk():
         beta = calc_cov[0, 1] / calc_cov[1, 1]
         return beta
 
-    def calc_alpha(
-            self,
+    def calc_alpha(self,
             annualized_returns,
             benchmark_annualized_returns,
             beta,
-            r=0.05
-    ):
+            r=0.05):
 
-        alpha = (annualized_returns - r) - (beta) *\
+        alpha = (annualized_returns - r) - (beta) * \
             (benchmark_annualized_returns - r)
         return alpha
 
@@ -586,6 +515,37 @@ class QA_Risk():
         if volatility_year == 0:
             return 0
         return (annualized_returns - r) / volatility_year
+
+    def calc_sortino(self, annualized_returns, volatility_year, rfr=0.00):
+        """
+        计算索提诺比率
+        在网上找到代码，感觉计算的结果不太对，数值偏小 -阿财 2020/03/28
+        """
+        # 会出现0
+        if volatility_year == 0:
+            return 0
+
+        # Define risk free rate and target return of 0
+        target = 0
+
+        # Calcualte the daily returns from price data
+        df = pd.DataFrame(columns=['Returns','downside_returns'], 
+                          index=self.assets.index)
+        df['Returns'] = (self.assets.values / self.assets.shift(1).values) - 1
+        df['downside_returns'] = 0
+
+        # Select the negative returns only
+        df.loc[df['Returns'] < target, 'downside_returns'] = df['Returns'] ** 2
+        expected_return = df['Returns'].mean()
+
+        # Calculate expected return and std dev of downside returns
+        down_stdev = np.sqrt(df['downside_returns'].mean())
+
+        # Calculate the sortino ratio
+        sortino_ratio = (expected_return - rfr) / down_stdev
+
+        # 这里不知道计算年化率如何
+        return sortino_ratio
 
     @property
     def max_holdmarketvalue(self):
@@ -666,33 +626,28 @@ class QA_Risk():
         plt.axis('off')
         i = 0
         for item in ['account_cookie', 'portfolio_cookie', 'user_cookie']:
-            plt.text(
-                i,
+            plt.text(i,
                 0.5,
                 '{} : {}'.format(item,
                                  self.message[item]),
                 fontsize=10,
                 rotation=0,
-                wrap=True
-            )
+                wrap=True)
             i += (length / 2.8)
         i = 0
         for item in ['benchmark_code', 'time_gap', 'max_dropback']:
-            plt.text(
-                i,
+            plt.text(i,
                 0.4,
                 '{} : {}'.format(item,
                                  self.message[item]),
                 fontsize=10,
                 ha='left',
                 rotation=0,
-                wrap=True
-            )
+                wrap=True)
             i += (length / 2.8)
         i = 0
         for item in ['annualize_return', 'bm_annualizereturn', 'profit']:
-            plt.text(
-                i,
+            plt.text(i,
                 0.3,
                 '{} : {} %'.format(item,
                                    self.message.get(item,
@@ -700,34 +655,29 @@ class QA_Risk():
                 fontsize=10,
                 ha='left',
                 rotation=0,
-                wrap=True
-            )
+                wrap=True)
             i += length / 2.8
         i = 0
         for item in ['init_cash', 'last_assets', 'volatility']:
-            plt.text(
-                i,
+            plt.text(i,
                 0.2,
                 '{} : {} '.format(item,
                                   self.message[item]),
                 fontsize=10,
                 ha='left',
                 rotation=0,
-                wrap=True
-            )
+                wrap=True)
             i += length / 2.8
         i = 0
         for item in ['alpha', 'beta', 'sharpe']:
-            plt.text(
-                i,
+            plt.text(i,
                 0.1,
                 '{} : {}'.format(item,
                                  self.message[item]),
                 ha='left',
                 fontsize=10,
                 rotation=0,
-                wrap=True
-            )
+                wrap=True)
             i += length / 2.8
         plt.subplot(212)
         self.assets.plot()
@@ -736,13 +686,9 @@ class QA_Risk():
         else:
             self.benchmark_assets.xs(self.benchmark_code, level=1).plot()
 
-        asset_p = mpatches.Patch(
-            color='red',
-            label='{}'.format(self.account.account_cookie)
-        )
-        asset_b = mpatches.Patch(
-            label='benchmark {}'.format(self.benchmark_code)
-        )
+        asset_p = mpatches.Patch(color='red',
+            label='{}'.format(self.account.account_cookie))
+        asset_b = mpatches.Patch(label='benchmark {}'.format(self.benchmark_code))
         plt.legend(handles=[asset_p, asset_b], loc=0)
         plt.title('ASSET AND BENCKMARK')
 
@@ -771,15 +717,11 @@ class QA_Risk():
         start = self.account.start_date if start is None else start
         end = self.account.end_date if end is None else end
         _, ax = plt.subplots(figsize=(20, 8))
-        sns.heatmap(
-            self.account.daily_hold.reset_index().set_index('date').loc[start:end],
+        sns.heatmap(self.account.daily_hold.reset_index().set_index('date').loc[start:end],
             cmap="YlGnBu",
             linewidths=0.05,
-            ax=ax
-        )
-        ax.set_title(
-            'HOLD TABLE --ACCOUNT: {}'.format(self.account.account_cookie)
-        )
+            ax=ax)
+        ax.set_title('HOLD TABLE --ACCOUNT: {}'.format(self.account.account_cookie))
         ax.set_xlabel('Code')
         ax.set_ylabel('DATETIME')
 
@@ -792,18 +734,12 @@ class QA_Risk():
         start = self.account.start_date if start is None else start
         end = self.account.end_date if end is None else end
         _, ax = plt.subplots(figsize=(20, 18))
-        sns.heatmap(
-            self.account.trade.reset_index().drop(
-                'account_cookie',
-                axis=1
-            ).set_index('datetime').loc[start:end],
+        sns.heatmap(self.account.trade.reset_index().drop('account_cookie',
+                axis=1).set_index('datetime').loc[start:end],
             cmap="YlGnBu",
             linewidths=0.05,
-            ax=ax
-        )
-        ax.set_title(
-            'SIGNAL TABLE --ACCOUNT: {}'.format(self.account.account_cookie)
-        )
+            ax=ax)
+        ax.set_title('SIGNAL TABLE --ACCOUNT: {}'.format(self.account.account_cookie))
         ax.set_xlabel('Code')
         ax.set_ylabel('DATETIME')
         return plt
@@ -883,8 +819,7 @@ class QA_Performance():
     def __init__(self, target):
 
         self.target = target
-        self._style_title = [
-            'beta',
+        self._style_title = ['beta',
             'momentum',
             'size',
             'earning_yield',
@@ -893,8 +828,7 @@ class QA_Performance():
             'value',
             'leverage',
             'liquidity',
-            'reversal'
-        ]
+            'reversal']
         self.market_preset = MARKET_PRESET()
         self.pnl = self.pnl_fifo
 
@@ -1029,13 +963,9 @@ class QA_Performance():
         """
         使用后进先出法配对成交记录
         """
-        X = dict(
-            zip(
-                self.target.code,
+        X = dict(zip(self.target.code,
                 [{'buy': LifoQueue(), 'sell': LifoQueue()}
-                 for i in range(len(self.target.code))]
-            )
-        )
+                 for i in range(len(self.target.code))]))
         pair_table = []
         for _, data in self.target.history_table_min.iterrows():
 
@@ -1043,23 +973,19 @@ class QA_Performance():
                 pass
             else:
                 while True:
-                    if data.direction in[1, 2, -2]:
+                    if data.direction in [1, 2, -2]:
                         if data.direction in [1, 2]:
-                            X[data.code]['buy'].append(
-                                (data.datetime,
+                            X[data.code]['buy'].append((data.datetime,
                                 data.amount,
                                 data.price,
-                                data.direction)
-                            )
+                                data.direction))
                         elif data.direction in [-2]:
-                            X[data.code]['sell'].append(
-                                (data.datetime,
+                            X[data.code]['sell'].append((data.datetime,
                                 data.amount,
                                 data.price,
-                                data.direction)
-                            )
+                                data.direction))
                         break
-                    elif data.direction in[-1, 3, -3]:
+                    elif data.direction in [-1, 3, -3]:
 
                         rawoffset = 'buy' if data.direction in [-1, -3] else 'sell'
 
@@ -1071,125 +997,83 @@ class QA_Performance():
                             temp = (l[0], l[1] + data.amount, l[2])
                             X[data.code][rawoffset].put_nowait(temp)
                             if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         data.datetime,
                                         l[0],
                                         abs(data.amount),
                                         data.price,
                                         l[2],
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                                 break
                             else:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
                                         l[2],
                                         data.price,
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                                 break
 
                         elif abs(l[1]) < abs(data.amount):
                             data.amount = data.amount + l[1]
 
                             if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         data.datetime,
                                         l[0],
                                         l[1],
                                         data.price,
                                         l[2],
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                             else:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         l[0],
                                         data.datetime,
                                         l[1],
                                         l[2],
                                         data.price,
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                         else:
                             if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         data.datetime,
                                         l[0],
                                         abs(data.amount),
                                         data.price,
                                         l[2],
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                                 break
                             else:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
                                         l[2],
                                         data.price,
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                                 break
 
-        pair_title = [
-            'code',
+        pair_title = ['code',
             'sell_date',
             'buy_date',
             'amount',
             'sell_price',
             'buy_price',
-            'rawdirection'
-        ]
+            'rawdirection']
         pnl = pd.DataFrame(pair_table, columns=pair_title)
 
-        pnl = pnl.assign(
-            unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
+        pnl = pnl.assign(unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(pnl.sell_date),
-            buy_date=pd.to_datetime(pnl.buy_date)
-        )
-        pnl = pnl.assign(
-            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
+            buy_date=pd.to_datetime(pnl.buy_date))
+        pnl = pnl.assign(pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
-            if_buyopen=pnl.rawdirection == 'buy'
-        )
-        pnl = pnl.assign(
-            openprice=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) *
-            pnl.buy_price +
-            pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_price,
-            opendate=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) *
-            pnl.buy_date.map(str) +
-            pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) *
-            pnl.sell_date.map(str),
-            closeprice=pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) *
-            pnl.buy_price +
-            pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
-            closedate=pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) *
-            pnl.buy_date.map(str) +
-            pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) *
-            pnl.sell_date.map(str)
-        )
+            if_buyopen=pnl.rawdirection == 'buy')
+        pnl = pnl.assign(openprice=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_price,
+            opendate=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_date.map(str),
+            closeprice=pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
+            closedate=pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
         return pnl.set_index('code')
 
     @property
@@ -1202,36 +1086,28 @@ class QA_Performance():
 
     @property
     def pnl_fifo(self):
-        X = dict(
-            zip(
-                self.target.code,
+        X = dict(zip(self.target.code,
                 [{'buy': deque(), 'sell': deque()}
-                 for i in range(len(self.target.code))]
-            )
-        )
+                 for i in range(len(self.target.code))]))
         pair_table = []
         for _, data in self.target.history_table_min.iterrows():
             if abs(data.amount) < 1:
                 pass
             else:
                 while True:
-                    if data.direction in[1, 2, -2]:
+                    if data.direction in [1, 2, -2]:
                         if data.direction in [1, 2]:
-                            X[data.code]['buy'].append(
-                                (data.datetime,
+                            X[data.code]['buy'].append((data.datetime,
                                 data.amount,
                                 data.price,
-                                data.direction)
-                            )
+                                data.direction))
                         elif data.direction in [-2]:
-                            X[data.code]['sell'].append(
-                                (data.datetime,
+                            X[data.code]['sell'].append((data.datetime,
                                 data.amount,
                                 data.price,
-                                data.direction)
-                            )
+                                data.direction))
                         break
-                    elif data.direction in[-1, 3, -3]:
+                    elif data.direction in [-1, 3, -3]:
 
                         rawoffset = 'buy' if data.direction in [-1, -3] else 'sell'
 
@@ -1243,125 +1119,83 @@ class QA_Performance():
                             temp = (l[0], l[1] + data.amount, l[2])
                             X[data.code][rawoffset].appendleft(temp)
                             if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         data.datetime,
                                         l[0],
                                         abs(data.amount),
                                         data.price,
                                         l[2],
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                                 break
                             else:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
                                         l[2],
                                         data.price,
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                                 break
 
                         elif abs(l[1]) < abs(data.amount):
                             data.amount = data.amount + l[1]
 
                             if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         data.datetime,
                                         l[0],
                                         l[1],
                                         data.price,
                                         l[2],
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                             else:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         l[0],
                                         data.datetime,
                                         l[1],
                                         l[2],
                                         data.price,
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                         else:
                             if data.amount < 0:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         data.datetime,
                                         l[0],
                                         abs(data.amount),
                                         data.price,
                                         l[2],
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                                 break
                             else:
-                                pair_table.append(
-                                    [
-                                        data.code,
+                                pair_table.append([data.code,
                                         l[0],
                                         data.datetime,
                                         abs(data.amount),
                                         l[2],
                                         data.price,
-                                        rawoffset
-                                    ]
-                                )
+                                        rawoffset])
                                 break
 
-        pair_title = [
-            'code',
+        pair_title = ['code',
             'sell_date',
             'buy_date',
             'amount',
             'sell_price',
             'buy_price',
-            'rawdirection'
-        ]
+            'rawdirection']
         pnl = pd.DataFrame(pair_table, columns=pair_title)
 
-        pnl = pnl.assign(
-            unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
+        pnl = pnl.assign(unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(pnl.sell_date),
-            buy_date=pd.to_datetime(pnl.buy_date)
-        )
-        pnl = pnl.assign(
-            pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
+            buy_date=pd.to_datetime(pnl.buy_date))
+        pnl = pnl.assign(pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
             hold_gap=abs(pnl.sell_date - pnl.buy_date),
-            if_buyopen=pnl.rawdirection == 'buy'
-        )
-        pnl = pnl.assign(
-            openprice=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) *
-            pnl.buy_price +
-            pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_price,
-            opendate=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) *
-            pnl.buy_date.map(str) +
-            pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) *
-            pnl.sell_date.map(str),
-            closeprice=pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) *
-            pnl.buy_price +
-            pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
-            closedate=pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) *
-            pnl.buy_date.map(str) +
-            pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) *
-            pnl.sell_date.map(str)
-        )
+            if_buyopen=pnl.rawdirection == 'buy')
+        pnl = pnl.assign(openprice=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_price,
+            opendate=pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.sell_date.map(str),
+            closeprice=pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.buy_price + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_price,
+            closedate=pnl.if_buyopen.apply(lambda pnl: 0 if pnl else 1) * pnl.buy_date.map(str) + pnl.if_buyopen.apply(lambda pnl: 1 if pnl else 0) * pnl.sell_date.map(str))
         return pnl.set_index('code')
 
     def plot_pnlratio(self):
@@ -1527,6 +1361,14 @@ class QA_Performance():
             return 0
 
     def continue_profit_amount(self, pnl):
+        """最大连续利润单数
+
+        Arguments:
+            pnl {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
         w = []
         w1 = 0
         for _, item in pnl.pnl_money.iteritems():
@@ -1541,14 +1383,22 @@ class QA_Performance():
             return max(w)
 
     def continue_loss_amount(self, pnl):
+        """最大连续亏损单数
+
+        Arguments:
+            pnl {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
         l = []
         l1 = 0
         for _, item in pnl.pnl_money.iteritems():
             if item > 0:
-                l1 += 1
-            elif item < 0:
                 l.append(l1)
                 l1 = 0
+            elif item < 0:
+                l1 += 1
         if len(l) == 0:
             return 0
         else:
@@ -1584,5 +1434,4 @@ class QA_Performance():
 
     @property
     def total_taxfee(self):
-        return self.target.history_table_min.commission.sum(
-        ) + self.target.history_table_min.tax.sum()
+        return self.target.history_table_min.commission.sum() + self.target.history_table_min.tax.sum()

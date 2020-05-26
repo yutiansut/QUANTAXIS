@@ -3,6 +3,10 @@
 
 ------------------
 
+
+## QUANTAXIS 新版本客户端/手机终端 5月即将发布 
+
+
 ![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
 ![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
 [![Backers on Open Collective](https://opencollective.com/QUANTAXIS/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/QUANTAXIS/sponsors/badge.svg)](#sponsors) 
@@ -301,3 +305,8 @@ lab 投研
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
 ![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
 
+
+
+致谢:
+
+感谢JetBrain 公司提供的开源社区全系列License

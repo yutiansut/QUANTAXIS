@@ -30,6 +30,7 @@ from pytdx.reader.history_financial_reader import HistoryFinancialReader
 from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler
 from QUANTAXIS.QAUtil.QAFile import QA_util_file_md5
 from QUANTAXIS.QASetting.QALocalize import qa_path, download_path
+from pytdx.crawler.base_crawler import demo_reporthook
 """
 参见PYTDX 1.65
 """
@@ -103,6 +104,27 @@ def download_financialzip():
 
             with open(file, "wb") as code:
                 code.write(r.content)
+            res.append(item)
+    return res
+
+
+def download_financialzip_fromtdx():
+    """
+    会创建一个download/文件夹
+    """
+    result = get_filename()
+    res = []
+    for item, md5 in result:
+        if item in os.listdir(download_path) and \
+                md5 == QA_util_file_md5('{}{}{}'.format(download_path, os.sep, item)):
+            print('FILE {} is already in {}'.format(item, download_path))
+        else:
+            print('CURRENTLY GET/UPDATE {}'.format(item[0:12]))
+            downloadpath = download_path + '/' + item
+            datacrawler = HistoryFinancialCrawler()
+            datacrawler.fetch_and_parse(reporthook=None,
+                                        filename=item,
+                                        path_to_download=downloadpath)
             res.append(item)
     return res
 
@@ -404,4 +426,5 @@ financialmeans = ['基本每股收益',
                   '近一年净利润(元)']
 if __name__ == '__main__':
     # download()
-    parse_all()
+    # parse_all()
+    download_financialzip_fromtdx()

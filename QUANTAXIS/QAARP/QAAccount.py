@@ -620,11 +620,18 @@ class QA_Account(QA_Worker):
 
     @property
     def trade_range(self):
-        return QA_util_get_trade_range(self.start_date, self.end_date)
+        if (self.market_type == MARKET_TYPE.CRYPTOCURRENCY):
+            # 数字币交易不停 这个有个细节，DateIndex必须转换成Str否则保存到Mongdo会报错。 -- 阿财 2020.05.04
+            return [d.strftime('%Y-%m-%d') for d in pd.date_range(self.start_date, self.end_date, freq='1D')]
+        else:
+            return QA_util_get_trade_range(self.start_date, self.end_date)
 
     @property
     def trade_range_max(self):
-        if self.start_date < str(min(self.time_index_max))[0:10]:
+        if (self.market_type == MARKET_TYPE.CRYPTOCURRENCY):
+            # 数字币交易不停 这个有个细节，DateIndex必须转换成Str否则保存到Mongdo会报错。 -- 阿财 2020.05.04
+            return [d.strftime('%Y-%m-%d') for d in pd.date_range(self.start_date, self.end_date, freq='1D')]
+        elif self.start_date < str(min(self.time_index_max))[0:10]:
             return QA_util_get_trade_range(self.start_date, self.end_date)
         else:
 
@@ -1304,7 +1311,7 @@ class QA_Account(QA_Worker):
                 self.cash.append(
                     self.cash[-1] - trade_money - tax_fee - commission_fee
                 )
-            if trade_towards in [ORDER_DIRECTION.BUY, ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
+            if trade_towards in [ ORDER_DIRECTION.BUY_OPEN, ORDER_DIRECTION.SELL_OPEN]:
                 """平仓部分的sell_available已经被提前扣减了 在sendorder中
                 """
 
@@ -1331,7 +1338,7 @@ class QA_Account(QA_Worker):
                     str(trade_time),
                     code,
                     trade_price,
-                    market_towards * trade_amount,
+                    float(market_towards * trade_amount),
                     self.cash[-1],
                     order_id,
                     realorder_id,

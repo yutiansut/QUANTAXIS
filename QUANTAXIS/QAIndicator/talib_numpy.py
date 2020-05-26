@@ -40,7 +40,7 @@ except:
 例如
 Moving Average ADX
 Hull Moving Average
-Volume HMA(未完成)
+Volume HMA(完成)
 """
 
 # 定义MACD函数
@@ -86,7 +86,7 @@ def TA_BBANDS(prices, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
     返回: up, middle, low
     '''
     up, middle, low = talib.BBANDS(prices, timeperiod, nbdevup, nbdevdn, matype)
-    ch = (up - low) / low
+    ch = (up - low) / middle
     delta = np.r_[np.nan, np.diff(ch)]
     return np.c_[up, middle, low, ch, delta]
 
@@ -156,7 +156,7 @@ def TA_HMA(close, period):
     return hma
 
 
-def ADX_MA(data, period=10, smooth=10, limit=18):
+def ADX_MA(data, period=14, smooth=14, limit=18):
     """
     Moving Average ADX
     ADX Smoothing Trend Color Change on Moving Average and ADX Cross. Use on Hourly Charts - Green UpTrend - Red DownTrend - Black Choppy No Trend
@@ -170,10 +170,10 @@ def ADX_MA(data, period=10, smooth=10, limit=18):
         传入 OHLC Kline 序列。
         The OHLC Kline.
     period : int or None, optional
-        DI 统计周期 默认值为 10
+        DI 统计周期 默认值为 14
         DI Length period. Default value is 10. 
     smooth : int or None, optional
-        ADX 平滑周期 默认值为 10
+        ADX 平滑周期 默认值为 14
         ADX smoothing length period. Default value is 10.
     limit : int or None, optional
         ADX 限制阈值 默认值为 18

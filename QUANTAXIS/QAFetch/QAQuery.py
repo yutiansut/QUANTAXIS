@@ -623,7 +623,7 @@ def QA_fetch_index_min(
     frequence='1min',
     collections=DATABASE.index_min
 ):
-    '获取股票分钟线'
+    '获取指数分钟线'
     if frequence in ['1min', '1m']:
         frequence = '1min'
     elif frequence in ['5min', '5m']:
@@ -636,6 +636,7 @@ def QA_fetch_index_min(
         frequence = '60min'
     _data = []
     code = QA_util_code_tolist(code)
+
     cursor = collections.find(
         {
             'code': {
@@ -651,29 +652,37 @@ def QA_fetch_index_min(
         {"_id": 0},
         batch_size=10000
     )
-    if format in ['dict', 'json']:
-        return [data for data in cursor]
-    # for item in cursor:
-    _data = pd.DataFrame([item for item in cursor])
-    _data = _data.assign(datetime=pd.to_datetime(_data['datetime']))
-    # _data.append([str(item['code']), float(item['open']),
-    # float(item['high']), float(
-    #     item['low']), float(item['close']), int(item['up_count']),
-    #     int(item['down_count']), float(item['vol']), float(item['amount']),
-    #     item['datetime'], item['time_stamp'], item['date'], item['type']])
 
-    # _data = DataFrame(_data, columns=[
-    #     'code', 'open', 'high', 'low', 'close', 'up_count', 'down_count',
-    #     'volume', 'amount', 'datetime', 'time_stamp', 'date', 'type'])
+    res = pd.DataFrame([item for item in cursor])
+    try:
+        res = res.assign(
+            volume=res.vol,
+            datetime=pd.to_datetime(res.datetime)
+        ).query('volume>1').drop_duplicates(['datetime',
+                                             'code']).set_index(
+                                                 'datetime',
+                                                 drop=False
+                                             )
+        # return res
+    except:
+        res = None
 
-    # _data['datetime'] = pd.to_datetime(_data['datetime'])
-    _data = _data.set_index('datetime', drop=False)
-    if format in ['numpy', 'np', 'n']:
-        return numpy.asarray(_data)
+    # 多种数据格式
+    if format in ['P', 'p', 'pandas', 'pd']:
+        return res
+    elif format in ['json', 'dict']:
+        return QA_util_to_json_from_pandas(res)
+        
+    elif format in ['n', 'N', 'numpy']:
+        return numpy.asarray(res)
     elif format in ['list', 'l', 'L']:
-        return numpy.asarray(_data).tolist()
-    elif format in ['P', 'p', 'pandas', 'pd']:
-        return _data
+        return numpy.asarray(res).tolist()
+    else:
+        print(
+            "QA Error QA_fetch_index_min format parameter %s is none of  \"P, p, pandas, pd , json, dict , n, N, numpy, list, l, L, !\" "
+            % format
+        )
+        return None
 
 
 def QA_fetch_future_day(
@@ -1048,10 +1057,55 @@ def QA_fetch_stock_info(code, format='pd', collections=DATABASE.stock_info):
 
 
 def QA_fetch_stock_name(code, collections=DATABASE.stock_list):
-    try:
-        return collections.find_one({'code': code})['name']
-    except Exception as e:
-        QA_util_log_info(e)
+    """
+    获取股票名称
+    """
+    if isinstance(code, str):
+        try:
+            return collections.find_one({'code': code})['name']
+        except Exception as e:
+            QA_util_log_info(e)
+            return code
+    elif isinstance(code, list):
+        code = QA_util_code_tolist(code)
+        data = pd.DataFrame(
+            [
+                item for item in collections
+                .find({'code': {
+                    '$in': code
+                }},
+                      {"_id": 0},
+                      batch_size=10000)
+            ]
+        )
+        #data['date'] = pd.to_datetime(data['date'])
+        return data.set_index('code', drop=False)['name']
+
+
+def QA_fetch_index_name(code, collections=DATABASE.index_list):
+    """
+    获取指数名称
+    """
+    if isinstance(code, str):
+        try:
+            return collections.find_one({'code': code})['name']
+        except Exception as e:
+            QA_util_log_info(e)
+            return code
+    elif isinstance(code, list):
+        code = QA_util_code_tolist(code)
+        data = pd.DataFrame(
+            [
+                item for item in collections
+                .find({'code': {
+                    '$in': code
+                }},
+                      {"_id": 0},
+                      batch_size=10000)
+            ]
+        )
+        #data['date'] = pd.to_datetime(data['date'])
+        return data.set_index('code', drop=False)['name']
 
 
 def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
