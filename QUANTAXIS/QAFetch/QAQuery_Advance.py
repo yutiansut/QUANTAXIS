@@ -736,7 +736,7 @@ def QA_fetch_stock_realtime_adv(
                        pymongo.DESCENDING)]
             )
         ]
-        if items_from_collections is None or \
+        if (items_from_collections is None) or \
             (len(items_from_collections) == 0):
             print(
                 "QA Error QA_fetch_stock_realtime_adv find parameter code={} num={} collection={} return NOne"
@@ -748,7 +748,7 @@ def QA_fetch_stock_realtime_adv(
 
         data = pd.DataFrame(items_from_collections)
         data_set_index = data.set_index(['datetime',
-                                            'code'],
+                                         'code'],
                                         drop=False).drop(['_id'],
                                                             axis=1)
 
