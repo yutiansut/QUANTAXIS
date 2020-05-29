@@ -24,13 +24,31 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import numpy as np
+import pandas as pd
+import numba as nb
+
 import scipy.signal as signal
 from scipy.signal import lfilter, lfilter_zi, filtfilt, butter, savgol_filter
-import numpy as np
-import peakutils
 from QUANTAXIS.QAIndicator.base import *
-from QUANTAXIS.QAIndicator.talib_numpy import *
 from QUANTAXIS.QAData.base_datastruct import *
+try:
+    import peakutils
+except:
+    print('PLEASE run "pip install peakutils" to call these modules')
+    pass
+try:
+    from QUANTAXIS.QAIndicator.talib_numpy import *
+    import QUANTAXIS as QA
+    from QUANTAXIS.QAIndicator.base import *
+    from QUANTAXIS.QAUtil.QADate_Adv import (
+        QA_util_timestamp_to_str,
+        QA_util_datetime_to_Unix_timestamp,
+        QA_util_print_timestamp
+    )
+except:
+    print('PLEASE run "pip install QUANTAXIS" to call these modules')
+    pass
 
 """
 时序信号处理，公共函数
@@ -159,7 +177,8 @@ def Timeline_Integral_with_lambda(Tm,):
     return np.array(T)
 
 
-def Timeline_Integral(Tm,):
+@nb.jit(nopython=True)
+def Timeline_Integral(Tm:np.ndarray,):
     """
     explanation:
         计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)清零)，经测试for实现最快，比reduce快	
@@ -179,10 +198,10 @@ def Timeline_Integral(Tm,):
     output:
         Not described
     """
-    T = [Tm[0]]
-    for i in range(1, len(Tm)):
-        T.append(Tm[i] * (T[i - 1] + Tm[i]))
-    return np.array(T)
+    T = np.zeros(len(Tm)).astype(np.int32)
+    for i, Tmx in enumerate(Tm):
+        T[i] = Tmx * (T[i - 1] + Tmx)
+    return T
 
 
 def Timeline_Integral_with_reduce(Tm,):
@@ -205,21 +224,18 @@ def Timeline_Integral_with_reduce(Tm,):
     output:
         Not described
     """
-
-    """
-    
-    """
     T = []
-    for i in range(1, len(Tm)):
-        T.append(reduce(lambda x, y: y * (y + x), Tm[0:i]))
+    for i in range(1,len(Tm)):
+        T.append(reduce(lambda x,y: int(y * (y + x)), Tm[0:i]))
     return np.array(T)
 
 
-# 经测试for最快，比reduce快
-def Timeline_Integral_with_cross_before(Tm,):
+@nb.jit(nopython=True)
+def Timeline_Integral_with_cross_before(Tm:np.ndarray,):
     """
     explanation:
          计算时域金叉/死叉信号的累积卷积和(死叉(1-->0)不清零，金叉(0-->1)清零)		
+         经测试for最快，比reduce快(无jit，jit的话for就更快了)
 
     params:
         * Tm ->:
@@ -236,17 +252,19 @@ def Timeline_Integral_with_cross_before(Tm,):
     output:
         Not described
     """
-    T = [Tm[0]]
-    for i in range(1, len(Tm)):
-        T.append(T[i - 1] + 1) if (Tm[i] != 1) else T.append(0)
-    return np.array(T)
+    T = np.zeros(len(Tm)).astype(np.int32)
+    for i, Tmx in enumerate(Tm):
+        T[i] = (T[i - 1] + 1) if (Tmx != 1) else 0
+    return T
 
 
+@nb.jit(nopython=True)
 def LIS(X):
     """
     explanation:
         计算最长递增子序列		
-
+        Longest increasing subsequence
+		
     params:
         * X ->:
             meaning: 序列
@@ -262,7 +280,6 @@ def LIS(X):
     output:
         Not described
     """
-
     N = len(X)
     P = [0] * N
     M = [0] * (N + 1)
@@ -294,11 +311,13 @@ def LIS(X):
     return S[::-1], pos[::-1]
 
 
+@nb.jit(nopython=True)
 def LDS(X):
     """
     explanation:
         计算最长递减子序列		
-
+        Longest decreasing subsequence
+		
     params:
         * X ->:
             meaning: 序列
@@ -459,7 +478,7 @@ def maxfactor_cross_func(data):
     MAXFACTOR_CROSS['MAXFACTOR_CROSS_SX'] = Timeline_Integral_with_cross_before(MAXFACTOR_CROSS_SX_JUNCTION)
     return MAXFACTOR_CROSS
 
-8
+
 def dual_cross_func(data):
     """
     自创指标：CCI/KDJ 对 偏移后的 RSI 双金叉

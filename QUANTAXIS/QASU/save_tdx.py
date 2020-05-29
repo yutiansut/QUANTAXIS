@@ -49,7 +49,10 @@ from QUANTAXIS.QAFetch.QATdx import (
     QA_fetch_get_bond_day,
     QA_fetch_get_bond_list,
     QA_fetch_get_bond_min,
-    select_best_ip
+    select_best_ip,
+    QA_fetch_get_hkstock_day,
+    QA_fetch_get_hkstock_list,
+    QA_fetch_get_hkstock_min
 )
 from QUANTAXIS.QAFetch.QATdx import (
     QA_fetch_get_commodity_option_CU_contract_time_to_market,
@@ -5144,6 +5147,93 @@ def QA_SU_save_index_list(client=DATABASE, ui_log=None, ui_progress=None):
     except:
         pass
 
+def QA_SU_save_single_future_day(code : str, client=DATABASE, ui_log=None, ui_progress=None):
+    '''
+     save single_future_day
+    保存单个期货数据日线数据
+    :param client:
+    :param ui_log:  给GUI qt 界面使用
+    :param ui_progress: 给GUI qt 界面使用
+    :param ui_progress_int_value: 给GUI qt 界面使用
+    :return:
+    '''
+    coll_future_day = client.future_day
+    coll_future_day.create_index(
+        [("code",
+          pymongo.ASCENDING),
+         ("date_stamp",
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll_future_day):
+        try:
+            QA_util_log_info(
+                '##JOB12 Now Saving Future_DAY==== {}'.format(str(code)),
+                ui_log
+            )
+
+            # 首选查找数据库 是否 有 这个代码的数据
+            ref = coll_future_day.find({'code': str(code)[0:4]})
+            end_date = str(now_time())[0:10]
+
+            # 当前数据库已经包含了这个代码的数据， 继续增量更新
+            # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
+            if ref.count() > 0:
+
+                # 接着上次获取的日期继续更新
+                start_date = ref[ref.count() - 1]['date']
+
+                QA_util_log_info(
+                    'UPDATE_Future_DAY \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_date,
+                                end_date),
+                    ui_log
+                )
+                if start_date != end_date:
+                    coll_future_day.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_future_day(
+                                str(code),
+                                QA_util_get_next_day(start_date),
+                                end_date
+                            )
+                        )
+                    )
+
+            # 当前数据库中没有这个代码的股票数据， 从1990-01-01 开始下载所有的数据
+            else:
+                start_date = '2001-01-01'
+                QA_util_log_info(
+                    'UPDATE_Future_DAY \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_date,
+                                end_date),
+                    ui_log
+                )
+                if start_date != end_date:
+                    coll_future_day.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_future_day(
+                                str(code),
+                                start_date,
+                                end_date
+                            )
+                        )
+                    )
+        except Exception as error0:
+            print(error0)
+            err.append(str(code))
+
+
+    __saving_work(code, coll_future_day)
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS save future day ^_^', ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log)
+        QA_util_log_info(err, ui_log)
 
 def QA_SU_save_future_day(client=DATABASE, ui_log=None, ui_progress=None):
     '''
@@ -5356,6 +5446,105 @@ def QA_SU_save_future_day_all(client=DATABASE, ui_log=None, ui_progress=None):
         QA_util_log_info(' ERROR CODE \n ', ui_log)
         QA_util_log_info(err, ui_log)
 
+def QA_SU_save_single_future_min(code : str, client=DATABASE, ui_log=None, ui_progress=None):
+    """save single_future_min
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+    coll = client.future_min
+    coll.create_index(
+        [
+            ('code',
+             pymongo.ASCENDING),
+            ('time_stamp',
+             pymongo.ASCENDING),
+            ('date_stamp',
+             pymongo.ASCENDING)
+        ]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        QA_util_log_info(
+            '##JOB13 Now Saving Future_MIN ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+
+            for type in ['1min', '5min', '15min', '30min', '60min']:
+                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                end_time = str(now_time())[0:19]
+                if ref_.count() > 0:
+                    start_time = ref_[ref_.count() - 1]['datetime']
+
+                    QA_util_log_info(
+                        '##JOB13.{} Now Saving Future {} from {} to {} =={} '
+                            .format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_future_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data[1::])
+                            )
+                else:
+                    start_time = '2015-01-01'
+
+                    QA_util_log_info(
+                        '##JOB13.{} Now Saving Future {} from {} to {} =={} '
+                            .format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_future_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data)
+                            )
+        except:
+            err.append(code)
+
+    __saving_work(code, coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
 
 def QA_SU_save_future_min(client=DATABASE, ui_log=None, ui_progress=None):
     """save future_min
@@ -6077,6 +6266,467 @@ def QA_SU_save_bond_list(client=DATABASE, ui_log=None, ui_progress=None):
         print(" Error save_tdx.QA_SU_save_bond_list exception!")
         pass
 
+###############################################################
+# HKSTOCK
+###############################################################
+def QA_SU_save_single_hkstock_day(code : str, client=DATABASE, ui_log=None):
+    """save bond_day
+
+    Keyword Arguments:
+        code : single hkstock code
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    #__hkstock_list = QA_fetch_get_hkstock_list()
+    coll = client.hkstock_day
+    coll.create_index(
+        [('code',
+          pymongo.ASCENDING),
+         ('date_stamp',
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        try:
+
+            ref_ = coll.find({'code': str(code)[0:6]})
+            end_time = str(now_time())[0:10]
+            if ref_.count() > 0:
+                start_time = ref_[ref_.count() - 1]['date']
+
+                QA_util_log_info(
+                    '##JOB06 Now Saving HKSTOCK_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_hkstock_day(
+                                str(code),
+                                QA_util_get_next_day(start_time),
+                                end_time
+                            )
+                        )
+                    )
+            else:
+                start_time = '1990-01-01'
+                QA_util_log_info(
+                    '##JOB06 Now Saving HKSTOCK_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_hkstock_day(
+                                str(code),
+                                start_time,
+                                end_time
+                            )
+                        )
+                    )
+        except:
+            err.append(str(code))
+
+    __saving_work(code, coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def QA_SU_save_hkstock_day(client=DATABASE, ui_log=None, ui_progress=None):
+    """save hkstock_day
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    __hkstock_list = QA_fetch_get_hkstock_list().code.unique().tolist()
+    coll = client.hkstock_day
+    coll.create_index(
+        [('code',
+          pymongo.ASCENDING),
+         ('date_stamp',
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        try:
+
+            ref_ = coll.find({'code': str(code)[0:6]})
+            end_time = str(now_time())[0:10]
+            if ref_.count() > 0:
+                start_time = ref_[ref_.count() - 1]['date']
+
+                QA_util_log_info(
+                    '##JOB06 Now Saving HKSTOCK_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_hkstock_day(
+                                str(code),
+                                QA_util_get_next_day(start_time),
+                                end_time
+                            )
+                        )
+                    )
+            else:
+                start_time = '1990-01-01'
+                QA_util_log_info(
+                    '##JOB06 Now Saving HKSTOCK_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_hkstock_day(
+                                str(code),
+                                start_time,
+                                end_time
+                            )
+                        )
+                    )
+        except:
+            err.append(str(code))
+
+    for i_ in range(len(__hkstock_list)):
+        # __saving_work('000001')
+        QA_util_log_info(
+            'The {} of Total {}'.format(i_,
+                                        len(__hkstock_list)),
+            ui_log=ui_log
+        )
+
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(i_ / len(__hkstock_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(i_ / len(__hkstock_list) * 10000.0))
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+
+        __saving_work(__hkstock_list[i_], coll)
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def QA_SU_save_hkstock_min(client=DATABASE, ui_log=None, ui_progress=None):
+    """save hkstock_min
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    __hkstock_list = QA_fetch_get_hkstock_list().code.unique().tolist()
+    coll = client.hkstock_min
+    coll.create_index(
+        [
+            ('code',
+             pymongo.ASCENDING),
+            ('time_stamp',
+             pymongo.ASCENDING),
+            ('date_stamp',
+             pymongo.ASCENDING)
+        ]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        QA_util_log_info(
+            '##JOB07 Now Saving HKSTOCK_MIN ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+
+            for type in ['1min', '5min', '15min', '30min', '60min']:
+                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                end_time = str(now_time())[0:19]
+                if ref_.count() > 0:
+                    start_time = ref_[ref_.count() - 1]['datetime']
+
+                    QA_util_log_info(
+                        '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_hkstock_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data[1::])
+                            )
+                else:
+                    start_time = '2015-01-01'
+
+                    QA_util_log_info(
+                        '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_hkstock_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data)
+                            )
+        except:
+            err.append(code)
+
+    executor = ThreadPoolExecutor(max_workers=4)
+
+    res = {
+        executor.submit(__saving_work,
+                        __hkstock_list[i_],
+                        coll)
+        for i_ in range(len(__hkstock_list))
+    }  # multi bond ./.
+    count = 1
+    for _ in concurrent.futures.as_completed(res):
+        QA_util_log_info(
+            'The {} of Total {}'.format(count,
+                                        len(__hkstock_list)),
+            ui_log=ui_log
+        )
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(count / len(__hkstock_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(count / len(__hkstock_list) * 10000.0))
+
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        count = count + 1
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def QA_SU_save_single_hkstock_min(code : str, client=DATABASE, ui_log=None, ui_progress=None):
+    """save single hkstock_min
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    #__bond_list = QA_fetch_get_stock_list('bond')
+    __hkstock_list = [code]
+    coll = client.hkstock_min
+    coll.create_index(
+        [
+            ('code',
+             pymongo.ASCENDING),
+            ('time_stamp',
+             pymongo.ASCENDING),
+            ('date_stamp',
+             pymongo.ASCENDING)
+        ]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        QA_util_log_info(
+            '##JOB07 Now Saving HKSTOCK_MIN ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+
+            for type in ['1min', '5min', '15min', '30min', '60min']:
+                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                end_time = str(now_time())[0:19]
+                if ref_.count() > 0:
+                    start_time = ref_[ref_.count() - 1]['datetime']
+
+                    QA_util_log_info(
+                        '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_hkstock_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data[1::])
+                            )
+                else:
+                    start_time = '2015-01-01'
+
+                    QA_util_log_info(
+                        '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_hkstock_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data)
+                            )
+        except:
+            err.append(code)
+
+    executor = ThreadPoolExecutor(max_workers=4)
+
+    res = {
+        executor.submit(__saving_work,
+                        __hkstock_list[i_],
+                        coll)
+        for i_ in range(len(__hkstock_list))
+    }  # multi bond ./.
+    count = 1
+    for _ in concurrent.futures.as_completed(res):
+        QA_util_log_info(
+            'The {} of Total {}'.format(count,
+                                        len(__hkstock_list)),
+            ui_log=ui_log
+        )
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(count / len(__hkstock_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(count / len(__hkstock_list) * 10000.0))
+
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        count = count + 1
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def QA_SU_save_hkstock_list(client=DATABASE, ui_log=None, ui_progress=None):
+    """save hkstock_list
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+    try:
+        QA_util_log_info(
+            '##JOB16 Now Saving HKSTOCK_LIST ====',
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=5000
+        )
+        hkstock_list_from_tdx = QA_fetch_get_hkstock_list()
+        pandas_data = QA_util_to_json_from_pandas(hkstock_list_from_tdx)
+
+        if len(pandas_data) > 0:
+            # 获取到数据后才进行drop collection 操作
+            client.drop_collection('hkstock_list')
+            coll = client.hkstock_list
+            coll.create_index('code')
+            coll.insert_many(pandas_data)
+        QA_util_log_info(
+            "完成HKSTOCK列表获取",
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=10000
+        )
+    except Exception as e:
+        QA_util_log_info(e, ui_log=ui_log)
+        print(" Error save_tdx.QA_SU_save_hkstock_list exception!")
+        pass
 
 if __name__ == '__main__':
     # QA_SU_save_stock_day()
@@ -6089,6 +6739,10 @@ if __name__ == '__main__':
     # QA_SU_save_index_list()
     # QA_SU_save_future_list()
 
-    QA_SU_save_future_day()
+    #QA_SU_save_future_day()
 
-    QA_SU_save_future_min()
+    #QA_SU_save_future_min()
+    QA_SU_save_hkstock_list()
+    QA_SU_save_hkstock_day()
+    #QA_SU_save_hkstock_min()
+    #QA_SU_save_single_hkstock_min(code="00338")

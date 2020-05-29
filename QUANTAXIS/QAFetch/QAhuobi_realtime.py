@@ -88,7 +88,7 @@ Huobi2QA_FREQUENCY_DICT = {
 }
 
 """
-Huobi 只允许一次获取 300bar，时间请求超过范围则不返回数据
+Huobi WebSocket 接口只允许一次获取 300bar，日线只返回150bar，时间请求超过范围则不返回数据，Rest接口返回最新 2000bar（不可选择时间段）
 """
 FREQUENCY_SHIFTING = {
     CandlestickInterval.MIN1: 14400,
@@ -96,9 +96,9 @@ FREQUENCY_SHIFTING = {
     CandlestickInterval.MIN15: 216000,
     CandlestickInterval.MIN30: 432000,
     CandlestickInterval.MIN60: 864000,
-    CandlestickInterval.DAY1: 20736000
+    CandlestickInterval.DAY1: 12960000,
 }
-
+huobi_SYMBOL = 'HUOBI.{}'
 
 class QA_Fetch_Job_Status(object):
     """
@@ -127,8 +127,7 @@ def format_huobi_data_fields(datas, symbol, frequency):
     # 归一化数据字段，转换填充必须字段，删除多余字段
     frame = pd.DataFrame(datas)
     frame['id'] = frame.apply(lambda x: int(x.loc['id']), axis=1)
-    frame['symbol'] = symbol
-    frame['market'] = 'huobi'
+    frame['symbol'] = 'HUOBI.{}'.format(symbol)
     # UTC时间转换为北京时间
     frame['date'] = pd.to_datetime(
         frame['id'],
@@ -534,16 +533,20 @@ class QA_Fetch_Huobi(object):
                 if (reqParams['to'] >
                     (QA_util_datetime_to_Unix_timestamp() + 120)):
                     # 出现“未来”时间，一般是默认时区设置错误造成的
-                    raise Exception(
+                    QA_util_log_info(
                         'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                         .format(
-                            initalParams['req'],
-                            QA_util_print_timestamp(reqParams['to']),
+                            reqParams['req'],
+                            frequency,
+                            QA_util_print_timestamp(reqParams['from']),
                             QA_util_print_timestamp(
                                 QA_util_datetime_to_Unix_timestamp()
                             )
                         )
                     )
+                    # 跳到下一个时间段
+                    continue
+
                 QA_util_log_info(
                     'Fetch %s missing kline：%s 到 %s' % (
                         initalParams['req'],
@@ -569,16 +572,21 @@ class QA_Fetch_Huobi(object):
                         if (reqParams['from'] >
                             (QA_util_datetime_to_Unix_timestamp() + 120)):
                             # 出现“未来”时间，一般是默认时区设置错误造成的
-                            raise Exception(
-                                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s} at {:s} but current time is {}'
+                            QA_util_log_info(
+                                'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                                 .format(
-                                    initalParams['req'],
+                                    reqParams['req'],
+                                    frequency,
                                     QA_util_print_timestamp(reqParams['from']),
                                     QA_util_print_timestamp(
                                         QA_util_datetime_to_Unix_timestamp()
                                     )
                                 )
                             )
+                            # 跳到下一个时间段
+                            reqParams['to'] = int(reqParams['from'] - 1)
+                            reqParams['from'] = int(reqParams['from'] - initalParams['shifting_time'])
+                            continue
                         self.__batchReqJobs[initalParams['req']
                                            ].Request.append(reqParams)
                         self.send_message(
@@ -633,9 +641,8 @@ class QA_Fetch_Huobi(object):
         if (currentJob.Type == QA_Fetch_Job_Type.REQUEST):
             # 查询到 Kline 缺漏，点抓取模式，按缺失的时间段精确请求K线数据
             missing_data_list = self.find_missing_kline_func(
-                currentJob.Symbol,
+                huobi_SYMBOL.format(currentJob.Symbol),
                 Huobi2QA_FREQUENCY_DICT[currentJob.Period],
-                market='huobi'
             )
             if len(missing_data_list) > 0:
                 # 查询确定中断的K线数据起止时间，缺分时数据，补分时数据

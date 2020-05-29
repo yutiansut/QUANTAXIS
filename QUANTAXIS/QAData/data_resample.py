@@ -482,7 +482,7 @@ def QA_data_min_to_day(min_data, type_='1D'):
         'amount': 'sum'
     }
 
-    return data.reset_index(1).resample(
+    return min_data.reset_index(1).resample(
         type_,
         base=0,
         closed='right'
@@ -881,7 +881,7 @@ def QA_data_futureday_resample(day_data, type_='w'):
                                    'code'])
 
 
-def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
+def QA_data_cryptocurrency_min_resample(min_data, type_='5min'):
     """数字加密资产的分钟线采样成大周期
 
 
@@ -896,7 +896,6 @@ def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
     """
 
     CONVERSION = {
-        'market': 'first',
         'code': 'first',
         'open': 'first',
         'high': 'max',
@@ -906,7 +905,6 @@ def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
         'vol': 'sum',
         'amount': 'sum'
     } if 'vol' in min_data.columns else {
-        'market': 'first',
         'code': 'first',
         'open': 'first',
         'high': 'max',
@@ -925,7 +923,6 @@ def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
     ).apply(CONVERSION).dropna()
     return data.assign(datetime=pd.to_datetime(data.index)
                       ).set_index(['datetime',
-                                   'market',
                                    'code'])
 
 

@@ -46,7 +46,8 @@ from urllib.parse import urljoin
 from QUANTAXIS.QAUtil.QADate_Adv import (
     QA_util_str_to_Unix_timestamp,
     QA_util_datetime_to_Unix_timestamp,
-    QA_util_timestamp_to_str
+    QA_util_timestamp_to_str,
+    QA_util_print_timestamp,
 )
 from QUANTAXIS.QAUtil.QAcrypto import QA_util_find_missing_kline
 from QUANTAXIS.QAUtil.QALogs import (
@@ -136,7 +137,7 @@ def QA_fetch_huobi_kline(
     start_time,
     end_time,
     frequency,
-    callback_save_data_func
+    callback_func
 ):
     """
     Get the latest symbol‘s candlestick data  
@@ -149,7 +150,7 @@ def QA_fetch_huobi_kline(
         "/market/history/kline?symbol={:s}&period={:s}&siz={:d}".format(
             symbol,
             frequency,
-            2000
+            1980
         )
     )
     while (retries != 0):
@@ -182,9 +183,9 @@ def QA_fetch_huobi_kline(
                 datas.append(kline)
             # 狗日huobi.pro的REST API kline时间戳排序居然是倒序向前获取，必须从后向前获取，而且有数量限制，
             # Request < 2000,
-            if (callback_save_data_func is not None):
+            if (callback_func is not None):
                 frame = format_huobi_data_fields(datas, symbol, frequency)
-                callback_save_data_func(frame, freq=Huobi2QA_FREQUENCY_DICT[frequency])
+                callback_func(frame, freq=Huobi2QA_FREQUENCY_DICT[frequency])
 
     if len(datas) == 0:
         return None
@@ -200,7 +201,7 @@ def QA_fetch_huobi_kline_subscription(
     start_time,
     end_time,
     frequency,
-    callback_save_data_func
+    callback_func
 ):
     """
     Get the symbol‘s candlestick data by subscription
@@ -211,7 +212,7 @@ def QA_fetch_huobi_kline_subscription(
 
     requested_counter = 1
     sub_client = QA_Fetch_Huobi(
-        callback_save_data_func=callback_save_data_func,
+        callback_save_data_func=callback_func,
         find_missing_kline_func=QA_util_find_missing_kline
     )
     datas = list()
@@ -220,7 +221,7 @@ def QA_fetch_huobi_kline_subscription(
         if ((reqParams['from'] > QA_util_datetime_to_Unix_timestamp())) or \
             ((reqParams['from'] > reqParams['to'])):
             # 出现“未来”时间，一般是默认时区设置，或者时间窗口滚动前移错误造成的
-            raise Exception(
+            QA_util_log_info(
                 'A unexpected \'Future\' timestamp got, Please check self.missing_data_list_func param \'tzlocalize\' set. More info: {:s}@{:s} at {:s} but current time is {}'
                 .format(
                     symbol,
@@ -231,6 +232,10 @@ def QA_fetch_huobi_kline_subscription(
                     )
                 )
             )
+            # 跳到下一个时间段
+            reqParams['to'] = int(reqParams['from'] - 1)
+            reqParams['from'] = int(reqParams['from'] - FREQUENCY_SHIFTING[frequency])
+            continue
 
         retries = 1
         frame = None
@@ -264,7 +269,7 @@ def QA_fetch_huobi_kline_subscription(
                 requested_counter = requested_counter + 1
                 # 这一步冗余，如果是开启实时抓取会自动被 WebSocket.on_messgae_callback 事件处理函数保存，
                 # 但不确定不开启实时行情抓取会不会绑定on_messgae事件，所以保留冗余。
-                callback_save_data_func(data=frame, freq=frequency)
+                callback_func(data=frame, freq=frequency)
         time.sleep(0.5)
     
     if ((retries == 0) and (len(frame) > 0)):
