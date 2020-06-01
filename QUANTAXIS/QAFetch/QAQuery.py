@@ -1111,6 +1111,32 @@ def QA_fetch_index_name(code, collections=DATABASE.index_list):
         return data.set_index('code', drop=False)
 
 
+def QA_fetch_etf_name(code, collections=DATABASE.etf_list):
+    """
+    获取ETF名称
+    """
+    if isinstance(code, str):
+        try:
+            return collections.find_one({'code': code})['name']
+        except Exception as e:
+            QA_util_log_info(e)
+            return code
+    elif isinstance(code, list):
+        code = QA_util_code_tolist(code)
+        data = pd.DataFrame(
+            [
+                item for item in collections
+                .find({'code': {
+                    '$in': code
+                }},
+                      {"_id": 0},
+                      batch_size=10000)
+            ]
+        )
+        #data['date'] = pd.to_datetime(data['date'])
+        return data.set_index('code', drop=False)
+
+
 def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
     '获取某一只实时5档行情的存储结果'
     try:

@@ -174,6 +174,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_backtest_info,
     QA_fetch_ctp_tick,
     QA_fetch_etf_list,
+    QA_fetch_etf_name,
     QA_fetch_financial_report,
     QA_fetch_future_day,
     QA_fetch_future_list,
