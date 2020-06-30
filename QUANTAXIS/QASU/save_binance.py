@@ -227,7 +227,8 @@ def QA_SU_save_binance_day(
                         ui_log=ui_log,
                         ui_progress=ui_progress
                     )
-                    continue
+                    data = None
+                    break
 
         if data is None:
             QA_util_log_info(
