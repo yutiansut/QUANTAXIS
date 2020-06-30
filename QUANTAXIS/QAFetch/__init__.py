@@ -172,7 +172,7 @@ def QA_fetch_get_bond_realtime(package, code):
 
 def QA_fetch_get_stock_block(package):
     Engine = use(package)
-    if package in ['tdx', 'pytdx', 'ths', 'QA']:
+    if package in ['tdx', 'pytdx', 'ths', 'tushare', 'QA']:
         return Engine.QA_fetch_get_stock_block()
     else:
         return 'Unsupport packages'
