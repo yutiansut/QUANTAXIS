@@ -7,7 +7,8 @@ from typing import Callable, Iterable, List, Tuple, Union
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import pandas as pd
-from fastcache import lru_cache
+from functools import lru_cache
+
 
 from QUANTAXIS.QAFactor import performance as perf
 from QUANTAXIS.QAFactor import plotting, preprocess, utils

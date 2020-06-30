@@ -25,6 +25,5 @@ pyecharts_snapshot
 async_timeout
 IPython
 jqdatasdk
-fastcache
 statsmodels
 websocket-client
