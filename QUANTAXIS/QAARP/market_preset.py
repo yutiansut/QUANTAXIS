@@ -104,7 +104,7 @@ class MARKET_PRESET:
             'AU': {
                 'name': '黄金',
                 'unit_table': 1000,
-                'price_tick': 0.05,
+                'price_tick': 0.02,
                 'buy_frozen_coeff': 0.05,
                 'sell_frozen_coeff': 0.05,
                 'exchange': EXCHANGE_ID.SHFE,
