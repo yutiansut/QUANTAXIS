@@ -1056,14 +1056,17 @@ def QA_fetch_stock_info(code, format='pd', collections=DATABASE.stock_info):
         return None
 
 
-def QA_fetch_stock_name(code, collections=DATABASE.stock_list):
+def QA_fetch_stock_name(code, collections=DATABASE.stock_list, ):
     """
     获取股票名称
     """
     if isinstance(code, str):
         try:
-            return collections.find_one({'code': code})['name']
+            res = collections.find_one({'code': code})
+            return res['name']
         except Exception as e:
+            if (res is None):
+                QA_util_log_info(u'请检查mongodb quantaxis.stock_list collection 是否为空。')
             QA_util_log_info(e)
             return code
     elif isinstance(code, list):
@@ -1079,7 +1082,7 @@ def QA_fetch_stock_name(code, collections=DATABASE.stock_list):
             ]
         )
         #data['date'] = pd.to_datetime(data['date'])
-        return data.set_index('code', drop=False)['name']
+        return data.set_index('code', drop=False)
 
 
 def QA_fetch_index_name(code, collections=DATABASE.index_list):
@@ -1105,7 +1108,33 @@ def QA_fetch_index_name(code, collections=DATABASE.index_list):
             ]
         )
         #data['date'] = pd.to_datetime(data['date'])
-        return data.set_index('code', drop=False)['name']
+        return data.set_index('code', drop=False)
+
+
+def QA_fetch_etf_name(code, collections=DATABASE.etf_list):
+    """
+    获取ETF名称
+    """
+    if isinstance(code, str):
+        try:
+            return collections.find_one({'code': code})['name']
+        except Exception as e:
+            QA_util_log_info(e)
+            return code
+    elif isinstance(code, list):
+        code = QA_util_code_tolist(code)
+        data = pd.DataFrame(
+            [
+                item for item in collections
+                .find({'code': {
+                    '$in': code
+                }},
+                      {"_id": 0},
+                      batch_size=10000)
+            ]
+        )
+        #data['date'] = pd.to_datetime(data['date'])
+        return data.set_index('code', drop=False)
 
 
 def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
