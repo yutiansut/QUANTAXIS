@@ -737,6 +737,42 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.0001,
                 'commission_coeff_today_pervol': 0.0
             },
+            'SA': {
+                'name': '纯碱',
+                'unit_table': 20,
+                'price_tick': 1,
+                'buy_frozen_coeff': 0.05,
+                'sell_frozen_coeff': 0.05,
+                'exchange': EXCHANGE_ID.CZCE,
+                'commission_coeff_peramount': 0.0001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.0001,
+                'commission_coeff_today_pervol': 0.0
+            },
+            'PG': {
+                'name': '液化石油气',
+                'unit_table': 20,
+                'price_tick': 1,
+                'buy_frozen_coeff': 0.05,
+                'sell_frozen_coeff': 0.05,
+                'exchange': EXCHANGE_ID.DCE,
+                'commission_coeff_peramount': 0.0001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.0001,
+                'commission_coeff_today_pervol': 0.0
+            },
+            'LU': {
+                'name': '低硫燃油',
+                'unit_table': 10,
+                'price_tick': 1,
+                'buy_frozen_coeff': 0.08,
+                'sell_frozen_coeff': 0.08,
+                'exchange': EXCHANGE_ID.INE,
+                'commission_coeff_peramount': 0.0001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.0001,
+                'commission_coeff_today_pervol': 0.0
+            },
             'CJ': {
                 'name': '红枣',
                 'unit_table': 5,
@@ -795,6 +831,18 @@ class MARKET_PRESET:
                 'commission_coeff_peramount': 0.00002301,
                 'commission_coeff_pervol': 0,
                 'commission_coeff_today_peramount': 0.00034501,
+                'commission_coeff_today_pervol': 0
+            },
+            'T': {
+                'name': '10年期国债',
+                'unit_table': 1000000,
+                'price_tick': 0.005,
+                'buy_frozen_coeff': 0.02,
+                'sell_frozen_coeff': 0.02,
+                'exchange': EXCHANGE_ID.CFFEX,
+                'commission_coeff_peramount': 0.0001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.0001,
                 'commission_coeff_today_pervol': 0
             },
             'TF': {
@@ -857,6 +905,7 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.002,
                 'commission_coeff_today_pervol': 0
             },
+            
         }
 
     # 手续费比例
