@@ -187,11 +187,19 @@ def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
         else:
             # 避免出现 tick 数据没有 15:00 的值
             if len(_data.loc[time(13, 0):time(13, 0)]) > 0:
-                _data2.loc[time(15,
-                                0):time(15,
-                                        0)] = _data2.loc[time(15,
-                                                              1):time(15,
-                                                                      1)].values
+                if (len(_data2.loc[time(15, 1):time(15, 1)]) > 0):
+                    _data2.loc[time(15,
+                                    0):time(15,
+                                            0)] = _data2.loc[time(15,
+                                                                  1):time(15,
+                                                                          1)].values
+                else:
+                    # 这种情况下每天下午收盘后15:00已经具有tick值，不需要另行额外填充
+                    #  -- 阿财 2020/05/27
+                    #print(_data2.loc[time(15,
+                    #                0):time(15,
+                    #                        0)])
+                    pass
         _data2 = _data2.loc[time(13, 1):time(15, 0)]
         resx = resx.append(_data1).append(_data2)
     resx['vol'] = resx['vol'] * 100.0
@@ -392,6 +400,7 @@ def QA_data_min_resample(min_data, type_='5min'):
         closed='right',
         loffset=type_
     ).agg(CONVERSION)
+    part_1_res['type'] = part_2_res['type'] = type_ if (type_ !='1D') else 'day'
     return pd.concat(
         [part_1_res,
          part_2_res]
@@ -482,7 +491,7 @@ def QA_data_min_to_day(min_data, type_='1D'):
         'amount': 'sum'
     }
 
-    return data.reset_index(1).resample(
+    return min_data.reset_index(1).resample(
         type_,
         base=0,
         closed='right'
@@ -881,7 +890,7 @@ def QA_data_futureday_resample(day_data, type_='w'):
                                    'code'])
 
 
-def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
+def QA_data_cryptocurrency_min_resample(min_data, type_='5min'):
     """数字加密资产的分钟线采样成大周期
 
 
@@ -896,7 +905,6 @@ def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
     """
 
     CONVERSION = {
-        'market': 'first',
         'code': 'first',
         'open': 'first',
         'high': 'max',
@@ -906,7 +914,6 @@ def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
         'vol': 'sum',
         'amount': 'sum'
     } if 'vol' in min_data.columns else {
-        'market': 'first',
         'code': 'first',
         'open': 'first',
         'high': 'max',
@@ -925,7 +932,6 @@ def QA_data_crypt_assetmin_resample(min_data, type_='5min'):
     ).apply(CONVERSION).dropna()
     return data.assign(datetime=pd.to_datetime(data.index)
                       ).set_index(['datetime',
-                                   'market',
                                    'code'])
 
 

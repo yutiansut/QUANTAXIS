@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.9.11'
+__version__ = '1.9.27'
 __author__ = 'yutiansut'
 
 import argparse
@@ -62,9 +62,11 @@ from QUANTAXIS.QAData import (
     QA_data_futuremin_resample_tb_kq2,
     QA_data_marketvalue,
     QA_data_min_resample,
+    QA_data_min_to_day,
     QA_data_stock_to_fq,
     QA_data_tick_resample,
     QA_data_tick_resample_1min,
+    QA_data_cryptocurrency_min_resample,
     QA_DataStruct_Day,
     QA_DataStruct_Financial,
     QA_DataStruct_Future_day,
@@ -79,6 +81,8 @@ from QUANTAXIS.QAData import (
     QA_DataStruct_Stock_min,
     QA_DataStruct_Stock_realtime,
     QA_DataStruct_Stock_transaction,
+    QA_DataStruct_CryptoCurrency_day,
+    QA_DataStruct_CryptoCurrency_min,
     QDS_IndexDayWarpper,
     QDS_IndexMinWarpper,
     QDS_StockDayWarpper,
@@ -170,6 +174,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_backtest_info,
     QA_fetch_ctp_tick,
     QA_fetch_etf_list,
+    QA_fetch_etf_name,
     QA_fetch_financial_report,
     QA_fetch_future_day,
     QA_fetch_future_list,
@@ -178,6 +183,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_index_day,
     QA_fetch_index_list,
     QA_fetch_index_min,
+    QA_fetch_index_name,
     QA_fetch_quotation,
     QA_fetch_quotations,
     QA_fetch_stock_block,
@@ -192,9 +198,9 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_stock_name,
     QA_fetch_stock_xdxr,
     QA_fetch_trade_date,
-    QA_fetch_crypto_asset_day,
-    QA_fetch_crypto_asset_min,
-    QA_fetch_crypto_asset_list
+    QA_fetch_cryptocurrency_day,
+    QA_fetch_cryptocurrency_min,
+    QA_fetch_cryptocurrency_list
 )
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 from QUANTAXIS.QAIndicator import *
@@ -247,7 +253,7 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     OUTPUT_FORMAT, RUNNING_ENVIRONMENT, RUNNING_STATUS, TRADE_STATUS,
     QA_Setting, QA_util_calc_time, QA_util_cfg_initial, QA_util_code_tolist,
     QA_util_code_tostr, QA_util_date_gap, QA_util_date_int2str,
-    QA_util_code_adjust_ctp,
+    QA_util_code_adjust_ctp, QA_util_stamp2datetime,
     QA_util_date_stamp, QA_util_date_str2int, QA_util_date_today,
     QA_util_date_valid, QA_util_dict_remove_key, QA_util_diff_list,
     QA_util_file_md5, QA_util_format_date2str, QA_util_get_cfg,

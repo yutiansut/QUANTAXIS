@@ -104,7 +104,7 @@ class MARKET_PRESET:
             'AU': {
                 'name': '黄金',
                 'unit_table': 1000,
-                'price_tick': 0.05,
+                'price_tick': 0.02,
                 'buy_frozen_coeff': 0.05,
                 'sell_frozen_coeff': 0.05,
                 'exchange': EXCHANGE_ID.SHFE,
@@ -417,8 +417,8 @@ class MARKET_PRESET:
                 'name': '棕榈油',
                 'unit_table': 10,
                 'price_tick': 2.0,
-                'buy_frozen_coeff': 0.05,
-                'sell_frozen_coeff': 0.05,
+                'buy_frozen_coeff': 0.08,
+                'sell_frozen_coeff': 0.08,
                 'exchange': EXCHANGE_ID.DCE,
                 'commission_coeff_peramount': 0,
                 'commission_coeff_pervol': 2.5,
@@ -737,6 +737,42 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.0001,
                 'commission_coeff_today_pervol': 0.0
             },
+            'SA': {
+                'name': '纯碱',
+                'unit_table': 20,
+                'price_tick': 1,
+                'buy_frozen_coeff': 0.05,
+                'sell_frozen_coeff': 0.05,
+                'exchange': EXCHANGE_ID.CZCE,
+                'commission_coeff_peramount': 0.0001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.0001,
+                'commission_coeff_today_pervol': 0.0
+            },
+            'PG': {
+                'name': '液化石油气',
+                'unit_table': 20,
+                'price_tick': 1,
+                'buy_frozen_coeff': 0.05,
+                'sell_frozen_coeff': 0.05,
+                'exchange': EXCHANGE_ID.DCE,
+                'commission_coeff_peramount': 0.0001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.0001,
+                'commission_coeff_today_pervol': 0.0
+            },
+            'LU': {
+                'name': '低硫燃油',
+                'unit_table': 10,
+                'price_tick': 1,
+                'buy_frozen_coeff': 0.08,
+                'sell_frozen_coeff': 0.08,
+                'exchange': EXCHANGE_ID.INE,
+                'commission_coeff_peramount': 0.0001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.0001,
+                'commission_coeff_today_pervol': 0.0
+            },
             'CJ': {
                 'name': '红枣',
                 'unit_table': 5,
@@ -797,6 +833,18 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.00034501,
                 'commission_coeff_today_pervol': 0
             },
+            'T': {
+                'name': '10年期国债',
+                'unit_table': 1000000,
+                'price_tick': 0.005,
+                'buy_frozen_coeff': 0.02,
+                'sell_frozen_coeff': 0.02,
+                'exchange': EXCHANGE_ID.CFFEX,
+                'commission_coeff_peramount': 0.0001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.0001,
+                'commission_coeff_today_pervol': 0
+            },
             'TF': {
                 'name': '5年期国债',
                 'unit_table': 10000,
@@ -821,6 +869,43 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.0001,
                 'commission_coeff_today_pervol': 0
             },
+            'HU': {
+                'name': '火币Pro',
+                'unit_table': 1.0,
+                'price_tick': 1.0,
+                'buy_frozen_coeff': 0.06,
+                'sell_frozen_coeff': 0.06,
+                'exchange': EXCHANGE_ID.HUOBI,
+                'commission_coeff_peramount': 0.002,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.002,
+                'commission_coeff_today_pervol': 0
+            },
+            'OK': {
+                'name': 'OKEx',
+                'unit_table': 1.0,
+                'price_tick': 1.0,
+                'buy_frozen_coeff': 0.06,
+                'sell_frozen_coeff': 0.06,
+                'exchange': EXCHANGE_ID.OKEX,
+                'commission_coeff_peramount': 0.002,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.002,
+                'commission_coeff_today_pervol': 0
+            },
+            'BI': {
+                'name': 'Bianace',
+                'unit_table': 1.0,
+                'price_tick': 1.0,
+                'buy_frozen_coeff': 0.06,
+                'sell_frozen_coeff': 0.06,
+                'exchange': EXCHANGE_ID.BINANCE,
+                'commission_coeff_peramount': 0.002,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.002,
+                'commission_coeff_today_pervol': 0
+            },
+            
         }
 
     # 手续费比例
@@ -860,7 +945,18 @@ class MARKET_PRESET:
                 code = code[0:-2]
             else:
                 code = code[0:2]
-        return self.table.get(str(code).upper(), {})
+        return self.table.get(str(code).upper(), {
+                'name': 'default',
+                'unit_table': 1.0,
+                'price_tick': 1.0,
+                'buy_frozen_coeff': 1,
+                'sell_frozen_coeff': 1,
+                'exchange':  'stock_cn',
+                'commission_coeff_peramount': 0.001,
+                'commission_coeff_pervol': 0,
+                'commission_coeff_today_peramount': 0.001,
+                'commission_coeff_today_pervol': 0
+            })
 
     # 合约所属交易所代码
 

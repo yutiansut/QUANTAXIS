@@ -828,7 +828,7 @@ if __name__ == '__main__':
     from QUANTAXIS.QAFetch.QAhuobi import FIRST_PRIORITY
     codelist = ['BCHUSDT', 'BSVUSDT', 'BTCUSDT', 'EOSUSDT', 'ETHUSDT', 'ETCUSDT', 'DASHUSDT', 'LTCUSDT', 'XMRUSDT', 'XRPUSDT', 'ZECUSDT']
     data_1h = QA_fetch_crypto_asset_min_adv(['binance','huobi'],
-            symbol=codelist + FIRST_PRIORITY,
+            code=codelist + FIRST_PRIORITY,
             start='2020-02-01',
             end='2020-05-28 18:10:00',
             frequence='60min')
@@ -837,7 +837,7 @@ if __name__ == '__main__':
             start='2019-10-01',
             end='2020-05-28 18:10:00')
     data2 = QA_fetch_crypto_asset_min_adv(['huobi'],
-            symbol=['btcusdt'],
+            code=['btcusdt'],
             start='2020-02-01',
             end='2020-05-28 18:10:00',
             frequence='60min')
