@@ -203,7 +203,7 @@ class MARKET_PRESET:
                 'commission_coeff_today_pervol': 0.0
             },
             'A': {
-                'name': '黄大豆',
+                'name': '豆一',
                 'unit_table': 10,
                 'price_tick': 1.0,
                 'buy_frozen_coeff': 0.05,
@@ -215,7 +215,7 @@ class MARKET_PRESET:
                 'commission_coeff_today_pervol': 2.0
             },
             'B': {
-                'name': '黄大豆',
+                'name': '豆二',
                 'unit_table': 10,
                 'price_tick': 1.0,
                 'buy_frozen_coeff': 0.05,
