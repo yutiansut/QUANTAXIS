@@ -27,3 +27,5 @@ IPython
 jqdatasdk
 statsmodels
 websocket-client
+tushare
+pytdx
