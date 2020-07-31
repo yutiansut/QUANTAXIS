@@ -26,6 +26,7 @@ async_timeout
 IPython
 jqdatasdk
 statsmodels
+numba
 websocket-client
 tushare
 pytdx
