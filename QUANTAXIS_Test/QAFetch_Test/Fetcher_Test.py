@@ -1,7 +1,7 @@
 # coding:utf-8
 #
 # The MIT License (MIT)
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
 #
 # Author:           604829050@qq.com
 # Date:             2018-05-11
