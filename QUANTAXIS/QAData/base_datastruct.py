@@ -1276,6 +1276,12 @@ class _quotation_base():
         except:
             pass
 
+    def select_single_time(self, hour=9, minute=0, second=0):
+        """
+        选择一个特定的时间点
+        """
+        return self.data.loc[self.datetime.map(lambda x: x.minute==minute and x.hour==hour and x.second==second), slice(None)]
+
     def get_bar(self, code, time):
         """
         获取一个bar的数据

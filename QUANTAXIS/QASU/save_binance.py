@@ -207,13 +207,28 @@ def QA_SU_save_binance_day(
                         )[2:16]
                     )
                 )
-                data = QA_fetch_binance_kline(
-                    symbol_info['symbol'],
-                    time.mktime(start_time.utctimetuple()),
-                    time.mktime(end.utctimetuple()),
-                    frequency,
-                    callback_func=QA_SU_save_data_binance_callback
-                )
+                try:
+                    data = QA_fetch_binance_kline(
+                        symbol_info['symbol'],
+                        time.mktime(start_time.utctimetuple()),
+                        time.mktime(end.utctimetuple()),
+                        frequency,
+                        callback_func=QA_SU_save_data_binance_callback
+                    )
+                except Exception as e:
+                    # '纯数字出现错误 BINANCE.123456'
+                    QA_util_log_info(e, ui_log=ui_log)
+                    QA_util_log_info(
+                        'SYMBOL "{}" from {} to {} throw a exception.'.format(
+                            symbol_template.format(symbol_info['symbol']),
+                            QA_util_timestamp_to_str(start_time),
+                            QA_util_timestamp_to_str(end)
+                        ),
+                        ui_log=ui_log,
+                        ui_progress=ui_progress
+                    )
+                    data = None
+                    break
 
         if data is None:
             QA_util_log_info(
