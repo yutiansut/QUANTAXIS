@@ -850,7 +850,7 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.002,
                 'commission_coeff_today_pervol': 0
             },
-            
+
         }
 
     # 手续费比例
@@ -879,7 +879,7 @@ class MARKET_PRESET:
 
     def get_exchangecode(self, exchange):
         return self.pdtable.T.query('exchange=="{}"'.format(exchange)
-                                   ).index.tolist()
+                                    ).index.tolist()
 
     def get_code(self, code):
         try:
@@ -891,17 +891,17 @@ class MARKET_PRESET:
             else:
                 code = code[0:2]
         return self.table.get(str(code).upper(), {
-                'name': 'default',
-                'unit_table': 1.0,
-                'price_tick': 1.0,
-                'buy_frozen_coeff': 1,
-                'sell_frozen_coeff': 1,
-                'exchange':  'stock_cn',
-                'commission_coeff_peramount': 0.001,
-                'commission_coeff_pervol': 0,
-                'commission_coeff_today_peramount': 0.001,
-                'commission_coeff_today_pervol': 0
-            })
+            'name': 'default',
+            'unit_table': 1.0,
+            'price_tick': 1.0,
+            'buy_frozen_coeff': 1,
+            'sell_frozen_coeff': 1,
+            'exchange':  'stock_cn',
+            'commission_coeff_peramount': 0.001,
+            'commission_coeff_pervol': 0,
+            'commission_coeff_today_peramount': 0.001,
+            'commission_coeff_today_pervol': 0
+        })
 
     # 合约所属交易所代码
 
