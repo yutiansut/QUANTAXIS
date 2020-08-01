@@ -198,6 +198,14 @@ PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件
 
 - [QUANTAXIS PROCluster](https://github.com/yutiansut/QAPRO_dockercluster) 一键部署的docker集群, 2地3中心的高可用灾备投研/交易环境
 
+> Runtime 一个标准化的策略运行时
+
+- [QUANTAXIS RUNTIME-RS](https://github.com/yutiansut/qaruntime-rs) 一个rust-base的策略标准化运行时  单机可以拉起10k+ 策略
+- [QAStrategy-rs](https://github.com/yutiansut/qamom-rs) rust-base的策略标准化封装工具
+- [QUANTAXIS-RS](https://github.com/yutiansut/quantaxis-rs) 全新的rust版本的quantaxis底层账户
+- [QADATA-RS](https://github.com/yutiansut/qadata-rs) 标准化的数据结构 数据获取封装
+
+
 
 ### 社区提供的工具链
 
@@ -226,9 +234,6 @@ QUANTAXIS 是一个开放的项目, 在开源的3年中有大量的小伙伴加�
 
 DISCORD 社区  https://discord.gg/mkk5RgN
 
-QUANATXIS 前端开发群: 983499694 [群链接](https://jq.qq.com/?_wv=1027&k=5qYi8Fk)
-
-QUANATXIS 研报阅读/ 事件驱动分析群: 1045723486 [群链接](https://jq.qq.com/?_wv=1027&k=5Z3NVEW)
 
 QUANTAXIS 开发群: 773602202 (如果想要贡献代码 请加这个群 需要备注你的GITHUB ID)
 
