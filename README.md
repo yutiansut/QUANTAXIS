@@ -2,14 +2,7 @@
 # QUANTAXIS 量化金融策略框架
 
 ------------------
-
-
-## QUANTAXIS 新版本客户端/手机终端 5月即将发布 
-
-
-![pypidownloads](https://img.shields.io/pypi/dm/quantaxis.svg)
-![pypidownloads](https://img.shields.io/pypi/dw/quantaxis.svg)
-[![Backers on Open Collective](https://opencollective.com/QUANTAXIS/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/QUANTAXIS/sponsors/badge.svg)](#sponsors) 
+ 
 
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
 [![GitHub stars](https://img.shields.io/github/stars/quantaxis/quantaxis.svg?style=social&label=Star&)](https://github.com/quantaxis/quantaxis/stargazers)
@@ -25,8 +18,9 @@ Quantitative Financial FrameWork
 
 从数据爬取-清洗存储-分析回测-可视化-交易复盘的本地一站式解决方案
 
+支持 python/rust 的数据下载 自动运维(a 股/期货/期权/港美股/数字货币), 支持可配置的自定义账户和组合协议(QIFI), 支持股票/期货市场全推的数据协议(MIFI), 支持策略打点和动态画图的界面可视化协议(VIFI), 支持 a 股/ 期货/ 港美股的实盘交易及本地无限制账户的模拟盘. 支持 docker 一键部署和局域网内的 k8s 集群部署, 基于 celery/rabbitmq 实现分布式的回测/模拟/实盘的任务队列. 支持行情二次重采样, 账户订单二次转发, 订单流风控. 支持完全自定义的行情分发(模拟/真实/OU 随机过程)以及行情回放(用于复盘/模拟环境创建).  支持基于 QIFI 协议的各种客户端的自行接入(手机 APP/网页 web/终端) 
 
-
+目前为私募([杭州波粒二象资产管理有限公司](https://dc.simuwang.com/company/CO00000XXI.html))自用框架, python 部分完全开源, rust 部分以 docker 微服务形式提供
 
 
 
