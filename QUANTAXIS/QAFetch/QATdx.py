@@ -37,8 +37,9 @@ from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 from retrying import retry
 
+
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_index_code, _select_type, _select_bond_market_code
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp, QA_util_code_tostr,
                               QA_util_date_str2int, QA_util_date_valid,
                               QA_util_get_real_date, QA_util_get_real_datelist,
                               QA_util_future_to_realdatetime, QA_util_tdxtimestamp,
@@ -696,6 +697,9 @@ def for_sh(code):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
+    if type_ in ['stock', 'gp']:
+            res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
+            return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
     api = TdxHq_API()
     with api.connect(ip, port):
         data = pd.concat(
@@ -713,10 +717,11 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
         sh = sh.assign(sec=sh.code.apply(for_sh))
 
         if type_ in ['stock', 'gp']:
-
-            return pd.concat([sz, sh], sort=False).query(
-                'sec=="stock_cn"').sort_index().assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
+            res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
+            return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
+            # return pd.concat([sz, sh], sort=False).query(
+            #     'sec=="stock_cn"').sort_index().assign(
+            #     name=data['name'].apply(lambda x: str(x)[0:6]))
 
         elif type_ in ['index', 'zs']:
 

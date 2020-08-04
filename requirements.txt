@@ -14,8 +14,6 @@ protobuf>=3.4.0
 motor>=1.1
 retrying
 seaborn>=0.8.1
-selenium
-scrapy
 attrs>=17.4.0
 pyconvert>=0.6.3
 demjson>=2.2.4

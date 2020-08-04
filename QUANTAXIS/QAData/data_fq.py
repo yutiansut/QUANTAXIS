@@ -157,8 +157,10 @@ def _QA_data_stock_to_fq(bfq_data, xdxr_data, fqtype):
 
     for col in ['open', 'high', 'low', 'close', 'preclose']:
         data[col] = data[col] * data['adj']
-    data['volume'] = data['volume'] / \
-        data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+    # data['volume'] = data['volume'] / \
+    #     data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+
+    data['volume'] = data['volume']  if 'volume' in data.columns else data['vol']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
         data['low_limit'] = data['high_limit'] * data['adj']
