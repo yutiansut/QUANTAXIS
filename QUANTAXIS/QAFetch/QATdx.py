@@ -697,19 +697,21 @@ def for_sh(code):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
-    if type_ in ['stock', 'gp']:
-            res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
-            return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
+    # if type_ in ['stock', 'gp']:
+    #         res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
+    #         return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
     api = TdxHq_API()
     with api.connect(ip, port):
         data = pd.concat(
             [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
-                sse='sz' if j == 0 else 'sh').set_index(
-                ['code', 'sse'], drop=False) for i in
+                sse='sz' if j == 0 else 'sh') for i in
                 range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
                 j
                 in range(2)], axis=0, sort=False)
         # data.code = data.code.apply(int)
+
+        data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
+                ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
         sh = data.query('sse=="sh"')
 
@@ -717,11 +719,11 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
         sh = sh.assign(sec=sh.code.apply(for_sh))
 
         if type_ in ['stock', 'gp']:
-            res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
-            return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
-            # return pd.concat([sz, sh], sort=False).query(
-            #     'sec=="stock_cn"').sort_index().assign(
-            #     name=data['name'].apply(lambda x: str(x)[0:6]))
+            # res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
+            # return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
+            return pd.concat([sz, sh], sort=False).query(
+                'sec=="stock_cn"').sort_index().assign(
+                name=data['name'].apply(lambda x: str(x)[0:6]))
 
         elif type_ in ['index', 'zs']:
 
@@ -758,12 +760,12 @@ def QA_fetch_get_index_list(ip=None, port=None):
     with api.connect(ip, port):
         data = pd.concat(
             [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
-                sse='sz' if j == 0 else 'sh').set_index(
-                ['code', 'sse'], drop=False) for i in
+                sse='sz' if j == 0 else 'sh') for i in
                 range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
                 j
                 in range(2)], axis=0, sort=False)
-        # data.code = data.code.apply(int)
+        data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
+                ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
         sh = data.query('sse=="sh"')
 
@@ -786,12 +788,13 @@ def QA_fetch_get_bond_list(ip=None, port=None):
     with api.connect(ip, port):
         data = pd.concat(
             [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
-                sse='sz' if j == 0 else 'sh').set_index(
-                ['code', 'sse'], drop=False) for i in
+                sse='sz' if j == 0 else 'sh') for i in
                 range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
                 j
                 in range(2)], axis=0, sort=False)
         # data.code = data.code.apply(int)
+        data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
+                ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
         sh = data.query('sse=="sh"')
         sz = sz.assign(sec=sz.code.apply(for_sz))
