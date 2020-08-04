@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -157,8 +157,10 @@ def _QA_data_stock_to_fq(bfq_data, xdxr_data, fqtype):
 
     for col in ['open', 'high', 'low', 'close', 'preclose']:
         data[col] = data[col] * data['adj']
-    data['volume'] = data['volume'] / \
-        data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+    # data['volume'] = data['volume'] / \
+    #     data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+
+    data['volume'] = data['volume']  if 'volume' in data.columns else data['vol']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
         data['low_limit'] = data['high_limit'] * data['adj']

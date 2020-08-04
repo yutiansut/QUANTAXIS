@@ -1,4 +1,4 @@
-pymongo
+pymongo>=3.10
 bs4
 pandas<0.25.0
 lxml
@@ -10,13 +10,10 @@ gevent-websocket>=0.10.1
 apscheduler>=3.3.1
 tornado
 zenlog
-pyecharts
-protobuf>=3.4
+protobuf>=3.4.0
 motor>=1.1
 retrying
 seaborn>=0.8.1
-selenium
-scrapy
 attrs>=17.4.0
 pyconvert>=0.6.3
 demjson>=2.2.4
@@ -25,6 +22,13 @@ pyecharts_snapshot
 async_timeout
 IPython
 jqdatasdk
-fastcache
-statsmodels
+numba
 websocket-client
+tushare
+statsmodels<=0.9.0
+scipy<=1.1.0
+pytdx>=1.67
+delegator.py>=0.0.12
+flask>=0.12.2
+pyecharts>=0.5.11
+six>=1.10.0
