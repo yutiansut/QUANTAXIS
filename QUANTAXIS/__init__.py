@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.9.14'
+__version__ = '1.9.30'
 __author__ = 'yutiansut'
 
 import argparse
@@ -62,6 +62,7 @@ from QUANTAXIS.QAData import (
     QA_data_futuremin_resample_tb_kq2,
     QA_data_marketvalue,
     QA_data_min_resample,
+    QA_data_min_to_day,
     QA_data_stock_to_fq,
     QA_data_tick_resample,
     QA_data_tick_resample_1min,
@@ -173,6 +174,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_backtest_info,
     QA_fetch_ctp_tick,
     QA_fetch_etf_list,
+    QA_fetch_etf_name,
     QA_fetch_financial_report,
     QA_fetch_future_day,
     QA_fetch_future_list,
@@ -181,6 +183,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_index_day,
     QA_fetch_index_list,
     QA_fetch_index_min,
+    QA_fetch_index_name,
     QA_fetch_quotation,
     QA_fetch_quotations,
     QA_fetch_stock_block,
