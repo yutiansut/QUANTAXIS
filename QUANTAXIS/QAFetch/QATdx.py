@@ -2129,6 +2129,7 @@ def QA_fetch_get_commodity_option_RU_contract_time_to_market():
 
 ###############################################################
 # 玉米
+# 帅选M开头的合约
 ###############################################################
 
 
@@ -2201,6 +2202,72 @@ def QA_fetch_get_commodity_option_CU_contract_time_to_market():
     return rows
 
 
+
+###############################################################
+# 金
+###############################################################
+
+
+def QA_fetch_get_commodity_option_AU_contract_time_to_market():
+    '''
+    #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+    :return: list Series
+    '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx会 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("AU"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
+
+###############################################################
+# al 铝
+###############################################################
+def QA_fetch_get_commodity_option_AL_contract_time_to_market():
+    '''
+    #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+    :return: list Series
+    '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx会 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("AL"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
 ###############################################################
 # 豆粕
 ###############################################################
