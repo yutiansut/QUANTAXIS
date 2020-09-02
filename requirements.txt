@@ -30,5 +30,5 @@ scipy<=1.1.0
 pytdx>=1.67
 delegator.py>=0.0.12
 flask>=0.12.2
-pyecharts
+pyecharts==0.5.11
 six>=1.10.0
