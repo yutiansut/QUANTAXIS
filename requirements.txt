@@ -25,8 +25,8 @@ jqdatasdk
 numba
 websocket-client
 tushare
-statsmodels
-scipy
+statsmodels>=0.12.0
+scipy>=1.5.0
 pytdx>=1.67
 delegator.py>=0.0.12
 flask>=0.12.2
