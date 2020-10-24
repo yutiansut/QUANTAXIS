@@ -983,12 +983,12 @@ class QA_Performance():
                 while True:
                     if data.direction in [1, 2, -2]:
                         if data.direction in [1, 2]:
-                            X[data.code]['buy'].append((data.datetime,
+                            X[data.code]['buy'].put((data.datetime,
                                                         data.amount,
                                                         data.price,
                                                         data.direction))
                         elif data.direction in [-2]:
-                            X[data.code]['sell'].append((data.datetime,
+                            X[data.code]['sell'].put((data.datetime,
                                                          data.amount,
                                                          data.price,
                                                          data.direction))

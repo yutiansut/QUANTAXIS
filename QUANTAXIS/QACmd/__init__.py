@@ -254,7 +254,7 @@ class CLI(cmd.Cmd):
             命令格式：save day  : save stock_day/xdxr index_day etf_day stock_list/index_list \n\
             命令格式：save min  : save stock_min/xdxr index_min etf_min stock_list/index_list \n\
             命令格式: save future: save future_day/min/list \n\
-            命令格式: save ox: save option_contract_list/option_day/option_min/option_commodity_day/option_commodity_min \n\
+            命令格式: save option: save option_contract_list/option_day_all/option_min_all \n\
             命令格式: save transaction: save stock_transaction and index_transaction (Warning: Large Disk Space Required) \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_xdxr : 保存日除权除息数据 \n\
@@ -280,12 +280,12 @@ class CLI(cmd.Cmd):
             命令格式：save stock_info : 保存tushare数据接口获取的股票列表 \n\
             命令格式：save financialfiles : 保存高级财务数据(自1996年开始) \n\
             命令格式：save option_contract_list 保存上市的期权合约信息（不包括已经过期摘牌的合约数据）\n\
-            命令格式：save 50etf_option_day : 保存上海证券交易所50ETF期权日线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save 50etf_option_min : 保存上海证券交易所50ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save 300etf_option_day : 保存上海证券交易所300ETF期权日线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save 300etf_option_min : 保存上海证券交易所300ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save option_commodity_day : 保存商品期权日线数据（不包括已经过期摘牌的数据） \n\
-            命令格式：save option_commodity_min : 保存商品期权分钟线数据（不包括已经过期摘牌的数据） \n\
+            # 命令格式：save 50etf_option_day : 保存上海证券交易所50ETF期权日线数据（不包括已经过期摘牌的数据） \n\
+            # 命令格式：save 50etf_option_min : 保存上海证券交易所50ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
+            # 命令格式：save 300etf_option_day : 保存上海证券交易所300ETF期权日线数据（不包括已经过期摘牌的数据） \n\
+            # 命令格式：save 300etf_option_min : 保存上海证券交易所300ETF期权分钟线数据（不包括已经过期摘牌的数据） \n\
+            # 命令格式：save option_commodity_day : 保存商品期权日线数据（不包括已经过期摘牌的数据） \n\
+            # 命令格式：save option_commodity_min : 保存商品期权分钟线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_day_all : 保存上海证券交易所所有期权日线数据（不包括已经过期摘牌的数据） \n\
             命令格式：save option_min_all : 保存上海证券交易所所有期权分钟数据（不包括已经过期摘牌的数据） \n\
             命令格式：save index_list : 保存指数列表 \n\
@@ -546,14 +546,19 @@ class CLI(cmd.Cmd):
                 QA_SU_save_option_commodity_day('tdx')
             elif len(arg) == 1 and arg[0] == 'option_commodity_min':
                 QA_SU_save_option_commodity_min('tdx')
-            elif len(arg) == 1 and arg[0] in ['ox', 'OX', 'oX', 'Ox']:
+
+            elif len(arg) == 1 and arg[0] in ['option']:
                 QA_SU_save_option_contract_list('tdx')
-                QA_SU_save_option_50etf_day('tdx')
-                QA_SU_save_option_50etf_min('tdx')
-                QA_SU_save_option_300etf_day('tdx')
-                QA_SU_save_option_300etf_min('tdx')
-                QA_SU_save_option_commodity_day('tdx')
-                QA_SU_save_option_commodity_min('tdx')
+                QA_SU_save_option_day_all('tdx')
+                QA_SU_save_option_min_all('tdx')
+
+            elif len(arg) == 1 and arg[0] in ['option_contract_list']:
+                QA_SU_save_option_contract_list('tdx')
+
+            elif len(arg) == 1 and arg[0] in ['option_day_all']:
+                QA_SU_save_option_day_all('tdx')
+            elif len(arg) == 1 and arg[0] in ['option_min_all']:
+                QA_SU_save_option_min_all('tdx')
             elif len(arg) == 2 and arg[0] == 'single_stock_day':
                 QA_SU_save_single_stock_day(arg[1], 'tdx')
             elif len(arg) == 2 and arg[0] == 'single_future_day':
