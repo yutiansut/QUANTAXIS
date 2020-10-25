@@ -47,7 +47,7 @@ try:
         QA_util_print_timestamp
     )
 except:
-    print('PLEASE run "pip install QUANTAXIS" to call these modules')
+    print('PLEASE run "pip install QUANTAXIS" before call QUANTAXIS.QAAnalysis.QAAnalysis_signal modules')
     pass
 
 """
