@@ -29,7 +29,7 @@
 
 ##  2. 下载PYTHON(可以跳过)
 
-QUANATXIS 支持的安装环境是python3以上 优先推荐3.6环境
+QUANTAXIS 支持的安装环境是python3以上 优先推荐3.6环境
 
 在windows下,推荐使用ANACONDA集成环境来安装python[推荐Anaconda3-5.0.1-Windows-x86_64.exe]
 
@@ -96,11 +96,6 @@ python -m pip install -e .
 
 ```
 λ  quantaxis
-QUANTAXIS>> start QUANTAXIS
-QUANTAXIS>> Selecting the Best Server IP of TDX
-QUANTAXIS>> === The BEST SERVER ===
- stock_ip 115.238.90.165 future_ip 61.152.107.141
-QUANTAXIS>> Welcome to QUANTAXIS, the Version is remake-version
 QUANTAXIS>
 ```
 

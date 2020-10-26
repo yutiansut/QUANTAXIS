@@ -1,0 +1,22 @@
+name: Python application
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip flake8
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        pip install quantaxis -U
+
+

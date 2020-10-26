@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: E:\k8s-for-docker-desktop\kompose-windows-amd64.exe convert -c
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: qa
+  name: qa
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: qa
+    spec:
+      containers:
+      - env:
+        - name: MONGODB
+          value: mgdb
+        - name: QAPUBSUB_IP
+          value: qaeventmq
+        - name: QAPUBSUB_PORT
+          value: "5672"
+        - name: QAPUBSUB_PWD
+          value: admin
+        - name: QAPUBSUB_USER
+          value: admin
+        - name: QARUN
+          value: qaweb
+        - name: TZ
+          value: Asia/Shanghai
+        image: daocloud.io/quantaxis/qacommunity:latest
+        name: qacommunity
+        ports:
+        - containerPort: 8888
+        - containerPort: 80
+        resources: {}
+        volumeMounts:
+        - mountPath: /home
+          name: qacode
+      restartPolicy: Always
+      volumes:
+      - name: qacode
+        persistentVolumeClaim:
+          claimName: qacode
+status: {}

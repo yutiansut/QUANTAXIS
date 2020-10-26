@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,11 +25,30 @@
 import pymongo
 from motor.motor_asyncio import AsyncIOMotorClient
 from motor import MotorClient
-from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 import asyncio
 
 
 def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
+    """
+    explanation:
+        根据给定的uri返回一个MongoClient实例，采用@几何建议以使用加密
+
+    params:
+        * uri ->:
+            meaning: mongodb连接uri
+            type: str
+            optional: [null]
+
+    return:
+        MongoClient
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
+    """
+
     # 采用@几何的建议,使用uri代替ip,port的连接方式
     # 这样可以对mongodb进行加密:
     # uri=mongodb://user:passwor@ip:port
@@ -40,13 +59,24 @@ def QA_util_sql_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
 
 
 def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
-    """异步mongo示例
+    """
+    explanation:
+        根据给定的uri返回一个异步AsyncIOMotorClient实例
 
-    Keyword Arguments:
-        uri {str} -- [description] (default: {'mongodb://localhost:27017/quantaxis'})
+    params:
+        * uri ->:
+            meaning: mongodb连接uri
+            type: str
+            optional: [null]
 
-    Returns:
-        [type] -- [description]
+    return:
+        AsyncIOMotorClient
+
+    demonstrate:
+        Not described
+
+    output:
+        Not described
     """
     # loop = asyncio.new_event_loop()
     # asyncio.set_event_loop(loop)
@@ -59,7 +89,6 @@ def QA_util_sql_async_mongo_setting(uri='mongodb://localhost:27017/quantaxis'):
     # async def client():
     return AsyncIOMotorClient(uri, io_loop=loop)
     # yield  client()
-
 
 
 ASCENDING = pymongo.ASCENDING

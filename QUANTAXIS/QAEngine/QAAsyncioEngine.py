@@ -20,26 +20,36 @@ class QAAsync():
         self.event_loop = asyncio.new_event_loop()
         self.elthread = threading.Thread(target=self.event_loop.run_forever)
 
-        # self.elthread.setDaemon(True)
+        self.elthread.setDaemon(True)
         self.elthread.start()
 
-    def create_task(self, func, callback, *args, **kwargs):
+    def run(self, func, callback, *args, **kwargs):
         # schedule a task
 
-        #task = self.event_loop.create_task(func(*args,**kwargs))
-        task = asyncio.ensure_future(func(*args, **kwargs))
-        task.add_done_callback(callback)
-        return task
-
+        return self.submit(func(*args, **kwargs)).add_done_callback(callback)
 
     def submit(self, coro):
+        """
+
+        future = asyncio.run_coroutine_threadsafe(coro, loop)
+
+        Arguments:
+            coro {[type]} -- [description]
+
+        Returns:
+            Future -- [description]
+        """
+
         return asyncio.run_coroutine_threadsafe(coro, self.event_loop)
+        #self.event_loop.call_soon_threadsafe()
 
 
-def callback(future):
-    r = future.result()
-    print(len(r))
+def callback(result):
+    r = result
+    print(r.result())
+    print(type(r))
     print(datetime.datetime.now()-time)
+    return r
 
 
 """
@@ -54,28 +64,14 @@ if __name__ == '__main__':
     QAE = QAAsync()
 
     print(datetime.datetime.now()-time)
-    QAE.submit(QA_fetch_stock_day, callback,
-               '000001', '1990-01-01', '2018-01-31')
-    QAE.submit(QA_fetch_stock_day, callback,
-               '000002', '1990-01-01', '2018-01-31')
-    QAE.submit(QA_fetch_stock_day, callback,
-               '000007', '1990-01-01', '2018-01-31')
-    QAE.submit(QA_fetch_stock_day, callback,
-               '000004', '1990-01-01', '2018-01-31')
-    QAE.submit(QA_fetch_stock_day, callback,
-               '000005', '1990-01-01', '2018-01-31')
-
-    # import QUANTAXIS as QA
-    # time=datetime.datetime.now()
-    # r=QA.QA_fetch_stock_day('000001','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # #print(datetime.datetime.now()-time)
-    # r=QA.QA_fetch_stock_day('000002','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # r=QA.QA_fetch_stock_day('000007','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # r=QA.QA_fetch_stock_day('000004','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # r=QA.QA_fetch_stock_day('000005','1990-01-01', '2018-01-31')
-    # print(len(r))
-    # print(datetime.datetime.now()-time)
+    QAE.run(QA_fetch_stock_day, callback,
+            '000001', '1990-01-01', '2018-01-31')
+    QAE.run(QA_fetch_stock_day, callback,
+            '000002', '1990-01-01', '2018-01-31')
+    QAE.run(QA_fetch_stock_day, callback,
+            '000007', '1990-01-01', '2018-01-31')
+    QAE.run(QA_fetch_stock_day, callback,
+            '000004', '1990-01-01', '2018-01-31')
+    QAE.run(QA_fetch_stock_day, callback,
+            '000005', '1990-01-01', '2018-01-31')
+    print(datetime.datetime.now()-time)

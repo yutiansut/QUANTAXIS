@@ -56,7 +56,7 @@ market.login(QA.BROKER_TYPE.SHIPANE,'account:813')
 # In[9]:
 
 
-market.get_account_id()
+market.get_account_cookie()
 
 
 # In[10]:

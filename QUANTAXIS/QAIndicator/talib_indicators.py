@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2018 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,8 @@ import pandas as pd
 try:
     import talib
 except:
-    print('PLEASE install TALIB to call these methods')
+    pass
+    #print('PLEASE install TALIB to call these methods')
 
 
 def AD(DataFrame):
@@ -53,9 +54,20 @@ def ADXR(DataFrame, N=14):
 
 
 def AROON(DataFrame, N=14):
-    res = talib.AROON(DataFrame.high.values, DataFrame.low.values, N)
-    return pd.DataFrame({'AROON': res}, index=DataFrame.index)
+    """阿隆指标
+    
+    Arguments:
+        DataFrame {[type]} -- [description]
+    
+    Keyword Arguments:
+        N {int} -- [description] (default: {14})
+    
+    Returns:
+        [type] -- [description]
+    """
 
+    ar_up, ar_down = talib.AROON(DataFrame.high.values, DataFrame.low.values, N)
+    return pd.DataFrame({'AROON_UP': ar_up,'AROON_DOWN': ar_down}, index=DataFrame.index)
 
 def AROONOSC(DataFrame, N=14):
     res = talib.AROONOSC(DataFrame.high.values, DataFrame.low.values, N)
@@ -485,4 +497,4 @@ def STOCH(DataFrame, fastk_period=5, slowk_period=3, slowk_matype=0, slowd_perio
 def STOCHF(DataFrame, fastk_period=5, fastd_period=3, fastd_matype=0):
     fastk, fastd = talib.STOCHF(DataFrame.high.values, DataFrame.low.values, DataFrame.close.values,
                                fastk_period, fastd_period, fastd_matype)
-    return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': slowd}, index=DataFrame.index)
+    return pd.DataFrame({'STOCHF_FASTK': fastk, 'STOCHF_FASTD': fastd}, index=DataFrame.index)

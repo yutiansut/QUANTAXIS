@@ -1,2 +1,2 @@
 tushare
-pytdx
+pytdx>=1.67
