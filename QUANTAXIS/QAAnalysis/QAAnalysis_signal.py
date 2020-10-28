@@ -35,7 +35,7 @@ from QUANTAXIS.QAData.base_datastruct import *
 try:
     import peakutils
 except:
-    print('PLEASE run "pip install peakutils" to call these modules')
+    #print('PLEASE run "pip install peakutils" to call these modules')
     pass
 try:
     from QUANTAXIS.QAIndicator.talib_numpy import *
