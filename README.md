@@ -2,7 +2,7 @@
 # QUANTAXIS 量化金融策略框架
 
 
-## ATTENTION!!!  QUANTAXIS无任何收费项目 请勿相信任何渠道的私聊!!!!
+## ATTENTION!!!  QUANTAXIS无任何收费项目 请勿相信任何渠道的私聊!!!
 ------------------
  
 
