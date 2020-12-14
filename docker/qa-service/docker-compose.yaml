@@ -23,7 +23,7 @@ services:
           - QAPUBSUB_USER=admin
           - QAPUBSUB_PWD=admin
         volumes:
-            - qacode:/home
+            - qacode:/root/code
         restart: always
 
     # qacron:

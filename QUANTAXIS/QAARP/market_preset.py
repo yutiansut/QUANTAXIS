@@ -850,6 +850,30 @@ class MARKET_PRESET:
                 'commission_coeff_today_peramount': 0.002,
                 'commission_coeff_today_pervol': 0
             },
+            'BC': { 
+                 'name': '国际铜', 
+                 'unit_table': 5, 
+                 'price_tick': 10, 
+                 'buy_frozen_coeff': 0.05, 
+                 'sell_frozen_coeff': 0.05, 
+                 'exchange': EXCHANGE_ID.INE, 
+                 'commission_coeff_peramount': 0.0001, 
+                 'commission_coeff_pervol': 0.0, 
+                 'commission_coeff_today_peramount':  0.0001, 
+                 'commission_coeff_today_pervol': 0.0
+                 }, 
+            'PF': { 
+                 'name': '涤纶短纤', 
+                 'unit_table': 5, 
+                 'price_tick': 2, 
+                 'buy_frozen_coeff': 0.05, 
+                 'sell_frozen_coeff': 0.05, 
+                 'exchange': EXCHANGE_ID.CZCE,
+                 'commission_coeff_peramount': 0.0, 
+                 'commission_coeff_pervol': 3, 
+                 'commission_coeff_today_peramount': 0, 
+                 'commission_coeff_today_pervol': 3 
+                 }, 
 
         }
 
