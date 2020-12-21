@@ -3,7 +3,7 @@ USER root
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN cd /root && git clone https://gitee.com/yutiansut/QADESK_BASIC && cd QADESK_BASIC
+RUN cd /root && git clone https://gitee.com/yutiansut/qamazing_community && cd QADESK_BASIC
 
 RUN apt update 
 
