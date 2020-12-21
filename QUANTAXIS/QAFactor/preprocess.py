@@ -127,7 +127,7 @@ def QA_winsorize_factor(
             ).droplevel(level=1)
         )
         return factor
-    elif extreme_method is "std":
+    elif extreme_method == "std":
         factor = (
             factor.groupby(grouper).apply(
                 lambda x:
@@ -138,7 +138,7 @@ def QA_winsorize_factor(
             ).droplevel(level=1)
         )
         return factor
-    elif extreme_method is "quant":
+    elif extreme_method == "quant":
         if quant is None:
             raise ValueError("")
         factor = (
@@ -165,11 +165,11 @@ def QA_standardize_factor(
     factor = QA_fmt_factor(factor)
     if standard_method not in ["normal", "weighted", "john"]:
         raise ValueError("仅接受 normal/weighted/john 参数")
-    if standard_method is "normal":
+    if standard_method == "normal":
         std = factor.std()
         mean = factor.mean()
         factor = (factor - mean) / std
-    elif standard_method is "weighted":
+    elif standard_method == "weighted":
         # TODO: 市值加权标准化方法待实现
         raise ValueError("市值加权标准化方法待实现")
     else:

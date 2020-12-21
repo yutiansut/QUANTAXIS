@@ -374,7 +374,7 @@ class DataApi:
             return df_local
         else:                                                      # 如果输入了权重分类信息，按权重分类信息进行处理
             df_local = pd.DataFrame()
-            if weight_cls is "avg":
+            if weight_cls == "avg":
                 df_local = pd.DataFrame(
                     index=date_range,
                     columns=code_list
@@ -396,17 +396,17 @@ class DataApi:
             else:
                 mv = df_local["mv"].unstack()
                 cmv = df_local["liquidity_mv"].unstack()
-            if weight_cls is "mktcap":
+            if weight_cls == "mktcap":
                 df_local = mv
-            elif weight_cls is "sqrt_mktcap":
+            elif weight_cls == "sqrt_mktcap":
                 df_local = mv.transform("sqrt")
-            elif weight_cls is "ln_mktcap":
+            elif weight_cls == "ln_mktcap":
                 df_local = mv.transform("log")
-            elif weight_cls is "cmktcap":
+            elif weight_cls == "cmktcap":
                 df_local = cmv
-            elif weight_cls is "sqrt_cmktcap":
+            elif weight_cls == "sqrt_cmktcap":
                 df_local = cmv.transform("sqrt")
-            elif weight_cls is "ln_cmktcap":
+            elif weight_cls == "ln_cmktcap":
                 df_local = cmv.transform("log")
             else:
                 raise ValueError(f"{weight_cls} 加权方式未实现")
