@@ -14,15 +14,11 @@ RUN git clone https://gitee.com/yutiansut/ta-lib \
   && cd .. \
 	&& rm -rf ta-lib \
   #&& pip install -r /requirements.txt -i https://pypi.doubanio.com/simple  \
-  && pip install xlrd \
-  && pip install peakutils \
-  && pip install quantaxis-servicedetect \
-  && pip install prompt-toolkit \
+  && pip install xlrd peakutils quantaxis-servicedetect prompt-toolkit  -i https://pypi.doubanio.com/simple\
   && pip install quantaxis -U \
   && pip uninstall pytdx -y \
-  && pip install pytdx \
-  && pip install pandarallel \
-  && pip install apscheduler \
+  && pip install pytdx -i https://pypi.doubanio.com/simple\
+  && pip install pandarallel redis aioch quantaxis-pubsub dag-factory apscheduler -i https://pypi.doubanio.com/simple\
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
 
@@ -42,12 +38,7 @@ RUN pip install qgrid\
 && jupyter labextension install qgrid
 
 
-RUN pip install quantaxis-servicedetect \
-&& pip install quantaxis-pubsub \
-&& pip install aioch \
-&& pip install redis \
-&& pip install dag-factory \
-&& chmod +x /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 EXPOSE 8888 
 
 COPY runpy.sh /root/
