@@ -5,7 +5,7 @@ COPY entrypoint.sh /entrypoint.sh
 COPY jupyter_notebook_config.py /root/.jupyter/
 
 WORKDIR home
-RUN apt install make build-essential -y 
+RUN apt update && apt install make build-essential -y 
 RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz \
 	&& tar xvf ta-lib-0.4.0-src.tar.gz \
 	&& cd ta-lib \
