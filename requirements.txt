@@ -1,6 +1,6 @@
 pymongo>=3.10
 bs4
-pandas
+pandas>=1.1.5
 lxml
 matplotlib
 requests
@@ -13,7 +13,7 @@ zenlog
 protobuf>=3.4.0
 motor>=1.1
 retrying
-seaborn>=0.8.1
+seaborn>=0.11.1
 attrs>=17.4.0
 pyconvert>=0.6.3
 demjson>=2.2.4
@@ -24,10 +24,10 @@ IPython
 numba
 websocket-client
 tushare
-statsmodels
+statsmodels>=0.12.1
 scipy
 pytdx>=1.67
 delegator.py>=0.0.12
 flask>=0.12.2
-pyecharts==0.5.11
+pyecharts>=1.9.0
 six>=1.10.0
