@@ -10,10 +10,10 @@ import re
 import warnings
 from functools import partial
 from typing import List, Tuple, Union
-try:
-    import jqdatasdk
-except ImportError:
-    print('QAFactor模块需要 jqdatasdk的支持 请使用pip install jqdatasdk 来安装')
+# try:
+#     import jqdatasdk
+# except ImportError:
+#     print('QAFactor模块需要 jqdatasdk的支持 请使用pip install jqdatasdk 来安装')
 import pandas as pd
 from QUANTAXIS.QAFactor.fetcher import (QA_fetch_stock_basic, QA_fetch_industry_adv)
 
@@ -83,7 +83,7 @@ class DataApi:
         :param frequence: 频率
         :param detailed: 是否使用详细的按日期分类行业信息，默认使用 end_date 的行业数据
         """
-        jqdatasdk.auth(jq_username, jq_password)
+        # jqdatasdk.auth(jq_username, jq_password)
 
         if price_type is None:
             price_type = "close"
@@ -294,7 +294,11 @@ class DataApi:
         stock_list = utils.QA_fmt_code_list(code_list)
         df_local = pd.DataFrame()
         for cursor_date in date_range:
-            df_tmp = QA_fetch_industry_adv(code=code_list, cursor_date = cursor_date)[["code", "industry_name"]]
+            df_tmp = QA_fetch_industry_adv(
+                    code=code_list,
+                    cursor_date = cursor_date,
+                    levels=industry_cls.split('_')[1],
+                    src=industry_cls.split("_")[0])[["code", "industry_name"]]
             df_tmp["date"] = cursor_date
             df_local = df_local.append(df_tmp)
         # industries = map(
@@ -317,8 +321,8 @@ class DataApi:
         # df_local.columns = df_local.columns.map(lambda x: x[0:6])
         # df_local = df_local.stack(level=-1)
         # df_local.index.names = ["date", "code"]
-        df_local.set_index(["date", "code"])
-        return df_local
+        df_local = df_local.set_index(["date", "code"])
+        return df_local["industry_name"]
 
     def get_weights(
             self,

@@ -11,14 +11,17 @@
 from functools import partial
 from typing import List, Tuple, Union
 
-import jqdatasdk
+try:
+    import jqdatasdk
+except:
+    print("jqdatasdk not installed")
 import numpy as np
 import pandas as pd
 
 import statsmodels.api as sm
 from QUANTAXIS.QAAnalysis.QAAnalysis_block import QAAnalysis_block
 from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
-from QUANTAXIS.QAFactor.fetcher import QA_fetch_stock_basic
+from QUANTAXIS.QAFactor.fetcher import (QA_fetch_stock_basic, QA_fetch_industry_adv)
 
 def QA_fmt_factor(factor: Union[pd.Series, pd.DataFrame]):
     """
@@ -204,9 +207,9 @@ def QA_fetch_get_factor_groupby(
     # 股票代码格式化
     stock_list = QA_fmt_code_list(
         factor.index.get_level_values("code").drop_duplicates(),
-        style="jq"
     )
     # 非详细模式， 行业数据采用当前日期
+    ss = pd.Series()
     if detailed:
         # start_time = str(min(factor.index.get_level_values("datetime")))[:10]
         # end_time = str(max(factor.index.get_level_values("datetime")))[:10]
@@ -218,41 +221,43 @@ def QA_fetch_get_factor_groupby(
                 "datetime").drop_duplicates().tolist()
         )
 
-        df_local = pd.DataFrame()
-        industries = map(
-            partial(jqdatasdk.get_industry,
-                    stock_list),
-            date_range
-        )
-        industries = {
-            d: {
-                s: ind.get(s).get(industry_cls,
-                                  dict()).get("industry_name",
-                                              "NA")
-                for s in stock_list
-            }
-            for d,
-            ind in zip(date_range,
-                       industries)
-        }
+        industry = pd.DataFrame()
+        for cursor_date in date_range:
+            df_tmp = QA_fetch_industry_adv(code = stock_list, cursor_date = cursor_date)[["code", "industry_name"]]
+            df_tmp["date"] = cursor_date
+            industry = industry.append(df_tmp)
+        ss = industry.set_index(["date", "code"])
+        # industries = map(
+        #     partial(jqdatasdk.get_industry,
+        #             stock_list),
+        #     date_range
+        # )
+        # industries = {
+        #     d: {
+        #         s: ind.get(s).get(industry_cls,
+        #                           dict()).get("industry_name",
+        #                                       "NA")
+        #         for s in stock_list
+        #     }
+        #     for d,
+        #     ind in zip(date_range,
+        #                industries)
+        # }
     else:
         end_time = str(max(factor.index.get_level_values("datetime")))[:10]
         date_range = [pd.Timestamp(end_time)]
-        industries = jqdatasdk.get_industry(stock_list, end_time)
-        industries = {
-            d: {
-                s: industries.get(s).get(industry_cls,
-                                         dict()).get("industry_name",
-                                                     "NA")
-                for s in stock_list
-            }
-            for d in date_range
-        }
+        # industries = jqdatasdk.get_industry(stock_list, end_time)
+        ss = QA_fetch_industry_adv(stock_list, end_time)[["code", "industry_name"]].set_index(["date", "code"])
+        # industries = {
+        #     d: {
+        #         s: industries.get(s).get(industry_cls,
+        #                                  dict()).get("industry_name",
+        #                                              "NA")
+        #         for s in stock_list
+        #     }
+        #     for d in date_range
+        # }
     # 可能历史上股票没有行业信息，用之后的行业信息往前填充
-    df_local = pd.DataFrame(industries).T.sort_index()
-    df_local.columns = df_local.columns.map(str).str.slice(0, 6)
-    ss_local = df_local.stack(level=-1)
-    ss_local.index.names = ["date", "code"]
     merged_data["date"] = merged_data.index.get_level_values("datetime").map(
         lambda x: x.date()
     )
@@ -260,7 +265,7 @@ def QA_fetch_get_factor_groupby(
         merged_data.reset_index().set_index(
             ["date",
              "code"]
-        ).assign(group=ss_local).reset_index().set_index(["datetime",
+        ).assign(group=ss).reset_index().set_index(["datetime",
                                                           "code"]
                                                          ).drop("date",
                                                                 axis=1)
