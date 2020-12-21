@@ -7,7 +7,7 @@ COPY jupyter_notebook_config.py /root/.jupyter/
 WORKDIR home
 RUN apt update && apt install make build-essential -y 
 RUN git clone https://gitee.com/yutiansut/ta-lib \
-	&& cd ta-lib && chmod +x .\
+	&& cd ta-lib && chmod +x ./*\
 	&& ./configure --prefix=/usr \
 	&& make \
 	&& make install \
