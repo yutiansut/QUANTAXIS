@@ -21,8 +21,8 @@ RUN \
 RUN \
   git clone https://github.com/QUANTAXIS/QUANTAXIS \
   && cd QUANTAXIS \
-  && pip install -r /QUANTAXIS/requirements.txt \
-  && pip install -r /requirements.txt \
+  && pip install -r /QUANTAXIS/requirements.txt -i https://pypi.doubanio.com/simple  \
+  && pip install -r /requirements.txt -i https://pypi.doubanio.com/simple \
   && pip install quantaxis-servicedetect \
   && pip install quantaxis -U \
 	&& apt-get clean -y --force-yes \
