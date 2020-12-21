@@ -1,28 +1,21 @@
-FROM daocloud.io/quantaxis/qajupyter:latest
+FROM daocloud.io/quantaxis/qa-jupyter:latest
 USER root
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN cd /root && git clone https://gitee.com/yutiansut/qamazing_community && cd qamazing_community \
+RUN cd /root && git clone https://github.com/yutiansut/qamazing_community && cd qamazing_community \
 && pip install quantaxis-servicedetect \
 && pip install quantaxis-pubsub
 
 
 COPY run-community.sh /root/run-community.sh
-RUN chmod +x /opt/conda/lib/python3.7/site-packages/QUANTAXIS/QAUtil/QASetting.py\
-    && mkdir -p /home/jovyan/.local/share/jupyter/kernels/gophernotes \
-    && cd /home/jovyan/.local/share/jupyter/kernels/gophernotes \
-    && pip install quantaxis -U\
+RUN pip install quantaxis -U -i https://pypi.doubanio.com/simple\
     && pip uninstall pytdx -y \
-    && pip install pytdx \
-    && pip install qifiaccount -U \
-    && pip install QAStrategy -U \
-    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json \
-    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png \
-    && wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
+    && pip install pytdx -i https://pypi.doubanio.com/simple\
+    && pip install qifiaccount QAStrategy -U -i https://pypi.doubanio.com/simple
     ## clean
 
-RUN pip install qgrid && pip install "dask[complete]"
+RUN pip install qgrid -i https://pypi.doubanio.com/simple && pip install "dask[complete]" -i https://pypi.doubanio.com/simple
 
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
@@ -34,8 +27,10 @@ WORKDIR /tmp
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake 
+RUN apt install zlib1g -y --allow-downgrades 
+RUN apt-get install -y --allow-downgrades pkg-config  && apt-get install pkg-config libssl-dev -y
 
-RUN apt-get install -y --allow-downgrades pkg-config zlib1g=1:1.2.8.dfsg-2ubuntu4.1 && apt-get install pkg-config libssl-dev -y
+
 
 
 RUN set -eux; \
@@ -59,9 +54,7 @@ RUN set -eux; \
     rustc --version;
 
 
-
 RUN set -eux; \
-    apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32 40976EAF437D05B5\
     apt-get update; \
     apt-get install -y build-essential libzmq3-dev pkg-config;
 
