@@ -7,7 +7,7 @@ COPY requirements.txt /requirements.txt
 # for mirrors in China
 # COPY pip.conf /root/.pip/pip.conf
 COPY source.list /etc/apt/sources.list
-
+RUN  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32 40976EAF437D05B5 && apt update
 RUN \
   apt-get update \
   && apt-get install -y apt-utils locales --force-yes \
