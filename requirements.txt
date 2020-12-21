@@ -24,7 +24,7 @@ IPython
 numba
 websocket-client
 tushare
-statsmodels<=0.9.0
+statsmodels
 scipy
 pytdx>=1.67
 delegator.py>=0.0.12
