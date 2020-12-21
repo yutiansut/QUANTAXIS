@@ -97,6 +97,12 @@ from QUANTAXIS.QASU.save_okex import QA_SU_save_okex_symbol, QA_SU_save_okex_1ho
 # 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney)
 
+# Tushare 基本面数据
+from QUANTAXIS.QAFactor.localize import (QA_ts_update_namechange,
+                                         QA_ts_update_industry,
+                                         QA_ts_update_stock_basic,
+                                         QA_ts_update_inc)
+
 from QUANTAXIS import __version__
 
 
@@ -256,6 +262,8 @@ class CLI(cmd.Cmd):
             命令格式: save future: save future_day/min/list \n\
             命令格式: save option: save option_contract_list/option_day_all/option_min_all \n\
             命令格式: save transaction: save stock_transaction and index_transaction (Warning: Large Disk Space Required) \n\
+            命令格式: save ts_all: save ts_industry and ts_namechange and ts_stock_basic and ts_financial_reports \n\
+            命令格式: save ts_financial: save ts_financial_reports \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_xdxr : 保存日除权除息数据 \n\
             命令格式：save stock_day  : 保存日线数据 \n\
@@ -442,6 +450,29 @@ class CLI(cmd.Cmd):
                 QA_SU_save_stock_block('tdx')
                 QA_SU_save_future_list('tdx')
                 # QA_SU_save_stock_info('tdx')
+            elif len(arg) == 1 and arg[0] == 'ts_all':
+                if QA_Setting().client.quantaxis.user_list.find(
+                    {'username': 'admin'}).count() == 0:
+                    QA_Setting().client.quantaxis.user_list.insert(
+                        {
+                            'username': 'admin',
+                            'password': 'admin'
+                        }
+                    )
+                QA_ts_update_inc()
+                QA_ts_update_stock_basic()
+                QA_ts_update_namechange()
+                QA_ts_update_industry()
+            elif len(arg) == 1 and arg[0] == 'ts_financial':
+                if QA_Setting().client.quantaxis.user_list.find(
+                        {'username': 'admin'}).count() == 0:
+                    QA_Setting().client.quantaxis.user_list.insert(
+                            {
+                                'username': 'admin',
+                                'password': 'admin'
+                            }
+                    )
+                QA_ts_update_inc()
             elif len(arg) == 1 and arg[0] == "binance":
                 QA_SU_save_binance_symbol()
                 QA_SU_save_binance_1day()

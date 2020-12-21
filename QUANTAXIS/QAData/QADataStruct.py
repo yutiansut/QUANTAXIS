@@ -143,7 +143,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     # 前复权
     def to_qfq(self):
-        if self.if_fq is 'bfq':
+        if self.if_fq == 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'qfq'
                 return self
@@ -189,7 +189,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     # 后复权
     def to_hfq(self):
-        if self.if_fq is 'bfq':
+        if self.if_fq == 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'hfq'
                 return self
@@ -342,7 +342,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
     __str__ = __repr__
 
     def to_qfq(self):
-        if self.if_fq is 'bfq':
+        if self.if_fq == 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'qfq'
                 return self
@@ -394,7 +394,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
             return self
 
     def to_hfq(self):
-        if self.if_fq is 'bfq':
+        if self.if_fq == 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'hfq'
                 return self

@@ -25,6 +25,7 @@
 import json
 import pandas as pd
 import time
+import tushare as ts
 from QUANTAXIS.QAUtil import (
     QA_util_date_int2str,
     QA_util_date_stamp,

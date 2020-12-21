@@ -196,7 +196,7 @@ def QA_util_date_stamp(date):
     return:
         time
     """
-    datestr = str(date)[0:10]
+    datestr = pd.Timestamp(date).strftime("%Y-%m-%d")
     date = time.mktime(time.strptime(datestr, '%Y-%m-%d'))
     return date
 
