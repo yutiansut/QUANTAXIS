@@ -18,6 +18,7 @@ import pandas as pd
 import statsmodels.api as sm
 from QUANTAXIS.QAAnalysis.QAAnalysis_block import QAAnalysis_block
 from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
+from QUANTAXIS.QAFactor.fetcher import QA_fetch_stock_basic
 
 def QA_fmt_factor(factor: Union[pd.Series, pd.DataFrame]):
     """
@@ -408,6 +409,26 @@ def QA_fetch_get_factor_start_date(factor: pd.Series) -> pd.DataFrame:
     intersection = df_local.index.intersection(stock_list)
     ss = df_local.loc[intersection]["start_date"]
     ss.index = ss.index.map(lambda x: x[:6])
+    # 拼接上市时间
+    merged_data = merged_data.loc[(slice(None), list(ss.index)), :]
+    merged_data["start_date"] = merged_data.index.map(lambda x: ss.loc[x[1]]
+                                                      ).tolist()
+    return merged_data
+
+def QA_fetch_factor_start_date(factor: pd.Series) -> pd.DataFrame:
+    """
+    获取因子池上市时间，本地获取接口，使用前先保存股票基本信息
+    """
+    factor = QA_fmt_factor(factor.copy())
+    merged_data = pd.DataFrame(factor.rename("factor"))
+    # 股票代码格式化
+    stock_list = QA_fmt_code_list(
+        factor.index.get_level_values("code").drop_duplicates()
+    )
+    # 上市时间获取
+    df_local = QA_fetch_stock_basic(status=None).set_index("code")
+    intersection = df_local.index.intersection(stock_list)
+    ss = df_local.loc[intersection]["list_date"]
     # 拼接上市时间
     merged_data = merged_data.loc[(slice(None), list(ss.index)), :]
     merged_data["start_date"] = merged_data.index.map(lambda x: ss.loc[x[1]]
