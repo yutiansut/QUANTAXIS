@@ -18,7 +18,7 @@ RUN git clone https://gitee.com/yutiansut/ta-lib \
   && pip install quantaxis -U \
   && pip uninstall pytdx -y \
   && pip install pytdx -i https://pypi.doubanio.com/simple\
-  && pip install pandarallel redis aioch quantaxis-pubsub dag-factory apscheduler -i https://pypi.doubanio.com/simple\
+  && pip install pandarallel qgrid redis aioch quantaxis-pubsub dag-factory apscheduler -i https://pypi.doubanio.com/simple\
   && jupyter nbextension enable --py widgetsnbextension \
   && jupyter serverextension enable --py jupyterlab
 
@@ -27,12 +27,11 @@ RUN apt update
 RUN apt install -y curl\
 && apt install npm -y \
 && npm install npm -g \
-&& npm install n -g \
-&& n stable
+&& npm install n -g 
+RUN n stable
 
 
-RUN pip install qgrid\
-&& jupyter nbextension enable --py --sys-prefix qgrid\
+RUN jupyter nbextension enable --py --sys-prefix qgrid\
 && jupyter nbextension enable --py --sys-prefix widgetsnbextension\
 && jupyter labextension install @jupyter-widgets/jupyterlab-manager\
 && jupyter labextension install qgrid
