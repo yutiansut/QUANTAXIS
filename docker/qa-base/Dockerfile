@@ -23,8 +23,7 @@ RUN apt install gcc -y --force-yes \
 
 WORKDIR /root/QUANTAXIS
 COPY . .
-RUN \
-  && cd /root/QUANTAXIS \
+RUN cd /root/QUANTAXIS \
   && pip install -r /root/QUANTAXIS/requirements.txt -i https://pypi.doubanio.com/simple  \
   && pip install quantaxis-servicedetect \
   && pip install quantaxis -U \
