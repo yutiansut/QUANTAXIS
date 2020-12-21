@@ -39,7 +39,7 @@ RUN apt install npm -y \
 RUN pip install qgrid && pip install "dask[complete]"
 
 COPY run-community.sh /root/run-community.sh
-RUN chmod +x /usr/local/lib/python3.6/site-packages/QUANTAXIS/QAUtil/QASetting.py \
+RUN chmod +x /opt/conda/lib/python3.8/site-packages/QUANTAXIS/QAUtil/QASetting.py \
 && echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c "source ~/.vimrc"
 
 
