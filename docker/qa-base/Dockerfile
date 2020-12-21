@@ -1,4 +1,4 @@
-FROM python:3.8.6-buster
+FROM daocloud.io/quantaxis/qaanaconda
 
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
