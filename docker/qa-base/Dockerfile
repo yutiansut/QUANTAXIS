@@ -1,4 +1,4 @@
-FROM python:3.8.6-buster
+FROM daocloud.io/quantaxis/qaanaconda
 
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
@@ -9,7 +9,7 @@ COPY requirements.txt /requirements.txt
 COPY source.list /etc/apt/sources.list
 RUN  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32 40976EAF437D05B5 && apt update
 RUN \
-  apt-get update \
+  apt update &&  apt upgrade -y \
   && apt-get install -y apt-utils locales --force-yes \
   && apt install gcc -y --force-yes \
   && locale-gen zh_CN.UTF-8 \
@@ -26,8 +26,8 @@ RUN \
   && pip install quantaxis-servicedetect \
   && pip install quantaxis -U \
 	&& apt-get clean -y --force-yes \
-	&& apt-get autoclean -y --force-yes \
-	&& apt-get autoremove -y --force-yes \
+	&& apt-get autoclean -y --force-yes\
+	&& apt-get autoremove -y --force-yes\
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
   ENV LANG zh_CN.UTF-8
