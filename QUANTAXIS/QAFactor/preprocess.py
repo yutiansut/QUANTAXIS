@@ -19,7 +19,6 @@ import statsmodels.api as sm
 from QUANTAXIS.QAAnalysis.QAAnalysis_block import QAAnalysis_block
 from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
 
-
 def QA_fmt_factor(factor: Union[pd.Series, pd.DataFrame]):
     """
     将 factor 格式化
