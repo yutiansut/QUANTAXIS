@@ -10,7 +10,7 @@ COPY source.list /etc/apt/sources.list
 RUN  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32 40976EAF437D05B5 && apt update
 RUN \
   apt update &&  apt upgrade -y \
-  && apt-get install -y apt-utils locales --allow \
+  && apt-get install -y apt-utils locales --force-yes \
   && apt install gcc -y --force-yes \
   && locale-gen zh_CN.UTF-8 \
 	&& localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 \
