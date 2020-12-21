@@ -13,8 +13,9 @@ RUN git clone https://gitee.com/yutiansut/ta-lib \
 	&& make install \
   && cd .. \
 	&& rm -rf ta-lib \
-	&& rm ta-lib-0.4.0-src.tar.gz \
   #&& pip install -r /requirements.txt -i https://pypi.doubanio.com/simple  \
+  && pip install xlrd \
+  && pip install peakutils \
   && pip install quantaxis-servicedetect \
   && pip install prompt-toolkit \
   && pip install quantaxis -U \
