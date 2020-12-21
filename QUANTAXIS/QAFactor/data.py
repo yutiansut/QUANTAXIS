@@ -393,11 +393,10 @@ class DataApi:
                 end=end_time
             ).market_value
             if frequence == '1q':
-                mv = df_local["mv"].unstack().resample(frequence, how='last')
+                mv = df_local["mv"].unstack().resample(frequence).agg('last')
                 cmv = df_local['liquidity_mv'].unstack().resample(
-                    frequence,
-                    how="last"
-                )
+                    frequence
+                ).agg("last")
                 mv.index = mv.index.map(utils.QA_fmt_quarter)
                 cmv.index = cmv.index.map(utils.QA_fmt_quarter)
             else:
