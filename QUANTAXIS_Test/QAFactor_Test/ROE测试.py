@@ -1,7 +1,7 @@
 """
 测试文件
 """
-import jqdatasdk
+# import jqdatasdk
 import pandas as pd
 import QUANTAXIS as QA
 
@@ -13,10 +13,10 @@ import QUANTAXIS.QAFactor.utils as utils
 
 
 
-print('此测试文件需要配合jqdata使用, 详情请参考 QA_JQDATA')
-JQ_USERNAME = input('JQDATA_USERNAME: ')
-JQ_PASSWORD = input('JQDATA_PASSWORD: ')
-jqdatasdk.auth(JQ_USERNAME, JQ_PASSWORD)
+# print('此测试文件需要配合jqdata使用, 详情请参考 QA_JQDATA')
+# JQ_USERNAME = input('JQDATA_USERNAME: ')
+# JQ_PASSWORD = input('JQDATA_PASSWORD: ')
+# jqdatasdk.auth(JQ_USERNAME, JQ_PASSWORD)
 
 # code_list = QA.QA_fetch_stock_block_adv().get_block(
 #     "白酒").index.get_level_values("code").tolist()
@@ -52,8 +52,8 @@ else:
     ).get_level_values("datetime").tolist()
     # 数据导入
     dataapi = data.DataApi(
-        jq_username=JQ_USERNAME,
-        jq_password=JQ_PASSWORD,
+        # jq_username=JQ_USERNAME,
+        # jq_password=JQ_PASSWORD,
         factor_time_range=factor_time_range,
         industry_cls="sw_l1",
         weight_cls="mktcap",
