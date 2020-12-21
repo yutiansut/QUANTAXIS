@@ -226,7 +226,7 @@ def QA_fetch_get_factor_groupby(
             df_tmp = QA_fetch_industry_adv(code = stock_list, cursor_date = cursor_date)[["code", "industry_name"]]
             df_tmp["date"] = cursor_date
             industry = industry.append(df_tmp)
-        ss = industry.set_index(["date", "code"])
+        ss = industry.set_index(["date", "code"])["industry_name"]
         # industries = map(
         #     partial(jqdatasdk.get_industry,
         #             stock_list),
@@ -247,7 +247,7 @@ def QA_fetch_get_factor_groupby(
         end_time = str(max(factor.index.get_level_values("datetime")))[:10]
         date_range = [pd.Timestamp(end_time)]
         # industries = jqdatasdk.get_industry(stock_list, end_time)
-        ss = QA_fetch_industry_adv(stock_list, end_time)[["code", "industry_name"]].set_index(["date", "code"])
+        ss = QA_fetch_industry_adv(stock_list, end_time)[["code", "industry_name"]].set_index(["date", "code"])["industry_name"]
         # industries = {
         #     d: {
         #         s: industries.get(s).get(industry_cls,
