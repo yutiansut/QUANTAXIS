@@ -15,6 +15,7 @@ try:
 except ImportError:
     print('QAFactor模块需要 jqdatasdk的支持 请使用pip install jqdatasdk 来安装')
 import pandas as pd
+from QUANTAXIS.QAFactor.fetcher import (QA_fetch_stock_basic, QA_fetch_industry_adv)
 
 
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_index_day_adv, QA_fetch_stock_day_adv
@@ -289,28 +290,34 @@ class DataApi:
             return df_local
                                                                # 如果输入了行业分类信息，按行业分类信息进行处理
                                                                # FIXME: 暂时使用聚宽的行业数据
-        stock_list = utils.QA_fmt_code_list(code_list, style="jq")
+        # stock_list = utils.QA_fmt_code_list(code_list, style="jq")
+        stock_list = utils.QA_fmt_code_list(code_list)
         df_local = pd.DataFrame()
-        industries = map(
-            partial(jqdatasdk.get_industry,
-                    stock_list),
-            date_range
-        )
-        industries = {
-            d: {
-                s: ind.get(s).get(industry_cls,
-                                  dict()).get("industry_name",
-                                              "NA")
-                for s in stock_list
-            }
-            for d,
-            ind in zip(date_range,
-                       industries)
-        }
-        df_local = pd.DataFrame(industries).T.sort_index()
-        df_local.columns = df_local.columns.map(lambda x: x[0:6])
-        df_local = df_local.stack(level=-1)
-        df_local.index.names = ["date", "code"]
+        for cursor_date in date_range:
+            df_tmp = QA_fetch_industry_adv(code=code_list, cursor_date = cursor_date)[["code", "industry_name"]]
+            df_tmp["date"] = cursor_date
+            df_local = df_local.append(df_tmp)
+        # industries = map(
+        #     partial(jqdatasdk.get_industry,
+        #             stock_list),
+        #     date_range
+        # )
+        # industries = {
+        #     d: {
+        #         s: ind.get(s).get(industry_cls,
+        #                           dict()).get("industry_name",
+        #                                       "NA")
+        #         for s in stock_list
+        #     }
+        #     for d,
+        #     ind in zip(date_range,
+        #                industries)
+        # }
+        # df_local = pd.DataFrame(industries).T.sort_index()
+        # df_local.columns = df_local.columns.map(lambda x: x[0:6])
+        # df_local = df_local.stack(level=-1)
+        # df_local.index.names = ["date", "code"]
+        df_local.set_index(["date", "code"])
         return df_local
 
     def get_weights(
@@ -423,11 +430,13 @@ class DataApi:
         """
         获取上市时间
         """
-        stock_list = utils.QA_fmt_code_list(code_list, style="jq")
-        df_local = jqdatasdk.get_all_securities(types="stock")
+        # stock_list = utils.QA_fmt_code_list(code_list, style="jq")
+        # df_local = jqdatasdk.get_all_securities(types="stock")
+        stock_list = utils.QA_fmt_code_list(code_list)
+        df_local = QA_fetch_stock_basic(status=None).set_index("code")
         intersection = list(df_local.index.intersection(stock_list))
-        ss = df_local.loc[intersection]["start_date"]
-        ss.index = ss.index.map(lambda x: x[:6])
+        ss = df_local.loc[intersection]["list_date"]
+        # ss.index = ss.index.map(lambda x: x[:6])
         # 日期处理
         date_range = list(map(lambda x: x.date(), factor_time_range))
 
