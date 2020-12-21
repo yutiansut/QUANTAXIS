@@ -189,6 +189,8 @@ def QA_fetch_get_crosssection_financial(
             else:
                 df = eval(
                     f"pro.{sheet_type}_vip(period='{report_date}', report_type={report_type}, fields={fields})")
+            if df.empty:
+                return df
             df.ts_code = QA_fmt_code_list(df.ts_code)
             return df.rename(columns={"ts_code": "code", "end_date": "report_date"}).sort_values(by=['ann_date', 'f_ann_date'])
         except Exception as e:
