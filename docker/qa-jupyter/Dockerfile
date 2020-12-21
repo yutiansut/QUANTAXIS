@@ -6,8 +6,7 @@ COPY jupyter_notebook_config.py /root/.jupyter/
 
 WORKDIR home
 RUN apt update && apt install make build-essential -y 
-RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.4.0-src.tar.gz \
-	&& tar xvf ta-lib-0.4.0-src.tar.gz \
+RUN git clone https://gitee.com/yutiansut/ta-lib \
 	&& cd ta-lib \
 	&& ./configure --prefix=/usr \
 	&& make \
