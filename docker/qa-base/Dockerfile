@@ -11,7 +11,7 @@ RUN  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32 4
 RUN \
   apt update &&  apt upgrade -y \
   && apt-get install -y apt-utils locales --allow \
-  && apt install gcc -y --allow \
+  && apt install gcc -y --force-yes \
   && locale-gen zh_CN.UTF-8 \
 	&& localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8 \
 	&& echo "LANG=zh_CN.UTF-8" > /etc/locale.conf \
@@ -25,9 +25,9 @@ RUN \
   && pip install -r /requirements.txt -i https://pypi.doubanio.com/simple \
   && pip install quantaxis-servicedetect \
   && pip install quantaxis -U \
-	&& apt-get clean -y --allow \
-	&& apt-get autoclean -y --allow \
-	&& apt-get autoremove -y --allow \
+	&& apt-get clean -y --force-yes \
+	&& apt-get autoclean -y --force-yes\
+	&& apt-get autoremove -y --force-yes\
 	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
   ENV LANG zh_CN.UTF-8
