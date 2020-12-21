@@ -15,7 +15,7 @@ RUN wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/ta-lib-0.
   && cd .. \
 	&& rm -rf ta-lib \
 	&& rm ta-lib-0.4.0-src.tar.gz \
-  && pip install -r /requirements.txt \
+  && pip install -r /requirements.txt -i https://pypi.doubanio.com/simple  \
   && pip install quantaxis-servicedetect \
   && pip install prompt-toolkit \
   && pip install quantaxis -U \

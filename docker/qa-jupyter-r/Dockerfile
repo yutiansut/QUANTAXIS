@@ -29,7 +29,7 @@ RUN \
     cd ~ \
     && git clone https://github.com/QUANTAXIS/QUANTAXIS \
     && cd QUANTAXIS \
-    && pip install -r requirements.txt \
+    && pip install -r requirements.txt -i https://pypi.doubanio.com/simple \
     && pip install quantaxis-servicedetect \
     && pip install quantaxis -U \
     && apt-get clean -y --force-yes\
@@ -60,7 +60,7 @@ RUN cd ~ && wget https://downloads.sourceforge.net/project/ta-lib/ta-lib/0.4.0/t
     && cd .. \
     && rm -rf ta-lib \
     && rm ta-lib-0.4.0-src.tar.gz \
-    && pip install -r /requirements.txt \
+    && pip install -r /requirements.txt -i https://pypi.doubanio.com/simple  \
     && pip install quantaxis-servicedetect \
     && pip install prompt-toolkit \
     && pip install rpy2 \

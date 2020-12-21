@@ -20,8 +20,8 @@ RUN  apt-get update \
 RUN \
   git clone https://gitee.com/yutiansut/QUANTAXIS \
   && cd QUANTAXIS \
-  && pip install -r /QUANTAXIS/requirements.txt \
-  && pip install -r /requirements.txt \
+  && pip install -r /QUANTAXIS/requirements.txt -i https://pypi.doubanio.com/simple \
+  && pip install -r /requirements.txt -i https://pypi.doubanio.com/simple \
   && pip install quantaxis -U \
   && pip install quantaxis-servicedetect\
 	&& apt-get clean -y --force-yes\
