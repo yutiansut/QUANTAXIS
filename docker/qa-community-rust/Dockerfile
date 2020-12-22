@@ -79,7 +79,7 @@ RUN set -eux; \
     wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png ;\
     wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png ;\
     cargo install evcxr_jupyter --force; \
-    evcxr_jupyter --install;\
+    evcxr_jupyter --install;
     ## clean
 ## run build for tensorflow 2
 RUN conda install --yes tensorflow
