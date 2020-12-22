@@ -58,8 +58,6 @@ COPY ./config  /root/.cargo/
 RUN set -eux; \
     apt update --fix-missing; \
     apt install -y build-essential libzmq3-dev pkg-config cmake;\
-    cargo install evcxr_jupyter --force; \
-    evcxr_jupyter --install;\
     apt-get install -y cron --allow-unauthenticated;\
 	chmod 0644 /etc/cron.d/daily_update ;\
 	chmod +x /QUANTAXIS/config/update_all.py; \
@@ -77,7 +75,9 @@ RUN set -eux; \
     cd /root/.local/share/jupyter/kernels/gophernotes \
     wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json \
     wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png \
-    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png 
+    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png \
+    cargo install evcxr_jupyter --force; \
+    evcxr_jupyter --install;\
     ## clean
 
 
