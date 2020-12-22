@@ -55,12 +55,13 @@ ENV PKG_CONFIG_PATH = /usr/local/lib/pkgconfig
 ENV LD_LIBRARY_PATH=:${LD_LIBRARY_PATH}:/usr/local/bin:/usr/local/lib
 ENV GO111MODULE=on
 COPY ./config  /root/.cargo/
+COPY ./update_all.py  /root/QUANTAXIS/config
 RUN set -eux; \
     apt update --fix-missing; \
     apt install -y build-essential libzmq3-dev pkg-config cmake;\
     apt-get install -y cron --allow-unauthenticated;\
 	chmod 0644 /etc/cron.d/daily_update ;\
-	chmod +x /QUANTAXIS/config/update_all.py; \
+	chmod +x /root/QUANTAXIS/config/update_all.py; \
 	crontab /etc/cron.d/daily_update; \
     echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c "source ~/.vimrc";\
     chmod +x /root/run-community.sh;\
