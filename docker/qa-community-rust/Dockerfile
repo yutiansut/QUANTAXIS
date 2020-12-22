@@ -4,7 +4,7 @@ ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
 
 COPY daily_update /etc/cron.d/daily_update
-COPY run-community.sh /root
+COPY run-community.sh /root/
 COPY runcelery.sh /root/
 COPY wait_for_it.sh /root/
 
@@ -81,8 +81,8 @@ RUN set -eux; \
     cargo install evcxr_jupyter --force; \
     evcxr_jupyter --install;\
     ## clean
-
-
+## run build for tensorflow 2
+RUN conda install --yes tensorflow
 CMD ["bash", "/root/run-community.sh"]
 WORKDIR /home
 
