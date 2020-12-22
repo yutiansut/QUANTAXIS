@@ -82,8 +82,9 @@ RUN set -eux; \
     evcxr_jupyter --install;
     ## clean
 ## run build for tensorflow 2
-RUN conda install --yes tensorflow
-CMD ["bash", "/root/run-community.sh"]
+RUN conda install --yes tensorflow 
+RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple
+CMD ["/bin/bash", "/root/run-community.sh"]
 WORKDIR /home
 
 EXPOSE 80 8010 8787 8020
