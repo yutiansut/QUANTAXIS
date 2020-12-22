@@ -26,11 +26,6 @@ services:
             - qacode:/root/code
         restart: always
 
-    # qacron:
-    #     image: daocloud.io/quantaxis/qa-cron:latest
-    #     environment:
-    #         - MONGODB=mgdb
-    #     restart: always
 
     qaweb_run:
         image: daocloud.io/quantaxis/qarun:latest
