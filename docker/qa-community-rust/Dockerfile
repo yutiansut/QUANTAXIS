@@ -83,7 +83,7 @@ RUN set -eux; \
     ## clean
 ## run build for tensorflow 2
 RUN conda install --yes tensorflow 
-RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple
+RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras
 CMD ["/bin/bash", "/root/run-community.sh"]
 WORKDIR /home
 
