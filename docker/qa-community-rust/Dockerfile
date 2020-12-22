@@ -50,13 +50,15 @@ RUN set -eux; \
 
 
 ENV GOPATH=/root/go
-ENV PATH=${GOPATH}/bin:/usr/lib/go-1.13/bin:/usr/local/cmake/bin:${PATH}
+ENV PATH=${GOPATH}/bin:/usr/lib/go-1.15/bin:/usr/local/cmake/bin:${PATH}
 ENV PKG_CONFIG_PATH = /usr/local/lib/pkgconfig
 ENV LD_LIBRARY_PATH=:${LD_LIBRARY_PATH}:/usr/local/bin:/usr/local/lib
 ENV GO111MODULE=on
+ENV GOPROXY=https://goproxy.io
 COPY ./config  /root/.cargo/
-COPY ./update_all.py  /root/QUANTAXIS/config
+COPY ./update_all.py  /root/QUANTAXIS/config/
 RUN set -eux; \
+    wget https://mirrors.ustc.edu.cn/golang/go1.15.6.linux-amd64.tar.gz;  \ 
     apt update --fix-missing; \
     apt install -y build-essential libzmq3-dev pkg-config cmake;\
     apt-get install -y cron --allow-unauthenticated;\
@@ -66,17 +68,16 @@ RUN set -eux; \
     echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c "source ~/.vimrc";\
     chmod +x /root/run-community.sh;\
     chmod +x /root/runcelery.sh && chmod +x /root/wait_for_it.sh;\
-    wget https://studygolang.com/dl/golang/go1.13.1.linux-amd64.tar.gz;\ 
-    tar xvf go1.13.1.linux-amd64.tar.gz ;\
+    tar xvf go1.15.6.linux-amd64.tar.gz ;\
     chown -R root:root ./go ;\
-    mv go /usr/lib/go-1.13;\
-    go get -u github.com/gopherdata/gophernotes\
-    cp /root/go/bin/gophernotes /usr/local/bin/ \
-    mkdir -p /root/.local/share/jupyter/kernels/gophernotes \
-    cd /root/.local/share/jupyter/kernels/gophernotes \
-    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json \
-    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png \
-    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png \
+    mv go /usr/lib/go-1.15;\
+    go get -u github.com/gopherdata/gophernotes;\
+    cp /root/go/bin/gophernotes /usr/local/bin/ ;\
+    mkdir -p /root/.local/share/jupyter/kernels/gophernotes ;\
+    cd /root/.local/share/jupyter/kernels/gophernotes;\
+    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json ;\
+    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png ;\
+    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png ;\
     cargo install evcxr_jupyter --force; \
     evcxr_jupyter --install;\
     ## clean
