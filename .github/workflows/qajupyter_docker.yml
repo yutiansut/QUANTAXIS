@@ -1,4 +1,4 @@
-name: Docker
+name: qa-jupyer docker
 
 on:
   push:

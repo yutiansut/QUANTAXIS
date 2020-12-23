@@ -1,4 +1,4 @@
-name: Docker
+name: qaeventmq docker
 
 on:
   push:
