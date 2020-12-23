@@ -83,7 +83,8 @@ RUN set -eux; \
     ## clean
 ## run build for tensorflow 2
 RUN conda install --yes tensorflow 
-RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras
+RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras \
+    && pip install QAStrategy quantaxis quantaxis_run qifiaccount -U -i https://pypi.doubanio.com/simple
 CMD ["/bin/bash", "/root/run-community.sh"]
 WORKDIR /home
 
