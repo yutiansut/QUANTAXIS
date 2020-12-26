@@ -1,7 +1,7 @@
 version: '2'
 services:
     qa:
-        image: daocloud.io/quantaxis/qacommunity-rust-1-10-2:latest
+        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
         container_name: qacommunity-rust
         depends_on:
             - mgdb
@@ -26,14 +26,9 @@ services:
             - qacode:/root/code
         restart: always
 
-    # qacron:
-    #     image: daocloud.io/quantaxis/qa-cron:latest
-    #     environment:
-    #         - MONGODB=mgdb
-    #     restart: always
 
     qaweb_run:
-        image: daocloud.io/quantaxis/qarun:latest
+        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
         container_name: qarun
         depends_on:
             - mgdb

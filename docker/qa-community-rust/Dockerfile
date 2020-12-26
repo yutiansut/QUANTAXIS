@@ -3,35 +3,30 @@ USER root
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN cd /root && git clone https://github.com/yutiansut/qamazing_community && cd qamazing_community \
-&& pip install quantaxis-servicedetect \
-&& pip install quantaxis-pubsub
+COPY daily_update /etc/cron.d/daily_update
+COPY run-community.sh /root/
+COPY runcelery.sh /root/
+COPY wait_for_it.sh /root/
 
+RUN cd /root && git clone https://gitee.com/yutiansut/qamazing_community && cd qamazing_community \
+&& pip install quantaxis-servicedetect quantaxis-pubsub quantaxis quantaxis_webserver quantaxis_run eventlet  -U -i https://pypi.doubanio.com/simple\
+&& pip uninstall pytdx -y \
+&& pip install pytdx -i https://pypi.doubanio.com/simple\
+&& pip install qifiaccount QAStrategy -U -i https://pypi.doubanio.com/simple\
+&& pip install qgrid -i https://pypi.doubanio.com/simple && pip install "dask[complete]" -i https://pypi.doubanio.com/simple
 
-COPY run-community.sh /root/run-community.sh
-RUN pip install quantaxis -U -i https://pypi.doubanio.com/simple\
-    && pip uninstall pytdx -y \
-    && pip install pytdx -i https://pypi.doubanio.com/simple\
-    && pip install qifiaccount QAStrategy -U -i https://pypi.doubanio.com/simple
-    ## clean
-
-RUN pip install qgrid -i https://pypi.doubanio.com/simple && pip install "dask[complete]" -i https://pypi.doubanio.com/simple
 
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
     RUST_VERSION=1.48.0
-    
-ARG CMAKE_VERSION=3.12.0
+    #https://cmake.org/files/v3.19/cmake-3.19.0-Linux-x86_64.tar.gz
+ARG CMAKE_VERSION=3.19.0
 WORKDIR /tmp
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && mv cmake-${CMAKE_VERSION}-Linux-x86_64 /usr/local/cmake 
-RUN apt install zlib1g -y --allow-downgrades 
-RUN apt-get install -y --allow-downgrades pkg-config  && apt-get install pkg-config libssl-dev -y
-
-
-
+RUN apt-get install -y --allow-downgrades  zlib1g pkg-config  && apt-get install pkg-config libssl-dev -y
 
 RUN set -eux; \
     dpkgArch="$(dpkg --print-architecture)"; \
@@ -54,20 +49,43 @@ RUN set -eux; \
     rustc --version;
 
 
+ENV GOPATH=/root/go
+ENV PATH=${GOPATH}/bin:/usr/lib/go-1.15/bin:/usr/local/cmake/bin:${PATH}
+ENV PKG_CONFIG_PATH = /usr/local/lib/pkgconfig
+ENV LD_LIBRARY_PATH=:${LD_LIBRARY_PATH}:/usr/local/bin:/usr/local/lib
+ENV GO111MODULE=on
+ENV GOPROXY=https://goproxy.io
+COPY ./config  /root/.cargo/
+COPY ./update_all.py  /root/QUANTAXIS/config/
 RUN set -eux; \
-    apt-get update; \
-    apt-get install -y build-essential libzmq3-dev pkg-config cmake
-
-RUN set -eux; \
+    wget https://mirrors.ustc.edu.cn/golang/go1.15.6.linux-amd64.tar.gz;  \ 
+    apt update --fix-missing; \
+    apt install -y build-essential libzmq3-dev pkg-config cmake;\
+    apt-get install -y cron --allow-unauthenticated;\
+	chmod 0644 /etc/cron.d/daily_update ;\
+	chmod +x /root/QUANTAXIS/config/update_all.py; \
+	crontab /etc/cron.d/daily_update; \
+    echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c "source ~/.vimrc";\
+    chmod +x /root/run-community.sh;\
+    chmod +x /root/runcelery.sh && chmod +x /root/wait_for_it.sh;\
+    tar xvf go1.15.6.linux-amd64.tar.gz ;\
+    chown -R root:root ./go ;\
+    mv go /usr/lib/go-1.15;\
+    go get -u github.com/gopherdata/gophernotes;\
+    cp /root/go/bin/gophernotes /usr/local/bin/ ;\
+    mkdir -p /root/.local/share/jupyter/kernels/gophernotes ;\
+    cd /root/.local/share/jupyter/kernels/gophernotes;\
+    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/kernel.json ;\
+    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-32x32.png ;\
+    wget https://raw.githubusercontent.com/gopherdata/gophernotes/master/kernel/logo-64x64.png ;\
     cargo install evcxr_jupyter --force; \
     evcxr_jupyter --install;
-
-RUN echo "set nocp" >> ~/.vimrc && echo "set paste" >> ~/.vimrc &&  /bin/bash -c "source ~/.vimrc"
-
-RUN chmod +x /root/run-community.sh
-CMD ["bash", "/root/run-community.sh"]
-
+    ## clean
+## run build for tensorflow 2
+RUN conda install --yes tensorflow 
+RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras \
+    && pip install QAStrategy quantaxis quantaxis_run qifiaccount -U -i https://pypi.doubanio.com/simple
+CMD ["/bin/bash", "/root/run-community.sh"]
 WORKDIR /home
 
-EXPOSE 80
-EXPOSE 8787
+EXPOSE 80 8010 8787 8020
