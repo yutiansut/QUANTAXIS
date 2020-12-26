@@ -381,10 +381,12 @@ def QA_ts_update_namechange():
     pro = get_pro()
     # 获取历史所有股票
     symbol_list = sorted(
-        list(set(QA_fmt_code_list(QA_fetch_stock_basic().code.tolist(), "ts")))
+        list(set(QA_fmt_code_list(QA_fetch_stock_basic().index.tolist(), "ts")))
     )
     df = pd.DataFrame()
-    for symbol in symbol_list:
+    for i, symbol in enumerate(symbol_list):
+        if i % 100 == 0:
+            print(f"Saving {i}th stock name, stock is {symbol}")
         try:
             df = df.append(pro.namechange(ts_code=symbol))
         except:
@@ -492,7 +494,7 @@ def QA_ts_update_industry(
 
 if __name__ == "__main__":
     # QA_ts_update_all()
-    QA_ts_update_inc()
+    # QA_ts_update_inc()
     # QA_ts_update_industry()
     # QA_ts_update_stock_basic()
-    # QA_ts_update_namechange()
+    QA_ts_update_namechange()
