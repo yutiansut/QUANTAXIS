@@ -551,7 +551,14 @@ def QA_fetch_stock_basic(
         status = (status,)
     qry = {}
     if not status:
-        qry = {}
+        if not code:
+            qry = {}
+        else:
+            qry = {
+               "code" : {
+                   "$in": code
+               }
+            }
     else:
         if not code:
             qry = {
@@ -573,7 +580,7 @@ def QA_fetch_stock_basic(
     if res.empty:
         return res
     else:
-        return res.drop(columns="_id")
+        return res.drop(columns="_id").set_index("code")
 
 
 def QA_fetch_stock_name(
@@ -629,7 +636,7 @@ def QA_fetch_stock_name(
     if res.empty:
         return res
     else:
-        return res.drop(columns="_id")
+        return res.drop(columns="_id").set_index("code").sort_values(by="start_date_stamp").drop_duplicates(keep="last").sort_index()
 
 
 def QA_fetch_industry_adv(
