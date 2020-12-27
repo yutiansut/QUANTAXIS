@@ -290,8 +290,9 @@ class CLI(cmd.Cmd):
             命令格式: save future: save future_day/min/list \n\
             命令格式: save option: save option_contract_list/option_day_all/option_min_all \n\
             命令格式: save transaction: save stock_transaction and index_transaction (Warning: Large Disk Space Required) \n\
-            命令格式: save ts_all: save ts_industry and ts_namechange and ts_stock_basic and ts_financial_reports \n\
+            命令格式: save ts_all: save ts_industry and ts_namechange and ts_stock_basic ts_daily_basic and ts_financial_reports \n\
             命令格式: save ts_financial: save ts_financial_reports \n\
+            命令格式: save ts_daily: save ts_daily \n\
             ------------------------------------------------------------ \n\
             命令格式：save stock_xdxr : 保存日除权除息数据 \n\
             命令格式：save stock_day  : 保存日线数据 \n\

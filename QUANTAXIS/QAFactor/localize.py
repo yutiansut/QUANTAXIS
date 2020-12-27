@@ -527,7 +527,7 @@ def QA_ts_update_daily_basic():
     else:
         return
     for trade_date in trade_date_sse[
-        trade_date_sse.index(start_trade_date): trade_date_sse.index(end_trade_date)
+        trade_date_sse.index(start_trade_date): trade_date_sse.index(end_trade_date) + 1
     ]:
         print(f"saveing {trade_date} daily basic")
         df = QA_fetch_get_daily_basic(trade_date=trade_date)
