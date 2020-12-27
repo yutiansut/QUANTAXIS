@@ -233,6 +233,41 @@ def QA_fetch_get_crosssection_financial(
         trial_count=0)
 
 
+# FIXME: Add Fetch Get Method of Daily Basic
+def QA_fetch_get_daily_basic(
+        code: Union[str, List, Tuple] = None,
+        trade_date: Union[str, pd.Timestamp, datetime.datetime] = None,
+        fields: Union[str, List, Tuple] = None,
+        wait_seconds: int=61,
+        max_trials: int=3
+) -> pd.DataFrame:
+    """
+    从网络获取市场指定交易日重要基本面指标，用于选股分析和报表展示
+
+    Args:
+        code(Union[str, List, Tuple], optional): 指定股票代码，默认为 None，即对应交易日的全市场股票
+        trade_date(Union[str, pd.Timestamp, datetime.datetime], optional): 指定交易日期, 默认为 None, 即距离当前
+            日期最近的交易日
+        fields(Union[str, List, Tuple], optional): 默认为 None，如果指定为某一单个 str，默认返回 DataFrame 包括
+            交易日等附加信息
+        wait_seconds (int, optional): 查询超时时间, 默认为 61.
+        max_trial (int, optional): 查询最大尝试次数, 默认为 3.
+
+    Returns:
+        pd.DataFrame: 指定交易日指定范围指定标的的每日基本面指标信息
+    """
+    def _fetch_get_daily_basic(code, trade_date, fields, trial_count):
+        nonlocal pro, max_trials
+        if trial_count >= max_trial:
+            raise ValueError("[ERROR]\tEXCEED MAX TRIAL!")
+        if not fields:
+            qry = {}
+        else:
+            qry = {}
+
+    pro = get_pro()
+
+
 def QA_fetch_crosssection_financial(
         report_date: Union[str, datetime.datetime, pd.Timestamp],
         report_type: Union[int, str] = 1,

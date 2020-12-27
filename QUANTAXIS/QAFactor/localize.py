@@ -76,13 +76,13 @@ def QA_ts_update_all(
         for item in QA_util_to_json_from_pandas(df):
             report_label = None
             if item["report_date"].endswith("0331"):
-                report_label = '1'
+                report_label = "1"
             elif item["report_date"].endswith("0630"):
-                report_label = '2'
+                report_label = "2"
             elif item["report_date"].endswith("0930"):
-                report_label = '3'
+                report_label = "3"
             elif item["report_date"].endswith("1231"):
-                report_label = '4'
+                report_label = "4"
             item["report_label"] = report_label
             coll.update_one(
                 {
@@ -167,12 +167,11 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                 # 使用最新的合并报表作为基准
                 # 当前数据库已经包含了这个代码的数据， 继续增量更新
                 # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-                type_count = coll.count_documents(
-                    filter={"report_type": report_type})
+                type_count = coll.count_documents(filter={"report_type": report_type})
                 if type_count > 0:
                     # 接着上次获取的日期继续更新
                     ref = coll.find({"report_type": report_type})
-                    cursor_date = ref[type_count-1]["report_date"]
+                    cursor_date = ref[type_count - 1]["report_date"]
                     cursor_year = pd.Timestamp(cursor_date).year
                     report_dates = None
                     if report_type == "1" or report_type == "2":  # 往前回溯一期
@@ -186,7 +185,7 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                             ]
                         )
                         report_dates = fmt_report_date[
-                            fmt_report_date.index(cursor_date) - 1:
+                            fmt_report_date.index(cursor_date) - 1 :
                         ]
                     else:  # 往前回溯三年
                         fmt_report_date = sorted(
@@ -222,13 +221,13 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                             for item in js:
                                 report_label = None
                                 if item["report_date"].endswith("0331"):
-                                    report_label = '1'
+                                    report_label = "1"
                                 elif item["report_date"].endswith("0630"):
-                                    report_label = '2'
+                                    report_label = "2"
                                 elif item["report_date"].endswith("0930"):
-                                    report_label = '3'
+                                    report_label = "3"
                                 elif item["report_date"].endswith("1231"):
-                                    report_label = '4'
+                                    report_label = "4"
                                 item["report_label"] = report_label
                                 coll.update_one(
                                     {
@@ -250,6 +249,7 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                                     upsert=True,
                                 )
                         else:
+
                             def _func(x):
                                 if x[-4:] == "0331":
                                     return "1"
@@ -259,6 +259,7 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                                     return "3"
                                 else:
                                     return "4"
+
                             df_2 = df_2[df_1.columns]
                             df_1_1 = df_1.loc[
                                 (df_1.report_date == report_date)
@@ -285,10 +286,12 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                                     QA_util_date_stamp
                                 )
                                 df_1_1["report_date_stamp"] = df_1_1.report_date.apply(
-                                    QA_util_date_stamp)
+                                    QA_util_date_stamp
+                                )
                                 # TODO: add appendix
                                 df_1_1["report_label"] = df_1_1["report_date"].apply(
-                                    _func)
+                                    _func
+                                )
                                 js = QA_util_to_json_from_pandas(df_1_1)
                                 coll.insert_many(js)
                             df_1_2 = df_1.loc[
@@ -316,9 +319,11 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                                     QA_util_date_stamp
                                 )
                                 df_1_2["report_date_stamp"] = df_1_2.report_date.apply(
-                                    QA_util_date_stamp)
+                                    QA_util_date_stamp
+                                )
                                 df_1_2["report_label"] = df_1_2["report_date"].apply(
-                                    _func)
+                                    _func
+                                )
                                 js = QA_util_to_json_from_pandas(df_1_2)
                                 coll.insert_many(js)
                 else:
@@ -333,8 +338,7 @@ def QA_ts_update_stock_basic():
     """
     coll = DATABASE.stock_basic
     coll.create_index(
-        [("code", ASCENDING), ("status", ASCENDING),
-         ("list_date_stamp", ASCENDING)],
+        [("code", ASCENDING), ("status", ASCENDING), ("list_date_stamp", ASCENDING)],
         unique=True,
     )
 
@@ -468,8 +472,13 @@ def QA_ts_update_industry(
     coll = DATABASE.industry
     try:
         coll.create_index(
-            [("code", ASCENDING), ("level", ASCENDING), ("src", ASCENDING),
-             ("in_date_stamp", DESCENDING), ("out_date_stamp", DESCENDING)],
+            [
+                ("code", ASCENDING),
+                ("level", ASCENDING),
+                ("src", ASCENDING),
+                ("in_date_stamp", DESCENDING),
+                ("out_date_stamp", DESCENDING),
+            ],
             unique=False,
         )
     except:
@@ -490,6 +499,20 @@ def QA_ts_update_industry(
             {"$set": item},
             upsert=True,
         )
+
+
+def QA_ts_update_daily_basic():
+    """
+    更新每日全市场重要基本面指标，用于选股分析和报表展示
+    """
+
+    def _ts_update_daily_basic(trade_date, wait_seconds, trial_count):
+        nonlocal pro, max_trial
+        if trial_count > max_trial:
+            raise ValueError("[ERROR]\tEXCEED MAX TRIALS!")
+
+    pro = get_pro()
+    df = pro.daily_basic()
 
 
 if __name__ == "__main__":
