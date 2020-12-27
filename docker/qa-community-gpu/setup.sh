@@ -189,7 +189,7 @@ rm /root/.npm -rf
 cat > /entrypoint.sh <<EOF
 rm /var/www/html/* -rf
 rm /var/www/html/.git* -rf
-git clone https://gitee.com/yutiansut/QADESK_BASIC /var/www/html
+git clone https://gitee.com/yutiansut/qamazing_community /var/www/html
 nginx
 
 PATH="/usr/local/conda/bin:\$PATH"
