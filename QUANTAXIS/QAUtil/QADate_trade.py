@@ -7715,7 +7715,10 @@ def QA_util_get_pre_trade_date(
         str: 查询到的交易日
     """
 
-    cursor_date = pd.Timestamp(cursor_date).strftime("%Y-%m-%d")
+    if not cursor_date:
+        cursor_date = datetime.date.today().strftime("%Y-%m-%d")
+    else:
+        cursor_date = pd.Timestamp(cursor_date).strftime("%Y-%m-%d")
     if cursor_date in trade_date_sse:
         return trade_date_sse[trade_date_sse.index(cursor_date) - n]
     real_trade_date = QA_util_get_real_date(cursor_date, towards=1)
