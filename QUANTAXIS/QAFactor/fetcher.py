@@ -24,8 +24,8 @@ from QUANTAXIS.QAFactor.utils import QA_fmt_code, QA_fmt_code_list
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_stock_list
 from QUANTAXIS.QAFetch.QATushare import get_pro
 from QUANTAXIS.QAUtil import (DATABASE, QASETTING, QA_util_date_int2str,
-                              QA_util_date_stamp, QA_util_log_info,
-                              QA_util_to_json_from_pandas)
+                              QA_util_date_stamp, QA_util_get_pre_trade_date,
+                              QA_util_log_info, QA_util_to_json_from_pandas)
 
 REPORT_DATE_TAILS = ["0331", "0630", "0930", "1231"]
 SHEET_TYPE = ["income", "balancesheet", "cashflow"]
@@ -239,7 +239,7 @@ def QA_fetch_get_daily_basic(
         trade_date: Union[str, pd.Timestamp, datetime.datetime] = None,
         fields: Union[str, List, Tuple] = None,
         wait_seconds: int=61,
-        max_trials: int=3
+        max_trial: int=3
 ) -> pd.DataFrame:
     """
     从网络获取市场指定交易日重要基本面指标，用于选股分析和报表展示
@@ -256,16 +256,43 @@ def QA_fetch_get_daily_basic(
     Returns:
         pd.DataFrame: 指定交易日指定范围指定标的的每日基本面指标信息
     """
-    def _fetch_get_daily_basic(code, trade_date, fields, trial_count):
-        nonlocal pro, max_trials
-        if trial_count >= max_trial:
-            raise ValueError("[ERROR]\tEXCEED MAX TRIAL!")
-        if not fields:
-            qry = {}
-        else:
-            qry = {}
+    def _fetch_get_daily_basic(trade_date, fields, trial_count):
+        nonlocal pro, max_trial
+        try:
+            if trial_count >= max_trial:
+                raise ValueError("[ERROR]\tEXCEED MAX TRIAL!")
+            if not trade_date:
+                trade_date = QA_util_get_pre_trade_date(datetime.date.today(), 1).replace("-", "")
+            if not fields:
+                qry = f"pro.daily_basic(trade_date={trade_date})"
+            else:
+                if isinstance(fields, str):
+                    fields = list(set([fields] + ["ts_code", "trade_date"]))
+                fields = ",".join(fields)
+                qry = "pro.daily_basic(trade_date={trade_date}, fields={fields})"
+            print(qry)
+            df = eval(qry)
+            return df
+        except:
+            _fetch_get_daily_basic(
+                trade_date, fields, trial_count+1
+            )
 
     pro = get_pro()
+    df = _fetch_get_daily_basic(trade_date=trade_date, fields=fields, trial_count=0)
+    if df.empty:
+        return df
+    else:
+        df = df.rename(columns={"ts_code": "code"})
+        df.code = QA_fmt_code_list(df.code)
+        df = df.set_index("code")
+    if not code:
+        return df
+    if isinstance(code, str):
+        code = (code,)
+    # exclude code which not in rtn dataframe
+    filter_idx = df.index.intersection(code)
+    return df.loc[filter_idx]
 
 
 def QA_fetch_crosssection_financial(

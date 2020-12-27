@@ -18,6 +18,7 @@ from QUANTAXIS.QAFactor.fetcher import (REPORT_DATE_TAILS, REPORT_TYPE,
                                         SHEET_TYPE,
                                         QA_fetch_crosssection_financial,
                                         QA_fetch_get_crosssection_financial,
+                                        QA_fetch_get_daily_basic,
                                         QA_fetch_get_individual_financial,
                                         QA_fetch_stock_basic)
 from QUANTAXIS.QAFactor.utils import QA_fmt_code, QA_fmt_code_list
@@ -25,8 +26,10 @@ from QUANTAXIS.QAFetch.QATushare import get_pro
 from QUANTAXIS.QASetting.QALocalize import (cache_path, download_path, qa_path,
                                             setting_path)
 from QUANTAXIS.QAUtil import (DATABASE, QASETTING, QA_util_date_int2str,
-                              QA_util_date_stamp, QA_util_log_info,
-                              QA_util_to_json_from_pandas)
+                              QA_util_date_stamp, QA_util_get_next_trade_date,
+                              QA_util_get_pre_trade_date, QA_util_log_info,
+                              QA_util_to_json_from_pandas, trade_date_sse)
+from QUANTAXIS.QAUtil.QADate_trade import QA_util_get_pre_trade_date
 from QUANTAXIS.QAUtil.QASql import ASCENDING, DESCENDING
 from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 
@@ -70,7 +73,7 @@ def QA_ts_update_all(
                 ("ann_date_stamp", ASCENDING),
                 ("f_ann_date_stamp", ASCENDING),
             ],
-            unique=False,
+            unique=True,
         )
         # FIXME: insert_many may be better
         for item in QA_util_to_json_from_pandas(df):
@@ -160,14 +163,15 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                 ("ann_date_stamp", ASCENDING),
                 ("f_ann_date_stamp", ASCENDING),
             ],
-            unique=False,
+            unique=True,
         )
         for report_type in REPORT_TYPE:
             try:
                 # 使用最新的合并报表作为基准
                 # 当前数据库已经包含了这个代码的数据， 继续增量更新
                 # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-                type_count = coll.count_documents(filter={"report_type": report_type})
+                type_count = coll.count_documents(
+                    filter={"report_type": report_type})
                 if type_count > 0:
                     # 接着上次获取的日期继续更新
                     ref = coll.find({"report_type": report_type})
@@ -185,7 +189,7 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                             ]
                         )
                         report_dates = fmt_report_date[
-                            fmt_report_date.index(cursor_date) - 1 :
+                            fmt_report_date.index(cursor_date) - 1:
                         ]
                     else:  # 往前回溯三年
                         fmt_report_date = sorted(
@@ -338,7 +342,8 @@ def QA_ts_update_stock_basic():
     """
     coll = DATABASE.stock_basic
     coll.create_index(
-        [("code", ASCENDING), ("status", ASCENDING), ("list_date_stamp", ASCENDING)],
+        [("code", ASCENDING), ("status", ASCENDING),
+         ("list_date_stamp", ASCENDING)],
         unique=True,
     )
 
@@ -479,7 +484,7 @@ def QA_ts_update_industry(
                 ("in_date_stamp", DESCENDING),
                 ("out_date_stamp", DESCENDING),
             ],
-            unique=False,
+            unique=True,
         )
     except:
         pass
@@ -505,14 +510,33 @@ def QA_ts_update_daily_basic():
     """
     更新每日全市场重要基本面指标，用于选股分析和报表展示
     """
-
-    def _ts_update_daily_basic(trade_date, wait_seconds, trial_count):
-        nonlocal pro, max_trial
-        if trial_count > max_trial:
-            raise ValueError("[ERROR]\tEXCEED MAX TRIALS!")
-
-    pro = get_pro()
-    df = pro.daily_basic()
+    coll = DATABASE.daily_basic
+    coll.create_index(
+        [("code", ASCENDING), ("trade_date_stamp", ASCENDING)],
+        unique=True,
+    )
+    ref = coll.find({})
+    cnt = coll.count()
+    start_date = "1990-01-01"
+    if cnt > 0:
+        start_date = ref[cnt - 1]["trade_date"]
+    end_date = datetime.date.today().strftime("%Y-%m-%d")
+    if end_date != start_date:
+        start_trade_date = QA_util_get_next_trade_date(start_date)
+        end_trade_date = QA_util_get_pre_trade_date(end_date)
+    else:
+        return
+    for trade_date in trade_date_sse[
+        trade_date_sse.index(start_trade_date): trade_date_sse.index(end_trade_date)
+    ]:
+        print(f"saveing {trade_date} daily basic")
+        df = QA_fetch_get_daily_basic(trade_date=trade_date)
+        if df.empty:
+            continue
+        df = df.where(df.notnull(), None).reset_index()
+        df["trade_date_stamp"] = df["trade_date"].apply(QA_util_date_stamp)
+        js = QA_util_to_json_from_pandas(df)
+        coll.insert_many(js)
 
 
 if __name__ == "__main__":
@@ -520,4 +544,5 @@ if __name__ == "__main__":
     # QA_ts_update_inc()
     # QA_ts_update_industry()
     # QA_ts_update_stock_basic()
-    QA_ts_update_namechange()
+    # QA_ts_update_namechange()
+    QA_ts_update_daily_basic()
