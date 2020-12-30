@@ -725,7 +725,7 @@ def QA_SU_save_stock_min(client=DATABASE, ui_log=None, ui_progress=None):
             ui_log=ui_log
         )
         try:
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in ['15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -1600,7 +1600,7 @@ def QA_SU_save_etf_min(client=DATABASE, ui_log=None, ui_progress=None):
         )
         try:
 
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in ['15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -5165,7 +5165,7 @@ def QA_SU_save_option_300etf_min(client=DATABASE, ui_log=None, ui_progress=None)
         )
         try:
 
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in ['15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:8], 'type': type})
 
                 end_time = str(now_time())[0:19]
@@ -6123,7 +6123,7 @@ def QA_SU_save_single_future_min(code : str, client=DATABASE, ui_log=None, ui_pr
         )
         try:
 
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in ['15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -6229,7 +6229,7 @@ def QA_SU_save_future_min(client=DATABASE, ui_log=None, ui_progress=None):
         )
         try:
 
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in ['15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -6358,7 +6358,7 @@ def QA_SU_save_future_min_all(client=DATABASE, ui_log=None, ui_progress=None):
         )
         try:
 
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in ['15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
