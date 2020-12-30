@@ -849,7 +849,7 @@ def QA_SU_save_single_stock_min(code : str, client=DATABASE, ui_log=None, ui_pro
             ui_log=ui_log
         )
         try:
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in [ '15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -1179,7 +1179,7 @@ def QA_SU_save_index_min(client=DATABASE, ui_log=None, ui_progress=None):
         )
         try:
 
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in [ '15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -1305,7 +1305,7 @@ def QA_SU_save_single_index_min(code : str, client=DATABASE, ui_log=None, ui_pro
         )
         try:
 
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in ['15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
@@ -1727,7 +1727,7 @@ def QA_SU_save_single_etf_min(code : str, client=DATABASE, ui_log=None, ui_progr
         )
         try:
 
-            for type in ['1min', '5min', '15min', '30min', '60min']:
+            for type in ['15min', '30min', '60min']:
                 ref_ = coll.find({'code': str(code)[0:6], 'type': type})
                 end_time = str(now_time())[0:19]
                 if ref_.count() > 0:
