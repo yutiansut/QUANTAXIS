@@ -20,8 +20,8 @@ ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
     RUST_VERSION=1.48.0
-    
-ARG CMAKE_VERSION=3.12.0
+    #https://cmake.org/files/v3.19/cmake-3.19.0-Linux-x86_64.tar.gz
+ARG CMAKE_VERSION=3.19.0
 WORKDIR /tmp
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
@@ -83,7 +83,8 @@ RUN set -eux; \
     ## clean
 ## run build for tensorflow 2
 RUN conda install --yes tensorflow 
-RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras
+RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras \
+    && pip install QAStrategy quantaxis quantaxis_run qifiaccount -U -i https://pypi.doubanio.com/simple
 CMD ["/bin/bash", "/root/run-community.sh"]
 WORKDIR /home
 

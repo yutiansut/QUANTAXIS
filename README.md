@@ -163,9 +163,13 @@ PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件
 
 > 多语言实现
 
+- [qifi-rs](https://github.com/yutiansut/qifi-rs) 标准化的qifi协议封装
+- [mifi-rs](https://github.com/yutiansut/mifi-rs) 标准化的底层数据协议行情协议封装
+
 - [qatrader-rs](https://github.com/yutiansut/qatrader-rs) 一个rust实现的qatrader
 - [qamarket-rs](https://github.com/yutiansut/qamarket-rs)  一个rust实现的期货全市场行情多周期采样分发
-
+- [quantaxis-rs](https://github.com/yutiansut/quantaxis-rs) 全新的rust版本的quantaxis底层账户
+- [qadata-rs](https://github.com/yutiansut/qadata-rs) 标准化的数据结构 数据获取封装
 
 
 #### 未开源
@@ -199,8 +203,6 @@ PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件
 
 - [QUANTAXIS RUNTIME-RS](https://github.com/yutiansut/qaruntime-rs) 一个rust-base的策略标准化运行时  单机可以拉起10k+ 策略
 - [QAStrategy-rs](https://github.com/yutiansut/qamom-rs) rust-base的策略标准化封装工具
-- [QUANTAXIS-RS](https://github.com/yutiansut/quantaxis-rs) 全新的rust版本的quantaxis底层账户
-- [QADATA-RS](https://github.com/yutiansut/qadata-rs) 标准化的数据结构 数据获取封装
 
 
 
