@@ -73,7 +73,7 @@ def QA_ts_update_all(
                 ("ann_date_stamp", ASCENDING),
                 ("f_ann_date_stamp", ASCENDING),
             ],
-            unique=True,
+            unique=False,
         )
         # FIXME: insert_many may be better
         for item in QA_util_to_json_from_pandas(df):
@@ -163,7 +163,7 @@ def QA_ts_update_inc(wait_seconds: int = 61, max_trial=3) -> pd.DataFrame:
                 ("ann_date_stamp", ASCENDING),
                 ("f_ann_date_stamp", ASCENDING),
             ],
-            unique=True,
+            unique=False,
         )
         for report_type in REPORT_TYPE:
             try:
@@ -454,6 +454,8 @@ def QA_ts_update_industry(
                     raise ValueError(e2)
     df_results = pd.DataFrame()
     for idx, item in df_industry.iterrows():
+        if idx % 100 == 0:
+            print(f"currently saving {idx}th record")
         try:
             df_tmp = pro.index_member(index_code=item["index_code"])
             df_tmp["industry_name"] = item["industry_name"]
@@ -475,19 +477,16 @@ def QA_ts_update_industry(
     df_results = df_results.rename(columns={"con_code": "code"})
     df_results = df_results.sort_values(by="code")
     coll = DATABASE.industry
-    try:
-        coll.create_index(
-            [
-                ("code", ASCENDING),
-                ("level", ASCENDING),
-                ("src", ASCENDING),
-                ("in_date_stamp", DESCENDING),
-                ("out_date_stamp", DESCENDING),
-            ],
-            unique=True,
-        )
-    except:
-        pass
+    coll.create_index(
+        [
+            ("code", ASCENDING),
+            ("level", ASCENDING),
+            ("src", ASCENDING),
+            ("in_date_stamp", DESCENDING),
+            ("out_date_stamp", DESCENDING),
+        ],
+        unique=False,
+    )
     for item in QA_util_to_json_from_pandas(df_results):
         item["in_date_stamp"] = QA_util_date_stamp(item["in_date"])
         if not item["out_date"]:
@@ -504,6 +503,7 @@ def QA_ts_update_industry(
             {"$set": item},
             upsert=True,
         )
+    print('finished saving industry')
 
 
 def QA_ts_update_daily_basic():

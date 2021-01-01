@@ -24,7 +24,8 @@
 
 from QUANTAXIS.QAFactor.analyze import FactorAnalyzer
 from QUANTAXIS.QAFactor.data import DataApi
-from QUANTAXIS.QAFactor.fetcher import (QA_fetch_financial_adv,
+from QUANTAXIS.QAFactor.fetcher import (QA_fetch_daily_basic,
+                                        QA_fetch_financial_adv,
                                         QA_fetch_industry_adv,
                                         QA_fetch_last_financial,
                                         QA_fetch_stock_basic,
