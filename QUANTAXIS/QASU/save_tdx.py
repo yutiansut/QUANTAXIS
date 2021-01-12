@@ -1921,16 +1921,16 @@ def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
             ui_progress_int_value=5000
         )
 
-        # 🛠todo fixhere here 获取同花顺板块， 还是调用tdx的
-        coll.insert_many(
-            QA_util_to_json_from_pandas(QA_fetch_get_stock_block('ths'))
-        )
-        QA_util_log_info(
-            'ths Block ====',
-            ui_log=ui_log,
-            ui_progress=ui_progress,
-            ui_progress_int_value=8000
-        )
+        # # 🛠todo fixhere here 获取同花顺板块， 还是调用tdx的
+        # coll.insert_many(
+        #     QA_util_to_json_from_pandas(QA_fetch_get_stock_block('ths'))
+        # )
+        # QA_util_log_info(
+        #     'ths Block ====',
+        #     ui_log=ui_log,
+        #     ui_progress=ui_progress,
+        #     ui_progress_int_value=8000
+        # )
 
         # tushare 的板块数据有中证500成分，增加获取中证500成分 ——阿财
         coll.insert_many(
@@ -1950,15 +1950,15 @@ def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
             ui_progress_int_value=10000
         )
 
-        coll.insert_many(
-            QA_util_to_json_from_pandas(QA_fetch_get_stock_block('QA'))
-        )
-        QA_util_log_info(
-            'QA_Select Block ====',
-            ui_log=ui_log,
-            ui_progress=ui_progress,
-            ui_progress_int_value=8000
-        )
+        # coll.insert_many(
+        #     QA_util_to_json_from_pandas(QA_fetch_get_stock_block('QA'))
+        # )
+        # QA_util_log_info(
+        #     'QA_Select Block ====',
+        #     ui_log=ui_log,
+        #     ui_progress=ui_progress,
+        #     ui_progress_int_value=8000
+        # )
 
         QA_util_log_info(
             '完成股票板块获取=',
