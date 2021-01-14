@@ -1,19 +1,19 @@
 # Table of Contents
 
-1.  [快速上手指南](#org70df641)
-    1.  [1. 数据保存](#org619c636)
-    2.  [2. 常用接口说明](#org0e90fc9)
-2.  [示例测试代码](#orgd9eacf5)
-    1.  [1. ROE 季度数据测试](#org7ffb883)
-3.  [其他说明](#org9266fe9)
-4.  [TODO](#org2e2c4e7)
-5.  [参考内容](#org3116747)
+1.  [快速上手指南](#orgf6acef4)
+    1.  [1. 数据保存](#org4a8e85c)
+    2.  [2. 常用接口说明](#orgfb96fc4)
+2.  [示例测试代码](#org1b75361)
+    1.  [1. ROE 季度数据测试](#org51e35a4)
+3.  [其他说明](#org67eccfb)
+4.  [TODO](#org17c35b1)
+5.  [参考内容](#org94a10fd)
 
-<a id="org70df641"></a>
+<a id="orgf6acef4"></a>
 
 # 快速上手指南
 
-<a id="org619c636"></a>
+<a id="org4a8e85c"></a>
 
 ## 1. 数据保存
 
@@ -35,7 +35,7 @@
 
     ![img](003.png)
 
-<a id="org0e90fc9"></a>
+<a id="orgfb96fc4"></a>
 
 ## 2. 常用接口说明
 
@@ -156,11 +156,13 @@
             """
             pass
 
-<a id="orgd9eacf5"></a>
+6.  \`QA<sub>fetch</sub><sub>daily</sub><sub>basic</sub>\` 函数，获取指定股票或股票列表在对应时间范围或对应日期的每日基本面数据，数据来源为 \`tushare\` daily<sub>basic</sub> 数据
+
+<a id="org1b75361"></a>
 
 # 示例测试代码
 
-<a id="org7ffb883"></a>
+<a id="org51e35a4"></a>
 
 ## 1. ROE 季度数据测试
 
@@ -175,7 +177,7 @@
 
       ![img](005.png)
 
-<a id="org9266fe9"></a>
+<a id="org67eccfb"></a>
 
 # 其他说明
 
@@ -193,7 +195,7 @@
       - 数据量大的时候，计算速度相比 numpy，是玄学
       - 高频数据因子分析，不敷使用
 
-<a id="org2e2c4e7"></a>
+<a id="org17c35b1"></a>
 
 # TODO
 
@@ -201,7 +203,7 @@
 2.  多因子分析模块
 3.  文档细化
 
-<a id="org3116747"></a>
+<a id="org94a10fd"></a>
 
 # 参考内容
 

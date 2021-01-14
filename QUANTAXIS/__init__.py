@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.10.4'
+__version__ = '1.10.9'
 __author__ = 'yutiansut'
 
 import argparse
@@ -166,7 +166,8 @@ from QUANTAXIS.QAFetch import (
 from QUANTAXIS.QAFetch.Fetcher import QA_quotation
 from QUANTAXIS.QAFetch.QACrawler import (
     QA_fetch_get_sh_margin,
-    QA_fetch_get_sz_margin
+    QA_fetch_get_sz_margin,
+    QA_fetch_get_margin_all
 )
 from QUANTAXIS.QAFetch.QAQuery import (
     QA_fetch_account,

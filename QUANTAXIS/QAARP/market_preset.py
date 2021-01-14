@@ -874,6 +874,18 @@ class MARKET_PRESET:
                  'commission_coeff_today_peramount': 0, 
                  'commission_coeff_today_pervol': 3 
                  }, 
+            'LH': { 
+                 'name': '生猪', 
+                 'unit_table': 16, 
+                 'price_tick': 5, 
+                 'buy_frozen_coeff': 0.05, 
+                 'sell_frozen_coeff': 0.05, 
+                 'exchange': EXCHANGE_ID.DCE,
+                 'commission_coeff_peramount': 0.0, 
+                 'commission_coeff_pervol': 3, 
+                 'commission_coeff_today_peramount': 0, 
+                 'commission_coeff_today_pervol': 3 
+                 }, 
 
         }
 
