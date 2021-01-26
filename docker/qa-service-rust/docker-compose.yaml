@@ -27,9 +27,9 @@ services:
         restart: always
 
 
-    qaweb_run:
+    qaweb:
         image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
-        container_name: qarun
+        container_name: qaweb
         depends_on:
             - mgdb
             - qaeventmq
