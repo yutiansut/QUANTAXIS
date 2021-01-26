@@ -7696,9 +7696,9 @@ def QA_util_get_next_trade_date(
         cursor_date = pd.Timestamp(cursor_date).strftime("%Y-%m-%d")
     if cursor_date in trade_date_sse:
         # 如果指定日期为交易日
-        return trade_date_sse[trade_date_sse.index(cursor_date) + 1]
+        return trade_date_sse[trade_date_sse.index(cursor_date) + n]
     real_trade_date = QA_util_get_real_date(cursor_date, towards=-1)
-    return trade_date_sse[trade_date_sse.index(real_trade_date) + 1]
+    return trade_date_sse[trade_date_sse.index(real_trade_date) + n]
 
 
 def QA_util_get_pre_trade_date(
@@ -7807,11 +7807,9 @@ def QA_util_if_tradetime(
             for i in range(len(period)):
                 p = period[i]
                 if (
-                    _time.hour > p[0] or (
-                        _time.hour == p[0] and _time.minute >= p[1])
+                    _time.hour > p[0] or (_time.hour == p[0] and _time.minute >= p[1])
                 ) and (
-                    _time.hour < p[2] or (
-                        _time.hour == p[2] and _time.minute < p[3])
+                    _time.hour < p[2] or (_time.hour == p[2] and _time.minute < p[3])
                 ):
                     return True
 
@@ -8018,7 +8016,7 @@ def QA_util_get_trade_range(start, end):
     start, end = QA_util_get_real_datelist(start, end)
     if start is not None:
         return trade_date_sse[
-            trade_date_sse.index(start): trade_date_sse.index(end) + 1: 1
+            trade_date_sse.index(start) : trade_date_sse.index(end) + 1 : 1
         ]
     else:
         return None
@@ -8137,14 +8135,12 @@ def QA_util_future_to_tradedatetime(real_datetime):
             参数支持: []
     """
     if len(str(real_datetime)) >= 19:
-        dt = datetime.datetime.strptime(
-            str(real_datetime)[0:19], "%Y-%m-%d %H:%M:%S")
+        dt = datetime.datetime.strptime(str(real_datetime)[0:19], "%Y-%m-%d %H:%M:%S")
         return (
             dt if dt.time() < datetime.time(21, 0) else QA_util_get_next_datetime(dt, 1)
         )
     elif len(str(real_datetime)) == 16:
-        dt = datetime.datetime.strptime(
-            str(real_datetime)[0:16], "%Y-%m-%d %H:%M")
+        dt = datetime.datetime.strptime(str(real_datetime)[0:16], "%Y-%m-%d %H:%M")
         return (
             dt if dt.time() < datetime.time(21, 0) else QA_util_get_next_datetime(dt, 1)
         )
@@ -8162,14 +8158,12 @@ def QA_util_future_to_realdatetime(trade_datetime):
             参数支持: []
     """
     if len(str(trade_datetime)) == 19:
-        dt = datetime.datetime.strptime(
-            str(trade_datetime)[0:19], "%Y-%m-%d %H:%M:%S")
+        dt = datetime.datetime.strptime(str(trade_datetime)[0:19], "%Y-%m-%d %H:%M:%S")
         return (
             dt if dt.time() < datetime.time(21, 0) else QA_util_get_last_datetime(dt, 1)
         )
     elif len(str(trade_datetime)) == 16:
-        dt = datetime.datetime.strptime(
-            str(trade_datetime)[0:16], "%Y-%m-%d %H:%M")
+        dt = datetime.datetime.strptime(str(trade_datetime)[0:16], "%Y-%m-%d %H:%M")
         return (
             dt if dt.time() < datetime.time(21, 0) else QA_util_get_last_datetime(dt, 1)
         )
