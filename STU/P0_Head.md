@@ -148,7 +148,7 @@ QUANTAXIS_RUN 基于rabbitmq/celery的分布式任务部署 (https://github.com/
 
 QUANTAXIS_PUBSUB 基于RABBITMQ的消息分发订阅 (https://github.com/QUANTAXIS/QAPUBSUB)
 
-QUANTAXIS_DESKTOP 基于VUE.js/ ELECTRON的 桌面终端 (https://github.com/quantaxisdesign/QADESK_BASIC)
+QUANTAXIS_DESKTOP 基于VUE.js/ ELECTRON的 桌面终端 (https://github.com/quantaxisdesign/qamazing_community)
 
 QUANTAXIS QADESKPRO 新版本客户端网页(部分开源) (https://github.com/yutiansut/qadeskpro)
 

@@ -290,7 +290,7 @@ def plot_cumulative_returns(
         f, ax = plt.subplots(1, 1, figsize=(18, 6))
 
     factor_returns = perf.cumulative_returns(
-        factor_returns=factor_returns,
+        returns=factor_returns,
         period=period,
     )
     pass

@@ -356,7 +356,7 @@ class QA_SPEBroker(QA_Broker):
                                                  x)
                     )
 
-                if status is 'filled':
+                if status == 'filled':
                     return order_all.loc[:,
                                          self.dealstatus_headers].set_index(
                                              ['account_cookie',

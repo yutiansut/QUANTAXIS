@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -1457,7 +1457,7 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                 cndict['code'] = 'code'
                 cndict['report_date'] = 'report_date'
                 res_pd.columns = res_pd.columns.map(lambda x: cndict[x])
-            elif ltype is 'EN':
+            elif ltype == 'EN':
                 endict = dict(zip(num_columns, EN_columns))
 
                 endict['code'] = 'code'
