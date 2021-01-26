@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ from QUANTAXIS.QASetting.QALocalize import qa_path, download_path
 参见PYTDX 1.65
 """
 
-FINANCIAL_URL = 'http://data.yutiansut.com/content.txt'
+FINANCIAL_URL = 'http://down.tdx.com.cn:8001/tdxfin/gpcw.txt'
 
 
 class QAHistoryFinancialCrawler(HistoryFinancialCrawler):
@@ -99,7 +99,7 @@ def download_financialzip():
             print('FILE {} is already in {}'.format(item, download_path))
         else:
             print('CURRENTLY GET/UPDATE {}'.format(item[0:12]))
-            r = requests.get('http://data.yutiansut.com/{}'.format(item))
+            r = requests.get('http://down.tdx.com.cn:8001/tdxfin/{}'.format(item))
             file = '{}{}{}'.format(download_path, os.sep, item)
 
             with open(file, "wb") as code:

@@ -10,10 +10,13 @@ node_modules/
 .idea/
 *.log
 .vscode/
+.DS_Store*
 *.pdf
 *.gitconfig
 *.rdb
 .ipython/
+.ccls/
+.ccls*
 .matplotlib/
 .log
 *.log
