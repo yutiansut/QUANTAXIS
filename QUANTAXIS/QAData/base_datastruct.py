@@ -838,15 +838,27 @@ class _quotation_base():
         elif by == self.index.names[0]:
             by = None
             level = 0
-        return self.data.groupby(
-            by=by,
-            axis=axis,
-            level=level,
-            as_index=as_index,
-            sort=sort,
-            group_keys=group_keys,
-            squeeze=squeeze
-        )
+        # 适配 pandas 1.0+，避免出现 FutureWarning: 
+        # Paramter 'squeeze' is deprecated 提示
+        if (squeeze):
+            return self.data.groupby(
+                by=by,
+                axis=axis,
+                level=level,
+                as_index=as_index,
+                sort=sort,
+                group_keys=group_keys,
+                squeeze=squeeze
+            ).squeeze()
+        else:
+            return self.data.groupby(
+                by=by,
+                axis=axis,
+                level=level,
+                as_index=as_index,
+                sort=sort,
+                group_keys=group_keys,
+            )
 
     def new(self, data=None, dtype=None, if_fq=None):
         """
