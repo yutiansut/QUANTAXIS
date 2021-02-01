@@ -10,7 +10,7 @@ Quantitative Financial FrameWork
 Local one-stop solution from data crawling - cleaning storage - analysis backtesting - visualization - trading complex
 
 
-![logo](http://pic.yutiansut.com/QUANTAXIS_LOGO_LAST_small.jpg)
+![logo](http://picx.gulizhu.com/QUANTAXIS_LOGO_LAST_small.jpg)
 
 
 
@@ -26,12 +26,12 @@ Local one-stop solution from data crawling - cleaning storage - analysis backtes
 
 
 ## Congratulations to QUANTAXIS for inclusion [GITEE Most Valuable Open Source Project GVP] (https://gitee.com/gvp)
-![gvp](http://pic.yutiansut.com/gvp.jpg)
+![gvp](http://picx.gulizhu.com/gvp.jpg)
 
 
 
-![main_1](http://pic.yutiansut.com/Main_1.gif)
-![presentbyyutiansut](http://pic.yutiansut.com/yutiansut-logo.png)
+![main_1](http://picx.gulizhu.com/Main_1.gif)
+![presentbyyutiansut](http://picx.gulizhu.com/yutiansut-logo.png)
 
 
 
@@ -61,7 +61,7 @@ This project exists thanks to all the people who contribute. [[Contribute](https
 
 > QUANTAXIS Development Group: 773602202 (If you want to contribute code, please add this group. Remark your GITHUB ID)
 
-> Welcome to the public number: ![Public Number] (http://pic.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
+> Welcome to the public number: ![Public Number] (http://picx.gulizhu.com/qrcode_for_gh_bbb47e0550f7_258%20%281%29.jpg)
 
 > Many questions can be found in [GITHUB ISSUE] (https://github.com/QUANTAXIS/QUANTAXIS/issues), you can make a new issue
 
@@ -135,7 +135,7 @@ Technology stack: python/nodejs/vue/mongodb/rabbitmq/c++
 - [portable_QA](https://github.com/QUANTAXIS/portable_QA) A standalone python environment, free of configuration
 - [QUANTAXIS_CRAWLY](https://github.com/QUANTAXIS/QUANTAXIS_CRAWLY) Reptile section
 
-![qaresolution](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190815112455.png)
+![qaresolution](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190815112455.png)
 
 ===================================================
 
@@ -243,7 +243,7 @@ Then you can start your quantification year!
 ## 1. Function
 ======
 
-![](http://pic.yutiansut.com/QUANTAXIS.png)
+![](http://picx.gulizhu.com/QUANTAXIS.png)
 
 Has been achieved:
 
@@ -348,7 +348,7 @@ See [QUANTAXIS WEB API Description] (Documents/backendapi.md)
 
 
 
-![](http://pic.yutiansut.com/framework.png)
+![](http://picx.gulizhu.com/framework.png)
 
 
 - [QUANTAXIS 2018 Development Plan Sheet] (job_list.md)
@@ -442,7 +442,7 @@ See [FAQ](Documents/FAQ.md)
 Writing code is not easy... ask the author to have a cup of coffee?
 
 
-![](http://pic.yutiansut.com/alipay.png)
+![](http://picx.gulizhu.com/alipay.png)
 
 (PS: Please bring your name/nickname when you pay. It will maintain a sponsor list~)
 
@@ -455,24 +455,24 @@ Writing code is not easy... ask the author to have a cup of coffee?
 
 See [QUANTAXIS/QADESKTOP] (https://github.com/quantaxis/qadesktop)
 
-![](http://pic.yutiansut.com/qad1.png)
-![](http://pic.yutiansut.com/qad2.png)
-![](http://pic.yutiansut.com/qad3.png)
-![](http://pic.yutiansut.com/qad4.png)
-![](http://pic.yutiansut.com/qad5.png)
-![](http://pic.yutiansut.com/qad6.png)
-![](http://pic.yutiansut.com/qad8.png)
+![](http://picx.gulizhu.com/qad1.png)
+![](http://picx.gulizhu.com/qad2.png)
+![](http://picx.gulizhu.com/qad3.png)
+![](http://picx.gulizhu.com/qad4.png)
+![](http://picx.gulizhu.com/qad5.png)
+![](http://picx.gulizhu.com/qad6.png)
+![](http://picx.gulizhu.com/qad8.png)
 
 Simulate real disk multi-account management
 
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015440.png)
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015451.png)
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190311015440.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190311015451.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
 
 Customized version LAB
 
-![](http://pic.yutiansut.com/QADESK_LAB.png)
+![](http://picx.gulizhu.com/QADESK_LAB.png)
 
 ## 12. QUANTAXIS Standardization Agreement and Future Agreement
 
@@ -504,7 +504,7 @@ If it is Alibaba Cloud/Tencent Cloud server, please select 64-bit operating syst
 ## Video Recording (2019-03-23)
 
 QUANTAXIS 2019 supports multi-market, scenario-oriented solutions
-![](http://pic.yutiansut.com/QAFINANCIAL2019.jpg)
+![](http://picx.gulizhu.com/QAFINANCIAL2019.jpg)
 [watching and recording in 哔哩哔哩] (https://www.bilibili.com/video/av47284727/)
 
 ===================================================

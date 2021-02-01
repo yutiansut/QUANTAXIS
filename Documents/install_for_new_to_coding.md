@@ -37,7 +37,7 @@
 
 即可进入命令行, 命令行是windows中运行程序/配置服务中必备的工具
 
-![](http://pic.yutiansut.com/powershell.png)
+![](http://picx.gulizhu.com/powershell.png)
 
 ## 安装python
 
@@ -52,7 +52,7 @@ anaconda安装的时候 注意:
 
 敲黑板! 一定都要选上, 不然需要自己手动配置path, 如果不是很了解path的童靴一定要都选上
 
-![](http://pic.yutiansut.com/anaconda_install_win.png)
+![](http://picx.gulizhu.com/anaconda_install_win.png)
 
 在安装ANACONDA的过程中,注意勾选```add to path```选项,将python的执行路径加入系统路径中
 
@@ -80,11 +80,11 @@ pip install quantaxis -i https://pypi.doubanio.com/simple
 
 在页面上按住 ```ctrl+f```键, 调出搜索框 ,搜索你需要的包 :
 
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20180708143617.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20180708143617.png)
 
 然后点击进入
 
-![](http://pic.yutiansut.com/winwheel.png)
+![](http://picx.gulizhu.com/winwheel.png)
 
 下载whl文件到本地, 使用命令行进入本地目录:
 
@@ -94,7 +94,7 @@ pip install quantaxis -i https://pypi.doubanio.com/simple
 pip install 你下载的文件.whl
 ```
 
-![](http://pic.yutiansut.com/pipwhl.png)
+![](http://picx.gulizhu.com/pipwhl.png)
 
 
 然后再继续 
@@ -149,18 +149,18 @@ net start MongoDB
 ## 使用jupyter调试你的代码
 
 1. 在命令行启动jupyter
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20180626231059.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20180626231059.png)
 
 
 2. 在产生的网页上新建一个notebook
-![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231143.png)
+![](http://picx.gulizhu.com/QQ%E5%9B%BE%E7%89%8720180626231143.png)
 
 3. 在notebook中运行代码
-![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231307.png)
+![](http://picx.gulizhu.com/QQ%E5%9B%BE%E7%89%8720180626231307.png)
 
 
 4. 保存notebook为可运行的python文件
-![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720180626231353.png)
+![](http://picx.gulizhu.com/QQ%E5%9B%BE%E7%89%8720180626231353.png)
 
 
 ## 自动更新数据
@@ -170,22 +170,22 @@ net start MongoDB
 
 
 1. 打开控制面板-系统和安全-管理工具
-![](http://pic.yutiansut.com/management.png)
+![](http://picx.gulizhu.com/management.png)
 
 2. 打开计划任务程序
-![](http://pic.yutiansut.com/management2.png)
+![](http://picx.gulizhu.com/management2.png)
 
 3. 在计划任务程序中,新建任务
-![](http://pic.yutiansut.com/task1.png)
+![](http://picx.gulizhu.com/task1.png)
 
 4. 创建QUANTAXIS_Update任务
-![](http://pic.yutiansut.com/task2.png)
+![](http://picx.gulizhu.com/task2.png)
 
 5. 选择运行时间/频率
-![](http://pic.yutiansut.com/task3.png)
+![](http://picx.gulizhu.com/task3.png)
 
 6. 选择执行的命令
-![](http://pic.yutiansut.com/task4.png)
+![](http://picx.gulizhu.com/task4.png)
 
 7. 配置完毕
-![](http://pic.yutiansut.com/task5.png)
+![](http://picx.gulizhu.com/task5.png)
