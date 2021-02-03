@@ -886,6 +886,18 @@ class MARKET_PRESET:
                  'commission_coeff_today_peramount': 0, 
                  'commission_coeff_today_pervol': 3 
                  }, 
+            'PK': {
+                'name': '花生', 
+                'unit_table': 5, 
+                'price_tick': 2, 
+                'buy_frozen_coeff': 0.08, 
+                'sell_frozen_coeff': 0.08, 
+                'exchange': EXCHANGE_ID.CZCE,
+                'commission_coeff_peramount': 0.0, 
+                'commission_coeff_pervol': 4, 
+                'commission_coeff_today_peramount': 0, 
+                'commission_coeff_today_pervol': 4 
+            }
 
         }
 
