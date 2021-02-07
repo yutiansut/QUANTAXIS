@@ -9,7 +9,7 @@ COPY runcelery.sh /root/
 COPY wait_for_it.sh /root/
 
 RUN cd /root && git clone https://gitee.com/yutiansut/qamazing_community && cd qamazing_community \
-&& pip install quantaxis-servicedetect quantaxis-pubsub quantaxis quantaxis_webserver quantaxis_run eventlet  -U -i https://pypi.doubanio.com/simple\
+&& pip install quantaxis-servicedetect quantaxis-pubsub quantaxis quantaxis_webserver quantaxis_run qifimanager qavifiserver eventlet  -U -i https://pypi.doubanio.com/simple\
 && pip uninstall pytdx -y \
 && pip install pytdx -i https://pypi.doubanio.com/simple\
 && pip install qifiaccount QAStrategy -U -i https://pypi.doubanio.com/simple\
@@ -88,4 +88,4 @@ RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda inst
 CMD ["/bin/bash", "/root/run-community.sh"]
 WORKDIR /home
 
-EXPOSE 80 8010 8787 8020
+EXPOSE 80 8010 8787 8020 8029 8018 8019
