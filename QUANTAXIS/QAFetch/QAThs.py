@@ -46,7 +46,7 @@ def QA_fetch_get_stock_day_in_year(code, year, if_fq='00'):
 
         data = pd.DataFrame(data_, index=list(np.asarray(data_).T[0]), columns=[
                             'date', 'open', 'high', 'low', 'close', 'volume', 'amount', 'factor'])
-        data['date'] = pd.to_datetime(data['date'])
+        data['date'] = pd.to_datetime(data['date'], utc=False)
         data = data.set_index('date')
         return data
     except:
