@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -185,7 +185,6 @@ class QA_Portfolio(QA_Account):
     @property
     def init_hold(self):
         return self.init_hold_table.groupby('code').sum()
-
 
     @property
     def cash_available(self):
@@ -504,14 +503,16 @@ class QA_Portfolio(QA_Account):
         return sum(
             [account.cash_available for account in self.accounts.values()]
         )
+
     def hold_table(self, datetime=None):
         """返回每个acc的hold
-        
+
         Keyword Arguments:
             datetime {[type]} -- [description] (default: {None})
         """
         return pd.concat(
-            [account.hold_table(datetime).reset_index().assign(account_cookie= account.account_cookie) for account in self.accounts.values()]
+            [account.hold_table(datetime).reset_index().assign(
+                account_cookie=account.account_cookie) for account in self.accounts.values()]
         ).set_index(['code', 'account_cookie']).sort_index()
 
     @property
@@ -529,7 +530,6 @@ class QA_Portfolio(QA_Account):
         return pd.concat([account.daily_hold for account in list(self.accounts.values())])\
             .groupby('date').sum().assign(account_cookie=self.portfolio_cookie)\
             .reset_index().set_index(['date', 'account_cookie'])
-
 
     @property
     def daily_frozen(self):
@@ -797,11 +797,9 @@ class QA_PortfolioView():
             .groupby('date').sum().assign(account_cookie=self.account_cookie)\
             .reset_index().set_index(['date', 'account_cookie'])
 
-
     @property
     def daily_frozen(self):
         return pd.concat([account.daily_frozen for account in self.accounts], axis=1, sort=False).sum(axis=1)
-
 
     @property
     def trade(self):

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -143,7 +143,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     # 前复权
     def to_qfq(self):
-        if self.if_fq is 'bfq':
+        if self.if_fq == 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'qfq'
                 return self
@@ -162,8 +162,10 @@ class QA_DataStruct_Stock_day(_quotation_base):
                     data = self.data.join(adj)
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']
-                    data['volume'] = data['volume'] / \
-                        data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+                    # data['volume'] = data['volume'] / \
+                    #     data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
+
+                    data['volume'] = data['volume']  if 'volume' in data.columns else data['vol']
                     try:
                         data['high_limit'] = data['high_limit'] * data['adj']
                         data['low_limit'] = data['high_limit'] * data['adj']
@@ -187,7 +189,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
 
     # 后复权
     def to_hfq(self):
-        if self.if_fq is 'bfq':
+        if self.if_fq == 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'hfq'
                 return self
@@ -340,7 +342,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
     __str__ = __repr__
 
     def to_qfq(self):
-        if self.if_fq is 'bfq':
+        if self.if_fq == 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'qfq'
                 return self
@@ -366,8 +368,9 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']
-                    data['volume'] = data['volume'] / \
-                        data['adj']
+                    # data['volume'] = data['volume'] / \
+                    #     data['adj']
+                    #data['volume'] = data['volume']  if 'volume' in data.columns else data['vol']
                     try:
                         data['high_limit'] = data['high_limit'] * data['adj']
                         data['low_limit'] = data['high_limit'] * data['adj']
@@ -391,7 +394,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
             return self
 
     def to_hfq(self):
-        if self.if_fq is 'bfq':
+        if self.if_fq == 'bfq':
             if len(self.code) < 1:
                 self.if_fq = 'hfq'
                 return self
@@ -451,8 +454,9 @@ class QA_DataStruct_Stock_min(_quotation_base):
 
 
 class QA_DataStruct_Index_min(_quotation_base):
+    '自定义的分钟线数据结构'
 
-    def __init__(self, DataFrame, dtype='index_min'):
+    def __init__(self, DataFrame, dtype='index_min', if_fq=''):
         super().__init__(DataFrame, dtype, if_fq)
 
         try:
@@ -483,6 +487,7 @@ class QA_DataStruct_Index_min(_quotation_base):
             raise e
 
         self.type = dtype
+        self.if_fq = if_fq
 
         self.data = self.data.sort_index()
 
@@ -494,15 +499,6 @@ class QA_DataStruct_Index_min(_quotation_base):
         return '< QA_DataStruct_Index_Min with {} instruments>'.format(
             len(self.code)
         )
-
-    __str__ = __repr__
-
-    def resample(self, level):
-        try:
-            return self.add_funcx(QA_data_min_resample, level).sort_index()
-        except Exception as e:
-            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
-            return None
 
     @property
     @lru_cache()
@@ -523,6 +519,15 @@ class QA_DataStruct_Index_min(_quotation_base):
     @lru_cache()
     def min60(self):
         return self.resample('60min')
+
+    def resample(self, level):
+        try:
+            return self.add_funcx(QA_data_min_resample, level).sort_index()
+        except Exception as e:
+            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
+            return None
+
+    __str__ = __repr__
 
 
 class QA_DataStruct_Future_day(_quotation_base):
@@ -766,64 +771,6 @@ class QA_DataStruct_Index_day(_quotation_base):
         except Exception as e:
             print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
             return None
-
-
-class QA_DataStruct_Index_min(_quotation_base):
-    '自定义的分钟线数据结构'
-
-    def __init__(self, DataFrame, dtype='index_min', if_fq=''):
-        super().__init__(DataFrame, dtype, if_fq)
-        self.type = dtype
-        self.if_fq = if_fq
-        self.data = self.data.loc[:,
-                                  [
-                                      'open',
-                                      'high',
-                                      'low',
-                                      'close',
-                                      'up_count',
-                                      'down_count',
-                                      'volume',
-                                      'amount',
-                                      'type'
-                                  ]]
-        # self.mongo_coll = DATABASE.index_min
-
-    # 抽象类继承
-    def choose_db(self):
-        self.mongo_coll = DATABASE.index_min
-
-    def __repr__(self):
-        return '< QA_DataStruct_Index_Min with %s securities >' % len(self.code)
-
-    @property
-    @lru_cache()
-    def min5(self):
-        return self.resample('5min')
-
-    @property
-    @lru_cache()
-    def min15(self):
-        return self.resample('15min')
-
-    @property
-    @lru_cache()
-    def min30(self):
-        return self.resample('30min')
-
-    @property
-    @lru_cache()
-    def min60(self):
-        return self.resample('60min')
-
-    def resample(self, level):
-        try:
-            return self.add_func(QA_data_min_resample, level).sort_index()
-        except Exception as e:
-            print('QA ERROR : FAIL TO RESAMPLE {}'.format(e))
-            return None
-
-    __str__ = __repr__
 
 
 class QA_DataStruct_Stock_transaction():

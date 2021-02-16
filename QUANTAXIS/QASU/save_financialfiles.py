@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import sys
 import pymongo
 
 from QUANTAXIS.QAFetch.QAfinancial import (download_financialzip, parse_all,
-                                           parse_filelist)
+                                           parse_filelist,download_financialzip_fromtdx)
 from QUANTAXIS.QASetting.QALocalize import (cache_path, download_path, qa_path,
                                             setting_path)
 from QUANTAXIS.QAUtil import DATABASE, QA_util_date_int2str
@@ -36,10 +36,14 @@ from QUANTAXIS.QAUtil.QATransform import QA_util_to_json_from_pandas
 import datetime
 
 
-def QA_SU_save_financial_files():
+def QA_SU_save_financial_files(fromtdx=False):
     """本地存储financialdata
     """
-    download_financialzip()
+    if (fromtdx):
+        download_financialzip_fromtdx()
+    else:
+        download_financialzip()
+        
     coll = DATABASE.financial
     coll.create_index(
         [("code", ASCENDING), ("report_date", ASCENDING)], unique=True)
@@ -72,3 +76,4 @@ def QA_SU_save_financial_files():
 
 
     print('SUCCESSFULLY SAVE/UPDATE FINANCIAL DATA')
+

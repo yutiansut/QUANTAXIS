@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ def QA_data_calc_marketvalue(data, xdxr):
     res = res.assign(
         shares=res.shares_after.groupby(level=1).fillna(method='ffill'),
         lshares=res.liquidity_after.groupby(level=1).fillna(method='ffill')
-    )
+    ).sort_index()
     return res.assign(mv=res.close*res.shares*10000, liquidity_mv=res.close*res.lshares*10000)\
               .drop(['shares_after', 'liquidity_after'], axis=1)\
               .loc[(slice(data.index.remove_unused_levels().levels[0][0],data.index.remove_unused_levels().levels[0][-1]),slice(None)),:]

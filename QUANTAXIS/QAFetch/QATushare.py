@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,8 @@
 
 import json
 import pandas as pd
-import tushare as ts
 import time
+import tushare as ts
 from QUANTAXIS.QAUtil import (
     QA_util_date_int2str,
     QA_util_date_stamp,
@@ -229,6 +229,23 @@ def QA_fetch_get_lhb(date):
 def QA_fetch_get_stock_money():
     pass
 
+
+def QA_fetch_get_stock_block():
+    """Tushare的版块数据
+    
+    Returns:
+        [type] -- [description]
+    """
+    import tushare as ts
+    csindex500 = ts.get_zz500s()
+    try:
+        csindex500['blockname'] = '中证500'
+        csindex500['source'] = 'tushare'
+        csindex500['type'] = 'csindex'
+        csindex500 = csindex500.drop(['date', 'name', 'weight'], axis=1)
+        return csindex500.set_index('code', drop=False)
+    except:
+        return None
 
 # test
 

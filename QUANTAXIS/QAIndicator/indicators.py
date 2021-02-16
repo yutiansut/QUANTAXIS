@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -217,7 +217,7 @@ def QA_indicator_KDJ(DataFrame, N=9, M1=3, M2=3):
     H = DataFrame['high']
     L = DataFrame['low']
 
-    RSV = (C - LLV(L, N)) / (HHV(H, N) - LLV(L, N)) * 100
+    RSV = ((C - LLV(L, N)) / (HHV(H, N) - LLV(L, N)) * 100).groupby('code').fillna(method='ffill')
     K = SMA(RSV, M1)
     D = SMA(K, M2)
     J = 3 * K - 2 * D

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -1056,26 +1056,85 @@ def QA_fetch_stock_info(code, format='pd', collections=DATABASE.stock_info):
         return None
 
 
-def QA_fetch_stock_name(code, collections=DATABASE.stock_list):
+def QA_fetch_stock_name(code, collections=DATABASE.stock_list, ):
     """
     获取股票名称
     """
-    try:
-        return collections.find_one({'code': code})['name']
-    except Exception as e:
-        QA_util_log_info(e)
-        return code
+    if isinstance(code, str):
+        try:
+            res = collections.find_one({'code': code})
+            return res['name']
+        except Exception as e:
+            if (res is None):
+                QA_util_log_info(u'请检查mongodb quantaxis.stock_list collection 是否为空。')
+            QA_util_log_info(e)
+            return code
+    elif isinstance(code, list):
+        code = QA_util_code_tolist(code)
+        data = pd.DataFrame(
+            [
+                item for item in collections
+                .find({'code': {
+                    '$in': code
+                }},
+                      {"_id": 0},
+                      batch_size=10000)
+            ]
+        )
+        #data['date'] = pd.to_datetime(data['date'])
+        return data.set_index('code', drop=False)
 
 
 def QA_fetch_index_name(code, collections=DATABASE.index_list):
     """
     获取指数名称
     """
-    collections.find_one({'code': code})['name']
-    try:
-        return collections.find_one({'code': code})['name']
-    except Exception as e:
-        QA_util_log_info(e)
+    if isinstance(code, str):
+        try:
+            return collections.find_one({'code': code})['name']
+        except Exception as e:
+            QA_util_log_info(e)
+            return code
+    elif isinstance(code, list):
+        code = QA_util_code_tolist(code)
+        data = pd.DataFrame(
+            [
+                item for item in collections
+                .find({'code': {
+                    '$in': code
+                }},
+                      {"_id": 0},
+                      batch_size=10000)
+            ]
+        )
+        #data['date'] = pd.to_datetime(data['date'])
+        return data.set_index('code', drop=False)
+
+
+def QA_fetch_etf_name(code, collections=DATABASE.etf_list):
+    """
+    获取ETF名称
+    """
+    if isinstance(code, str):
+        try:
+            return collections.find_one({'code': code})['name']
+        except Exception as e:
+            QA_util_log_info(e)
+            return code
+    elif isinstance(code, list):
+        code = QA_util_code_tolist(code)
+        data = pd.DataFrame(
+            [
+                item for item in collections
+                .find({'code': {
+                    '$in': code
+                }},
+                      {"_id": 0},
+                      batch_size=10000)
+            ]
+        )
+        #data['date'] = pd.to_datetime(data['date'])
+        return data.set_index('code', drop=False)
 
 
 def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
@@ -1398,7 +1457,7 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
                 cndict['code'] = 'code'
                 cndict['report_date'] = 'report_date'
                 res_pd.columns = res_pd.columns.map(lambda x: cndict[x])
-            elif ltype is 'EN':
+            elif ltype == 'EN':
                 endict = dict(zip(num_columns, EN_columns))
 
                 endict['code'] = 'code'

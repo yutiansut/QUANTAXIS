@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,8 +37,9 @@ from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
 from retrying import retry
 
+
 from QUANTAXIS.QAFetch.base import _select_market_code, _select_index_code, _select_type, _select_bond_market_code
-from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp,
+from QUANTAXIS.QAUtil import (QA_Setting, QA_util_date_stamp, QA_util_code_tostr,
                               QA_util_date_str2int, QA_util_date_valid,
                               QA_util_get_real_date, QA_util_get_real_datelist,
                               QA_util_future_to_realdatetime, QA_util_tdxtimestamp,
@@ -696,16 +697,21 @@ def for_sh(code):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
+    # if type_ in ['stock', 'gp']:
+    #         res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
+    #         return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
     api = TdxHq_API()
     with api.connect(ip, port):
         data = pd.concat(
             [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
-                sse='sz' if j == 0 else 'sh').set_index(
-                ['code', 'sse'], drop=False) for i in
+                sse='sz' if j == 0 else 'sh') for i in
                 range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
                 j
                 in range(2)], axis=0, sort=False)
         # data.code = data.code.apply(int)
+
+        data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
+                ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
         sh = data.query('sse=="sh"')
 
@@ -713,7 +719,8 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
         sh = sh.assign(sec=sh.code.apply(for_sh))
 
         if type_ in ['stock', 'gp']:
-
+            # res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
+            # return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
             return pd.concat([sz, sh], sort=False).query(
                 'sec=="stock_cn"').sort_index().assign(
                 name=data['name'].apply(lambda x: str(x)[0:6]))
@@ -753,12 +760,12 @@ def QA_fetch_get_index_list(ip=None, port=None):
     with api.connect(ip, port):
         data = pd.concat(
             [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
-                sse='sz' if j == 0 else 'sh').set_index(
-                ['code', 'sse'], drop=False) for i in
+                sse='sz' if j == 0 else 'sh') for i in
                 range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
                 j
                 in range(2)], axis=0, sort=False)
-        # data.code = data.code.apply(int)
+        data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
+                ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
         sh = data.query('sse=="sh"')
 
@@ -781,12 +788,13 @@ def QA_fetch_get_bond_list(ip=None, port=None):
     with api.connect(ip, port):
         data = pd.concat(
             [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
-                sse='sz' if j == 0 else 'sh').set_index(
-                ['code', 'sse'], drop=False) for i in
+                sse='sz' if j == 0 else 'sh') for i in
                 range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
                 j
                 in range(2)], axis=0, sort=False)
         # data.code = data.code.apply(int)
+        data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
+                ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
         sh = data.query('sse=="sh"')
         sz = sz.assign(sec=sz.code.apply(for_sz))
@@ -1932,87 +1940,30 @@ def QA_fetch_get_option_list(ip=None, port=None):
 ###############################################################
 # 50ETF
 ###############################################################
+def QA_fetch_get_option_50etf_list():
+    '''
+        #🛠todo 获取50ETF期权合约的列表。
+        :return: dataframe
+        '''
+    result = QA_fetch_get_option_list('tdx')
+    result = result[result.name.str.startswith("510050")]
+    name = result.name.str
+    result = result.assign(putcall=name[6:7], expireMonth=name[7:8].replace({'A':'10','B':'11','C':'12'}), adjust=name[8:9], price=name[9:])
+    def __meaningful_name(df):
+        putcall = {'C':'认购期权', 'P':'认沽期权'}
+        adjust={'M':'未调整','A':'第1次调整','B':'第2次调整','C':'第3次调整','D':'第4次调整','E':'第5次调整','F':'第6次调整','G':'第7次调整','H':'第8次调整','I':'第9次调整','J':'第10次调整'}
+        return '%s,%s,到期月份:%s月,%s,行权价:%s' % ('50ETF', putcall.get(df.putcall, '错误编码'), df.expireMonth, adjust.get(df.adjust, '第10次以上的调整，调整代码 %s' % df.adjust), df.price)
+    result = result.assign(meaningful_name=result.apply(__meaningful_name, axis=1))
+    return result
+
 def QA_fetch_get_option_50etf_contract_time_to_market():
     '''
         #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
         :return: list Series
         '''
-    result = QA_fetch_get_option_list('tdx')
-    # pprint.pprint(result)
-    #  category  market code name desc  code
-    '''
-    fix here : 
-    See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
-    result['meaningful_name'] = None
-    C:\work_new\QUANTAXIS\QUANTAXIS\QAFetch\QATdx.py:1468: SettingWithCopyWarning: 
-    A value is trying to be set on a copy of a slice from a DataFrame.
-    Try using .loc[row_indexer,col_indexer] = value instead
-    '''
-    # df = pd.DataFrame()
     rows = []
-
-    result['meaningful_name'] = None
-    for idx in result.index:
-        # pprint.pprint((idx))
-        strCategory = result.loc[idx, "category"]
-        strMarket = result.loc[idx, "market"]
-        strCode = result.loc[idx, "code"]  # 10001215
-        strName = result.loc[idx, 'name']  # 510050C9M03200
-        strDesc = result.loc[idx, 'desc']  # 10001215
-
-        if strName.startswith("510050"):
-            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
-
-            if strName.startswith("510050C"):
-                putcall = '50ETF,认购期权'
-            elif strName.startswith("510050P"):
-                putcall = '50ETF,认沽期权'
-            else:
-                putcall = "Unkown code name ： " + strName
-
-            expireMonth = strName[7:8]
-            if expireMonth == 'A':
-                expireMonth = "10月"
-            elif expireMonth == 'B':
-                expireMonth = "11月"
-            elif expireMonth == 'C':
-                expireMonth = "12月"
-            else:
-                expireMonth = expireMonth + '月'
-
-            # 第12位期初设为“M”，并根据合约调整次数按照“A”至“Z”依序变更，如变更为“A”表示期权合约发生首次调整，变更为“B”表示期权合约发生第二次调整，依此类推；
-            # fix here : M ??
-            if strName[8:9] == "M":
-                adjust = "未调整"
-            elif strName[8:9] == 'A':
-                adjust = " 第1次调整"
-            elif strName[8:9] == 'B':
-                adjust = " 第2调整"
-            elif strName[8:9] == 'C':
-                adjust = " 第3次调整"
-            elif strName[8:9] == 'D':
-                adjust = " 第4次调整"
-            elif strName[8:9] == 'E':
-                adjust = " 第5次调整"
-            elif strName[8:9] == 'F':
-                adjust = " 第6次调整"
-            elif strName[8:9] == 'G':
-                adjust = " 第7次调整"
-            elif strName[8:9] == 'H':
-                adjust = " 第8次调整"
-            elif strName[8:9] == 'I':
-                adjust = " 第9次调整"
-            elif strName[8:9] == 'J':
-                adjust = " 第10次调整"
-            else:
-                adjust = " 第10次以上的调整，调整代码 %s" + strName[8:9]
-
-            executePrice = strName[9:]
-            result.loc[idx, 'meaningful_name'] = '%s,到期月份:%s,%s,行权价:%s' % (
-                putcall, expireMonth, adjust, executePrice)
-
-            row = result.loc[idx]
-            rows.append(row)
+    for _, row in QA_fetch_get_option_50etf_list().iterrows():
+        rows.append(row)
     return rows
 
 
@@ -2178,6 +2129,7 @@ def QA_fetch_get_commodity_option_RU_contract_time_to_market():
 
 ###############################################################
 # 玉米
+# 帅选M开头的合约
 ###############################################################
 
 
@@ -2250,6 +2202,72 @@ def QA_fetch_get_commodity_option_CU_contract_time_to_market():
     return rows
 
 
+
+###############################################################
+# 金
+###############################################################
+
+
+def QA_fetch_get_commodity_option_AU_contract_time_to_market():
+    '''
+    #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+    :return: list Series
+    '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx会 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("AU"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
+
+###############################################################
+# al 铝
+###############################################################
+def QA_fetch_get_commodity_option_AL_contract_time_to_market():
+    '''
+    #🛠todo 获取期权合约的上市日期 ？ 暂时没有。
+    :return: list Series
+    '''
+    result = QA_fetch_get_option_list('tdx')
+    # pprint.pprint(result)
+    #  category  market code name desc  code
+
+    # df = pd.DataFrame()
+    rows = []
+    result['meaningful_name'] = None
+    for idx in result.index:
+        # pprint.pprint((idx))
+        strCategory = result.loc[idx, "category"]
+        strMarket = result.loc[idx, "market"]
+        strCode = result.loc[idx, "code"]  #
+        strName = result.loc[idx, 'name']  #
+        strDesc = result.loc[idx, 'desc']  #
+
+        # 如果同时获取， 不同的 期货交易所数据， pytdx会 connection close 连接中断？
+        # if strName.startswith("CU") or strName.startswith("M") or strName.startswith('SR'):
+        if strName.startswith("AL"):
+            # print(strCategory,' ', strMarket, ' ', strCode, ' ', strName, ' ', strDesc, )
+            row = result.loc[idx]
+            rows.append(row)
+
+    return rows
 ###############################################################
 # 豆粕
 ###############################################################
@@ -2565,9 +2583,26 @@ def QA_fetch_get_future_realtime(code, ip=None, port=None):
         #                'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5', 'bid_vol5']]
         return __data.set_index(['datetime', 'code'])
 
+###############################################################
+# HKSTOCK
+###############################################################
+@retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
+def QA_fetch_get_hkstock_list(ip=None, port=None):
+    """hkstock
+    Keyword Arguments:
+        ip {[type]} -- [description] (default: {None})
+        port {[type]} -- [description] (default: {None})
+    """
+    global extension_market_list
+    extension_market_list = QA_fetch_get_extensionmarket_list(ip, port
+    ) if extension_market_list is None else extension_market_list
+
+    return extension_market_list.query('category==2 and market==31')
 
 QA_fetch_get_option_day = QA_fetch_get_future_day
 QA_fetch_get_option_min = QA_fetch_get_future_min
+QA_fetch_get_option_realtime = QA_fetch_get_future_realtime
+QA_fetch_get_option_transaction_realtime = QA_fetch_get_future_transaction_realtime
 
 QA_fetch_get_hkstock_day = QA_fetch_get_future_day
 QA_fetch_get_hkstock_min = QA_fetch_get_future_min
@@ -2606,13 +2641,15 @@ def QA_fetch_get_wholemarket_list():
 
 
 if __name__ == '__main__':
-    rows = QA_fetch_get_commodity_option_CU_contract_time_to_market()
-    print(rows)
+    #rows = QA_fetch_get_commodity_option_CU_contract_time_to_market()
+    #print(rows)
 
-    print(QA_fetch_get_stock_day('000001', '2017-07-03', '2017-07-10'))
-    print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
+    #print(QA_fetch_get_stock_day('000001', '2017-07-03', '2017-07-10'))
+    #print(QA_fetch_get_stock_day('000001', '2013-07-01', '2013-07-09'))
     # print(QA_fetch_get_stock_realtime('000001'))
     # print(QA_fetch_get_index_day('000001', '2017-01-01', '2017-07-01'))
     # print(QA_fetch_get_stock_transaction('000001', '2017-07-03', '2017-07-10'))
 
     # print(QA_fetch_get_stock_info('600116'))
+    rows = QA_fetch_get_hkstock_list()
+    print(rows)

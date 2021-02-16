@@ -8,18 +8,14 @@ import warnings
 from functools import partial
 from typing import List, Tuple, Union
 
-import jqdatasdk
+# import jqdatasdk
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 
-from QUANTAXIS.QAFactor.parameters import (
-    DAYS_PER_WEEK,
-    DAYS_PER_MONTH,
-    DAYS_PER_QUARTER,
-    DAYS_PER_YEAR,
-    FREQUENCE_TYPE
-)
+from QUANTAXIS.QAFactor.parameters import (DAYS_PER_MONTH, DAYS_PER_QUARTER,
+                                           DAYS_PER_WEEK, DAYS_PER_YEAR,
+                                           FREQUENCE_TYPE)
 
 
 def get_frequence(frequence: str = None):
@@ -31,23 +27,26 @@ def get_frequence(frequence: str = None):
     :param frequence: 频率，格式类似 'min', '1D', '10D'
     """
     if frequence is not None:
+        frequence = frequence.lower()
         pattern = re.compile(r"\d+")
-        interval = pattern.findall(frequence)
-        if not interval:
-            interval = "1"
-            if frequence.lower() != "min":
+        interval_match = pattern.findall(frequence)
+        if not interval_match:
+            prefix = "1"
+            if frequence != "min":
                 frequence = frequence[0]
-            assert frequence.lower() in FREQUENCE_TYPE
-            frequence = interval + frequence.lower()
+            assert frequence in FREQUENCE_TYPE
+            frequence = prefix + frequence
         else:
-            interval = interval[0]
-            if frequence.replace(interval, "").lower() != "min":
-                frequence = frequence.replace(interval, "").lower()[0]
-            assert frequence.replace(interval, "").lower() in FREQUENCE_TYPE
-            frequence = interval + frequence.replace(interval, "").lower()
+            interval = interval_match[0]
+            if frequence.replace(interval, "") != "min":
+                frequence = frequence.replace(interval, "")[0]
+            assert frequence.replace(interval, "") in FREQUENCE_TYPE
+            frequence = interval + frequence.replace(interval, "")
+        if frequence == "1h":
+            frequence = "60min"
     else:
         warnings.warn("没有指定频率信息，设置为日线")
-        frequence = "1D"
+        frequence = "1d"
     return frequence
 
 
@@ -63,12 +62,31 @@ def QA_fmt_quarter(cursor_date: datetime.datetime):
         return pd.Timestamp(cursor_date.year, cursor_date.month, 30)
 
 
-def QA_fmt_code_list(
-        code_list: Union[str,
-                         Tuple[str],
-                         List[str]],
-        style: str = None
-):
+def QA_fmt_code(code: str, style: str = None):
+    """
+    对股票代码格式化处理
+
+    ---
+    :param code: 股票代码
+    :param style: 代码风格
+    """
+    pattern = re.compile(r"\d+")
+    code = pattern.findall(code)[0]
+    if style in ["jq", "joinquant", "聚宽"]:
+        return code + ".XSHG" if code[0] == "6" else code + ".XSHE"
+    if style in ["wd", "windcode", "万得"]:
+        return code + ".SH" if code[0] == "6" else code + ".SZ"
+    if style in ["gm", "goldminer", "掘金"]:
+        return "SHSE." + code if code[0] == "6" else "SZSE." + code
+    if style in ["ss", "skysoft", "天软"]:
+        return "SH" + code if code[0] == "6" else "SZ" + code
+    if style in ["ts", "tushare", "挖地兔"]:
+        return code + ".SH" if code[0] == "6" else code + ".SZ"
+    else:
+        return code
+
+
+def QA_fmt_code_list(code_list: Union[str, Tuple[str], List[str]], style: str = None):
     """
     为了适应不同行情源股票代码，加入对股票代码格式化的操作, 目前支持 “聚宽” “掘金” “万得” “天软”
     股票代码格式格式化
@@ -79,24 +97,10 @@ def QA_fmt_code_list(
     :param style: 行情源
     """
 
-    def _fmt_code(code: str, style: str):
-        code = pattern.findall(code)[0]
-        if style in ["jq", "joinquant", "聚宽"]:
-            return code + ".XSHG" if code[0] == "6" else code + ".XSHE"
-        if style in ["wd", "windcode", "万得"]:
-            return code + ".SH" if code[0] == "6" else code + ".SZ"
-        if style in ["gm", "goldminer", "掘金"]:
-            return "SHSE." + code if code[0] == "6" else "SZSE." + code
-        if style in ["ss", "skysoft", "天软"]:
-            return "SH" + code if code[0] == "6" else "SZ" + code
-        else:
-            return code
-
-    pattern = re.compile(r"\d+")
     if isinstance(code_list, str):
-        return [_fmt_code(code_list, style)]
+        return [QA_fmt_code(code_list, style)]
     else:
-        fmt_code = partial(_fmt_code, style=style)
+        fmt_code = partial(QA_fmt_code, style=style)
         return list(map(fmt_code, code_list))
 
 
@@ -113,16 +117,7 @@ def get_period(period: str):
     pattern = re.compile(r"\d+")
     freqs = pattern.split(period)
     flag = np.all(
-        [
-            freq.lower() in ["",
-                             "y",
-                             "w",
-                             "q",
-                             "m",
-                             "d",
-                             "h",
-                             "min"] for freq in freqs
-        ]
+        [freq.lower() in ["", "y", "w", "q", "m", "d", "h", "min"] for freq in freqs]
     )
     total_interval = ""
     if not flag:
@@ -141,21 +136,13 @@ def get_period(period: str):
     if day_interval:
         day_count += int(re.findall("\d+", day_interval[0])[0])
     if week_interval:
-        day_count += DAYS_PER_WEEK * \
-            int(re.findall("\d+", week_interval[0])[0])
+        day_count += DAYS_PER_WEEK * int(re.findall("\d+", week_interval[0])[0])
     if month_interval:
-        day_count += DAYS_PER_MONTH * int(
-            re.findall("\d+",
-                       month_interval[0])[0]
-        )
+        day_count += DAYS_PER_MONTH * int(re.findall("\d+", month_interval[0])[0])
     if quarter_interval:
-        day_count += DAYS_PER_QUARTER * int(
-            re.findall("\d+",
-                       quarter_interval[0])[0]
-        )
+        day_count += DAYS_PER_QUARTER * int(re.findall("\d+", quarter_interval[0])[0])
     if year_interval:
-        day_count += DAYS_PER_YEAR * \
-            int(re.findall("\d+", year_interval[0])[0])
+        day_count += DAYS_PER_YEAR * int(re.findall("\d+", year_interval[0])[0])
     day_interval = str(day_count) + "d"
     if "min" in origin_period:
         return "".join([day_interval] + hour_interval) + min_interval
@@ -234,8 +221,7 @@ def std_conversion(period_std: pd.Series, base_period: str) -> pd.Series:
 
 
 def add_custom_calendar_timedelta(input, timedelta):
-    """
-    """
+    """"""
     days = timedelta.components.days
     offset = timedelta - pd.Timedelta(days=days)
     return input + days + offset

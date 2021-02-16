@@ -17,7 +17,7 @@
     
 在1.0版本以后,回测的策略是以继承账户类来进行的
 
-![](http://pic.yutiansut.com/%E9%87%8D%E6%9E%84%E6%96%87%E6%A1%A3-%E8%B4%A6%E6%88%B7.png)
+![](http://picx.gulizhu.com/%E9%87%8D%E6%9E%84%E6%96%87%E6%A1%A3-%E8%B4%A6%E6%88%B7.png)
 
 ## 账户/组合/策略的关系
 ```json

@@ -4,7 +4,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,18 +37,6 @@ from QUANTAXIS.QASU.main import (QA_SU_save_etf_day, QA_SU_save_etf_min,
                                  QA_SU_save_stock_xdxr,QA_SU_save_report_calendar_day,
                                  QA_SU_save_report_calendar_his,QA_SU_save_stock_divyield_day,
                                  QA_SU_save_stock_divyield_his)
-from QUANTAXIS.QASU.save_binance import (QA_SU_save_binance,
-                                         QA_SU_save_binance_1day,
-                                         QA_SU_save_binance_1hour,
-                                         QA_SU_save_binance_1min,
-                                         QA_SU_save_binance_symbol)
-from QUANTAXIS.QASU.save_bitmex import (QA_SU_save_bitmex_symbol, 
-                                         QA_SU_save_bitmex_day)
-from QUANTAXIS.QASU.save_huobi import (QA_SU_save_huobi_symbol,
-                                       QA_SU_save_huobi_1hour,
-                                       QA_SU_save_huobi_1day, 
-                                       QA_SU_save_huobi_1min, 
-                                       QA_SU_save_huobi)
 
 if __name__ == '__main__':
     QA_SU_save_stock_day('tdx')

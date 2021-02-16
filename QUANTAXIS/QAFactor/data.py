@@ -10,11 +10,12 @@ import re
 import warnings
 from functools import partial
 from typing import List, Tuple, Union
-try:
-    import jqdatasdk
-except ImportError:
-    print('QAFactor模块需要 jqdatasdk的支持 请使用pip install jqdatasdk 来安装')
+# try:
+#     import jqdatasdk
+# except ImportError:
+#     print('QAFactor模块需要 jqdatasdk的支持 请使用pip install jqdatasdk 来安装')
 import pandas as pd
+from QUANTAXIS.QAFactor.fetcher import (QA_fetch_stock_basic, QA_fetch_industry_adv)
 
 
 from QUANTAXIS.QAFetch.QAQuery_Advance import QA_fetch_index_day_adv, QA_fetch_stock_day_adv
@@ -82,7 +83,7 @@ class DataApi:
         :param frequence: 频率
         :param detailed: 是否使用详细的按日期分类行业信息，默认使用 end_date 的行业数据
         """
-        jqdatasdk.auth(jq_username, jq_password)
+        # jqdatasdk.auth(jq_username, jq_password)
 
         if price_type is None:
             price_type = "close"
@@ -289,29 +290,39 @@ class DataApi:
             return df_local
                                                                # 如果输入了行业分类信息，按行业分类信息进行处理
                                                                # FIXME: 暂时使用聚宽的行业数据
-        stock_list = utils.QA_fmt_code_list(code_list, style="jq")
+        # stock_list = utils.QA_fmt_code_list(code_list, style="jq")
+        stock_list = utils.QA_fmt_code_list(code_list)
         df_local = pd.DataFrame()
-        industries = map(
-            partial(jqdatasdk.get_industry,
-                    stock_list),
-            date_range
-        )
-        industries = {
-            d: {
-                s: ind.get(s).get(industry_cls,
-                                  dict()).get("industry_name",
-                                              "NA")
-                for s in stock_list
-            }
-            for d,
-            ind in zip(date_range,
-                       industries)
-        }
-        df_local = pd.DataFrame(industries).T.sort_index()
-        df_local.columns = df_local.columns.map(lambda x: x[0:6])
-        df_local = df_local.stack(level=-1)
-        df_local.index.names = ["date", "code"]
-        return df_local
+        for cursor_date in date_range:
+            df_tmp = QA_fetch_industry_adv(
+                    code=code_list,
+                    cursor_date = cursor_date,
+                    levels=industry_cls.split('_')[1],
+                    src=industry_cls.split("_")[0])[["code", "industry_name"]]
+            df_tmp["date"] = cursor_date
+            df_local = df_local.append(df_tmp)
+        # industries = map(
+        #     partial(jqdatasdk.get_industry,
+        #             stock_list),
+        #     date_range
+        # )
+        # industries = {
+        #     d: {
+        #         s: ind.get(s).get(industry_cls,
+        #                           dict()).get("industry_name",
+        #                                       "NA")
+        #         for s in stock_list
+        #     }
+        #     for d,
+        #     ind in zip(date_range,
+        #                industries)
+        # }
+        # df_local = pd.DataFrame(industries).T.sort_index()
+        # df_local.columns = df_local.columns.map(lambda x: x[0:6])
+        # df_local = df_local.stack(level=-1)
+        # df_local.index.names = ["date", "code"]
+        df_local = df_local.set_index(["date", "code"])
+        return df_local["industry_name"]
 
     def get_weights(
             self,
@@ -374,7 +385,7 @@ class DataApi:
             return df_local
         else:                                                      # 如果输入了权重分类信息，按权重分类信息进行处理
             df_local = pd.DataFrame()
-            if weight_cls is "avg":
+            if weight_cls == "avg":
                 df_local = pd.DataFrame(
                     index=date_range,
                     columns=code_list
@@ -386,27 +397,26 @@ class DataApi:
                 end=end_time
             ).market_value
             if frequence == '1q':
-                mv = df_local["mv"].unstack().resample(frequence, how='last')
+                mv = df_local["mv"].unstack().resample(frequence).agg('last')
                 cmv = df_local['liquidity_mv'].unstack().resample(
-                    frequence,
-                    how="last"
-                )
+                    frequence
+                ).agg("last")
                 mv.index = mv.index.map(utils.QA_fmt_quarter)
                 cmv.index = cmv.index.map(utils.QA_fmt_quarter)
             else:
                 mv = df_local["mv"].unstack()
                 cmv = df_local["liquidity_mv"].unstack()
-            if weight_cls is "mktcap":
+            if weight_cls == "mktcap":
                 df_local = mv
-            elif weight_cls is "sqrt_mktcap":
+            elif weight_cls == "sqrt_mktcap":
                 df_local = mv.transform("sqrt")
-            elif weight_cls is "ln_mktcap":
+            elif weight_cls == "ln_mktcap":
                 df_local = mv.transform("log")
-            elif weight_cls is "cmktcap":
+            elif weight_cls == "cmktcap":
                 df_local = cmv
-            elif weight_cls is "sqrt_cmktcap":
+            elif weight_cls == "sqrt_cmktcap":
                 df_local = cmv.transform("sqrt")
-            elif weight_cls is "ln_cmktcap":
+            elif weight_cls == "ln_cmktcap":
                 df_local = cmv.transform("log")
             else:
                 raise ValueError(f"{weight_cls} 加权方式未实现")
@@ -423,11 +433,13 @@ class DataApi:
         """
         获取上市时间
         """
-        stock_list = utils.QA_fmt_code_list(code_list, style="jq")
-        df_local = jqdatasdk.get_all_securities(types="stock")
+        # stock_list = utils.QA_fmt_code_list(code_list, style="jq")
+        # df_local = jqdatasdk.get_all_securities(types="stock")
+        stock_list = utils.QA_fmt_code_list(code_list)
+        df_local = QA_fetch_stock_basic(status=None).set_index("code")
         intersection = list(df_local.index.intersection(stock_list))
-        ss = df_local.loc[intersection]["start_date"]
-        ss.index = ss.index.map(lambda x: x[:6])
+        ss = df_local.loc[intersection]["list_date"]
+        # ss.index = ss.index.map(lambda x: x[:6])
         # 日期处理
         date_range = list(map(lambda x: x.date(), factor_time_range))
 
