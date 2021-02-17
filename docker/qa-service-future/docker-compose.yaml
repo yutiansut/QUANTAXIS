@@ -1,7 +1,7 @@
 version: '2'
 services:
     qa:
-        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
+        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20210218
         container_name: qacommunity-rust
         depends_on:
             - mgdb
@@ -28,7 +28,7 @@ services:
 
 
     qaweb:
-        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
+        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20210218
         container_name: qaweb
         depends_on:
             - mgdb
@@ -38,6 +38,10 @@ services:
                 ipv4_address: 172.19.0.4
         ports:
             - "8010:8010"
+            - "8018:8018"
+            - "8019:8019"
+            - "8028:8028"
+            - "8029:8029"
         environment:
           - MONGODB=mgdb
           - QAPUBSUB_IP=qaeventmq
