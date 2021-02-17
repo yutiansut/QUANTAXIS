@@ -54,7 +54,7 @@ ENV PATH=${GOPATH}/bin:/usr/lib/go-1.15/bin:/usr/local/cmake/bin:${PATH}
 ENV PKG_CONFIG_PATH = /usr/local/lib/pkgconfig
 ENV LD_LIBRARY_PATH=:${LD_LIBRARY_PATH}:/usr/local/bin:/usr/local/lib
 ENV GO111MODULE=on
-#ENV GOPROXY=https://goproxy.io
+#
 COPY ./config  /root/.cargo/
 COPY ./update_all.py  /root/QUANTAXIS/config/
 RUN set -eux; \
@@ -82,7 +82,7 @@ RUN set -eux; \
     evcxr_jupyter --install;
     ## clean
 ## run build for tensorflow 2
-
+ENV GOPROXY=https://goproxy.io
 RUN conda install --yes tensorflow 
 RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras \
     && pip install QAStrategy quantaxis quantaxis_run qifiaccount -U -i https://pypi.doubanio.com/simple
