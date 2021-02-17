@@ -285,7 +285,7 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
         data = data \
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                   inplace=False) \
-            .assign(datetime=pd.to_datetime(data['datetime']),
+            .assign(datetime=pd.to_datetime(data['datetime']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                     date=data['datetime'].apply(lambda x: str(x)[0:10]),
                     date_stamp=data['datetime'].apply(
                         lambda x: QA_util_date_stamp(x)),
@@ -416,7 +416,7 @@ def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None,
         data = data \
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                   inplace=False) \
-            .assign(datetime=pd.to_datetime(data['datetime']),
+            .assign(datetime=pd.to_datetime(data['datetime']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                     code=str(code),
                     date=data['datetime'].apply(lambda x: str(x)[0:10]),
                     date_stamp=data['datetime'].apply(
@@ -461,7 +461,7 @@ def QA_fetch_get_stock_latest(code, frequence='day', ip=None, port=None):
             code=item) for item in code], axis=0, sort=False)
         return data \
             .assign(date=pd.to_datetime(data['datetime']
-                                        .apply(lambda x: x[0:10])),
+                                        .apply(lambda x: x[0:10])).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                     date_stamp=data['datetime']
                     .apply(lambda x: QA_util_date_stamp(str(x[0:10])))) \
             .set_index('date', drop=False) \
@@ -882,7 +882,7 @@ def QA_fetch_get_bond_min(code, start, end, frequence='1min', ip=None,
         data = data \
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                   inplace=False) \
-            .assign(datetime=pd.to_datetime(data['datetime']),
+            .assign(datetime=pd.to_datetime(data['datetime']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                     code=str(code),
                     date=data['datetime'].apply(lambda x: str(x)[0:10]),
                     date_stamp=data['datetime'].apply(
@@ -996,7 +996,7 @@ def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None,
                 code, (int(lens / 800) - i) * 800, 800))
                 for i in range(int(lens / 800) + 1)], axis=0, sort=False)
         data = data \
-            .assign(datetime=pd.to_datetime(data['datetime']),
+            .assign(datetime=pd.to_datetime(data['datetime']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                     code=str(code)) \
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                   inplace=False) \
@@ -1062,7 +1062,7 @@ def QA_fetch_get_index_latest(code, frequence='day', ip=None, port=None):
         data = pd.concat(data, axis=0, sort=False)
         return data \
             .assign(date=pd.to_datetime(data['datetime']
-                                        .apply(lambda x: x[0:10])),
+                                        .apply(lambda x: x[0:10])).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                     date_stamp=data['datetime']
                     .apply(lambda x: QA_util_date_stamp(str(x[0:10])))) \
             .set_index('date', drop=False) \
@@ -1093,7 +1093,7 @@ def __QA_fetch_get_stock_transaction(code, day, retry, api):
             data_ = data_.assign(
                 date=day,
                 datetime=pd.to_datetime(data_['time'].apply(
-                    lambda x: str(day) + ' ' + x)),
+                    lambda x: str(day) + ' ' + x)).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                 code=str(code))
             data_ = data_.assign(date_stamp=data_['datetime'].apply(lambda x: QA_util_date_stamp(x)),
                                  time_stamp=data_['datetime'].apply(
@@ -1127,7 +1127,7 @@ def __QA_fetch_get_index_transaction(code, day, retry, api):
             data_ = data_.assign(
                 date=day,
                 datetime=pd.to_datetime(data_['time'].apply(
-                    lambda x: str(day) + ' ' + x)),
+                    lambda x: str(day) + ' ' + x)).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                 code=str(code))
             data_ = data_.assign(date_stamp=data_['datetime'].apply(lambda x: QA_util_date_stamp(x)),
                                  time_stamp=data_['datetime'].apply(
@@ -1250,7 +1250,7 @@ def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
             return data.assign(
                 date=str(day),
                 datetime=pd.to_datetime(data['time'].apply(
-                    lambda x: str(day) + ' ' + str(x))),
+                    lambda x: str(day) + ' ' + str(x))).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
                 code=str(code),
                 order=range(len(data.index))).set_index('datetime', drop=False,
                                                         inplace=False)
@@ -1274,7 +1274,7 @@ def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
         data = api.to_df(api.get_xdxr_info(market_code, code))
         if len(data) >= 1:
             data = data \
-                .assign(date=pd.to_datetime(data[['year', 'month', 'day']])) \
+                .assign(date=pd.to_datetime(data[['year', 'month', 'day']]).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')) \
                 .drop(['year', 'month', 'day'], axis=1) \
                 .assign(category_meaning=data['category'].apply(
                     lambda x: category[str(x)])) \
@@ -2452,7 +2452,7 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None,
         data = data \
             .assign(tradetime=data['datetime'].apply(str), code=str(code),
                     datetime=pd.to_datetime(
-                data['datetime'].apply(QA_util_future_to_realdatetime, 1))) \
+                data['datetime'].apply(QA_util_future_to_realdatetime, 1)).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')) \
             .drop(['year', 'month', 'day', 'hour', 'minute'], axis=1,
                   inplace=False) \
             .assign(date=data['datetime'].apply(lambda x: str(x)[0:10]),
@@ -2489,7 +2489,7 @@ def __QA_fetch_get_future_transaction(code, day, retry, code_market, apix):
             time.sleep(1)
             return __QA_fetch_get_stock_transaction(code, day, 0, apix)
         else:
-            return data_.assign(datetime=pd.to_datetime(data_['date'])).assign(
+            return data_.assign(datetime=pd.to_datetime(data_['date'])).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai').assign(
                 date=str(day)) \
                 .assign(code=str(code)).assign(
                 order=range(len(data_.index))).set_index('datetime',
@@ -2555,7 +2555,7 @@ def QA_fetch_get_future_transaction_realtime(code, ip=None, port=None):
         data = pd.concat([apix.to_df(apix.get_transaction_data(
             int(code_market.market), code, (30 - i) * 1800), ) for i in
             range(31)], axis=0,sort=True)
-        return data.assign(datetime=pd.to_datetime(data['date'])).assign(
+        return data.assign(datetime=pd.to_datetime(data['date'])).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai').assign(
             date=lambda x: str(x)[0:10]) \
             .assign(code=str(code)).assign(
             order=range(len(data.index))).set_index('datetime', drop=False,

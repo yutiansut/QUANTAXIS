@@ -396,7 +396,7 @@ class _quotation_base():
     def datetime(self):
         '分钟线结构返回datetime 日线结构返回date'
         index = self.data.index.remove_unused_levels()
-        return pd.to_datetime(index.levels[0])
+        return pd.to_datetime(index.levels[0]).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
 
     @property
     @lru_cache()
@@ -673,7 +673,7 @@ class _quotation_base():
         :return:  字典dict 类型
         '''
         try:
-            return self.dicts[(QA_util_to_datetime(time), str(code))]
+            return self.dicts[(QA_util_to_datetime(time).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'), str(code))]
         except Exception as e:
             raise e
 

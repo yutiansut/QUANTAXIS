@@ -55,7 +55,7 @@ def QA_data_marketvalue(data):
             data = pd.DataFrame(
                 [item for item in collections.find({'code': {"$in": code_list}
                                                    },{"_id": 0})])
-            data['date'] = pd.to_datetime(data['date'])
+            data['date'] = pd.to_datetime(data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
 
             return data.drop_duplicates(
                 ['date', 'code'],

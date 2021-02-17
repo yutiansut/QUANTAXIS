@@ -191,7 +191,7 @@ def QA_data_stock_to_fq(__data, type_='01'):
                 [item for item in collections.find({'code': code})]
             ).drop(['_id'],
                    axis=1)
-            data['date'] = pd.to_datetime(data['date'])
+            data['date'] = pd.to_datetime(data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
             return data.set_index(['date', 'code'], drop=False)
         except:
             return pd.DataFrame(

@@ -157,7 +157,7 @@ def QA_quotation_adv(code, start, end=save_tdx.now_time(), frequence='1min',
                         # data_tdx与从数据库获取的数据格式上做一些统一。
                         data_tdx = data_tdx.rename(columns={"vol": "volume"}).drop([
                             'date', 'date_stamp'], axis=1)
-                        data_tdx.index = pd.to_datetime(data_tdx.index)
+                        data_tdx.index = pd.to_datetime(data_tdx.index).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                         res = pd.concat([res, data_tdx], sort=True)
                     res = QA_DataStruct_Stock_day(
                         res.reset_index().set_index(['date', 'code']))
@@ -193,7 +193,7 @@ def QA_quotation_adv(code, start, end=save_tdx.now_time(), frequence='1min',
                         # data_tdx与从数据库获取的数据格式上做一些统一。
                         data_tdx = data_tdx.rename(columns={"vol": "volume"}).drop(
                             ['date', 'datetime', 'date_stamp', 'time_stamp'], axis=1)
-                        data_tdx.index = pd.to_datetime(data_tdx.index)
+                        data_tdx.index = pd.to_datetime(data_tdx.index).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                         res = pd.concat([res, data_tdx], sort=True)
                     res = QA_DataStruct_Stock_day(
                         res.reset_index().set_index(['datetime', 'code']))

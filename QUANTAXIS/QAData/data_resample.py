@@ -835,7 +835,7 @@ def QA_data_futuremin_resample_today(
     (np.nancumsum, "cumsum"),
 
     """
-    return min_data.assign(tradedate=pd.to_datetime(min_data.tradetime.apply(lambda x: x[0:10]))).reset_index().set_index('tradedate').resample(type_).\
+    return min_data.assign(tradedate=pd.to_datetime(min_data.tradetime.apply(lambda x: x[0:10])).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')).reset_index().set_index('tradedate').resample(type_).\
         apply({'code': 'first', 'open': 'first', 'high': 'max',
                'low': 'min', 'close': 'last', 'volume': 'sum'}).dropna()
 
@@ -851,7 +851,7 @@ def QA_data_futuremin_resample_series(
         min_data = min_data.reset_index(1)
         idx = min_data.index
     else:
-        idx = pd.to_datetime(min_data.index)
+        idx = pd.to_datetime(min_data.index).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
 
     CONVERSION = {
         'open': 'first',
@@ -943,7 +943,7 @@ def QA_data_day_resample(day_data, type_='w'):
     }
 
     data = day_data.resample(type_, closed='right').apply(CONVERSION).dropna()
-    return data.assign(date=pd.to_datetime(data.date)
+    return data.assign(date=pd.to_datetime(data.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                       ).set_index(['date',
                                    'code'])
 
@@ -989,7 +989,7 @@ def QA_data_futureday_resample(day_data, type_='w'):
     }
 
     data = day_data.resample(type_, closed='right').apply(CONVERSION).dropna()
-    return data.assign(date=pd.to_datetime(data.date)
+    return data.assign(date=pd.to_datetime(data.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                       ).set_index(['date',
                                    'code'])
 
@@ -1036,7 +1036,7 @@ def QA_data_cryptocurrency_min_resample(min_data, type_='5min'):
         closed='right',
     ).apply(CONVERSION).dropna()
     data.index = data.index + to_offset(type_)
-    return data.assign(datetime=pd.to_datetime(data.index)
+    return data.assign(datetime=pd.to_datetime(data.index).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                       ).set_index(['datetime',
                                    'code'])
 

@@ -80,7 +80,7 @@ def QA_backtest_analysis_backtest(client, code_list, assets_d, account_days, mes
     data = pd.concat([pd.DataFrame(message['body']['account']['history'],
                                    columns=['time', 'code', 'price', 'towards', 'amount', 'order_id', 'trade_id', 'commission']),
                       pd.DataFrame(message['body']['account']['assets'], columns=['assets'])], axis=1)
-    data['time'] = pd.to_datetime(data['time'])
+    data['time'] = pd.to_datetime(data['time']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
     data.set_index('time', drop=False, inplace=True)
 
     trade_history = message['body']['account']['history']

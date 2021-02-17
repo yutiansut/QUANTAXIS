@@ -76,7 +76,7 @@ def QA_SU_save_stock_min(client=DATABASE, ui_log=None, ui_progress=None):
         }).drop(["bob", "frequency", "position", "pre_close"], axis=1)
         df["code"] = df["code"].map(str).str.slice(5, )
         df["datetime"] = pd.to_datetime(df["datetime"].map(str).str.slice(
-            0, 19))
+            0, 19)).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         df["date"] = df.datetime.map(str).str.slice(0, 10)
         df = df.set_index("datetime", drop=False)
         df["date_stamp"] = df["date"].apply(lambda x: QA_util_date_stamp(x))

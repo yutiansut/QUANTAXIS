@@ -67,7 +67,7 @@ def QA_SU_trans_stock_min(client=DATABASE, ui_log=None, ui_progress=None,
         ).drop(
             "symbol", axis=1)
         df_local = df_local.assign(
-            datetime=pd.to_datetime(df_local.datetime),
+            datetime=pd.to_datetime(df_local.datetime).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
             date_stamp=df_local.date.apply(lambda x: QA_util_date_stamp(x)),
             time_stamp=df_local.datetime.apply(
                 lambda x: QA_util_time_stamp(x)),
