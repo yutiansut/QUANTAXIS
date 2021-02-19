@@ -362,7 +362,7 @@ financial_dict = {
     '319营业总收入TTM': 'Total Operating Income TTM',
     '320员工总数(人)': 'Total number of employees (people)',
     '321每股企业自由现金流': 'Corporate Free Cash Flow per Share',
-    '322每股股东自由现金流': 'Free cash flow per share for shareholders'
+    '322每股股东自由现金流': 'Free cash flow per share for shareholders',
     '323备用323': 'unknown323',
     '324备用324': 'unknown324',
     '325备用325': 'unknown325',
@@ -445,18 +445,18 @@ financial_dict = {
     # 资产负债表新增指标---
     '401专项储备': 'Special reserve',
     '402结算备付金': 'Settlement provision',
-    '403拆出资金': 'Funds removed'
+    '403拆出资金': 'Funds removed',
     '404发放贷款及垫款': 'Loans and advances granted',
     '405衍生金融资产': 'Derivative financial assets',
     '406应收保费': 'Premium receivable',
     '407应收分保账款': 'Sub-insurance receivables',
     '408应收分保合同准备金': 'Provision for sub-insurance contracts receivable',
     '409买入返售金融资产': 'Buy-back financial assets',
-    '410划分为持有待售的资产': 'Assets classified as held for sale'
+    '410划分为持有待售的资产': 'Assets classified as held for sale',
     '411发放贷款及垫款': 'Loans and advances granted',
     '412向中央银行借款': 'Borrowings from central banks',
     '413吸收存款及同业存放': 'Absorption of deposits and interbank deposits',
-    '414拆入资金': 'Funds borrowed'
+    '414拆入资金': 'Funds borrowed',
     '415衍生金融负债': 'Derivative financial liabilities',
     '416卖出回购金融资产款': 'Sale of repurchase financial assets',
     '417应付手续费及佣金': 'Fees and commissions payable',
@@ -546,7 +546,7 @@ financial_dict = {
     '501稀释每股收益': 'Diluted earnings per share',
     '502营业总收入': "Total operating income",
     '503汇兑收益': 'Foreign exchange gain',
-    '504其中:归属于母公司综合收益': 'Comprehensive income attributable to parent company'
+    '504其中:归属于母公司综合收益': 'Comprehensive income attributable to parent company',
     '505其中:归属于少数股东综合收益': 'Comprehensive income attributable to minority shareholders',
     '506利息收入': 'Interest income',
     '507已赚保费': 'Premiums earned',
