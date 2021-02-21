@@ -5,7 +5,7 @@
 
 解决办法是可以打开任意一个cmd或powershell窗口，然后在title栏右键，点击属性，在选项界面有个快速编辑模式，去掉即可。
 
-![](http://pic.yutiansut.com/powershell%E8%AE%BE%E7%BD%AE.png)
+![](http://picx.gulizhu.com/powershell%E8%AE%BE%E7%BD%AE.png)
 
 而原因则是有在控制台进行日志输出。。。
 

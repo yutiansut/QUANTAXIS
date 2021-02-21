@@ -99,7 +99,7 @@ def QA_fetch_stock_day(
         try:
             res = res.assign(
                 volume=res.vol,
-                date=pd.to_datetime(res.date)
+                date=pd.to_datetime(res.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
             ).drop_duplicates((['date',
                                 'code'])).query('volume>1').set_index(
                                     'date',
@@ -177,7 +177,7 @@ def QA_fetch_stock_adj(
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         res = pd.DataFrame([item for item in cursor])
-        res.date = pd.to_datetime(res.date)
+        res.date = pd.to_datetime(res.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         return res.set_index('date', drop=False)
 
 
@@ -230,7 +230,7 @@ def QA_fetch_stock_min(
     try:
         res = res.assign(
             volume=res.vol,
-            datetime=pd.to_datetime(res.datetime)
+            datetime=pd.to_datetime(res.datetime).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         ).query('volume>1').drop_duplicates(['datetime',
                                              'code']).set_index(
                                                  'datetime',
@@ -297,7 +297,7 @@ def QA_fetch_stock_transaction(
     try:
         res = res.assign(
             volume=res.vol,
-            datetime=pd.to_datetime(res.datetime)
+            datetime=pd.to_datetime(res.datetime).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         ).query('volume>1').drop_duplicates(['datetime',
                                              'code']).set_index(
                                                  'datetime',
@@ -364,7 +364,7 @@ def QA_fetch_index_transaction(
     try:
         res = res.assign(
             volume=res.vol,
-            datetime=pd.to_datetime(res.datetime)
+            datetime=pd.to_datetime(res.datetime).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         ).query('volume>1').drop_duplicates(['datetime',
                                              'code']).set_index(
                                                  'datetime',
@@ -535,7 +535,7 @@ def QA_fetch_stock_full(date, format='numpy', collections=DATABASE.stock_day):
                     'date'
                 ]
             )
-            _data['date'] = pd.to_datetime(_data['date'])
+            _data['date'] = pd.to_datetime(_data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
             _data = _data.set_index('date', drop=False)
         else:
             print(
@@ -583,7 +583,7 @@ def QA_fetch_index_day(
         try:
             res = res.assign(
                 volume=res.vol,
-                date=pd.to_datetime(res.date)
+                date=pd.to_datetime(res.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
             ).drop_duplicates((['date',
                                 'code'])).set_index(
                                     'date',
@@ -657,7 +657,7 @@ def QA_fetch_index_min(
     try:
         res = res.assign(
             volume=res.vol,
-            datetime=pd.to_datetime(res.datetime)
+            datetime=pd.to_datetime(res.datetime).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         ).query('volume>1').drop_duplicates(['datetime',
                                              'code']).set_index(
                                                  'datetime',
@@ -751,7 +751,7 @@ def QA_fetch_future_day(
                     'date'
                 ]
             ).drop_duplicates()
-            _data['date'] = pd.to_datetime(_data['date'])
+            _data['date'] = pd.to_datetime(_data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
             _data = _data.set_index('date', drop=False)
         else:
             print(
@@ -842,7 +842,7 @@ def QA_fetch_future_min(
             'type'
         ]
     )
-    _data = _data.assign(datetime=pd.to_datetime(_data['datetime'])
+    _data = _data.assign(datetime=pd.to_datetime(_data['datetime']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                         ).drop_duplicates((['datetime',
                                             'code'])).set_index(
                                                 'datetime',
@@ -938,7 +938,7 @@ def QA_fetch_ctp_tick(
         (p1.UpdateMillisec / 1000000).apply(lambda x: str('%.6f' % x)[1:]),
         code=p1.InstrumentID
     )
-    p1.datetime = pd.to_datetime(p1.datetime)
+    p1.datetime = pd.to_datetime(p1.datetime).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
     return p1.set_index(p1.datetime)
 
 
@@ -955,7 +955,7 @@ def QA_fetch_stock_xdxr(code, format='pd', collections=DATABASE.stock_xdxr):
         ]
     ).drop(['_id'],
            axis=1)
-    data['date'] = pd.to_datetime(data['date'])
+    data['date'] = pd.to_datetime(data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
     return data.set_index('date', drop=False)
 
 
@@ -1049,7 +1049,7 @@ def QA_fetch_stock_info(code, format='pd', collections=DATABASE.stock_info):
                       batch_size=10000)
             ]
         )
-        #data['date'] = pd.to_datetime(data['date'])
+        #data['date'] = pd.to_datetime(data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         return data.set_index('code', drop=False)
     except Exception as e:
         QA_util_log_info(e)
@@ -1081,7 +1081,7 @@ def QA_fetch_stock_name(code, collections=DATABASE.stock_list, ):
                       batch_size=10000)
             ]
         )
-        #data['date'] = pd.to_datetime(data['date'])
+        #data['date'] = pd.to_datetime(data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         return data.set_index('code', drop=False)
 
 
@@ -1107,7 +1107,7 @@ def QA_fetch_index_name(code, collections=DATABASE.index_list):
                       batch_size=10000)
             ]
         )
-        #data['date'] = pd.to_datetime(data['date'])
+        #data['date'] = pd.to_datetime(data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         return data.set_index('code', drop=False)
 
 
@@ -1133,7 +1133,7 @@ def QA_fetch_etf_name(code, collections=DATABASE.etf_list):
                       batch_size=10000)
             ]
         )
-        #data['date'] = pd.to_datetime(data['date'])
+        #data['date'] = pd.to_datetime(data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         return data.set_index('code', drop=False)
 
 
@@ -1149,7 +1149,7 @@ def QA_fetch_quotation(code, date=datetime.date.today(), db=DATABASE):
                                  batch_size=10000)
             ]
         )
-        return data.assign(date=pd.to_datetime(data.datetime.apply(lambda x: str(x)[0:10])), datetime=pd.to_datetime(data.datetime)) \
+        return data.assign(date=pd.to_datetime(data.datetime.apply(lambda x: str(x)[0:10])).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'), datetime=pd.to_datetime(data.datetime).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')) \
             .set_index('datetime', drop=False).sort_index()
     except Exception as e:
         raise e
@@ -1168,8 +1168,8 @@ def QA_fetch_quotations(date=datetime.date.today(), db=DATABASE):
             ]
         )
         return data.assign(
-            date=pd.to_datetime(data.datetime.apply(lambda x: str(x)[0:10]))
-        ).assign(datetime=pd.to_datetime(data.datetime)
+            date=pd.to_datetime(data.datetime.apply(lambda x: str(x)[0:10])).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        ).assign(datetime=pd.to_datetime(data.datetime).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                 ).set_index(['datetime',
                              'code'],
                             drop=False).sort_index()
@@ -1467,9 +1467,9 @@ def QA_fetch_financial_report(code, report_date, ltype='EN', db=DATABASE):
             if res_pd.report_date.dtype == numpy.int64:
                 res_pd.report_date = pd.to_datetime(
                     res_pd.report_date.apply(QA_util_date_int2str)
-                )
+                ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
             else:
-                res_pd.report_date = pd.to_datetime(res_pd.report_date)
+                res_pd.report_date = pd.to_datetime(res_pd.report_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
 
             return res_pd.replace(-4.039810335e+34,
                                   numpy.nan).set_index(
@@ -1763,7 +1763,7 @@ def QA_fetch_cryptocurrency_day(
                     'date'
                 ]
             ).drop_duplicates((['date', 'code']))
-            _data['date'] = pd.to_datetime(_data['date'])
+            _data['date'] = pd.to_datetime(_data['date']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
             _data = _data.set_index('date', drop=False)
         else:
             print(
@@ -1850,7 +1850,7 @@ def QA_fetch_cryptocurrency_min(
             'type'
         ]
     )
-    _data = _data.assign(datetime=pd.to_datetime(_data['datetime'])
+    _data = _data.assign(datetime=pd.to_datetime(_data['datetime']).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                         ).drop_duplicates((['datetime', 'code'])).set_index(
                                                 'datetime',
                                                 drop=False

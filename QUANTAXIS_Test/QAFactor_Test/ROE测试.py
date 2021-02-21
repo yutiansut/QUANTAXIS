@@ -39,7 +39,7 @@ else:
     # 上市日期过滤
     factor_data = preprocess.QA_fetch_factor_start_date(factor)
     factor_data = factor_data.reset_index()
-    factor_data = factor_data.loc[(factor_data.datetime - pd.to_datetime(factor_data.start_date)
+    factor_data = factor_data.loc[(factor_data.datetime - pd.to_datetime(factor_data.start_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
                                 ) > pd.Timedelta("200D")].set_index(
                                     ["datetime",
                                     "code"]

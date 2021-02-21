@@ -12,9 +12,9 @@
 
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
-![QUANTAXIS_LOGO_LAST_small.jpg](http://pic.yutiansut.com/Fn0TPEcwu_uhraf58_93Ul5yfvAz)
+![QUANTAXIS_LOGO_LAST_small.jpg](http://picx.gulizhu.com/Fn0TPEcwu_uhraf58_93Ul5yfvAz)
 
-![gvp](http://pic.yutiansut.com/gvp.jpg)
+![gvp](http://picx.gulizhu.com/gvp.jpg)
 
 Quantitative Financial FrameWork
 
@@ -68,7 +68,7 @@ QUANTAXIS 项目从2017年开始  已经从一个写毕业论文时没有框架 
 
 - 实盘
 
-  - 支持股票(需要自行对接)
+  - 支持股票/融资融券 实盘交易 不限制券商
   - 支持期货(支持CTP接口)
   - 和模拟一套代码
   - 不限制账户数量
@@ -118,13 +118,13 @@ PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件
 
 
 
-![QUANTAXIS 2019.png](http://pic.yutiansut.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
+![QUANTAXIS 2019.png](http://picx.gulizhu.com/FnRlMW2LQpFBrsdRv7E_uJ9RvzHt)
 
 技术栈: python/nodejs/vue/mongodb/rabbitmq/c++
 
 ### 核心工具链(生产环境在用)
 
-![QQ图片20191029223640.png](http://pic.yutiansut.com/FuVrzcbWJUBNrj4Wa0zlRl-YlBY_)
+![QQ图片20191029223640.png](http://picx.gulizhu.com/FuVrzcbWJUBNrj4Wa0zlRl-YlBY_)
 
 #### 已开源
 
@@ -263,7 +263,7 @@ http://doc.yutiansut.com
 写代码不易...请作者喝杯咖啡呗?
 
 
-![](http://pic.yutiansut.com/alipay.png)
+![](http://picx.gulizhu.com/alipay.png)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
@@ -273,36 +273,44 @@ http://doc.yutiansut.com
 
 ##  QUANTAXIS 桌面级产品(全平台 WIN/MAC/LINUX)
 
+![image.png](http://picx.gulizhu.com/Fh2ihjZvNgfBcBS74ckbVw88diWn)
 
+![image.png](http://picx.gulizhu.com/FoM6CKXm3jHxofuqqK7uJWawjYNO)
+
+![image.png](http://picx.gulizhu.com/FoD5_ehKYXY4IUJtdD9DJ75qNGrQ)
+
+![image.png](http://picx.gulizhu.com/FsYNbN6N5ZbYsgByr8TcPwW3xu86)
+
+![image.png](http://picx.gulizhu.com/Fo4MRaa9lZ8bTTnTZUzgtUfTb7Ps)
 
 
 首页
 
-![image.png](http://pic.yutiansut.com/FnGCyLQ8nRLFOYX8elP4PhJ7IQuq)
+![image.png](http://picx.gulizhu.com/FnGCyLQ8nRLFOYX8elP4PhJ7IQuq)
 
 登陆
 
-![image.png](http://pic.yutiansut.com/FmDc4ZPxHeNncZICoMr9dqz46h78)
+![image.png](http://picx.gulizhu.com/FmDc4ZPxHeNncZICoMr9dqz46h78)
 
 行情/键盘精灵
 
-![image.png](http://pic.yutiansut.com/FhiN_asx158UobclVpCY00e61pjr)
+![image.png](http://picx.gulizhu.com/FhiN_asx158UobclVpCY00e61pjr)
 
 lab 投研
 
-![image.png](http://pic.yutiansut.com/FlkJTKu7iG-FD7Rz2DwUhvs2Cy3j)
+![image.png](http://picx.gulizhu.com/FlkJTKu7iG-FD7Rz2DwUhvs2Cy3j)
 
 回测/组合
 
-![image.png](http://pic.yutiansut.com/FuB_dC5vX5Y1_Z8At0MiMRXcE5ZT)
-![image.png](http://pic.yutiansut.com/Fqvh8m1ka4jdmwYwBn8MAHixpZOm)
+![image.png](http://picx.gulizhu.com/FuB_dC5vX5Y1_Z8At0MiMRXcE5ZT)
+![image.png](http://picx.gulizhu.com/Fqvh8m1ka4jdmwYwBn8MAHixpZOm)
 
 模拟实盘多账户管理
-![image.png](http://pic.yutiansut.com/Fh0fZzqORNRmY5txaXYgHWJUCPqw)
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015440.png)
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015451.png)
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
-![](http://pic.yutiansut.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
+![image.png](http://picx.gulizhu.com/Fh0fZzqORNRmY5txaXYgHWJUCPqw)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190311015440.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190311015451.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190311015550.png)
+![](http://picx.gulizhu.com/QQ%E6%88%AA%E5%9B%BE20190311015537.png)
 
 
 

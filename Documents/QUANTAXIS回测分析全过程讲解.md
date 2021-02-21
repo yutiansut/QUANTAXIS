@@ -1800,13 +1800,13 @@ z=Account.cash_table.drop_duplicates(subset='date', keep='last').set_index(['dat
 ```python
 res=Account.cash_table.drop_duplicates(subset='date', keep='last')
 
-zx=pd.concat([res.set_index('date'),pd.Series(data=None,index=pd.to_datetime(Account.trade_range),name='predrop')],axis=1).ffill().drop(['predrop'],axis=1)
+zx=pd.concat([res.set_index('date'),pd.Series(data=None,index=pd.to_datetime(Account.trade_range).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),name='predrop')],axis=1).ffill().drop(['predrop'],axis=1)
 
 ```
 
 
 ```python
-zxx=pd.to_datetime(Account.trade_range)
+zxx=pd.to_datetime(Account.trade_range).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
 ```
 
 

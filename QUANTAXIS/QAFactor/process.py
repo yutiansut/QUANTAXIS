@@ -112,10 +112,10 @@ def get_forward_returns(
     ---
     :return: 因子远期收益
     """
-    factor_timelist = pd.to_datetime(factor.index).tolist()
+    factor_timelist = pd.to_datetime(factor.index).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai').tolist()
     factor_timelist = sorted(
         list(
-            set(factor_timelist) & set(pd.to_datetime(prices.index).tolist())))
+            set(factor_timelist) & set(pd.to_datetime(prices.index).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai').tolist())))
 
     if len(factor_timelist) == 0:
         raise ValueError("错误：因子数据的日期索引与价格数据日期索引不匹配")

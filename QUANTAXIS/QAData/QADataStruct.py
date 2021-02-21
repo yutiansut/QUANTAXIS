@@ -107,7 +107,7 @@ def _QA_fetch_stock_adj(
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         res = pd.DataFrame([item for item in cursor])
-        res.date = pd.to_datetime(res.date)
+        res.date = pd.to_datetime(res.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
         return res.set_index('date', drop=False)
 
 
@@ -154,7 +154,7 @@ class QA_DataStruct_Stock_day(_quotation_base):
                 try:
                     date = self.date
                     adj = _QA_fetch_stock_adj(
-                        self.code.to_list(),
+                        list(self.code),
                         str(date[0])[0:10],
                         str(date[-1])[0:10]
                     ).set_index(['date',

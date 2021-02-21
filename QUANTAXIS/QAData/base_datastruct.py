@@ -396,7 +396,7 @@ class _quotation_base():
     def datetime(self):
         '分钟线结构返回datetime 日线结构返回date'
         index = self.data.index.remove_unused_levels()
-        return pd.to_datetime(index.levels[0])
+        return pd.to_datetime(index.levels[0]).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
 
     @property
     @lru_cache()
@@ -673,7 +673,7 @@ class _quotation_base():
         :return:  字典dict 类型
         '''
         try:
-            return self.dicts[(QA_util_to_datetime(time), str(code))]
+            return self.dicts[(QA_util_to_datetime(time).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'), str(code))]
         except Exception as e:
             raise e
 
@@ -838,15 +838,27 @@ class _quotation_base():
         elif by == self.index.names[0]:
             by = None
             level = 0
-        return self.data.groupby(
-            by=by,
-            axis=axis,
-            level=level,
-            as_index=as_index,
-            sort=sort,
-            group_keys=group_keys,
-            squeeze=squeeze
-        )
+        # 适配 pandas 1.0+，避免出现 FutureWarning: 
+        # Paramter 'squeeze' is deprecated 提示
+        if (squeeze):
+            return self.data.groupby(
+                by=by,
+                axis=axis,
+                level=level,
+                as_index=as_index,
+                sort=sort,
+                group_keys=group_keys,
+                squeeze=squeeze
+            ).squeeze()
+        else:
+            return self.data.groupby(
+                by=by,
+                axis=axis,
+                level=level,
+                as_index=as_index,
+                sort=sort,
+                group_keys=group_keys,
+            )
 
     def new(self, data=None, dtype=None, if_fq=None):
         """

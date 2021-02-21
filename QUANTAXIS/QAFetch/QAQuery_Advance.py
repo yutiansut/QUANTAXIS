@@ -778,7 +778,7 @@ def QA_fetch_financial_report_adv(code, start, end=None, ltype='EN'):
     else:
         series = pd.Series(
             data=month_data,
-            index=pd.to_datetime(month_data),
+            index=pd.to_datetime(month_data, utc=False),
             name='date'
         )
         timerange = series.loc[start:end].tolist()
@@ -854,7 +854,7 @@ def QA_fetch_stock_financial_calendar_adv(
     else:
         series = pd.Series(
             data=month_data,
-            index=pd.to_datetime(month_data),
+            index=pd.to_datetime(month_data).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
             name='date'
         )
         timerange = series.loc[start:end].tolist()
@@ -893,7 +893,7 @@ def QA_fetch_stock_divyield_adv(
     else:
         series = pd.Series(
             data=month_data,
-            index=pd.to_datetime(month_data),
+            index=pd.to_datetime(month_data).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
             name='date'
         )
         timerange = series.loc[start:end].tolist()

@@ -13,6 +13,9 @@
 4. 如果你还闲得慌想要深入学习下docker的话
 
 
+最近更新的主要文档在
+
+http://www.yutiansut.com:3000/topic/602d76357eced26097336b9d
 
 ## 1. 安装docker 
 

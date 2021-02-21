@@ -5,6 +5,9 @@ echo $QARUN_AMQP
 #cat /entrypoint.sh
 
 quantaxis_webserver &
+qifi_manager &
+qavifiserver &
+/root/portfoliohandler &
 
-echo 'start celery'
+echo 'start quantaxis_run job worker'
 celery -A quantaxis_run worker --loglevel=info

@@ -230,7 +230,7 @@ class QA_Risk():
     @property
     def assets(self):
         x1 = self._assets.reset_index()
-        return x1.assign(date=pd.to_datetime(x1.date)).set_index('date')[0]
+        return x1.assign(date=pd.to_datetime(x1.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')).set_index('date')[0]
 
     @property
     def max_dropback(self):
@@ -1074,8 +1074,8 @@ class QA_Performance():
 
         pnl = pnl.assign(unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
                          pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
-                         sell_date=pd.to_datetime(pnl.sell_date),
-                         buy_date=pd.to_datetime(pnl.buy_date))
+                         sell_date=pd.to_datetime(pnl.sell_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
+                         buy_date=pd.to_datetime(pnl.buy_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'))
         pnl = pnl.assign(pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
                          hold_gap=abs(pnl.sell_date - pnl.buy_date),
                          if_buyopen=pnl.rawdirection == 'buy')
@@ -1199,8 +1199,8 @@ class QA_Performance():
 
         pnl = pnl.assign(unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
                          pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
-                         sell_date=pd.to_datetime(pnl.sell_date),
-                         buy_date=pd.to_datetime(pnl.buy_date))
+                         sell_date=pd.to_datetime(pnl.sell_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
+                         buy_date=pd.to_datetime(pnl.buy_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'))
         pnl = pnl.assign(pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
                          hold_gap=abs(pnl.sell_date - pnl.buy_date),
                          if_buyopen=pnl.rawdirection == 'buy')
