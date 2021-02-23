@@ -88,14 +88,14 @@ class QA_Portfolio(QA_Account):
     """
 
     def __init__(
-            self,
-            user_cookie=None,
-            portfolio_cookie=None,
-            strategy_name=None,
-            init_cash=100000000,
-            sell_available=None,
-            market_type=MARKET_TYPE.STOCK_CN,
-            running_environment=RUNNING_ENVIRONMENT.BACKETEST
+        self,
+        user_cookie=None,
+        portfolio_cookie=None,
+        strategy_name=None,
+        init_cash=100000000,
+        sell_available=None,
+        market_type=MARKET_TYPE.STOCK_CN,
+        running_environment=RUNNING_ENVIRONMENT.BACKETEST
     ):
         self.user_cookie = user_cookie
         # self.portfolio_cookie = QA_util_random_with_topic('Portfolio')
@@ -144,17 +144,18 @@ class QA_Portfolio(QA_Account):
     def node_view(self):
         return {
             'node_name':
-            self.portfolio_cookie,
+                self.portfolio_cookie,
             'cash_available':
-            self.cash_available,
+                self.cash_available,
             'sub_node':
-            [account.node_view for account in self.accounts.values()],
-            'links': [
-                {
-                    'source': self.portfolio_cookie,
-                    'target': item
-                } for item in self.account_list
-            ]
+                [account.node_view for account in self.accounts.values()],
+            'links':
+                [
+                    {
+                        'source': self.portfolio_cookie,
+                        'target': item
+                    } for item in self.account_list
+                ]
         }
 
     @property
@@ -221,11 +222,13 @@ class QA_Portfolio(QA_Account):
             res = self.account_list.remove(account_cookie)
 
             try:
-                DATABASE.account.find_one_and_delete({
-                    'account_cookie': account_cookie,
-                    'portfolio_cookie': self.portfolio_cookie,
-                    'user_cookie': self.user_cookie
-                })
+                DATABASE.account.find_one_and_delete(
+                    {
+                        'account_cookie': account_cookie,
+                        'portfolio_cookie': self.portfolio_cookie,
+                        'user_cookie': self.user_cookie
+                    }
+                )
             except:
                 pass
 
@@ -241,13 +244,13 @@ class QA_Portfolio(QA_Account):
             )
 
     def new_accountpro(
-            self,
-            account_cookie=None,
-            init_cash=1000000,
-            market_type=MARKET_TYPE.STOCK_CN,
-            auto_reload=True,
-            *args,
-            **kwargs
+        self,
+        account_cookie=None,
+        init_cash=1000000,
+        market_type=MARKET_TYPE.STOCK_CN,
+        auto_reload=True,
+        *args,
+        **kwargs
     ):
         """创建一个新的Account
 
@@ -316,13 +319,13 @@ class QA_Portfolio(QA_Account):
                     )
 
     def new_account(
-            self,
-            account_cookie=None,
-            init_cash=1000000,
-            market_type=MARKET_TYPE.STOCK_CN,
-            auto_reload=True,
-            *args,
-            **kwargs
+        self,
+        account_cookie=None,
+        init_cash=1000000,
+        market_type=MARKET_TYPE.STOCK_CN,
+        auto_reload=True,
+        *args,
+        **kwargs
     ):
         """创建一个新的Account
 
@@ -379,15 +382,34 @@ class QA_Portfolio(QA_Account):
                     self.cash.append(self.cash_available - init_cash)
                     return acc
                 else:
-                    return self.get_account_by_cookie(account_cookie, auto_reload=auto_reload)
+                    return self.get_account_by_cookie(
+                        account_cookie,
+                        auto_reload=auto_reload
+                    )
 
     def create_stockaccount(self, account_cookie, init_cash, init_hold):
-        return self.new_account(account_cookie=account_cookie, init_cash=init_cash, init_hold=init_hold,
-                                market_type=MARKET_TYPE.STOCK_CN, allow_t0=False,)
+        return self.new_account(
+            account_cookie=account_cookie,
+            init_cash=init_cash,
+            init_hold=init_hold,
+            market_type=MARKET_TYPE.STOCK_CN,
+            allow_t0=False,
+        )
 
-    def create_futureaccount(self, account_cookie, init_cash, init_hold, reload):
-        return self.new_account(account_cookie=account_cookie, init_cash=init_cash, init_hold=init_hold,
-                                market_type=MARKET_TYPE.FUTURE_CN, allow_t0=False,)
+    def create_futureaccount(
+        self,
+        account_cookie,
+        init_cash,
+        init_hold,
+        reload
+    ):
+        return self.new_account(
+            account_cookie=account_cookie,
+            init_cash=init_cash,
+            init_hold=init_hold,
+            market_type=MARKET_TYPE.FUTURE_CN,
+            allow_t0=False,
+        )
 
     def get_account_by_cookie(self, cookie, auto_reload=True):
         '''
@@ -440,18 +462,18 @@ class QA_Portfolio(QA_Account):
         }
 
     def send_order(
-            self,
-            account_cookie: str,
-            code=None,
-            amount=None,
-            time=None,
-            towards=None,
-            price=None,
-            money=None,
-            order_model=None,
-            amount_model=None,
-            *args,
-            **kwargs
+        self,
+        account_cookie: str,
+        code=None,
+        amount=None,
+        time=None,
+        towards=None,
+        price=None,
+        money=None,
+        order_model=None,
+        amount_model=None,
+        *args,
+        **kwargs
     ):
         """基于portfolio对子账户下单
 
@@ -511,9 +533,13 @@ class QA_Portfolio(QA_Account):
             datetime {[type]} -- [description] (default: {None})
         """
         return pd.concat(
-            [account.hold_table(datetime).reset_index().assign(
-                account_cookie=account.account_cookie) for account in self.accounts.values()]
-        ).set_index(['code', 'account_cookie']).sort_index()
+            [
+                account.hold_table(datetime).reset_index().assign(
+                    account_cookie=account.account_cookie
+                ) for account in self.accounts.values()
+            ]
+        ).set_index(['code',
+                     'account_cookie']).sort_index()
 
     @property
     def daily_cash(self):
@@ -533,7 +559,10 @@ class QA_Portfolio(QA_Account):
 
     @property
     def daily_frozen(self):
-        return pd.concat([account.daily_frozen for account in list(self.accounts.values())], axis=1).sum(axis=1)
+        return pd.concat(
+            [account.daily_frozen for account in list(self.accounts.values())],
+            axis=1
+        ).sum(axis=1)
 
     # def pull(self, account_cookie=None, collection=DATABASE.account):
     #     'pull from the databases'
@@ -745,7 +774,8 @@ class QA_PortfolioView():
     def start_date(self):
         return str(
             pd.to_datetime(
-                pd.Series([account.start_date for account in self.accounts]), utc=False
+                pd.Series([account.start_date for account in self.accounts]),
+                utc=False
             ).min()
         )[0:10]
 
@@ -753,14 +783,16 @@ class QA_PortfolioView():
     def end_date(self):
         return str(
             pd.to_datetime(
-                pd.Series([account.end_date for account in self.accounts]), utc=False
+                pd.Series([account.end_date for account in self.accounts]),
+                utc=False
             ).max()
         )[0:10]
 
     @property
     def code(self):
         return pd.concat(
-            [pd.Series(account.code) for account in self.accounts], sort=False
+            [pd.Series(account.code) for account in self.accounts],
+            sort=False
         ).drop_duplicates().tolist()
 
     @property
@@ -799,7 +831,11 @@ class QA_PortfolioView():
 
     @property
     def daily_frozen(self):
-        return pd.concat([account.daily_frozen for account in self.accounts], axis=1, sort=False).sum(axis=1)
+        return pd.concat(
+            [account.daily_frozen for account in self.accounts],
+            axis=1,
+            sort=False
+        ).sum(axis=1)
 
     @property
     def trade(self):
@@ -808,16 +844,21 @@ class QA_PortfolioView():
 
     @property
     def history_table(self):
-        return pd.concat([item.history_table for item in self.accounts], sort=False
-                         ).sort_index()
+        return pd.concat(
+            [item.history_table for item in self.accounts],
+            sort=False
+        ).sort_index()
 
     @property
     def trade_day(self):
-        return pd.concat([pd.Series(item.trade_day) for item in self.accounts], sort=False
-                         ).drop_duplicates().sort_values().tolist()
+        return pd.concat(
+            [pd.Series(item.trade_day) for item in self.accounts],
+            sort=False
+        ).drop_duplicates().sort_values().tolist()
 
     @property
     def trade_range(self):
         return pd.concat(
-            [pd.Series(item.trade_range) for item in self.accounts], sort=False
+            [pd.Series(item.trade_range) for item in self.accounts],
+            sort=False
         ).drop_duplicates().sort_values().tolist()
