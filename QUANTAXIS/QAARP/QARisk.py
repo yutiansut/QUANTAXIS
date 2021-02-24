@@ -1239,10 +1239,10 @@ class QA_Performance():
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(
                 pnl.sell_date
-            ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
+            , utc=False),
             buy_date=pd.to_datetime(
                 pnl.buy_date
-            ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+            , utc=False)
         )
         pnl = pnl.assign(
             pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
@@ -1426,10 +1426,10 @@ class QA_Performance():
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
             sell_date=pd.to_datetime(
                 pnl.sell_date
-            ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'),
+            , utc=False),
             buy_date=pd.to_datetime(
                 pnl.buy_date
-            ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+            , utc=False)
         )
         pnl = pnl.assign(
             pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,

@@ -887,7 +887,7 @@ class QA_Account(QA_Worker):
 
             data.date = pd.to_datetime(
                 data.date
-            ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+            , utc=False)
             data = data.set_index(['date', 'account_cookie'])
             res = data[~data.index.duplicated(keep='last')].sort_index()
             # 这里会导致股票停牌时的持仓也被计算 但是计算market_value的时候就没了
@@ -1026,7 +1026,7 @@ class QA_Account(QA_Worker):
             if sum(x['amount']) != 0:
                 return pd.Timestamp(self.datetime) - pd.to_datetime(
                     x.datetime.max()
-                ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+                , utc=False)
             else:
                 return np.nan
 
