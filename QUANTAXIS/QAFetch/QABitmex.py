@@ -86,7 +86,7 @@ def format_btimex_data_fields(datas, frequency):
     # dt.tz_localize(None) 是 Stackoverflow 的解决方案，先观察效果
     frame['datetime'] = pd.to_datetime(
         frame['timestamp']
-    ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+    , utc=False)
     frame['date'] = frame['datetime'].dt.strftime('%Y-%m-%d')
     frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # GMT+0 String 转换为 UTC Timestamp

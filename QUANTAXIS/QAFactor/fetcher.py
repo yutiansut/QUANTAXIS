@@ -339,7 +339,7 @@ def QA_fetch_crosssection_financial(
     res = pd.DataFrame([item for item in cursor])
     if res.empty:
         return pd.DataFrame()
-    res.report_date = pd.to_datetime(res.report_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+    res.report_date = pd.to_datetime(res.report_date, utc=False)
     if not fields:
         return res.drop(columns="_id")
     return res.drop(columns="_id")[fields]
@@ -448,14 +448,14 @@ def QA_fetch_financial_adv(
         ("f_ann_date_stamp", pymongo.ASCENDING)])
     if fields:
         df = pd.DataFrame(cursor).drop(columns="_id")[fields].set_index("code")
-        df.report_date = pd.to_datetime(df.report_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-        df.ann_date = pd.to_datetime(df.ann_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-        df.f_ann_date = pd.to_datetime(df.f_ann_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        df.report_date = pd.to_datetime(df.report_date, utc=False)
+        df.ann_date = pd.to_datetime(df.ann_date, utc=False)
+        df.f_ann_date = pd.to_datetime(df.f_ann_date, utc=False)
     else:
         df = pd.DataFrame(cursor).drop(columns="_id").set_index("code")
-        df.report_date = pd.to_datetime(df.report_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-        df.ann_date = pd.to_datetime(df.ann_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-        df.f_ann_date = pd.to_datetime(df.f_ann_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        df.report_date = pd.to_datetime(df.report_date, utc=False)
+        df.ann_date = pd.to_datetime(df.ann_date, utc=False)
+        df.f_ann_date = pd.to_datetime(df.f_ann_date, utc=False)
     return df
 
 
@@ -646,9 +646,9 @@ def QA_fetch_last_financial(
                 df = pd.DataFrame(cursor).drop(columns="_id")[fields]
         except:
             raise ValueError("[QRY ERROR]")
-        # df.report_date = pd.to_datetime(df.report_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-        # df.ann_date = pd.to_datetime(df.ann_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-        # df.f_ann_date = pd.to_datetime(df.f_ann_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        # df.report_date = pd.to_datetime(df.report_date, utc=False)
+        # df.ann_date = pd.to_datetime(df.ann_date, utc=False)
+        # df.f_ann_date = pd.to_datetime(df.f_ann_date, utc=False)
         if sheet_type == "balancesheet":
             return df.groupby("code").apply(lambda x: x.iloc[0])
         return df.groupby("code").apply(_trans_financial_type).unstack()
@@ -702,7 +702,7 @@ def QA_fetch_stock_basic(
     if res.empty:
         return res
     else:
-        res.list_date = pd.to_datetime(res.list_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        res.list_date = pd.to_datetime(res.list_date, utc=False)
         return res.drop(columns="_id").set_index("code")
 
 
@@ -759,8 +759,8 @@ def QA_fetch_stock_name(
     if res.empty:
         return res
     else:
-        res.start_date = pd.to_datetime(res.start_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-        res.end_date = pd.to_datetime(res.end_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        res.start_date = pd.to_datetime(res.start_date, utc=False)
+        res.end_date = pd.to_datetime(res.end_date, utc=False)
         return res.drop(columns="_id").set_index("code").sort_values(by="start_date_stamp").drop_duplicates(keep="last").sort_index()
 
 
@@ -848,8 +848,8 @@ def QA_fetch_industry_adv(
         df_tmp = pd.DataFrame(cursor).drop(columns="_id")
         df_tmp.loc[df_tmp.out_date_stamp > QA_util_date_stamp(
             pd.Timestamp(cursor_date).strftime("%Y-%m-%d"))]
-        df_tmp.in_date = pd.to_datetime(df_tmp.in_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
-        df_tmp.out_date = pd.to_datetime(df_tmp.out_date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        df_tmp.in_date = pd.to_datetime(df_tmp.in_date, utc=False)
+        df_tmp.out_date = pd.to_datetime(df_tmp.out_date, utc=False)
     return df_tmp.drop(columns=["in_date_stamp", "out_date_stamp"])
 
 
@@ -932,7 +932,7 @@ def QA_fetch_daily_basic(
         return df
     df = df.rename(columns={"trade_date": "date"}).drop(
         columns="_id")
-    df.date = pd.to_datetime(df.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+    df.date = pd.to_datetime(df.date, utc=False)
     df = df.set_index(["date", "code"]).sort_index()
     if not fields:
         return df
