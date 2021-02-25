@@ -270,8 +270,7 @@ class QA_Risk():
     def assets(self):
         x1 = self._assets.reset_index()
         return x1.assign(
-            date=pd.to_datetime(x1.date).dt.tz_localize(None).dt
-            .tz_localize('Asia/Shanghai')
+            date=pd.to_datetime(x1.date, utc=False)
         ).set_index('date')[0]
 
     @property

@@ -120,7 +120,7 @@ def format_bitfinex_data_fields(datas, symbol, frequency):
                                         ).astype(np.int64) // 10**9
     frame['date_stamp'] = pd.to_datetime(
         frame['date']
-    ).dt.tz_localize('Asia/Shanghai').astype(np.int64) // 10**9
+    , utc=False).astype(np.int64) // 10**9
     frame['created_at'] = int(
         time.mktime(datetime.datetime.now().utctimetuple())
     )

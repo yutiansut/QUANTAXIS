@@ -772,8 +772,7 @@ class QA_Account(QA_Worker):
         ).T
         _cash = _cash.assign(
             date=_cash.datetime.apply(
-                lambda x: pd.to_datetime(str(x)[0:10]).dt.tz_localize(None).dt.
-                tz_localize('Asia/Shanghai')
+                lambda x: pd.to_datetime(str(x)[0:10], utc=False)
             )
         ).assign(account_cookie=self.account_cookie)                            # .sort_values('datetime')
         return _cash.set_index(['datetime', 'account_cookie'], drop=False)
@@ -881,8 +880,7 @@ class QA_Account(QA_Worker):
         else:
             # print(data.index.levels[0])
             data = data.assign(account_cookie=self.account_cookie).assign(
-                date=pd.to_datetime(data.index.levels[0]).dt.tz_localize(None)
-                .dt.tz_localize('Asia/Shanghai').date
+                date=pd.to_datetime(data.index.levels[0], utc=False)
             )
 
             data.date = pd.to_datetime(
@@ -919,8 +917,7 @@ class QA_Account(QA_Worker):
     def daily_frozen(self):
         '每日交易结算时的持仓表'
         res_ = self.history_table.assign(
-            date=pd.to_datetime(self.history_table.datetime).dt
-            .tz_localize(None).dt.tz_localize('Asia/Shanghai')
+            date=pd.to_datetime(self.history_table.datetime, utc=False)
         ).set_index('date').resample('D').total_frozen.last().fillna(
             method='pad'
         )

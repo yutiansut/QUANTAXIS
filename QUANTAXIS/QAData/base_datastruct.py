@@ -677,8 +677,7 @@ class _quotation_base():
         '''
         try:
             return self.dicts[(
-                QA_util_to_datetime(time).dt.tz_localize(None).dt
-                .tz_localize('Asia/Shanghai'),
+                QA_util_to_datetime(time),
                 str(code)
             )]
         except Exception as e:
