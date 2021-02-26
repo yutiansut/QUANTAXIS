@@ -107,7 +107,7 @@ def _QA_fetch_stock_adj(
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         res = pd.DataFrame([item for item in cursor])
-        res.date = pd.to_datetime(res.date).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        res.date = pd.to_datetime(res.date, utc=False)
         return res.set_index('date', drop=False)
 
 

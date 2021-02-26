@@ -1,7 +1,7 @@
 version: '2'
 services:
     qa:
-        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
+        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20210218
         container_name: qacommunity-rust
         depends_on:
             - mgdb
@@ -28,7 +28,7 @@ services:
 
 
     qaweb:
-        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
+        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20210218
         container_name: qaweb
         depends_on:
             - mgdb
