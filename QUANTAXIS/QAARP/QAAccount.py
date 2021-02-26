@@ -880,14 +880,10 @@ class QA_Account(QA_Worker):
             return None
         else:
             # print(data.index.levels[0])
-            data = data.assign(account_cookie=self.account_cookie).assign(
-                date=pd.to_datetime(data.index.levels[0]).dt.tz_localize(None)
-                .dt.tz_localize('Asia/Shanghai').date
-            )
-
-            data.date = pd.to_datetime(
-                data.date
-            ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+            ls=data.reset_index()            
+            ls['date']=pd.to_datetime(ls.datetime.apply(lambda x: x[:10]))
+            ls['account_cookie']=self.account_cookie
+            data=ls.drop('datetime',axis=1)
             data = data.set_index(['date', 'account_cookie'])
             res = data[~data.index.duplicated(keep='last')].sort_index()
             # 这里会导致股票停牌时的持仓也被计算 但是计算market_value的时候就没了
