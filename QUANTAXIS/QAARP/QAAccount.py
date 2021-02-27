@@ -854,8 +854,7 @@ class QA_Account(QA_Worker):
                 data=None,
                 index=pd.to_datetime(
                     self.trade_range_max
-                ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai'
-                                                     ).set_names('date'),
+                ,utc=False).set_names('date'),
                 name='predrop'
             )
         )
