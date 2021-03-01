@@ -1,5 +1,0 @@
-最新版qa-base增加Kite Engine组件；
-Kite Engine组件是jupyterlab-kite插件的基础支持模块,实现对kite服务器python等通用编程语言扩展库函数索引,本地库函数索引,本地编程输入词频学习进化,实现本地AI级的编程输入自动补全功能；
-kite服务器在国外,国内网络无法直接build镜像,需要境外云主机或者代理境外上网才能成功build镜像；
-Kite Engine安装过程需要人工交互,增加了kitesetup.exp自动应答脚本,就可以正常build镜像；
-镜像已经build成功,DaoCloud现在不开放了,有需要我可以传到群里；
