@@ -1,0 +1,38 @@
+version: "2.1"
+services:
+
+    redis:
+        image: 'daocloud.io/quantaxis/qaredis:latest'
+        ports:
+            - "6379:6379"
+        environment:
+            - TZ=Asia/Shanghai
+        command: ['redis-server']
+        restart: always
+        networks:
+            qanetwork_db:
+                ipv4_address: 172.19.11.2
+    mgdb:
+        image: daocloud.io/quantaxis/qamongo_single:latest
+        ports:
+            - "27017:27017"
+        environment:
+            - TZ=Asia/Shanghai
+            - MONGO_INITDB_DATABASE=quantaxis
+        volumes:
+            - qamg:/data/db
+        networks:
+            qanetwork_db:
+                ipv4_address: 172.19.11.2
+        restart: always
+volumes:
+    qamg:
+        external:
+            name: qamg
+
+networks:
+    qanetwork_db:
+        ipam:
+            config:
+                - subnet: 172.19.11.0/24
+                  gateway: 172.19.11.1
