@@ -38,6 +38,10 @@ services:
                 ipv4_address: 172.19.0.4
         ports:
             - "8010:8010"
+            - "8018:8018"
+            - "8019:8019"
+            - "8028:8028"
+            - "8029:8029"
         environment:
           - MONGODB=mgdb
           - QAPUBSUB_IP=qaeventmq
