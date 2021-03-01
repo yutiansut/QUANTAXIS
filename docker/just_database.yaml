@@ -11,7 +11,7 @@ services:
         restart: always
         networks:
             qanetwork_db:
-                ipv4_address: 172.19.11.1
+                ipv4_address: 172.19.11.2
     mgdb:
         image: daocloud.io/quantaxis/qamongo_single:latest
         ports:
@@ -23,7 +23,7 @@ services:
             - qamg:/data/db
         networks:
             qanetwork_db:
-                ipv4_address: 172.19.11.2
+                ipv4_address: 172.19.11.3
         restart: always
 
     qaclickhouse:
@@ -36,7 +36,7 @@ services:
             - TZ=Asia/Shanghai
         networks:
             qanetwork_db:
-                ipv4_address: 172.19.11.3
+                ipv4_address: 172.19.11.4
 
     qaeventmq:
         image: daocloud.io/quantaxis/qaeventmq:latest
@@ -48,7 +48,7 @@ services:
             - TZ=Asia/Shanghai
         networks:
             qanetwork_db:
-                ipv4_address: 172.19.11.4
+                ipv4_address: 172.19.11.5
         restart: always
 
 
