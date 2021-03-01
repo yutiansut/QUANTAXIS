@@ -1,4 +1,4 @@
-FROM qa-jupyter_kite2:2.0
+FROM qa-jupyter_rust2:1.0
 #FROM daocloud.io/quantaxis/qa-jupyter:latest
 USER root
 ENV TZ=Asia/Shanghai
