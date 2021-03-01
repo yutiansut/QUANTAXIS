@@ -5,7 +5,11 @@ UI版镜像文件；
 本机编程输入词频学习记录需要持久化，新增加一个kite卷；
 
 第一次启动前创建数据卷
+
 docker volume create kite
+
 docker volume create qamg
+
 docker volume create qacode
+
 修改期货股票两个update文件第一行解释器路径，替换为 #!/opt/conda/bin/python；
