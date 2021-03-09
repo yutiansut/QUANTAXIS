@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,7 @@ def QA_backtest_analysis_backtest(client, code_list, assets_d, account_days, mes
     data = pd.concat([pd.DataFrame(message['body']['account']['history'],
                                    columns=['time', 'code', 'price', 'towards', 'amount', 'order_id', 'trade_id', 'commission']),
                       pd.DataFrame(message['body']['account']['assets'], columns=['assets'])], axis=1)
-    data['time'] = pd.to_datetime(data['time'])
+    data['time'] = pd.to_datetime(data['time'], utc=False)
     data.set_index('time', drop=False, inplace=True)
 
     trade_history = message['body']['account']['history']

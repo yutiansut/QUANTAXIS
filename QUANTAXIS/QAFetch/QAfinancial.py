@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -30,50 +30,50 @@ from pytdx.reader.history_financial_reader import HistoryFinancialReader
 from pytdx.crawler.history_financial_crawler import HistoryFinancialCrawler
 from QUANTAXIS.QAUtil.QAFile import QA_util_file_md5
 from QUANTAXIS.QASetting.QALocalize import qa_path, download_path
-from pytdx.crawler.base_crawler import demo_reporthook
+#from pytdx.crawler.base_crawler import demo_reporthook
 """
 参见PYTDX 1.65
 """
 
-FINANCIAL_URL = 'http://data.yutiansut.com/content.txt'
+FINANCIAL_URL = 'http://down.tdx.com.cn:8001/tdxfin/gpcw.txt'
 
 
 class QAHistoryFinancialCrawler(HistoryFinancialCrawler):
 
-    def to_df(self, data):
-        if len(data) == 0:
-            return None
+   def to_df(self, data):
+       if len(data) == 0:
+           return None
 
-        total_lengh = len(data[0])
-        col = ['code', 'report_date']
+       total_lengh = len(data[0])
+       col = ['code', 'report_date']
 
-        length = total_lengh - 2
-        for i in range(0, length):
-            col.append('00{}'.format(str(i + 1))[-3:])
+       length = total_lengh - 2
+       for i in range(0, length):
+           col.append('00{}'.format(str(i + 1))[-3:])
 
-        df = pd.DataFrame(data=data, columns=col)
-        df.set_index('code', inplace=True)
-        return df
+       df = pd.DataFrame(data=data, columns=col)
+       df.set_index('code', inplace=True)
+       return df
 
 
 class QAHistoryFinancialReader(HistoryFinancialReader):
 
-    def get_df(self, data_file):
-        """
-        读取历史财务数据文件，并返回pandas结果 ， 类似gpcw20171231.zip格式，具体字段含义参考
+   def get_df(self, data_file):
+       """
+       读取历史财务数据文件，并返回pandas结果 ， 类似gpcw20171231.zip格式，具体字段含义参考
 
-        https://github.com/rainx/pytdx/issues/133
+       https://github.com/rainx/pytdx/issues/133
 
-        :param data_file: 数据文件地址， 数据文件类型可以为 .zip 文件，也可以为解压后的 .dat
-        :return: pandas DataFrame格式的历史财务数据
-        """
+       :param data_file: 数据文件地址， 数据文件类型可以为 .zip 文件，也可以为解压后的 .dat
+       :return: pandas DataFrame格式的历史财务数据
+       """
 
-        crawler = QAHistoryFinancialCrawler()
+       crawler = QAHistoryFinancialCrawler()
 
-        with open(data_file, 'rb') as df:
-            data = crawler.parse(download_file=df)
+       with open(data_file, 'rb') as df:
+           data = crawler.parse(download_file=df)
 
-        return crawler.to_df(data)
+       return crawler.to_df(data)
 
 
 def get_filename():
@@ -99,7 +99,7 @@ def download_financialzip():
             print('FILE {} is already in {}'.format(item, download_path))
         else:
             print('CURRENTLY GET/UPDATE {}'.format(item[0:12]))
-            r = requests.get('http://data.yutiansut.com/{}'.format(item))
+            r = requests.get('http://down.tdx.com.cn:8001/tdxfin/{}'.format(item))
             file = '{}{}{}'.format(download_path, os.sep, item)
 
             with open(file, "wb") as code:

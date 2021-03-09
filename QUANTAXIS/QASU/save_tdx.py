@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -52,9 +52,16 @@ from QUANTAXIS.QAFetch.QATdx import (
     select_best_ip,
     QA_fetch_get_hkstock_day,
     QA_fetch_get_hkstock_list,
-    QA_fetch_get_hkstock_min
+    QA_fetch_get_hkstock_min,
+    QA_fetch_get_usstock_list,
+    QA_fetch_get_usstock_day,
+    QA_fetch_get_usstock_min,
 )
+
 from QUANTAXIS.QAFetch.QATdx import (
+
+    QA_fetch_get_commodity_option_AL_contract_time_to_market,
+    QA_fetch_get_commodity_option_AU_contract_time_to_market,
     QA_fetch_get_commodity_option_CU_contract_time_to_market,
     QA_fetch_get_commodity_option_SR_contract_time_to_market,
     QA_fetch_get_commodity_option_M_contract_time_to_market,
@@ -64,6 +71,8 @@ from QUANTAXIS.QAFetch.QATdx import (
     QA_fetch_get_option_50etf_contract_time_to_market,
     QA_fetch_get_option_300etf_contract_time_to_market,
     QA_fetch_get_option_all_contract_time_to_market,
+
+    QA_fetch_get_option_list,
 )
 from QUANTAXIS.QAUtil import (
     DATABASE,
@@ -1915,15 +1924,26 @@ def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
             ui_progress_int_value=5000
         )
 
-        # 🛠todo fixhere here 获取同花顺板块， 还是调用tdx的
+        # # 🛠todo fixhere here 获取同花顺板块， 还是调用tdx的
+        # coll.insert_many(
+        #     QA_util_to_json_from_pandas(QA_fetch_get_stock_block('ths'))
+        # )
+        # QA_util_log_info(
+        #     'ths Block ====',
+        #     ui_log=ui_log,
+        #     ui_progress=ui_progress,
+        #     ui_progress_int_value=8000
+        # )
+
+        # tushare 的板块数据有中证500成分，增加获取中证500成分 ——阿财
         coll.insert_many(
-            QA_util_to_json_from_pandas(QA_fetch_get_stock_block('ths'))
+            QA_util_to_json_from_pandas(QA_fetch_get_stock_block('tushare'))
         )
         QA_util_log_info(
-            'ths Block ====',
+            'tushare Block ====',
             ui_log=ui_log,
             ui_progress=ui_progress,
-            ui_progress_int_value=8000
+            ui_progress_int_value=9000
         )
 
         QA_util_log_info(
@@ -1933,15 +1953,15 @@ def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
             ui_progress_int_value=10000
         )
 
-        coll.insert_many(
-            QA_util_to_json_from_pandas(QA_fetch_get_stock_block('QA'))
-        )
-        QA_util_log_info(
-            'QA_Select Block ====',
-            ui_log=ui_log,
-            ui_progress=ui_progress,
-            ui_progress_int_value=8000
-        )
+        # coll.insert_many(
+        #     QA_util_to_json_from_pandas(QA_fetch_get_stock_block('QA'))
+        # )
+        # QA_util_log_info(
+        #     'QA_Select Block ====',
+        #     ui_log=ui_log,
+        #     ui_progress=ui_progress,
+        #     ui_progress_int_value=8000
+        # )
 
         QA_util_log_info(
             '完成股票板块获取=',
@@ -2302,10 +2322,12 @@ def _save_option_commodity_ru_day(
 def _save_option_commodity_c_day(
         client=DATABASE,
         ui_log=None,
-        ui_progress=None
+        ui_progress=None,
 ):
     ##################### c  玉米 ############################################################################
     option_c_contract_list = QA_fetch_get_commodity_option_C_contract_time_to_market()
+
+
     coll_option_commodity_c_day = client.option_commodity_c_day
     coll_option_commodity_c_day.create_index(
         [("code",
@@ -2911,6 +2933,160 @@ def _save_option_commodity_m_day(
         QA_util_log_info(err, ui_log=ui_log)
 
 
+def _save_option_commodity_al_day(client=DATABASE,ui_log=None,ui_progress=None):
+
+    ##################### Al 铝 ############################################################################
+
+    option_al_contract_list = QA_fetch_get_commodity_option_AL_contract_time_to_market()
+
+    coll_option_commodity_al_day = client.option_commodity_al_day
+
+    coll_option_commodity_al_day.create_index(
+        [("code",
+          pymongo.ASCENDING),
+         ("date_stamp",
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll_option_commodity_al_day):
+        try:
+            QA_util_log_info(
+                '##JOB13 Now Saving OPTION_DAY_COMMODITY_AL 铝 ==== {}'.format(
+                    str(code)
+                ),
+                ui_log=ui_log
+            )
+
+            # 首选查找数据库 是否 有 这个代码的数据
+            # 期权代码 从 10000001 开始编码  10001228
+            ref = coll_option_commodity_al_day.find({'code': str(code)[0:8]})
+            end_date = str(now_time())[0:10]
+
+            # 当前数据库已经包含了这个代码的数据， 继续增量更新
+            # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
+            if ref.count() > 0:
+
+                # 接着上次获取的日期继续更新
+                start_date = ref[ref.count() - 1]['date']
+                QA_util_log_info(
+                    ' 上次获取期权AU日线数据的最后日期是 {}'.format(start_date),
+                    ui_log=ui_log
+                )
+
+                QA_util_log_info(
+                    'UPDATE_OPTION_AU_DAY \n 从上一次下载数据开始继续 Trying update {} from {} to {}'
+                        .format(code,
+                                start_date,
+                                end_date),
+                    ui_log=ui_log
+                )
+                if start_date != end_date:
+
+                    start_date0 = QA_util_get_next_day(start_date)
+                    df0 = QA_fetch_get_option_day(
+                        code=code,
+                        start_date=start_date0,
+                        end_date=end_date,
+                        frequence='day',
+                        ip=None,
+                        port=None
+                    )
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info(
+                        "日期从开始{}-结束{} , 合约代码{} , 返回了{}条记录 , 准备写入数据库".format(
+                            start_date0,
+                            end_date,
+                            code,
+                            retCount
+                        ),
+                        ui_log=ui_log
+                    )
+                    coll_option_commodity_al_day.insert_many(
+                        QA_util_to_json_from_pandas(df0)
+                    )
+                else:
+                    QA_util_log_info(
+                        "^已经获取过这天的数据了^ {}".format(start_date),
+                        ui_log=ui_log
+                    )
+
+            else:
+                start_date = '1990-01-01'
+                QA_util_log_info(
+                    'UPDATE_AU_OPTION_DAY \n 从新开始下载数据 Trying update {} from {} to {}'
+                        .format(code,
+                                start_date,
+                                end_date),
+                    ui_log=ui_log
+                )
+                if start_date != end_date:
+
+                    df0 = QA_fetch_get_option_day(
+                        code=code,
+                        start_date=start_date,
+                        end_date=end_date,
+                        frequence='day',
+                        ip=None,
+                        port=None
+                    )
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info(
+                        "日期从开始{}-结束{} , 合约代码{} , 获取了{}条记录 , 准备写入数据库^_^ ".format(
+                            start_date,
+                            end_date,
+                            code,
+                            retCount
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    coll_option_commodity_al_day.insert_many(
+                        QA_util_to_json_from_pandas(df0)
+                    )
+                else:
+                    QA_util_log_info(
+                        "*已经获取过这天的数据了* {}".format(start_date),
+                        ui_log=ui_log
+                    )
+
+        except Exception as error0:
+            print(error0)
+            err.append(str(code))
+
+    for item in range(len(option_al_contract_list)):
+        QA_util_log_info(
+            'The {} of Total {}'.format(item, len(option_al_contract_list)),
+            ui_log=ui_log
+        )
+
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(item / len(option_al_contract_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(
+            float(item / len(option_al_contract_list) * 10000.0)
+        )
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+
+        __saving_work(
+            option_al_contract_list[item].code,
+            coll_option_commodity_al_day
+        )
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS save option au day ^_^ ', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+
+
 def _save_option_commodity_cu_day(
         client=DATABASE,
         ui_log=None,
@@ -3065,6 +3241,157 @@ def _save_option_commodity_cu_day(
         QA_util_log_info(err, ui_log=ui_log)
 
 
+def _save_option_commodity_au_day(client=DATABASE,ui_log=None,ui_progress=None):
+    ##################### Au 金 ############################################################################
+    option_au_contract_list = QA_fetch_get_commodity_option_AU_contract_time_to_market()
+
+    coll_option_commodity_au_day = client.option_commodity_au_day
+
+    coll_option_commodity_au_day.create_index(
+        [("code",
+          pymongo.ASCENDING),
+         ("date_stamp",
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll_option_commodity_au_day):
+        try:
+            QA_util_log_info(
+                '##JOB13 Now Saving OPTION_DAY_COMMODITY_AU 金 ==== {}'.format(
+                    str(code)
+                ),
+                ui_log=ui_log
+            )
+
+            # 首选查找数据库 是否 有 这个代码的数据
+            # 期权代码 从 10000001 开始编码  10001228
+            ref = coll_option_commodity_au_day.find({'code': str(code)[0:8]})
+            end_date = str(now_time())[0:10]
+
+            # 当前数据库已经包含了这个代码的数据， 继续增量更新
+            # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
+            if ref.count() > 0:
+
+                # 接着上次获取的日期继续更新
+                start_date = ref[ref.count() - 1]['date']
+                QA_util_log_info(
+                    ' 上次获取期权AU日线数据的最后日期是 {}'.format(start_date),
+                    ui_log=ui_log
+                )
+
+                QA_util_log_info(
+                    'UPDATE_OPTION_AU_DAY \n 从上一次下载数据开始继续 Trying update {} from {} to {}'
+                        .format(code,
+                                start_date,
+                                end_date),
+                    ui_log=ui_log
+                )
+                if start_date != end_date:
+
+                    start_date0 = QA_util_get_next_day(start_date)
+                    df0 = QA_fetch_get_option_day(
+                        code=code,
+                        start_date=start_date0,
+                        end_date=end_date,
+                        frequence='day',
+                        ip=None,
+                        port=None
+                    )
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info(
+                        "日期从开始{}-结束{} , 合约代码{} , 返回了{}条记录 , 准备写入数据库".format(
+                            start_date0,
+                            end_date,
+                            code,
+                            retCount
+                        ),
+                        ui_log=ui_log
+                    )
+                    coll_option_commodity_au_day.insert_many(
+                        QA_util_to_json_from_pandas(df0)
+                    )
+                else:
+                    QA_util_log_info(
+                        "^已经获取过这天的数据了^ {}".format(start_date),
+                        ui_log=ui_log
+                    )
+
+            else:
+                start_date = '1990-01-01'
+                QA_util_log_info(
+                    'UPDATE_AU_OPTION_DAY \n 从新开始下载数据 Trying update {} from {} to {}'
+                        .format(code,
+                                start_date,
+                                end_date),
+                    ui_log=ui_log
+                )
+                if start_date != end_date:
+
+                    df0 = QA_fetch_get_option_day(
+                        code=code,
+                        start_date=start_date,
+                        end_date=end_date,
+                        frequence='day',
+                        ip=None,
+                        port=None
+                    )
+                    retCount = df0.iloc[:, 0].size
+                    QA_util_log_info(
+                        "日期从开始{}-结束{} , 合约代码{} , 获取了{}条记录 , 准备写入数据库^_^ ".format(
+                            start_date,
+                            end_date,
+                            code,
+                            retCount
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    coll_option_commodity_au_day.insert_many(
+                        QA_util_to_json_from_pandas(df0)
+                    )
+                else:
+                    QA_util_log_info(
+                        "*已经获取过这天的数据了* {}".format(start_date),
+                        ui_log=ui_log
+                    )
+
+        except Exception as error0:
+            print(error0)
+            err.append(str(code))
+
+    for item in range(len(option_au_contract_list)):
+        QA_util_log_info(
+            'The {} of Total {}'.format(item,
+                                        len(option_au_contract_list)),
+            ui_log=ui_log
+        )
+
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(item / len(option_au_contract_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(
+            float(item / len(option_au_contract_list) * 10000.0)
+        )
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+
+        __saving_work(
+            option_au_contract_list[item].code,
+            coll_option_commodity_au_day
+        )
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS save option au day ^_^ ', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
 def QA_SU_save_option_commodity_day(
         client=DATABASE,
         ui_log=None,
@@ -3074,10 +3401,11 @@ def QA_SU_save_option_commodity_day(
         :param client:
         :return:
     '''
+
     _save_option_commodity_cu_day(
         client=client,
         ui_log=ui_log,
-        ui_progress=ui_progress
+        ui_progress=ui_progress,
     )
     _save_option_commodity_m_day(
         client=client,
@@ -3101,6 +3429,18 @@ def QA_SU_save_option_commodity_day(
         ui_progress=ui_progress
     )
     _save_option_commodity_c_day(
+        client=client,
+        ui_log=ui_log,
+        ui_progress=ui_progress
+    )
+
+    _save_option_commodity_au_day(
+        client=client,
+        ui_log=ui_log,
+        ui_progress=ui_progress
+    )
+
+    _save_option_commodity_al_day(
         client=client,
         ui_log=ui_log,
         ui_progress=ui_progress
@@ -3860,6 +4200,308 @@ def _save_option_commodity_cu_min(
     pass
 
 
+
+
+def _save_option_commodity_au_min(
+        client=DATABASE,
+        ui_log=None,
+        ui_progress=None
+):
+    '''
+
+    :param client:
+    :param ui_log:
+    :param ui_progress:
+    :return:
+    '''
+    '''
+        :param client:
+        :return:
+        '''
+    option_contract_list = QA_fetch_get_commodity_option_AU_contract_time_to_market(
+    )
+    coll_option_min = client.option_commodity_au_min
+    coll_option_min.create_index(
+        [("code",
+          pymongo.ASCENDING),
+         ("date_stamp",
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    # 索引 code
+
+    err = []
+
+    def __saving_work(code, coll):
+
+        QA_util_log_info(
+            '##JOB13 Now Saving Option AU 金 MIN ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+
+            for type in ['1min', '5min', '15min', '30min', '60min']:
+                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+
+                end_time = str(now_time())[0:19]
+                if ref_.count() > 0:
+                    start_time = ref_[ref_.count() - 1]['datetime']
+
+                    QA_util_log_info(
+                        '##JOB13.{} Now Saving Option AU 金 {} from {} to {} =={} '
+                            .format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_future_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            QA_util_log_info(
+                                " 写入 新增历史合约记录数 {} ".format(len(__data))
+                            )
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data[1::])
+                            )
+                else:
+                    start_time = '2015-01-01'
+
+                    QA_util_log_info(
+                        '##JOB13.{} Now Option AU 金 {} from {} to {} =={} '
+                            .format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_future_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            QA_util_log_info(
+                                " 写入 新增合约记录数 {} ".format(len(__data))
+                            )
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data)
+                            )
+        except:
+            err.append(code)
+
+    executor = ThreadPoolExecutor(max_workers=4)
+
+    res = {
+        executor.submit(
+            __saving_work,
+            option_contract_list[i_]["code"],
+            coll_option_min
+        )
+        for i_ in range(len(option_contract_list))
+    }  # multi index ./.
+    count = 0
+    for i_ in concurrent.futures.as_completed(res):
+        QA_util_log_info(
+            'The {} of Total {}'.format(count,
+                                        len(option_contract_list)),
+            ui_log=ui_log
+        )
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(count / len(option_contract_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(count / len(option_contract_list) * 10000.0))
+
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        count = count + 1
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+    pass
+
+
+
+def _save_option_commodity_al_min(
+        client=DATABASE,
+        ui_log=None,
+        ui_progress=None
+):
+    '''
+
+    :param client:
+    :param ui_log:
+    :param ui_progress:
+    :return:
+    '''
+    '''
+        :param client:
+        :return:
+        '''
+    option_contract_list = QA_fetch_get_commodity_option_AL_contract_time_to_market()
+    coll_option_min = client.option_commodity_al_min
+    coll_option_min.create_index(
+        [("code",
+          pymongo.ASCENDING),
+         ("date_stamp",
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    # 索引 code
+
+    err = []
+
+    def __saving_work(code, coll):
+
+        QA_util_log_info(
+            '##JOB20 Now Saving Option AL 铝 MIN ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+
+            for type in ['1min', '5min', '15min', '30min', '60min']:
+                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+
+                end_time = str(now_time())[0:19]
+                if ref_.count() > 0:
+                    start_time = ref_[ref_.count() - 1]['datetime']
+
+                    QA_util_log_info(
+                        '##JOB20.{} Now Saving Option AL 铝 {} from {} to {} =={} '
+                            .format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_future_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            QA_util_log_info(
+                                " 写入 新增历史合约记录数 {} ".format(len(__data))
+                            )
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data[1::])
+                            )
+                else:
+                    start_time = '2015-01-01'
+
+                    QA_util_log_info(
+                        '##JOB20.{} Now Option AL 铝 {} from {} to {} =={} '
+                            .format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_future_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            QA_util_log_info(
+                                " 写入 新增合约记录数 {} ".format(len(__data))
+                            )
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data)
+                            )
+        except:
+            err.append(code)
+
+    executor = ThreadPoolExecutor(max_workers=4)
+
+    res = {
+        executor.submit(
+            __saving_work,
+            option_contract_list[i_]["code"],
+            coll_option_min
+        )
+        for i_ in range(len(option_contract_list))
+    }  # multi index ./.
+    count = 0
+    for i_ in concurrent.futures.as_completed(res):
+        QA_util_log_info(
+            'The {} of Total {}'.format(count,
+                                        len(option_contract_list)),
+            ui_log=ui_log
+        )
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(count / len(option_contract_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(count / len(option_contract_list) * 10000.0))
+
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        count = count + 1
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+    pass
+
+
 def _save_option_commodity_sr_min(
         client=DATABASE,
         ui_log=None,
@@ -4202,6 +4844,17 @@ def QA_SU_save_option_commodity_min(
         ui_progress=ui_progress
     )
 
+    _save_option_commodity_au_min(
+        client=client,
+        ui_log=ui_log,
+        ui_progress=ui_progress
+    )
+
+    _save_option_commodity_al_min(
+        client=client,
+        ui_log=ui_log,
+        ui_progress=ui_progress
+    )
 
 def QA_SU_save_option_50etf_min(client=DATABASE, ui_log=None, ui_progress=None):
     '''
@@ -6728,6 +7381,470 @@ def QA_SU_save_hkstock_list(client=DATABASE, ui_log=None, ui_progress=None):
         print(" Error save_tdx.QA_SU_save_hkstock_list exception!")
         pass
 
+
+###############################################################
+# USSTOCK
+###############################################################
+def QA_SU_save_single_usstock_day(code : str, client=DATABASE, ui_log=None):
+    """save usstock_day
+
+    Keyword Arguments:
+        code : single usstock code
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    #__hkstock_list = QA_fetch_get_hkstock_list()
+    coll = client.usstock_day
+    coll.create_index(
+        [('code',
+          pymongo.ASCENDING),
+         ('date_stamp',
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        try:
+            # 目前美股列表中最长的字段是7个
+            ref_ = coll.find({'code': str(code)[0:7]})
+            end_time = str(now_time())[0:10]
+            if ref_.count() > 0:
+                start_time = ref_[ref_.count() - 1]['date']
+
+                QA_util_log_info(
+                    '##JOB08 Now Saving USSTOCK_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_usstock_day(
+                                str(code),
+                                QA_util_get_next_day(start_time),
+                                end_time
+                            )
+                        )
+                    )
+            else:
+                start_time = '1990-01-01'
+                QA_util_log_info(
+                    '##JOB08 Now Saving USSTOCK_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_usstock_day(
+                                str(code),
+                                start_time,
+                                end_time
+                            )
+                        )
+                    )
+        except:
+            err.append(str(code))
+
+    __saving_work(code, coll)
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+def QA_SU_save_usstock_day(client=DATABASE, ui_log=None, ui_progress=None):
+    """save usstock_day
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    __usstock_list = QA_fetch_get_usstock_list().code.unique().tolist()
+    coll = client.usstock_day
+    coll.create_index(
+        [('code',
+          pymongo.ASCENDING),
+         ('date_stamp',
+          pymongo.ASCENDING)]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        try:
+            # 目前美股列表中最长的字段是7个
+            ref_ = coll.find({'code': str(code)[0:7]})
+            end_time = str(now_time())[0:10]
+            if ref_.count() > 0:
+                start_time = ref_[ref_.count() - 1]['date']
+
+                QA_util_log_info(
+                    '##JOB08 Now Saving USSTOCK_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_usstock_day(
+                                str(code),
+                                QA_util_get_next_day(start_time),
+                                end_time
+                            )
+                        )
+                    )
+            else:
+                start_time = '1990-01-01'
+                QA_util_log_info(
+                    '##JOB08 Now Saving USSTOCK_DAY==== \n Trying updating {} from {} to {}'
+                        .format(code,
+                                start_time,
+                                end_time),
+                    ui_log=ui_log
+                )
+
+                if start_time != end_time:
+                    coll.insert_many(
+                        QA_util_to_json_from_pandas(
+                            QA_fetch_get_usstock_day(
+                                str(code),
+                                start_time,
+                                end_time
+                            )
+                        )
+                    )
+        except:
+            err.append(str(code))
+
+    for i_ in range(len(__usstock_list)):
+        # __saving_work('000001')
+        QA_util_log_info(
+            'The {} of Total {}'.format(i_,
+                                        len(__usstock_list)),
+            ui_log=ui_log
+        )
+
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(i_ / len(__usstock_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(i_ / len(__usstock_list) * 10000.0))
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+
+        __saving_work(__usstock_list[i_], coll)
+
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def QA_SU_save_usstock_min(client=DATABASE, ui_log=None, ui_progress=None):
+    """save usstock_min
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    __usstock_list = QA_fetch_get_usstock_list().code.unique().tolist()
+    coll = client.usstock_min
+    coll.create_index(
+        [
+            ('code',
+             pymongo.ASCENDING),
+            ('time_stamp',
+             pymongo.ASCENDING),
+            ('date_stamp',
+             pymongo.ASCENDING)
+        ]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        QA_util_log_info(
+            '##JOB09 Now Saving USSTOCK_MIN ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+
+            for type in ['1min', '5min', '15min', '30min', '60min']:
+                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                end_time = str(now_time())[0:19]
+                if ref_.count() > 0:
+                    start_time = ref_[ref_.count() - 1]['datetime']
+
+                    QA_util_log_info(
+                        '##JOB09.{} Now Saving {} from {} to {} =={} '.format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_usstock_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data[1::])
+                            )
+                else:
+                    start_time = '2015-01-01'
+
+                    QA_util_log_info(
+                        '##JOB09.{} Now Saving {} from {} to {} =={} '.format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_usstock_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data)
+                            )
+        except:
+            err.append(code)
+
+    executor = ThreadPoolExecutor(max_workers=4)
+
+    res = {
+        executor.submit(__saving_work,
+                        __usstock_list[i_],
+                        coll)
+        for i_ in range(len(__usstock_list))
+    }  # multi bond ./.
+    count = 1
+    for _ in concurrent.futures.as_completed(res):
+        QA_util_log_info(
+            'The {} of Total {}'.format(count,
+                                        len(__usstock_list)),
+            ui_log=ui_log
+        )
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(count / len(__usstock_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(count / len(__usstock_list) * 10000.0))
+
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        count = count + 1
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def QA_SU_save_single_usstock_min(code : str, client=DATABASE, ui_log=None, ui_progress=None):
+    """save single usstock_min
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+
+    #__bond_list = QA_fetch_get_stock_list('bond')
+    __usstock_list = [code]
+    coll = client.usstock_min
+    coll.create_index(
+        [
+            ('code',
+             pymongo.ASCENDING),
+            ('time_stamp',
+             pymongo.ASCENDING),
+            ('date_stamp',
+             pymongo.ASCENDING)
+        ]
+    )
+    err = []
+
+    def __saving_work(code, coll):
+
+        QA_util_log_info(
+            '##JOB07 Now Saving USSTOCK_MIN ==== {}'.format(str(code)),
+            ui_log=ui_log
+        )
+        try:
+
+            for type in ['1min', '5min', '15min', '30min', '60min']:
+                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                end_time = str(now_time())[0:19]
+                if ref_.count() > 0:
+                    start_time = ref_[ref_.count() - 1]['datetime']
+
+                    QA_util_log_info(
+                        '##JOB09.{} Now Saving {} from {} to {} =={} '.format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_usstock_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data[1::])
+                            )
+                else:
+                    start_time = '2015-01-01'
+
+                    QA_util_log_info(
+                        '##JOB09.{} Now Saving {} from {} to {} =={} '.format(
+                            ['1min',
+                             '5min',
+                             '15min',
+                             '30min',
+                             '60min'].index(type),
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        ),
+                        ui_log=ui_log
+                    )
+
+                    if start_time != end_time:
+                        __data = QA_fetch_get_usstock_min(
+                            str(code),
+                            start_time,
+                            end_time,
+                            type
+                        )
+                        if len(__data) > 1:
+                            coll.insert_many(
+                                QA_util_to_json_from_pandas(__data)
+                            )
+        except:
+            err.append(code)
+
+    executor = ThreadPoolExecutor(max_workers=4)
+
+    res = {
+        executor.submit(__saving_work,
+                        __usstock_list[i_],
+                        coll)
+        for i_ in range(len(__usstock_list))
+    }  # multi bond ./.
+    count = 1
+    for _ in concurrent.futures.as_completed(res):
+        QA_util_log_info(
+            'The {} of Total {}'.format(count,
+                                        len(__usstock_list)),
+            ui_log=ui_log
+        )
+        strLogProgress = 'DOWNLOAD PROGRESS {} '.format(
+            str(float(count / len(__usstock_list) * 100))[0:4] + '%'
+        )
+        intLogProgress = int(float(count / len(__usstock_list) * 10000.0))
+
+        QA_util_log_info(
+            strLogProgress,
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=intLogProgress
+        )
+        count = count + 1
+    if len(err) < 1:
+        QA_util_log_info('SUCCESS', ui_log=ui_log)
+    else:
+        QA_util_log_info(' ERROR CODE \n ', ui_log=ui_log)
+        QA_util_log_info(err, ui_log=ui_log)
+
+
+def QA_SU_save_usstock_list(client=DATABASE, ui_log=None, ui_progress=None):
+    """save usstock_list
+
+    Keyword Arguments:
+        client {[type]} -- [description] (default: {DATABASE})
+    """
+    try:
+        QA_util_log_info(
+            '##JOB16 Now Saving USSTOCK_LIST ====',
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=5000
+        )
+        usstock_list_from_tdx = QA_fetch_get_usstock_list()
+        pandas_data = QA_util_to_json_from_pandas(usstock_list_from_tdx)
+
+        if len(pandas_data) > 0:
+            # 获取到数据后才进行drop collection 操作
+            client.drop_collection('usstock_list')
+            coll = client.usstock_list
+            coll.create_index('code')
+            coll.insert_many(pandas_data)
+        QA_util_log_info(
+            "完成USSTOCK列表获取",
+            ui_log=ui_log,
+            ui_progress=ui_progress,
+            ui_progress_int_value=10000
+        )
+    except Exception as e:
+        QA_util_log_info(e, ui_log=ui_log)
+        print(" Error save_tdx.QA_SU_save_usstock_list exception!")
+        pass
+
+
+
 if __name__ == '__main__':
     # QA_SU_save_stock_day()
     # QA_SU_save_stock_xdxr()
@@ -6742,7 +7859,11 @@ if __name__ == '__main__':
     #QA_SU_save_future_day()
 
     #QA_SU_save_future_min()
-    QA_SU_save_hkstock_list()
-    QA_SU_save_hkstock_day()
+    # QA_SU_save_hkstock_list()
+    # QA_SU_save_hkstock_day()
     #QA_SU_save_hkstock_min()
     #QA_SU_save_single_hkstock_min(code="00338")
+    # QA_SU_save_usstock_list()
+    # QA_SU_save_single_usstock_day(code ='YDEC')
+    # QA_SU_save_usstock_day()
+    QA_SU_save_single_usstock_min(code ='YDEC')

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -76,7 +76,7 @@ def download_day_data_from_tushare(trade_date='20190102'):
     df=pd.merge(df_daily,df_factor,how='left')
     res=pd.merge(df,df_daily_basic,how='left').sort_values(by = 'ts_code')
     res['code']=res['ts_code'].apply(lambda x:x[:6]) #x[7:9].lower()
-    res['trade_date'] = pd.to_datetime(res['trade_date'], format='%Y-%m-%d')
+    res['trade_date'] = pd.to_datetime(res['trade_date'], format='%Y-%m-%d', utc=False)
     return res 
       
 def QA_fetch_stock_day_pg(code=['000001','000002'],start_date='19000101',end_date='20500118',data='*'):

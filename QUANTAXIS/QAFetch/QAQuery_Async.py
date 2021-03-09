@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -65,7 +65,7 @@ async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', 
             pass
         try:
             res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(date=pd.to_datetime(
-                res.date)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
+                res.date, utc=False)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
             res = res.ix[:, ['code', 'open', 'high', 'low',
                              'close', 'volume', 'amount', 'date']]
         except:
@@ -120,7 +120,7 @@ async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min',
         pass
     try:
         res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(datetime=pd.to_datetime(
-            res.datetime)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
+            res.datetime, utc=False)).drop_duplicates(['datetime', 'code']).set_index('datetime', drop=False)
         # return res
     except:
         res = None

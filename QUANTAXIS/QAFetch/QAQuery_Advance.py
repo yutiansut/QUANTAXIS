@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -706,7 +706,8 @@ def QA_fetch_stock_realtime_adv(
     num=1,
     collections=DATABASE.get_collection(
         'realtime_{}'.format(datetime.date.today())
-    )
+    ),
+    verbose=True,
 ):
     '''
     返回当日的上下五档, code可以是股票可以是list, num是每个股票获取的数量
@@ -736,20 +737,23 @@ def QA_fetch_stock_realtime_adv(
                        pymongo.DESCENDING)]
             )
         ]
-        if items_from_collections is None:
-            print(
-                "QA Error QA_fetch_stock_realtime_adv find parameter code={} num={} collection={} return NOne"
-                .format(code,
-                        num,
-                        collections)
-            )
+        if (items_from_collections is None) or \
+            (len(items_from_collections) == 0):
+            if verbose:
+                print(
+                    "QA Error QA_fetch_stock_realtime_adv find parameter code={} num={} collection={} return NOne"
+                    .format(code,
+                            num,
+                            collections)
+                )
             return
 
         data = pd.DataFrame(items_from_collections)
         data_set_index = data.set_index(['datetime',
                                          'code'],
                                         drop=False).drop(['_id'],
-                                                         axis=1)
+                                                            axis=1)
+
         return data_set_index
     else:
         print("QA Error QA_fetch_stock_realtime_adv parameter code is None")
@@ -774,7 +778,7 @@ def QA_fetch_financial_report_adv(code, start, end=None, ltype='EN'):
     else:
         series = pd.Series(
             data=month_data,
-            index=pd.to_datetime(month_data),
+            index=pd.to_datetime(month_data, utc=False),
             name='date'
         )
         timerange = series.loc[start:end].tolist()
@@ -850,7 +854,7 @@ def QA_fetch_stock_financial_calendar_adv(
     else:
         series = pd.Series(
             data=month_data,
-            index=pd.to_datetime(month_data),
+            index=pd.to_datetime(month_data, utc=False),
             name='date'
         )
         timerange = series.loc[start:end].tolist()
@@ -889,7 +893,7 @@ def QA_fetch_stock_divyield_adv(
     else:
         series = pd.Series(
             data=month_data,
-            index=pd.to_datetime(month_data),
+            index=pd.to_datetime(month_data, utc=False),
             name='date'
         )
         timerange = series.loc[start:end].tolist()

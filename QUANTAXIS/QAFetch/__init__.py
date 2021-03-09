@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -172,7 +172,7 @@ def QA_fetch_get_bond_realtime(package, code):
 
 def QA_fetch_get_stock_block(package):
     Engine = use(package)
-    if package in ['tdx', 'pytdx', 'ths', 'QA']:
+    if package in ['tdx', 'pytdx', 'ths', 'tushare', 'QA']:
         return Engine.QA_fetch_get_stock_block()
     else:
         return 'Unsupport packages'

@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ def QA_util_time_now():
     """
     explanation:
        获取当前日期时间
-    
+
     return:
         datetime
     """
@@ -59,7 +59,7 @@ def QA_util_today_str():
     """
     explanation:
         返回今天的日期字符串
-    
+
     return:
         str
     """
@@ -71,13 +71,13 @@ def QA_util_date_str2int(date):
     """
     explanation:
         转换日期字符串为整数
-    
+
     params:
         * date->
             含义: 日期字符串
             类型: date
             参数支持: []
-    
+
     demonstrate:
         print(QA_util_date_str2int("2011-09-11"))
 
@@ -98,13 +98,13 @@ def QA_util_date_int2str(int_date):
     """
     explanation:
         转换日期整数为字符串
-    
+
     params:
         * int_date->
             含义: 日期转换得
             类型: int
             参数支持: []
-    
+
     return:
         str
     """
@@ -119,13 +119,13 @@ def QA_util_to_datetime(time):
     """
     explanation:
         转换字符串格式的日期为datetime
-    
+
     params:
         * time->
             含义: 日期
             类型: str
             参数支持: []
-    
+
     return:
         datetime
     """
@@ -142,7 +142,7 @@ def QA_util_datetime_to_strdate(dt):
     """
     explanation:
         转换字符串格式的日期为datetime
-    
+
     params:
         * dt->
             含义: 日期时间
@@ -160,7 +160,7 @@ def QA_util_datetime_to_strdatetime(dt):
     """
     explanation:
         转换日期时间为字符串格式
-    
+
     params:
         * dt->
             含义: 日期时间
@@ -169,7 +169,7 @@ def QA_util_datetime_to_strdatetime(dt):
 
     return:
         datetime
-        
+
     """
     strdatetime = "%04d-%02d-%02d %02d:%02d:%02d" % (
         dt.year,
@@ -186,17 +186,19 @@ def QA_util_date_stamp(date):
     """
     explanation:
         转换日期时间字符串为浮点数的时间戳
-    
+
     params:
         * date->
             含义: 日期时间
             类型: str
             参数支持: []
-    
+
     return:
         time
     """
-    datestr = str(date)[0:10]
+    if not date:
+        return date
+    datestr = pd.Timestamp(date).strftime("%Y-%m-%d")
     date = time.mktime(time.strptime(datestr, '%Y-%m-%d'))
     return date
 
@@ -205,7 +207,7 @@ def QA_util_time_stamp(time_):
     """
     explanation:
        转换日期时间的字符串为浮点数的时间戳
-    
+
     params:
         * time_->
             含义: 日期时间
@@ -227,11 +229,10 @@ def QA_util_time_stamp(time_):
 
 
 def QA_util_tdxtimestamp(time_stamp):
-
     """
     explanation:
        转换tdx的realtimeQuote数据, [相关地址](https://github.com/rainx/pytdx/issues/187#issuecomment-441270487)
-    
+
     params:
         * time_stamp->
             含义: 时间
@@ -264,7 +265,7 @@ def QA_util_pands_timestamp_to_date(pandsTimestamp):
     """
     explanation:
         转换 pandas 的时间戳 到 datetime.date类型
-    
+
     params:
         * pandsTimestamp->
             含义: pandas的时间戳
@@ -280,7 +281,7 @@ def QA_util_pands_timestamp_to_datetime(pandsTimestamp):
     """
     explanation:
         转换 pandas时间戳 到 datetime.datetime类型
-    
+
     params:
         * pandsTimestamp->
             含义: pandas时间戳
@@ -298,13 +299,13 @@ def QA_util_stamp2datetime(timestamp):
         datestamp转datetime,pandas转出来的timestamp是13位整数 要/1000,
         It’s common for this to be restricted to years from 1970 through 2038.
         从1970年开始的纳秒到当前的计数 转变成 float 类型时间 类似 time.time() 返回的类型
-    
+
     params:
         * timestamp->
             含义: 时间戳
             类型: float
             参数支持: []
-    
+
     return:
         datetime
     """
@@ -336,7 +337,7 @@ def QA_util_ms_stamp(ms):
     return:
         float
     """
-    
+
     return ms
 
 
@@ -350,7 +351,7 @@ def QA_util_date_valid(date):
             含义: 日期
             类型: str
             参数支持: []
-    
+
     return:
         bool
     """
@@ -456,7 +457,7 @@ def QA_util_get_date_index(date, trade_list):
             含义: 代码
             类型: ??
             参数支持: []
-        
+
     return:
         ??
     """
@@ -477,7 +478,7 @@ def QA_util_get_index_date(id, trade_list):
             含义: 代码
             类型: dict
             参数支持: []
-        
+
     return:
         ??
     """
@@ -650,7 +651,7 @@ def QA_util_time_delay(time_=0):
             含义: 时间
             类型: time
             参数支持: []
-        
+
     return:
         func
     """

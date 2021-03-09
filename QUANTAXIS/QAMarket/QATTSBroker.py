@@ -462,9 +462,9 @@ class QA_TTSBroker(QA_Broker):
             return None
 
     def query_orders(self, account_cookie, status='filled'):
-        df = self.data_to_df(self.query_data(3 if status is 'filled' else 2))
+        df = self.data_to_df(self.query_data(3 if status == 'filled' else 2))
         df['account_cookie'] = account_cookie
-        if status is 'filled':
+        if status == 'filled':
             df = df[self.dealstatus_headers] if len(df) > 0 else pd.DataFrame(
                 columns=self.dealstatus_headers
             )
