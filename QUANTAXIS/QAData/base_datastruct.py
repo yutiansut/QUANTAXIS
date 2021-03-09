@@ -399,7 +399,7 @@ class _quotation_base():
         index = self.data.index.remove_unused_levels()
         return pd.to_datetime(
             index.levels[0]
-        ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+        , utc=False)
 
     @property
     @lru_cache()
@@ -645,7 +645,7 @@ class _quotation_base():
     @lru_cache()
     def code(self):
         '返回结构体中的代码'
-        return self.index.levels[1]
+        return self.index.levels[1].map(lambda x: x[0:6])
 
     @property
     @lru_cache()
@@ -677,8 +677,7 @@ class _quotation_base():
         '''
         try:
             return self.dicts[(
-                QA_util_to_datetime(time).dt.tz_localize(None).dt
-                .tz_localize('Asia/Shanghai'),
+                QA_util_to_datetime(time),
                 str(code)
             )]
         except Exception as e:
