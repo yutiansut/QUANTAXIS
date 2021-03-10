@@ -91,6 +91,14 @@ RUN apt-get update && apt-get -y install libcurl4-openssl-dev  libssl-dev  build
     && cd /root/ && wget https://github.com/QUANTAXIS/QUANTAXIS/releases/download/1.10.2/portfoliohandler\
     && chmod +777 /root/portfoliohandler
 
+RUN apt install -y gcc git tini iputils-ping && \
+    mkdir /root/.prefect/ && \
+    pip install "pip==20.2.4" && \
+    pip install --no-cache-dir git+https://github.com/PrefectHQ/prefect.git@${PREFECT_VERSION}#egg=prefect[${EXTRAS}]
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
 WORKDIR /root
-EXPOSE 80 8010 8787 8020 8029 8018 8019 8028
+EXPOSE 80 8010 8787 8020 8029 8018 8019 8028 8080
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/bin/bash", "/root/run-community.sh"]
