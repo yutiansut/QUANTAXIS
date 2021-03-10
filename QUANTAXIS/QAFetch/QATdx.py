@@ -570,7 +570,7 @@ def QA_fetch_get_bond_realtime(code=['010107'], ip=None, port=None):
              'ask_vol4', 'bid4', 'bid_vol4', 'ask5', 'ask_vol5', 'bid5',
              'bid_vol5']]
         data = data.assign(last_close=data.last_close/10, open=data.open/10, high=data.high/10, low=data.low/10,
-                        price= data.price/10,  
+                        price= data.price/10,
                         ask1=data.ask1/10, ask2=data.ask2/10, ask3=data.ask3/10, ask4=data.ask4/10, ask5=data.ask5/10,
                         bid1=data.bid1/10, bid2=data.bid2/10, bid3=data.bid3/10, bid4=data.bid4/10, bid5=data.bid5/10)
 
@@ -1315,13 +1315,96 @@ def QA_fetch_get_stock_block(ip=None, port=None):
             api.to_df(api.get_and_parse_block_info(
                 "block_fg.dat")).assign(type='fg')], sort=False)
 
-        if len(data) > 10:
-            return data.assign(source='tdx').drop(['block_type', 'code_index'],
-                                                  axis=1).set_index('code',
-                                                                    drop=False,
-                                                                    inplace=False).drop_duplicates()
-        else:
-            QA_util_log_info('Wrong with fetch block ')
+    df = QA_fetch_get_tdx_industry()
+    if len(data) > 10:
+        data = data.assign(source='tdx').drop(['block_type', 'code_index'],
+                                              axis=1).set_index('code',
+                                                                drop=False,
+                                                                inplace=False).drop_duplicates()
+        if len(df):
+            df.set_index('code', drop=False, inplace=True)
+            data = data.append(
+                    df[['code', 'tdxnhy']].rename({'tdxnhy': 'blockname'}, axis=1).assign(type='tdxhy').append(
+                        df[['code', 'swhy']].rename({'swhy': 'blockname'}, axis=1).assign(type='swhy')
+                        ).assign(source='tdx')
+                    )
+        return data
+    else:
+        QA_util_log_info('Wrong with fetch block ')
+
+
+def QA_fetch_get_tdx_industry() -> pd.DataFrame:
+    import random
+    import tempfile
+    import shutil
+    import os
+    from urllib.request import urlopen
+
+    def download_tdx_file() -> str:
+        url = 'http://www.tdx.com.cn/products/data/data/dbf/base.zip'
+        tmpdir_root = tempfile.gettempdir()
+        subdir_name = 'tdx_' + str(random.randint(0, 1000000))
+        tmpdir = os.path.join(tmpdir_root, subdir_name)
+        shutil.rmtree(tmpdir, ignore_errors=True)
+        os.makedirs(tmpdir)
+
+        try:
+            file = tmpdir + '/' + 'base.zip'
+            f = urlopen(url)
+            data = f.read()
+            with open(file, 'wb') as code:
+                code.write(data)
+            f.close()
+            shutil.unpack_archive(file, extract_dir=tmpdir)
+            os.remove(file)
+        except:
+            pass
+        return tmpdir
+
+    def read_industry(folder:str) -> pd.DataFrame:
+        incon = folder + '/incon.dat' # tdx industry file
+        hy = folder + '/tdxhy.cfg' # tdx stock file
+
+        # tdx industry file
+        with open(incon, encoding='GB18030', mode='r') as f:
+            incon = f.readlines()
+        incon_dict = {}
+        for i in incon:
+            if i[0] == '#' and i[1] != '#':
+                j = i.replace('\n', '').replace('#', '')
+                incon_dict[j] = []
+            else:
+                if i[1] != '#':
+                    incon_dict[j].append(i.replace('\n', '').split(' ')[0].split('|'))
+
+        incon = pd.concat([pd.DataFrame.from_dict(v).assign(type=k) for k,v in incon_dict.items()]) \
+            .rename({0: 'code', 1: 'name'}, axis=1).reset_index(drop=True)
+
+        with open(hy, encoding='GB18030', mode='r') as f:
+            hy = f.readlines()
+        hy = [line.replace('\n', '') for line in hy]
+        hy = pd.DataFrame(line.split('|') for line in hy)
+        # filter codes
+        hy = hy[~hy[1].str.startswith('9')]
+        hy = hy[~hy[1].str.startswith('2')]
+
+        hy1 = hy[[1, 2]].set_index(2).join(incon.set_index('code')).set_index(1)[['name', 'type']]
+        hy2 = hy[[1, 3]].set_index(3).join(incon.set_index('code')).set_index(1)[['name', 'type']]
+        # join tdxhy and swhy
+        df = hy.set_index(1) \
+            .join(hy1.rename({'name': hy1.dropna()['type'].values[0], 'type': hy1.dropna()['type'].values[0]+'_type'}, axis=1)) \
+            .join(hy2.rename({'name': hy2.dropna()['type'].values[0], 'type': hy2.dropna()['type'].values[0]+'_type'}, axis=1)).reset_index()
+
+        df.rename({0: 'sse', 1: 'code', 2: 'TDX_code', 3: 'SW_code'}, axis=1, inplace=True)
+        df = df[[i for i in df.columns if not isinstance(i, int) and  '_type' not in str(i)]]
+        df.columns = [i.lower() for i in df.columns]
+
+        shutil.rmtree(folder, ignore_errors=True)
+        return df
+
+    folder = download_tdx_file()
+    df = read_industry(folder)
+    return df
 
 
 """
@@ -1367,7 +1450,7 @@ http://www.tdx.com.cn/page_46.html
        47         3     中金所期货         CZ
        50         3      渤海商品         BH
        76         3      齐鲁商品         QL
-## 基金 
+## 基金
        33         8     开放式基金         FU
        34         9     货币型基金         FB
        35         8  招商理财产品         LC
@@ -1621,10 +1704,10 @@ def QA_fetch_get_option_all_contract_time_to_market():
     # pprint.pprint(result)
     #  category  market code name desc  code
     '''
-    fix here : 
+    fix here :
     See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
     result['meaningful_name'] = None
-    C:\work_new\QUANTAXIS\QUANTAXIS\QAFetch\QATdx.py:1468: SettingWithCopyWarning: 
+    C:\work_new\QUANTAXIS\QUANTAXIS\QAFetch\QATdx.py:1468: SettingWithCopyWarning:
     A value is trying to be set on a copy of a slice from a DataFrame.
     Try using .loc[row_indexer,col_indexer] = value instead
     '''
@@ -1976,10 +2059,10 @@ def QA_fetch_get_option_300etf_contract_time_to_market():
     # pprint.pprint(result)
     #  category  market code name desc  code
     '''
-    fix here : 
+    fix here :
     See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
     result['meaningful_name'] = None
-    C:\work_new\QUANTAXIS\QUANTAXIS\QAFetch\QATdx.py:1468: SettingWithCopyWarning: 
+    C:\work_new\QUANTAXIS\QUANTAXIS\QAFetch\QATdx.py:1468: SettingWithCopyWarning:
     A value is trying to be set on a copy of a slice from a DataFrame.
     Try using .loc[row_indexer,col_indexer] = value instead
     '''

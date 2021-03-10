@@ -2,7 +2,12 @@
 # QUANTAXIS 量化金融策略框架
 
 
-## ATTENTION!!!  QUANTAXIS无任何收费项目 请勿相信任何渠道的私聊!!!
+### ATTENTION!!!  QUANTAXIS无任何收费项目 请勿相信任何渠道的私聊!!!
+
+
+> QUANTAXIS 社区在 [社区入口](http://www.yutiansut.com:3000) 可以自由发帖 贴图和  查看之前的问题 
+
+
 ------------------
  
 
@@ -152,6 +157,8 @@ PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件
 - [QASTRATEGY101](https://github.com/yutiansut/QAStrategy101) 101个基础策略[逐步更新中...]
 
 > 行情相关: 主推行情实现/ 基于OU过程的模拟行情
+
+- QAHEXOS 股票行情的实时推送与分发 
 - [QUNATAXIS MARKETCOLLECTOR](https://github.com/yutiansut/QUANTAXIS_RealtimeCollector) 全市场订阅分发的行情推送
 - [QUANTAXIS_RandomPrice](https://github.com/yutiansut/QUANTAXIS_RandomPrice) 基于OU过程的随机行情模拟
 
@@ -160,6 +167,7 @@ PS: 除了可视化的桌面端/网页端 QACommunity(内置在docker/ 群文件
 - [QIFI](https://github.com/QUANTAXIS/QIFI) 一个基于快期DIFF协议的QA实时账户协议
 - [QIFIAccount](https://github.com/yutiansut/qifiaccount) 一个基于QIFI协议的多市场兼容的 实时账户实现
 - [QAStrategy](https://github.com/yutiansut/qastrategy) 一个完整的 支持 模拟/回测/实盘一键切换的策略基类
+- [QIFIManager](https://github.com/yutiansut/qifimanager) 基于qifi协议的账户查看，多账户组合管理， 绩效分析等
 
 > 多语言实现
 
