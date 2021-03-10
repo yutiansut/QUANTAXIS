@@ -94,7 +94,7 @@ RUN apt-get update && apt-get -y install libcurl4-openssl-dev  libssl-dev  build
 RUN apt install -y gcc git tini iputils-ping && \
     mkdir /root/.prefect/ && \
     pip install "pip==20.2.4" && \
-    pip install --no-cache-dir git+https://github.com/PrefectHQ/prefect.git@${PREFECT_VERSION}#egg=prefect[${EXTRAS}]
+    pip install --no-cache-dir prefect
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
