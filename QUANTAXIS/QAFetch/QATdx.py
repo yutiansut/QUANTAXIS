@@ -655,7 +655,7 @@ def for_sz(code):
         return 'stock_cn'
     elif str(code)[0:2] in ['39']:
         return 'index_cn'
-    elif str(code)[0:2] in ['15']:
+    elif str(code)[0:2] in ['15', '16']:
         return 'etf_cn'
     elif str(code)[0:3] in ['101', '104', '105', '106', '107', '108', '109',
                             '111', '112', '114', '115', '116', '117', '118', '119',
@@ -681,7 +681,7 @@ def for_sh(code):
         return 'stock_cn'
     elif str(code)[0:3] in ['000', '880']:
         return 'index_cn'
-    elif str(code)[0:2] == '51':
+    elif str(code)[0:2] in ['51', '58']:
         return 'etf_cn'
     # 110×××120×××企业债券；
     # 129×××100×××可转换债券；
