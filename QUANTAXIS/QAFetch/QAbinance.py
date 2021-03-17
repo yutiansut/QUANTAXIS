@@ -115,12 +115,12 @@ def format_binance_data_fields(datas, symbol, frequency):
     frame['date'] = pd.to_datetime(
         frame['start_time'],
         unit='s'
-    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
+    , utc=False)
     frame['date'] = frame['date'].dt.strftime('%Y-%m-%d')
     frame['datetime'] = pd.to_datetime(
         frame['start_time'],
         unit='s'
-    ).dt.tz_localize('UTC').dt.tz_convert('Asia/Shanghai')
+    , utc=False)
     frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # GMT+0 String 转换为 UTC Timestamp
     frame['date_stamp'] = pd.to_datetime(frame['date']

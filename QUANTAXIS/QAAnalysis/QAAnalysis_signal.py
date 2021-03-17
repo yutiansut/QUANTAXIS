@@ -4,7 +4,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,7 @@ from QUANTAXIS.QAData.base_datastruct import *
 try:
     import peakutils
 except:
-    print('PLEASE run "pip install peakutils" to call these modules')
+    #print('PLEASE run "pip install peakutils" to call these modules')
     pass
 try:
     from QUANTAXIS.QAIndicator.talib_numpy import *
@@ -47,7 +47,7 @@ try:
         QA_util_print_timestamp
     )
 except:
-    print('PLEASE run "pip install QUANTAXIS" to call these modules')
+    print('PLEASE run "pip install QUANTAXIS" before call QUANTAXIS.QAAnalysis.QAAnalysis_signal modules')
     pass
 
 """

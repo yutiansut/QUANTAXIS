@@ -6,8 +6,8 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN \
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E40EBBA24FF2FC69 \
 && apt-get update \
-&& apt-get install -y apt-utils locales --force-yes\
-&& apt install gcc -y --force-yes\
+&& apt-get install -y apt-utils locales --allow\
+&& apt install gcc -y --allow\
 && locale-gen zh_CN.GB18030 \
 && pip install quantaxis-servicedetect \
 && localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.GB18030 \

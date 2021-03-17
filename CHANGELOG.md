@@ -178,7 +178,7 @@ plot的图示例:
 
 - 可能需要先升级pyecharts 到最新版本 (```pip install pyecharts -U -i https://pypi.doubanio.com/simple```)
 
-![](http://pic.yutiansut.com/QQ%E5%9B%BE%E7%89%8720190103220819.png)
+![](http://picx.gulizhu.com/QQ%E5%9B%BE%E7%89%8720190103220819.png)
 
 
 ## 1.2.4

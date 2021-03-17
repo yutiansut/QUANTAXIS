@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -62,12 +62,12 @@ class _quotation_base():
 
     # 🛠todo  DataFrame 改成 df 变量名字
     def __init__(
-            self,
-            DataFrame,
-            dtype='undefined',
-            if_fq='bfq',
-            marketdata_type='None',
-            frequence=None
+        self,
+        DataFrame,
+        dtype='undefined',
+        if_fq='bfq',
+        marketdata_type='None',
+        frequence=None
     ):
         '''
         :param df: DataFrame 类型
@@ -385,9 +385,10 @@ class _quotation_base():
     def date(self):
         index = self.data.index.remove_unused_levels()
         try:
-            return index.levels[0] if 'date' in self.data.index.names else sorted(
-                list(set(self.datetime.date))
-            )
+            return index.levels[0
+                               ] if 'date' in self.data.index.names else sorted(
+                                   list(set(self.datetime.date))
+                               )
         except:
             return None
 
@@ -396,7 +397,9 @@ class _quotation_base():
     def datetime(self):
         '分钟线结构返回datetime 日线结构返回date'
         index = self.data.index.remove_unused_levels()
-        return pd.to_datetime(index.levels[0])
+        return pd.to_datetime(
+            index.levels[0]
+        , utc=False)
 
     @property
     @lru_cache()
@@ -463,7 +466,7 @@ class _quotation_base():
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
         res = self.price.groupby(level=1
-                                 ).apply(lambda x: statistics.pvariance(x))
+                                ).apply(lambda x: statistics.pvariance(x))
         res.name = 'pvariance'
         return res
 
@@ -473,7 +476,7 @@ class _quotation_base():
     def variance(self):
         '返回DataStruct.price的方差 variance'
         res = self.price.groupby(level=1
-                                 ).apply(lambda x: statistics.variance(x))
+                                ).apply(lambda x: statistics.variance(x))
         res.name = 'variance'
         return res
 
@@ -519,7 +522,7 @@ class _quotation_base():
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
         res = self.price.groupby(level=1
-                                 ).apply(lambda x: statistics.harmonic_mean(x))
+                                ).apply(lambda x: statistics.harmonic_mean(x))
         res.name = 'mean_harmonic'
         return res
 
@@ -530,7 +533,7 @@ class _quotation_base():
         '返回DataStruct.price的众数'
         try:
             res = self.price.groupby(level=1
-                                     ).apply(lambda x: statistics.mode(x))
+                                    ).apply(lambda x: statistics.mode(x))
             res.name = 'mode'
             return res
         except:
@@ -642,7 +645,7 @@ class _quotation_base():
     @lru_cache()
     def code(self):
         '返回结构体中的代码'
-        return self.index.levels[1]
+        return self.index.levels[1].map(lambda x: x[0:6])
 
     @property
     @lru_cache()
@@ -673,7 +676,10 @@ class _quotation_base():
         :return:  字典dict 类型
         '''
         try:
-            return self.dicts[(QA_util_to_datetime(time), str(code))]
+            return self.dicts[(
+                QA_util_to_datetime(time),
+                str(code)
+            )]
         except Exception as e:
             raise e
 
@@ -806,15 +812,15 @@ class _quotation_base():
             pass
 
     def groupby(
-            self,
-            by=None,
-            axis=0,
-            level=None,
-            as_index=True,
-            sort=False,
-            group_keys=False,
-            squeeze=False,
-            **kwargs
+        self,
+        by=None,
+        axis=0,
+        level=None,
+        as_index=True,
+        sort=False,
+        group_keys=False,
+        squeeze=False,
+        **kwargs
     ):
         """仿dataframe的groupby写法,但控制了by的code和datetime
 
@@ -838,15 +844,27 @@ class _quotation_base():
         elif by == self.index.names[0]:
             by = None
             level = 0
-        return self.data.groupby(
-            by=by,
-            axis=axis,
-            level=level,
-            as_index=as_index,
-            sort=sort,
-            group_keys=group_keys,
-            squeeze=squeeze
-        )
+        # 适配 pandas 1.0+，避免出现 FutureWarning:
+        # Paramter 'squeeze' is deprecated 提示
+        if (squeeze):
+            return self.data.groupby(
+                by=by,
+                axis=axis,
+                level=level,
+                as_index=as_index,
+                sort=sort,
+                group_keys=group_keys,
+                squeeze=squeeze
+            ).squeeze()
+        else:
+            return self.data.groupby(
+                by=by,
+                axis=axis,
+                level=level,
+                as_index=as_index,
+                sort=sort,
+                group_keys=group_keys,
+            )
 
     def new(self, data=None, dtype=None, if_fq=None):
         """
@@ -1052,7 +1070,13 @@ class _quotation_base():
         add_funcx 会先 reset_index 变成单索引(pd.DatetimeIndex)
         """
 
-        return self.groupby(level=1, sort=False).apply(lambda x: func(x.reset_index(1), *arg, **kwargs))
+        return self.groupby(
+            level=1,
+            sort=False
+        ).apply(lambda x: func(x.reset_index(1),
+                               *arg,
+                               **kwargs))
+
     # def add_func_adv(self, func, *arg, **kwargs):
     #     """QADATASTRUCT的指标/函数apply入口
 
@@ -1280,7 +1304,11 @@ class _quotation_base():
         """
         选择一个特定的时间点
         """
-        return self.data.loc[self.datetime.map(lambda x: x.minute==minute and x.hour==hour and x.second==second), slice(None)]
+        return self.data.loc[self.datetime.map(
+            lambda x: x.minute == minute and x.hour == hour and x.second ==
+            second
+        ),
+                             slice(None)]
 
     def get_bar(self, code, time):
         """
