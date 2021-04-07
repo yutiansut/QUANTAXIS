@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -110,7 +110,25 @@ def SINGLE_CROSS(A, B):
     else:
         return False
 
-
+def EXIST(Series, N=5):
+    '''
+    n日内是否存在某一值，
+    输入值为true or false的Series  
+    '''
+    res=pd.DataFrame(Series)+0
+    res=res.rolling(N).sum()>0
+    res=res[res.columns[0]]
+    return res
+def EVERY(Series, N=5):
+    '''
+    n日内是否一直存在某一值，
+    输入值为true or false的Series  
+    '''
+    res=pd.DataFrame(Series)+0
+    res=res.rolling(N).sum()>N-1
+    res=res[res.columns[0]]
+    return res
+    
 def CROSS(A, B):
     """A<B then A>B  A上穿B B下穿A
 

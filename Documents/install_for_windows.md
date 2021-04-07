@@ -42,7 +42,7 @@ anaconda安装的时候 注意:
 
 敲黑板! 一定都要选上, 不然需要自己手动配置path, 如果不是很了解path的童靴一定要都选上
 
-![](http://pic.yutiansut.com/anaconda_install_win.png)
+![](http://picx.gulizhu.com/anaconda_install_win.png)
 
 ##  3. 安装(可以跳过)
 
@@ -63,11 +63,11 @@ QUANTAXIS的代码托管在github,你需要经常用过```git pull```来更新�
 
 同样,在安装的时候 选择```add to path```
 
-![](http://pic.yutiansut.com/git1.png)
-![](http://pic.yutiansut.com/git2.png)
-![](http://pic.yutiansut.com/git3.png)
-![](http://pic.yutiansut.com/git4.png)
-![](http://pic.yutiansut.com/git5.png)
+![](http://picx.gulizhu.com/git1.png)
+![](http://picx.gulizhu.com/git2.png)
+![](http://picx.gulizhu.com/git3.png)
+![](http://picx.gulizhu.com/git4.png)
+![](http://picx.gulizhu.com/git5.png)
 
 ##  5. 使用git下载QUANTAXIS [新手/以及不想自己改代码的注意 此段跳过]
 

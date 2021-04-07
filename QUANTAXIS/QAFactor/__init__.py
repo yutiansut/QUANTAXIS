@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,19 @@
 
 from QUANTAXIS.QAFactor.analyze import FactorAnalyzer
 from QUANTAXIS.QAFactor.data import DataApi
-from QUANTAXIS.QAFactor.preprocess import (
-    QA_fmt_factor,
-    QA_fetch_factor_weight,
-    QA_fetch_get_factor_groupby,
-    QA_standardize_factor,
-    QA_winsorize_factor
-)
-from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
-from QUANTAXIS.QAFactor.fetcher import (QA_fetch_last_financial,
+from QUANTAXIS.QAFactor.fetcher import (QA_fetch_daily_basic,
                                         QA_fetch_financial_adv,
                                         QA_fetch_industry_adv,
+                                        QA_fetch_last_financial,
                                         QA_fetch_stock_basic,
                                         QA_fetch_stock_name)
-from QUANTAXIS.QAFactor.localize import (QA_ts_update_industry,
-                                         QA_ts_update_namechange,
-                                         QA_ts_update_inc)
+from QUANTAXIS.QAFactor.localize import (QA_ts_update_daily_basic,
+                                         QA_ts_update_inc,
+                                         QA_ts_update_industry,
+                                         QA_ts_update_namechange)
+from QUANTAXIS.QAFactor.preprocess import (QA_fetch_factor_weight,
+                                           QA_fetch_get_factor_groupby,
+                                           QA_fmt_factor,
+                                           QA_standardize_factor,
+                                           QA_winsorize_factor)
+from QUANTAXIS.QAFactor.utils import QA_fmt_code_list

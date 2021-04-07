@@ -1,6 +1,6 @@
 # QUANTAXIS财务指标中英文对照表
 
-<!-- TOC -->
+< TOC>
 
 - [QUANTAXIS财务指标中英文对照表](#quantaxis财务指标中英文对照表)
     - [0.注意](#0注意)
@@ -37,7 +37,7 @@
     - [13.机构持股](#13机构持股)
     - [14.新增指标](#14新增指标)
 
-<!-- /TOC -->
+< /TOC>
 
 ## 0.注意
 
@@ -726,3 +726,210 @@
 '306其中:利息收入(利润表-财务费用)': 'IS_InterestIncome',
 
 '307近一年经营活动现金流净额': 'netCashFlowfromOperatingActivitiesinthepastyear'
+
+308近一年归母净利润（万元）:Net profit attributable to the mother in the recent year (RMB million)
+
+309近一年扣非净利润（万元）: Nearly one year net profit after deduction (million yuan)
+
+310近一年现金净流量（万元）: Net cash flow in the past year (million yuan)
+
+311基本每股收益（单季度）:Basic earnings per share (single quarter)
+
+312营业总收入(单季度)(万元):Total operating income (single quarter) (RMB million)
+
+313业绩预告公告日期 :Announcement date of earnings forecast
+[注：本指标展示未来一个报告期的数据。例,3月31日至6月29日这段时间内展示的是中报的数据；如果最新的财务报告后面有多个报告期的业绩预告/快报，只能展示最新的财务报告后面的一个报告期的业绩预告/快报的数据；公告日期格式为YYMMDD，例：190101代表2019年1月1日]
+
+314财报公告日期 earnings announcement date
+
+[注：日期格式为YYMMDD,例：190101代表2019年1月1日]
+
+
+315业绩快报公告日期  Earnings Update Announcement Date
+
+[注：本指标展示未来一个报告期的数据。例,3月31日至6月29日这段时间内展示的是中报的数据；如果最新的财务报告后面有多个报告期的业绩预告/快报，只能展示最新的财务报告后面的一个报告期的业绩预告/快报的数据；公告日期格式为YYMMDD，例：190101代表2019年1月1日]
+
+316近一年投资活动现金流净额(万元) Net cash flow from investing activities in the past year (RMB million)
+
+317业绩预告-本期净利润下限(万元) Forecast of performance
+
+[注：指标317至318展示未来一个报告期的数据。例，3月31日至6月29日这段时间内展示的是中报的数据；如果最新的财务报告后面有多个报告期的业绩预告/快报，只能展示最新的财务报告后面的一个报告期的业绩预告/快报]
+
+318业绩预告-本期净利润上限(万元) Forecast of Results - Current Period Net Income Cap
+
+319营业总收入TTM(万元)319Total Operating Income TTM(million yuan)
+
+320员工总数(人)Total number of employees (people)
+
+321每股企业自由现金流Corporate Free Cash Flow per Share
+
+
+322每股股东自由现金流Free cash flow per share for shareholders
+
+资产负债表新增指标---
+
+
+401专项储备(万元) Special reserve (million yuan)
+
+402结算备付金(万元)Settlement provision (million yuan)
+
+403拆出资金(万元) Funds removed (million yuan)
+
+404发放贷款及垫款(万元)(流动资产科目)Loans and advances granted (million yuan) (current assets account)
+
+405衍生金融资产(万元)Derivative financial assets (million yuan)
+
+406应收保费(万元) Premium receivable(million yuan)
+
+407应收分保账款(万元) Sub-insurance receivables (million yuan)
+
+408应收分保合同准备金(万元)Provision for sub-insurance contracts receivable (RMB million)
+
+409买入返售金融资产(万元)Buy-back financial assets (RMB million)
+
+410划分为持有待售的资产(万元)Assets classified as held for sale (RMB million)
+
+411发放贷款及垫款(万元)(非流动资产科目)Loans and advances granted (million yuan) (non-current asset account)
+
+412向中央银行借款(万元)Borrowings from central banks (RMB million)
+
+413吸收存款及同业存放(万元)Absorption of deposits and interbank deposits (RMB million)
+
+414拆入资金(万元)Funds borrowed (RMB million)
+
+415衍生金融负债(万元) Derivative financial liabilities (RMB million)
+
+416卖出回购金融资产款(万元) Sale of repurchase financial assets (RMB million)
+
+417应付手续费及佣金(万元)Fees and commissions payable (RMB million)
+
+418应付分保账款(万元)Payables to sub-insurance accounts (RMB million)
+
+419保险合同准备金(万元)Provision for insurance contracts (RMB million)
+
+420代理买卖证券款(万元) Agency securities trading (RMB million)
+
+421代理承销证券款(万元)Agency underwriting of securities (RMB million)
+
+422划分为持有待售的负债(万元)Liabilities classified as held for sale (million yuan)
+
+423预计负债(万元)Projected liabilities(million yuan)
+
+424递延收益(万元)（流动负债科目，公告此科目的股票较少，大部分公司没有此数据）Deferred income (million yuan) 
+
+425其中:优先股(万元)(非流动负债科目)Deferred incomeOf which:Preferred stock(million yuan)
+
+426永续债(万元)(非流动负债科目)Perpetual bonds (million yuan)
+
+427长期应付职工薪酬(万元)Long-term employee compensation payable(million yuan)
+
+428其中:优先股(万元)(所有者权益科目)Long-term employee compensation payable Of which:Preferred shares(million)(Owner's equity account)
+
+429永续债(万元)(所有者权益科目)Perpetual debentures(million)
+
+430债权投资(万元) Debt investments(million yuan)
+
+431其他债权投资(万元)Other debt investments(million yuan)
+
+432其他权益工具投资(万元)Investment in other equity instruments(million yuan)
+
+433其他非流动金融资产(万元)Other non-current financial assets(million yuan)
+
+434合同负债(万元)Contract liabilities(million yuan)
+
+435合同资产(万元)Contract assets(million yuan)
+
+436其他资产(万元)Other assets(million yuan)
+
+437应收款项融资(万元) Financing of receivables(million yuan)
+
+438使用权资产(万元)Right-of-use assets(million yuan)
+
+439租赁负债(万元)Lease liabilities (million yuan)
+
+利润表新增指标---
+
+
+501稀释每股收益(元) Diluted earnings per share (yuan)
+
+502营业总收入(万元) Total operating income(yuan)
+
+503汇兑收益(万元) Foreign exchange gain(yuan)
+
+504其中:归属于母公司综合收益(万元)Comprehensive income attributable to parent company(RMB million)
+
+505其中:归属于少数股东综合收益(万元)Comprehensive income attributable to minority shareholders(RMB million)
+
+506利息收入(万元)Interest income(million yuan)
+
+507已赚保费(万元) Premiums earned(RMB million)
+
+508手续费及佣金收入(万元) Fee and commission income(RMB million)
+
+509利息支出(万元)Interest expense(million yuan)
+
+510手续费及佣金支出(万元) Handling and commission expenses(million yuan)
+
+511退保金(万元) Surrender premiums(million yuan)
+
+512赔付支出净额(万元)Net payout expenses (RMB million)
+
+513提取保险合同准备金净额(万元) Net withdrawal of insurance contract reserve (RMB million)
+
+514保单红利支出(万元)Policy dividend expense (RMB million)
+
+515分保费用(万元) Ceding expenses(million yuan)
+
+516其中:非流动资产处置利得(万元)Gain on disposal of non-current assets (RMB million)
+
+517信用减值损失(万元)Credit impairment loss(million yuan)
+
+518净敞口套期收益(万元)Net exposure hedging gain(million yuan)
+
+519营业总成本(万元)Total operating costs(million yuan)
+
+520信用减值损失(万元、2019格式)Credit impairment loss ($ million, 2019 format)
+
+521资产减值损失(万元、2019格式) Impairment loss on assets ($ million, 2019 format)
+
+现金流量表新增指标---
+
+561加:其他原因对现金的影响2(万元)(现金的期末余额科目)Add:Effect of other causes on cash2 ($ million) 
+
+562客户存款和同业存放款项净增加额(万元)Net increase in customer deposits and interbank deposits ($ million)
+
+563向中央银行借款净增加额(万元)Net increase in borrowings from central banks (million yuan)
+
+564向其他金融机构拆入资金净增加额(万元)Net increase in funds borrowed from other financial institutions (RMB million)
+
+565收到原保险合同保费取得的现金(万元)Cash received from premiums on original insurance contracts (RMB million)
+
+566收到再保险业务现金净额(万元)Net cash received from reinsurance business (RMB million)
+
+567保户储金及投资款净增加额(万元)Net increase in policyholders' deposits and investment funds (RMB million)
+
+568处置以公允价值计量且其变动计入当期损益的金融资产净增加额(万元) Net increase in disposal of financial assets at fair value through profit or loss (RMB million)
+
+569收取利息、手续费及佣金的现金(万元) Cash received from interest, fees and commissions (RMB million)
+
+570拆入资金净增加额(万元)Net increase in funds transferred in (RMB million)
+
+571回购业务资金净增加额(万元)Net increase in funds from repo business (RMB million)
+
+572客户贷款及垫款净增加额(万元) Net increase in loans and advances to customers (RMB million)
+
+573存放中央银行和同业款项净增加额(万元)Net increase in deposits with central banks and interbank (RMB million)
+
+574支付原保险合同赔付款项的现金(万元)Cash paid for claims on original insurance contracts (RMB million)
+
+575支付利息、手续费及佣金的现金(万元)Cash paid for interest, fees and commissions (RMB million)
+
+576支付保单红利的现金(万元)Cash paid for policy dividends (RMB million)
+
+577其中:子公司吸收少数股东投资收到的现金(万元)cash received from minority shareholders' investment in subsidiaries (RMB million)
+
+578其中:子公司支付给少数股东的股利、利润(万元)Dividends and profits paid by subsidiaries to minority shareholders(RMB million)
+
+579投资性房地产的折旧及摊销(万元)Depreciation and amortization of investment properties(RMB million)
+
+580信用减值损失(万元)Credit impairment loss(million yuan)

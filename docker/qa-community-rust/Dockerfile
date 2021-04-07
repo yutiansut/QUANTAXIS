@@ -9,7 +9,7 @@ COPY runcelery.sh /root/
 COPY wait_for_it.sh /root/
 
 RUN cd /root && git clone https://gitee.com/yutiansut/qamazing_community && cd qamazing_community \
-&& pip install quantaxis-servicedetect quantaxis-pubsub quantaxis quantaxis_webserver quantaxis_run eventlet  -U -i https://pypi.doubanio.com/simple\
+&& pip install quantaxis-servicedetect quantaxis-pubsub quantaxis quantaxis_webserver quantaxis_run qifimanager qavifiserver eventlet  -U -i https://pypi.doubanio.com/simple\
 && pip uninstall pytdx -y \
 && pip install pytdx -i https://pypi.doubanio.com/simple\
 && pip install qifiaccount QAStrategy -U -i https://pypi.doubanio.com/simple\
@@ -20,8 +20,8 @@ ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
     RUST_VERSION=1.48.0
-    
-ARG CMAKE_VERSION=3.12.0
+    #https://cmake.org/files/v3.19/cmake-3.19.0-Linux-x86_64.tar.gz
+ARG CMAKE_VERSION=3.19.0
 WORKDIR /tmp
 RUN wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
 && tar xzf cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz \
@@ -54,7 +54,7 @@ ENV PATH=${GOPATH}/bin:/usr/lib/go-1.15/bin:/usr/local/cmake/bin:${PATH}
 ENV PKG_CONFIG_PATH = /usr/local/lib/pkgconfig
 ENV LD_LIBRARY_PATH=:${LD_LIBRARY_PATH}:/usr/local/bin:/usr/local/lib
 ENV GO111MODULE=on
-ENV GOPROXY=https://goproxy.io
+#
 COPY ./config  /root/.cargo/
 COPY ./update_all.py  /root/QUANTAXIS/config/
 RUN set -eux; \
@@ -82,9 +82,16 @@ RUN set -eux; \
     evcxr_jupyter --install;
     ## clean
 ## run build for tensorflow 2
+ENV GOPROXY=https://goproxy.io
 RUN conda install --yes tensorflow 
-RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras
-CMD ["/bin/bash", "/root/run-community.sh"]
-WORKDIR /home
+RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras \
+    && pip install QAStrategy quantaxis quantaxis_run qifiaccount -U -i https://pypi.doubanio.com/simple
 
-EXPOSE 80 8010 8787 8020
+RUN apt-get update && apt-get -y install libcurl4-openssl-dev iputils-ping libssl-dev  build-essential net-tools htop\
+    && cd /root/ && wget https://github.com/QUANTAXIS/QUANTAXIS/releases/download/1.10.2/portfoliohandler\
+    && chmod +777 /root/portfoliohandler
+
+
+WORKDIR /root
+EXPOSE 80 8010 8787 8020 8029 8018 8019 8028
+CMD ["/bin/bash", "/root/run-community.sh"]

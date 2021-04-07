@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ def QA_data_marketvalue(data):
             data = pd.DataFrame(
                 [item for item in collections.find({'code': {"$in": code_list}
                                                    },{"_id": 0})])
-            data['date'] = pd.to_datetime(data['date'])
+            data['date'] = pd.to_datetime(data['date'], utc=False)
 
             return data.drop_duplicates(
                 ['date', 'code'],

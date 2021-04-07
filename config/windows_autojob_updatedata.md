@@ -17,22 +17,22 @@
 
 
 ## 打开控制面板-系统和安全-管理工具
-![](http://pic.yutiansut.com/management.png)
+![](http://picx.gulizhu.com/management.png)
 
 ## 打开计划任务程序
-![](http://pic.yutiansut.com/management2.png)
+![](http://picx.gulizhu.com/management2.png)
 
 ## 在计划任务程序中,新建任务
-![](http://pic.yutiansut.com/task1.png)
+![](http://picx.gulizhu.com/task1.png)
 
 ## 创建QUANTAXIS_Update任务
-![](http://pic.yutiansut.com/task2.png)
+![](http://picx.gulizhu.com/task2.png)
 
 ## 选择运行时间/频率
-![](http://pic.yutiansut.com/task3.png)
+![](http://picx.gulizhu.com/task3.png)
 
 ## 选择执行的命令
-![](http://pic.yutiansut.com/task4.png)
+![](http://picx.gulizhu.com/task4.png)
 
 ## 配置完毕
-![](http://pic.yutiansut.com/task5.png)
+![](http://picx.gulizhu.com/task5.png)

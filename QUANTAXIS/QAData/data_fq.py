@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2020 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -191,7 +191,7 @@ def QA_data_stock_to_fq(__data, type_='01'):
                 [item for item in collections.find({'code': code})]
             ).drop(['_id'],
                    axis=1)
-            data['date'] = pd.to_datetime(data['date'])
+            data['date'] = pd.to_datetime(data['date'], utc=False)
             return data.set_index(['date', 'code'], drop=False)
         except:
             return pd.DataFrame(

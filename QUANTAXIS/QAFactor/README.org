@@ -138,7 +138,7 @@ def QA_fetch_last_financial(
     """
     pass
    #+end_src
-
+6. `QA_fetch_daily_basic` 函数，获取指定股票或股票列表在对应时间范围或对应日期的每日基本面数据，数据来源为 `tushare` daily_basic 数据
 
 * 示例测试代码
 ** 1. ROE 季度数据测试

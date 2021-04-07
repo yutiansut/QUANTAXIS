@@ -59,21 +59,21 @@ Y = λ1X1 + λ2X2 + λ3X3 + λnXn
 
 在最初, 简单的线性回归就可以把一个事情分为两类, 但是当事情变得复杂起来以后, 简单的单项式并不能解决问题
 
-![image.png](http://pic.yutiansut.com/FtkKBu8Jw8qmgcundfVOoU9a61wK)
+![image.png](http://picx.gulizhu.com/FtkKBu8Jw8qmgcundfVOoU9a61wK)
 我拿ppt来画一个图, 这时候, 你应该怎么去划分这个事情
 
 有的人依然在X上做文章, 这就出现了SVM
 
 SVM通过核函数映射, 把他映射到高维空间, 就可以继续进行线性分类了
 
-![image.png](http://pic.yutiansut.com/FlezFqjH8Khu0lIt8J-73IcyayIb)
+![image.png](http://picx.gulizhu.com/FlezFqjH8Khu0lIt8J-73IcyayIb)
 
 这时候, 你依然可以通过一个trick+ 线性分类来解决问题
 
 
 但是当事情变得越来越复杂, 特征越来越多的时候, 你就需要神经网络模型
 
-![image.png](http://pic.yutiansut.com/Fr_WQ0A0LYqcw3FQoD7myWiBXojD)
+![image.png](http://picx.gulizhu.com/Fr_WQ0A0LYqcw3FQoD7myWiBXojD)
 
 神经网络的本质是什么?  神经网络的本质就是一个多项式模型, 他不是管理x的 是管理λ的, 通过简单的BP反向传播, 我们就可以实现一个权重的调整
 
@@ -96,7 +96,7 @@ SVM通过核函数映射, 把他映射到高维空间, 就可以继续进行线�
 
 换言之 用传统金融理论来套回去 
 
-![image.png](http://pic.yutiansut.com/Fv0ATfHAlNmOWvoR8i7EZMEzgbaQ)
+![image.png](http://picx.gulizhu.com/Fv0ATfHAlNmOWvoR8i7EZMEzgbaQ)
 
 在目前的市场, 靠一个IC超高的策略打天下, 应该是交易员/手工的事情, 做量化的人, 天生就不要指望你的垃圾代码能实现一个超过人脑的IC策略
 
@@ -131,5 +131,5 @@ SVM通过核函数映射, 把他映射到高维空间, 就可以继续进行线�
 
 然后我现在正在构建, 或者基本上已经投入实盘测试的, 就是这个标准化的Xn流程 和 lambda管理体系的综合表现
 
-![image.png](http://pic.yutiansut.com/FsMe1TiNoP3YH0wrtBdPb6GPx2kE)
+![image.png](http://picx.gulizhu.com/FsMe1TiNoP3YH0wrtBdPb6GPx2kE)
 最后再把这张好早以前的图放回来, 我们基本已经基于这个体系构建了 SOP和KPI, 目前就是即将见到第一条流水线的状态
