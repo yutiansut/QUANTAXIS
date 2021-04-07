@@ -87,9 +87,10 @@ RUN conda install --yes tensorflow
 RUN pip install tornado==5.1.1 -i https://pypi.doubanio.com/simple && conda install --yes keras \
     && pip install QAStrategy quantaxis quantaxis_run qifiaccount -U -i https://pypi.doubanio.com/simple
 
-RUN apt-get update && apt-get -y install libcurl4-openssl-dev  libssl-dev  build-essential net-tools htop\
+RUN apt-get update && apt-get -y install libcurl4-openssl-dev iputils-ping libssl-dev  build-essential net-tools htop\
     && cd /root/ && wget https://github.com/QUANTAXIS/QUANTAXIS/releases/download/1.10.2/portfoliohandler\
     && chmod +777 /root/portfoliohandler
+
 
 WORKDIR /root
 EXPOSE 80 8010 8787 8020 8029 8018 8019 8028
