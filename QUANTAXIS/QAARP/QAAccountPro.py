@@ -1050,7 +1050,7 @@ class QA_AccountPRO(QA_Worker):
 
         self.receive_deal(order["instrument_id"], trade_price=order["limit_price"], trade_time=self.datetime,
                           trade_amount=order["volume_left"], trade_towards=order["towards"],
-                          order_id=order['order_id'], trade_id=str(uuid.uuid4()))
+                          order_id=order['order_id'], trade_id=str(uuid.uuid4()),message=order["message"])
 
     def receive_deal(self,
                      code,
