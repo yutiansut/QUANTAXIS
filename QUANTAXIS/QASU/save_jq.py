@@ -157,7 +157,7 @@ def QA_SU_save_stock_min(client=DATABASE, ui_log=None, ui_progress=None):
                         ui_log=ui_log,
                     )
                     if start_time != end_time:
-                        __data == __transform_jq_to_qa(
+                        __data = __transform_jq_to_qa(
                             jqdatasdk.get_price(
                                 security=code,
                                 start_date=start_time,
