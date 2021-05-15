@@ -1237,7 +1237,7 @@ class QA_AccountPRO(QA_Worker):
                         (
                             self.frozen[code][str(trade_towards)]['avg_price'] *
                             self.frozen[code][str(trade_towards)]['amount']
-                        ) + abs(trade_money)
+                        ) + abs(raw_trade_money)
                     ) / (
                         self.frozen[code][str(trade_towards)]['amount'] +
                         trade_amount
