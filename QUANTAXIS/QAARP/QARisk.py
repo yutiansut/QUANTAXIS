@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -11,12 +11,13 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all
+# The above copyright notice and this permission notice shall be included in
+# all
 # copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
@@ -41,13 +42,17 @@ import pandas as pd
 from pymongo import ASCENDING, DESCENDING
 
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
-from QUANTAXIS.QAFetch.QAQuery_Advance import (QA_fetch_future_day_adv,
-                                               QA_fetch_index_day_adv,
-                                               QA_fetch_stock_day_adv,
-                                               QA_fetch_cryptocurrency_day_adv)
+from QUANTAXIS.QAFetch.QAQuery_Advance import (
+    QA_fetch_future_day_adv,
+    QA_fetch_index_day_adv,
+    QA_fetch_stock_day_adv,
+    QA_fetch_cryptocurrency_day_adv
+)
 from QUANTAXIS.QASU.save_account import save_riskanalysis
-from QUANTAXIS.QAUtil.QADate_trade import (QA_util_get_trade_gap,
-                                           QA_util_get_trade_range)
+from QUANTAXIS.QAUtil.QADate_trade import (
+    QA_util_get_trade_gap,
+    QA_util_get_trade_range
+)
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE
 from QUANTAXIS.QAUtil.QASetting import DATABASE
 
@@ -73,8 +78,9 @@ if platform.system() not in ['Windows',
                              'Darwin'] and os.environ.get('DISPLAY',
                                                           '') == '':
     print('you are using non-interactive mdoel quantaxis')
-    # print('no display found. Using non-interactive Agg backend')
-    # print("if you use ssh, you can use ssh with -X parmas to avoid this issue")
+    # print('no display found.  Using non-interactive Agg backend')
+    # print("if you use ssh, you can use ssh with -X parmas to avoid this
+    # issue")
     # try:
     #     pass
     # except expression as identifier:
@@ -121,13 +127,13 @@ class QA_Risk():
     """
 
     def __init__(
-            self,
-            account,
-            benchmark_code='000300',
-            benchmark_type=MARKET_TYPE.INDEX_CN,
-            if_fq=True,
-            market_data=None,
-            auto_reload=False
+        self,
+        account,
+        benchmark_code='000300',
+        benchmark_type=MARKET_TYPE.INDEX_CN,
+        if_fq=True,
+        market_data=None,
+        auto_reload=False
     ):
         """
         account: QA_Account类/QA_PortfolioView类
@@ -137,7 +143,7 @@ class QA_Risk():
         if_fq选项是@尧提出的,关于回测的时候成交价格问题(如果按不复权撮合 应该按不复权价格计算assets)
         """
         self.account = account
-        self.benchmark_code = benchmark_code  # 默认沪深300
+        self.benchmark_code = benchmark_code # 默认沪深300
         self.benchmark_type = benchmark_type
         self.client = DATABASE.risk
 
@@ -180,17 +186,21 @@ class QA_Risk():
                         self.account.end_date
                     )
             else:
-                self.market_data = market_data.select_time(self.account.start_date, self.account.end_date)
+                self.market_data = market_data.select_time(
+                    self.account.start_date,
+                    self.account.end_date
+                )
             self.if_fq = if_fq
-            if self.account.market_type == MARKET_TYPE.FUTURE_CN:
-                self.if_fq = False  # 如果是期货， 默认设为FALSE
+            if (self.account.market_type == MARKET_TYPE.FUTURE_CN) or (
+                    self.account.market_type == MARKET_TYPE.CRYPTOCURRENCY):
+                self.if_fq = False # 如果是期货， 默认设为FALSE
 
             if self.market_value is not None:
                 if self.account.market_type == MARKET_TYPE.FUTURE_CN and self.account.allow_margin == True:
                     print('margin!')
                     self._assets = (
-                        self.account.daily_frozen +
-                        # self.market_value.sum(axis=1) +
+                        self.account.daily_frozen
+                        +                                                        # self.market_value.sum(axis=1) +
                         self.account.daily_cash.set_index('date').cash
                     ).dropna()
                 else:
@@ -200,9 +210,9 @@ class QA_Risk():
                     ).fillna(method='pad')
             else:
                 self._assets = self.account.daily_cash.set_index('date'
-                                                                 ).cash.fillna(
-                    method='pad'
-                )
+                                                                ).cash.fillna(
+                                                                    method='pad'
+                                                                )
 
             self.time_gap = QA_util_get_trade_gap(
                 self.account.start_date,
@@ -259,7 +269,9 @@ class QA_Risk():
     @property
     def assets(self):
         x1 = self._assets.reset_index()
-        return x1.assign(date=pd.to_datetime(x1.date)).set_index('date')[0]
+        return x1.assign(
+            date=pd.to_datetime(x1.date, utc=False)
+        ).set_index('date')[0]
 
     @property
     def max_dropback(self):
@@ -305,16 +317,16 @@ class QA_Risk():
 
         return {
             'total_buyandsell':
-            round(
-                self.profit_money - self.total_commission - self.total_tax,
-                2
-            ),
+                round(
+                    self.profit_money - self.total_commission - self.total_tax,
+                    2
+                ),
             'total_tax':
-            self.total_tax,
+                self.total_tax,
             'total_commission':
-            self.total_commission,
+                self.total_commission,
             'total_profit':
-            self.profit_money
+                self.profit_money
         }
 
     @property
@@ -402,8 +414,8 @@ class QA_Risk():
             'totaltimeindex': self.total_timeindex,
             'ir': self.ir,
             'month_profit': self.month_assets_profit.to_dict()
-            # 'init_assets': round(float(self.init_assets), 2),
-            # 'last_assets': round(float(self.assets.iloc[-1]), 2)
+                                                                      # 'init_assets': round(float(self.init_assets), 2),
+                                                                      # 'last_assets': round(float(self.assets.iloc[-1]), 2)
         }
 
     @property
@@ -465,11 +477,15 @@ class QA_Risk():
         beta比率 组合的系统性风险
         """
         try:
+            # res = round(float(self.calc_beta(self.profit_pct.dropna(),
+            #             self.benchmark_profitpct.dropna())),
+            #     2)
+
             res = round(
                 float(
                     self.calc_beta(
-                        self.profit_pct.dropna(),
-                        self.benchmark_profitpct.dropna()
+                        self.assets.pct_change().dropna().values,
+                        self.benchmark_assets.pct_change().dropna().values
                     )
                 ),
                 2
@@ -518,7 +534,14 @@ class QA_Risk():
         索提诺比率 投资组合收益和下行风险比值
 
         """
-        pass
+        return round(
+            float(
+                self.calc_sortino(self.annualize_return,
+                                  self.volatility,
+                                  0.05)
+            ),
+            2
+        )
 
     @property
     def calmar(self):
@@ -539,7 +562,8 @@ class QA_Risk():
         )
 
     def calc_profitpctchange(self, assets):
-        return assets[::-1].pct_change()[::-1]
+        # return assets[::-1].pct_change()[::-1]
+        return assets.pct_change().fillna(1)
 
     def calc_beta(self, assest_profit, benchmark_profit):
 
@@ -548,15 +572,15 @@ class QA_Risk():
         return beta
 
     def calc_alpha(
-            self,
-            annualized_returns,
-            benchmark_annualized_returns,
-            beta,
-            r=0.05
+        self,
+        annualized_returns,
+        benchmark_annualized_returns,
+        beta,
+        r=0.05
     ):
 
-        alpha = (annualized_returns - r) - (beta) *\
-            (benchmark_annualized_returns - r)
+        alpha = (annualized_returns) - (beta) * \
+            (benchmark_annualized_returns)
         return alpha
 
     def calc_IR(self):
@@ -586,6 +610,40 @@ class QA_Risk():
         if volatility_year == 0:
             return 0
         return (annualized_returns - r) / volatility_year
+
+    def calc_sortino(self, annualized_returns, volatility_year, rfr=0.00):
+        """
+        计算索提诺比率
+        在网上找到代码，感觉计算的结果不太对，数值偏小 -阿财 2020/03/28
+        """
+        # 会出现0
+        if volatility_year == 0:
+            return 0
+
+        # Define risk free rate and target return of 0
+        target = 0
+
+        # Calcualte the daily returns from price data
+        df = pd.DataFrame(
+            columns=['Returns',
+                     'downside_returns'],
+            index=self.assets.index
+        )
+        df['Returns'] = (self.assets.values / self.assets.shift(1).values) - 1
+        df['downside_returns'] = 0
+
+        # Select the negative returns only
+        df.loc[df['Returns'] < target, 'downside_returns'] = df['Returns']**2
+        expected_return = df['Returns'].mean()
+
+        # Calculate expected return and std dev of downside returns
+        down_stdev = np.sqrt(df['downside_returns'].mean())
+
+        # Calculate the sortino ratio
+        sortino_ratio = (expected_return - rfr) / down_stdev
+
+        # 这里不知道计算年化率如何
+        return sortino_ratio
 
     @property
     def max_holdmarketvalue(self):
@@ -772,7 +830,8 @@ class QA_Risk():
         end = self.account.end_date if end is None else end
         _, ax = plt.subplots(figsize=(20, 8))
         sns.heatmap(
-            self.account.daily_hold.reset_index().set_index('date').loc[start:end],
+            self.account.daily_hold.reset_index().set_index('date'
+                                                           ).loc[start:end],
             cmap="YlGnBu",
             linewidths=0.05,
             ax=ax
@@ -1032,8 +1091,12 @@ class QA_Performance():
         X = dict(
             zip(
                 self.target.code,
-                [{'buy': LifoQueue(), 'sell': LifoQueue()}
-                 for i in range(len(self.target.code))]
+                [
+                    {
+                        'buy': LifoQueue(),
+                        'sell': LifoQueue()
+                    } for i in range(len(self.target.code))
+                ]
             )
         )
         pair_table = []
@@ -1043,25 +1106,32 @@ class QA_Performance():
                 pass
             else:
                 while True:
-                    if data.direction in[1, 2, -2]:
+                    if data.direction in [1, 2, -2]:
                         if data.direction in [1, 2]:
-                            X[data.code]['buy'].append(
-                                (data.datetime,
-                                data.amount,
-                                data.price,
-                                data.direction)
+                            X[data.code]['buy'].put(
+                                (
+                                    data.datetime,
+                                    data.amount,
+                                    data.price,
+                                    data.direction
+                                )
                             )
                         elif data.direction in [-2]:
-                            X[data.code]['sell'].append(
-                                (data.datetime,
-                                data.amount,
-                                data.price,
-                                data.direction)
+                            X[data.code]['sell'].put(
+                                (
+                                    data.datetime,
+                                    data.amount,
+                                    data.price,
+                                    data.direction
+                                )
                             )
                         break
-                    elif data.direction in[-1, 3, -3]:
+                    elif data.direction in [-1, 3, -3]:
 
-                        rawoffset = 'buy' if data.direction in [-1, -3] else 'sell'
+                        rawoffset = 'buy' if data.direction in [
+                            -1,
+                            -3
+                        ] else 'sell'
 
                         l = X[data.code][rawoffset].get()
                         if abs(l[1]) > abs(data.amount):
@@ -1166,8 +1236,12 @@ class QA_Performance():
         pnl = pnl.assign(
             unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
-            sell_date=pd.to_datetime(pnl.sell_date),
-            buy_date=pd.to_datetime(pnl.buy_date)
+            sell_date=pd.to_datetime(
+                pnl.sell_date
+            , utc=False),
+            buy_date=pd.to_datetime(
+                pnl.buy_date
+            , utc=False)
         )
         pnl = pnl.assign(
             pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
@@ -1205,8 +1279,12 @@ class QA_Performance():
         X = dict(
             zip(
                 self.target.code,
-                [{'buy': deque(), 'sell': deque()}
-                 for i in range(len(self.target.code))]
+                [
+                    {
+                        'buy': deque(),
+                        'sell': deque()
+                    } for i in range(len(self.target.code))
+                ]
             )
         )
         pair_table = []
@@ -1215,25 +1293,32 @@ class QA_Performance():
                 pass
             else:
                 while True:
-                    if data.direction in[1, 2, -2]:
+                    if data.direction in [1, 2, -2]:
                         if data.direction in [1, 2]:
                             X[data.code]['buy'].append(
-                                (data.datetime,
-                                data.amount,
-                                data.price,
-                                data.direction)
+                                (
+                                    data.datetime,
+                                    data.amount,
+                                    data.price,
+                                    data.direction
+                                )
                             )
                         elif data.direction in [-2]:
                             X[data.code]['sell'].append(
-                                (data.datetime,
-                                data.amount,
-                                data.price,
-                                data.direction)
+                                (
+                                    data.datetime,
+                                    data.amount,
+                                    data.price,
+                                    data.direction
+                                )
                             )
                         break
-                    elif data.direction in[-1, 3, -3]:
+                    elif data.direction in [-1, 3, -3]:
 
-                        rawoffset = 'buy' if data.direction in [-1, -3] else 'sell'
+                        rawoffset = 'buy' if data.direction in [
+                            -1,
+                            -3
+                        ] else 'sell'
 
                         l = X[data.code][rawoffset].popleft()
                         if abs(l[1]) > abs(data.amount):
@@ -1338,8 +1423,12 @@ class QA_Performance():
         pnl = pnl.assign(
             unit=pnl.code.apply(lambda x: self.market_preset.get_unit(x)),
             pnl_ratio=(pnl.sell_price / pnl.buy_price) - 1,
-            sell_date=pd.to_datetime(pnl.sell_date),
-            buy_date=pd.to_datetime(pnl.buy_date)
+            sell_date=pd.to_datetime(
+                pnl.sell_date
+            , utc=False),
+            buy_date=pd.to_datetime(
+                pnl.buy_date
+            , utc=False)
         )
         pnl = pnl.assign(
             pnl_money=(pnl.sell_price - pnl.buy_price) * pnl.amount * pnl.unit,
@@ -1527,6 +1616,14 @@ class QA_Performance():
             return 0
 
     def continue_profit_amount(self, pnl):
+        """最大连续利润单数
+
+        Arguments:
+            pnl {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
         w = []
         w1 = 0
         for _, item in pnl.pnl_money.iteritems():
@@ -1541,14 +1638,22 @@ class QA_Performance():
             return max(w)
 
     def continue_loss_amount(self, pnl):
+        """最大连续亏损单数
+
+        Arguments:
+            pnl {[type]} -- [description]
+
+        Returns:
+            [type] -- [description]
+        """
         l = []
         l1 = 0
         for _, item in pnl.pnl_money.iteritems():
             if item > 0:
-                l1 += 1
-            elif item < 0:
                 l.append(l1)
                 l1 = 0
+            elif item < 0:
+                l1 += 1
         if len(l) == 0:
             return 0
         else:

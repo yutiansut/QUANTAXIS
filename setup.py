@@ -37,8 +37,8 @@ except:
 """
 """
 
-if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
-    print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
+if sys.version_info.major != 3 or sys.version_info.minor not in [5, 6, 7, 8, 9]:
+    print('wrong version, should be 3.5/3.6/3.7/3.8 version')
     sys.exit()
 
 with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:
@@ -99,6 +99,8 @@ URL = "https://github.com/quantaxis/quantaxis"
 
 LICENSE = "MIT"
 
+with open('requirements.txt') as reqs_file:
+    INSTALL_REQUIRES = reqs_file.readlines()
 
 setup(
     name=NAME,
@@ -111,10 +113,7 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
-    install_requires=['pandas<=0.24.2', 'pypandoc', 'numpy>=1.12.0', 'tushare', 'flask_socketio>=2.9.0 ', 'motor>=1.1', 'seaborn>=0.8.1', 'pyconvert>=0.6.3',
-                      'lxml>=4.0', ' beautifulsoup4', 'matplotlib', 'requests', 'tornado', 'janus', 'pyecharts_snapshot', 'async_timeout', 'websocket-client',
-                      'demjson>=2.2.4', 'pymongo>=3.7', 'six>=1.10.0', 'tabulate>=0.7.7', 'pytdx>=1.67', 'retrying>=1.3.3', 'Ipython', 'scipy<=1.1.0', 'PeakUtils',
-                      'zenlog>=1.1', 'delegator.py>=0.0.12', 'flask>=0.12.2', 'pyecharts>=0.5.11', 'protobuf>=3.4.0', 'fastcache', 'statsmodels<=0.9.0', 'jqdatasdk'],
+    install_requires= INSTALL_REQUIRES, 
     entry_points={
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
@@ -122,7 +121,6 @@ setup(
             'qarun=QUANTAXIS.QACmd.runner:run'
         ]
     },
-    # install_requires=requirements,
     keywords=KEYWORDS,
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,

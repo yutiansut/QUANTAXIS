@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -42,6 +42,7 @@ from QUANTAXIS.QAUtil.QADate import (QA_util_calc_time, QA_util_date_int2str,
                                      QA_util_date_stamp, QA_util_date_str2int,
                                      QA_util_date_today, QA_util_date_valid,
                                      QA_util_datetime_to_strdate,
+                                     QA_util_stamp2datetime,
                                      QA_util_get_date_index,
                                      QA_util_tdxtimestamp,
                                      QA_util_get_index_date, QA_util_id2date,

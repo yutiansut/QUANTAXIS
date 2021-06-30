@@ -1,0 +1,10 @@
+#!/usr/bin/expect
+set timeout -1
+spawn /root/kite.sh
+expect "Press enter to continue..."
+send "\n"
+expect "Do you want to continue?"
+send "y\n"
+expect "Press enter to continue..."
+send "\n"
+expect eof	

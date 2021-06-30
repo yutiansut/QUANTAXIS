@@ -4,7 +4,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -40,11 +40,14 @@ except:
 例如
 Moving Average ADX
 Hull Moving Average
-Volume HMA(未完成)
+Volume HMA(完成)
 """
 
 # 定义MACD函数
-def TA_MACD(prices, fastperiod=12, slowperiod=26, signalperiod=9):
+def TA_MACD(prices:np.ndarray, 
+            fastperiod:int=12, 
+            slowperiod:int=26, 
+            signalperiod:int=9) -> np.ndarray:
     '''
     参数设置:
         fastperiod = 12
@@ -63,7 +66,8 @@ def TA_MACD(prices, fastperiod=12, slowperiod=26, signalperiod=9):
 
 
 # 定义RSI函数
-def TA_RSI(prices, timeperiod=12):
+def TA_RSI(prices:np.ndarray, 
+           timeperiod:int=12) -> np.ndarray:
     '''
     参数设置:
         timeperiod = 12
@@ -76,7 +80,11 @@ def TA_RSI(prices, timeperiod=12):
 
 
 # 定义RSI函数
-def TA_BBANDS(prices, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
+def TA_BBANDS(prices:np.ndarray, 
+              timeperiod:int=5, 
+              nbdevup:int=2, 
+              nbdevdn:int=2, 
+              matype:int=0) -> np.ndarray:
     '''
     参数设置:
         timeperiod = 5
@@ -85,13 +93,23 @@ def TA_BBANDS(prices, timeperiod=5, nbdevup=2, nbdevdn=2, matype=0):
 
     返回: up, middle, low
     '''
-    up, middle, low = talib.BBANDS(prices, timeperiod, nbdevup, nbdevdn, matype)
-    ch = (up - low) / low
+    up, middle, low = talib.BBANDS(prices, 
+                                   timeperiod, 
+                                   nbdevup, 
+                                   nbdevdn, 
+                                   matype)
+    ch = (up - low) / middle
     delta = np.r_[np.nan, np.diff(ch)]
     return np.c_[up, middle, low, ch, delta]
 
 
-def TA_KDJ(hight, low, close, fastk_period=9, slowk_matype=0, slowk_period=3, slowd_period=3):
+def TA_KDJ(high:np.ndarray, 
+           low:np.ndarray, 
+           close:np.ndarray, 
+           fastk_period:int=9, 
+           slowk_matype:int=0, 
+           slowk_period:int=3, 
+           slowd_period:int=3) -> np.ndarray:
     '''
     参数设置:
         fastk_period = 9
@@ -101,13 +119,19 @@ def TA_KDJ(hight, low, close, fastk_period=9, slowk_matype=0, slowk_period=3, sl
 
     返回: K, D, J
     '''
-    K, D = talib.STOCH(hight, low, close, fastk_period=fastk_period, slowk_matype=slowk_matype, slowk_period=slowk_period, slowd_period=slowd_period)
+    K, D = talib.STOCH(high, 
+                       low, 
+                       close, 
+                       fastk_period=fastk_period, 
+                       slowk_matype=slowk_matype, 
+                       slowk_period=slowk_period, 
+                       slowd_period=slowd_period)
     J = 3 * K - 2 * D
     delta = np.r_[np.nan, np.diff(J)]
     return np.c_[K, D, J, delta]
 
 
-def TA_ADX(high, low, close, timeperiod=14):
+def TA_ADX(high, low, close, timeperiod=14) -> np.ndarray:
     """
     ADX - Average Directional Movement Index
     """
@@ -115,7 +139,7 @@ def TA_ADX(high, low, close, timeperiod=14):
     return np.c_[real]
 
 
-def TA_ADXR(high, low, close, timeperiod=14):
+def TA_ADXR(high, low, close, timeperiod=14) -> np.ndarray:
     """
     名称：平均趋向指数的趋向指数
     简介：使用ADXR指标，指标判断ADX趋势。
@@ -125,13 +149,19 @@ def TA_ADXR(high, low, close, timeperiod=14):
     return np.c_[real]
 
 
-def TA_CCI(high, low, close, timeperiod=14):
+def TA_CCI(high:np.ndarray, 
+           low:np.ndarray, 
+           close:np.ndarray, 
+           timeperiod:int=14) -> np.ndarray:
     """
     名称：平均趋向指数的趋向指数
     简介：使用CCI指标，指标判断CCI趋势。
     CCI - Commodity Channel Index
     """
-    real = talib.CCI(high, low, close, timeperiod=timeperiod)
+    real = talib.CCI(high, 
+                     low, 
+                     close, 
+                     timeperiod=timeperiod)
     delta = np.r_[np.nan, np.diff(real)]
     return np.c_[real, delta]
 
@@ -156,7 +186,7 @@ def TA_HMA(close, period):
     return hma
 
 
-def ADX_MA(data, period=10, smooth=10, limit=18):
+def ADX_MA(data, period=14, smooth=14, limit=18):
     """
     Moving Average ADX
     ADX Smoothing Trend Color Change on Moving Average and ADX Cross. Use on Hourly Charts - Green UpTrend - Red DownTrend - Black Choppy No Trend
@@ -170,10 +200,10 @@ def ADX_MA(data, period=10, smooth=10, limit=18):
         传入 OHLC Kline 序列。
         The OHLC Kline.
     period : int or None, optional
-        DI 统计周期 默认值为 10
+        DI 统计周期 默认值为 14
         DI Length period. Default value is 10. 
     smooth : int or None, optional
-        ADX 平滑周期 默认值为 10
+        ADX 平滑周期 默认值为 14
         ADX smoothing length period. Default value is 10.
     limit : int or None, optional
         ADX 限制阈值 默认值为 18

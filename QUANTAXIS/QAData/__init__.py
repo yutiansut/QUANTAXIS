@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2019 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +29,7 @@ from QUANTAXIS.QAData.data_marketvalue import (
 )
 from QUANTAXIS.QAData.data_resample import (
     QA_data_min_resample,
+    QA_data_min_to_day,
     QA_data_ctptick_resample,
     QA_data_day_resample,
     QA_data_futuremin_resample_series,

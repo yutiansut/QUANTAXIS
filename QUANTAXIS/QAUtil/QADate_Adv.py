@@ -33,21 +33,30 @@ import numpy as np
 from QUANTAXIS.QAUtil.QALogs import QA_util_log_info
 
 
-def QA_util_datetime_to_Unix_timestamp(ts_epoch = datetime.now(timezone(timedelta(hours=8)))):  
+def QA_util_datetime_to_Unix_timestamp(ts_epoch = None):  
     """
     返回当前UTC时间戳，默认时区为北京时间
     :return: 类型 int
     """
+    if (ts_epoch is None):
+        ts_epoch = datetime.now(timezone(timedelta(hours=8)))
+
     return (ts_epoch - datetime(1970,1,1, tzinfo=timezone.utc)).total_seconds()
 
 
-def QA_util_timestamp_to_str(ts_epoch = datetime.now(timezone(timedelta(hours=8))), local_tz = timezone(timedelta(hours=8)) ):
+def QA_util_timestamp_to_str(ts_epoch = None, local_tz = timezone(timedelta(hours=8))):
     """
     返回字符串格式时间
     :return: 类型string
     """
+    if (ts_epoch is None):
+        ts_epoch = datetime.now(timezone(timedelta(hours=8)))
+
     if isinstance(ts_epoch, datetime):
-        return ts_epoch.astimezone(local_tz).strftime('%Y-%m-%d %H:%M:%S')
+        try:
+            return ts_epoch.astimezone(local_tz).strftime('%Y-%m-%d %H:%M:%S')
+        except:
+            return ts_epoch.tz_localize(local_tz).strftime('%Y-%m-%d %H:%M:%S')
     elif isinstance(ts_epoch, int) or isinstance(ts_epoch, np.int32) or isinstance(ts_epoch, np.int64) or isinstance(ts_epoch, float):
         return (datetime(1970,1,1, tzinfo=timezone.utc) + timedelta(seconds = int(ts_epoch))).astimezone(local_tz).strftime('%Y-%m-%d %H:%M:%S')
     else:
