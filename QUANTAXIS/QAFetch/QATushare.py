@@ -165,7 +165,11 @@ def QA_fetch_get_stock_day(name, start='', end='', if_fq='qfq', type_='pd'):
         data_json = QA_util_to_json_from_pandas(data)
         return data_json
     elif type_ in ['pd', 'pandas', 'p']:
-        data['date'] = pd.to_datetime(data['trade_date'], utc=False, format='%Y%m%d')
+        data['date'] = pd.to_datetime(
+            data['trade_date'],
+            utc=False,
+            format='%Y%m%d'
+        )
         data = data.set_index('date', drop=False)
         data['date'] = data['date'].apply(lambda x: str(x)[0:10])
         return data
@@ -241,9 +245,10 @@ def QA_fetch_get_stock_block():
     except:
         return None
 
+
 def QA_fetch_get_zz500() -> pd.DataFrame:
-    ###由于中证的网站禁止了pandas和urlopen的默认头（估计）导致403，tushare中的方法报错。
-    ###新增本函数取代tushare的中证500的block获取。--ST-锴-なのだ 20210630
+    # 由于中证的网站禁止了pandas和urlopen的默认头（估计）导致403，tushare中的方法报错。
+    # 新增本函数取代tushare的中证500的block获取。--ST-锴-なのだ 20210630
     import random
     import tempfile
     import shutil
@@ -251,7 +256,8 @@ def QA_fetch_get_zz500() -> pd.DataFrame:
     import urllib.request as req
 
     def download_file() -> str:
-        url = 'http://www.csindex.com.cn/uploads/file/autofile/closeweight/000905closeweight.xls'
+        url = 'http://www.csindex.com.cn/uploads/file/' \
+              'autofile/closeweight/000905closeweight.xls'
         tmpdir_root = tempfile.gettempdir()
         subdir_name = 'csindex_' + str(random.randint(0, 1000000))
         tmpdir = os.path.join(tmpdir_root, subdir_name)
@@ -260,13 +266,22 @@ def QA_fetch_get_zz500() -> pd.DataFrame:
 
         try:
             file = tmpdir + '/' + '000905closeweight.xls'
-            header_ele1 = ('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0')
+            header_ele1 = (
+                'User-Agent',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0)'\
+                ' Gecko/20100101 Firefox/89.0'
+            )
             header_ele2 = ('Pragma', 'no-cache')
             header_ele3 = ('Upgrade-Insecure-Requests', 1)
             header_ele4 = ('Cache-Control', 'no-cache')
 
             opener = req.build_opener()
-            opener.addheaders = [header_ele1, header_ele2, header_ele3, header_ele4]
+            opener.addheaders = [
+                header_ele1,
+                header_ele2,
+                header_ele3,
+                header_ele4
+            ]
 
             f = opener.open(url)
             data = f.read()
@@ -274,15 +289,15 @@ def QA_fetch_get_zz500() -> pd.DataFrame:
                 code.write(data)
             f.close()
         except Exception as e:
-            print('QA_fetch_get_zz500:',e)
+            print('QA_fetch_get_zz500:', e)
 
         return tmpdir
 
-    def read_df(folder:str) -> pd.DataFrame:
+    def read_df(folder: str) -> pd.DataFrame:
         file = folder + '/000905closeweight.xls'
 
         df = pd.read_excel(file, usecols=[0, 4, 5, 8])
-        df.columns = ['date','code', 'name', 'weight']
+        df.columns = ['date', 'code', 'name', 'weight']
         df['code'] = df['code'].map(lambda x: str(x).zfill(6))
 
         df['blockname'] = '中证500'
@@ -295,6 +310,7 @@ def QA_fetch_get_zz500() -> pd.DataFrame:
     folder = download_file()
     df = read_df(folder)
     return df
+
 
 # test
 
