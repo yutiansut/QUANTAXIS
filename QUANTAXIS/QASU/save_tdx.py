@@ -1936,6 +1936,7 @@ def QA_SU_save_stock_block(client=DATABASE, ui_log=None, ui_progress=None):
         # )
 
         # tushare 的板块数据有中证500成分，增加获取中证500成分 ——阿财
+        # tushare 中的中证500文件访问已被中证禁止，现通过QA本地代码获取 --ST-锴-なのだ 20210630
         coll.insert_many(
             QA_util_to_json_from_pandas(QA_fetch_get_stock_block('tushare'))
         )
