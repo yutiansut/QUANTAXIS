@@ -268,7 +268,7 @@ def QA_fetch_get_zz500() -> pd.DataFrame:
             file = tmpdir + '/' + '000905closeweight.xls'
             header_ele1 = (
                 'User-Agent',
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0)'\
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0)'
                 ' Gecko/20100101 Firefox/89.0'
             )
             header_ele2 = ('Pragma', 'no-cache')
