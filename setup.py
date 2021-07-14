@@ -65,9 +65,10 @@ NAME = "quantaxis"
 """
 
 """
-PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", 'QUANTAXIS.QASetting',"QUANTAXIS.QAFactor",
-             "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", "QUANTAXIS.QAAnalysis", "QUANTAXIS.QAPubSub",
-            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator"]
+PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", 'QUANTAXIS.QASetting', "QUANTAXIS.QAFactor",
+            "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", "QUANTAXIS.QAAnalysis", "QUANTAXIS.QAPubSub",
+            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator",
+            "QUANTAXIS.QAMarket", "QUANTAXIS.QIFI"]
 """
 
 """
@@ -113,7 +114,7 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
-    install_requires= INSTALL_REQUIRES, 
+    install_requires=INSTALL_REQUIRES,
     entry_points={
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
