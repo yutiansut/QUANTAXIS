@@ -188,8 +188,8 @@ financial_dict = {
     '160速动比率': 'acidTestRatio',  # (流动资产-存货）/流动负债
     '161现金比率(%)': 'cashRatio',  # (货币资金+有价证券)÷流动负债
     '162利息保障倍数': 'interestCoverageRatio',  # (利润总额+财务费用（仅指利息费用部份）)/利息费用
-    '163非流动负债比率(%)': 'noncurrentLiabilitiesRatio',
-    '164流动负债比率(%)': 'currentLiabilitiesRatio',
+    '163非流动负债比率(%)': 'noncurrentLiabilitiesRatio', #非流动负债 /负债总额
+    '164流动负债比率(%)': 'currentLiabilitiesRatio', #流动负债 /负债总额
     '165现金到期债务比率(%)': 'cashDebtRatio',  # 企业经营现金净流入/(本期到期长期负债+本期应付票据)
     '166有形资产净值债务率(%)': 'debtToTangibleAssetsRatio',
     '167权益乘数(%)': 'equityMultiplier',  # 资产总额/股东权益总额
@@ -622,5 +622,10 @@ financial_dict = {
     '577其中:子公司吸收少数股东投资收到的现金': 'cash received from minority shareholders investment in subsidiaries',
     '578其中:子公司支付给少数股东的股利利润': 'Dividends and profits paid by subsidiaries to minority shareholders',
     '579投资性房地产的折旧及摊销': 'Depreciation and amortization of investment properties',
-    '580信用减值损失': 'Credit impairment loss'
+    '580信用减值损失': 'Credit impairment loss',
+    '581备用581': 'unknown581',
+    '582备用582': 'unknown582',
+    '583备用583': 'unknown583',
+    '584备用584': 'unknown584',
+    '585备用585': 'unknown585',
 }
