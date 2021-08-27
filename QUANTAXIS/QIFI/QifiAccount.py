@@ -472,7 +472,7 @@ class QIFI_Account():
                 times) == 19 else datetime.datetime.strptime(times.replace('_', '.'), '%Y-%m-%d %H:%M:%S.%f')
             return bson.int64.Int64(tradedt.timestamp()*1000000000)
         elif isinstance(times, datetime.datetime):
-            return bson.int64.Int64(tradedt.timestamp()*1000000000)
+            return bson.int64.Int64(times.timestamp()*1000000000)
 
 
 # 惰性计算
@@ -537,11 +537,21 @@ class QIFI_Account():
                 res = True
             else:
                 self.log("BUYCLOSETODAY 今日仓位不足")
-        elif towards in [ORDER_DIRECTION.SELL_CLOSE, ORDER_DIRECTION.SELL]:
+        elif towards in [ORDER_DIRECTION.SELL_CLOSE]:
             # self.log("sellclose")
             # self.log(self.volume_long - self.volume_long_frozen)
             # self.log(amount)
             if (qapos.volume_long - qapos.volume_long_frozen) >= amount:
+                qapos.volume_long_frozen_today += amount
+                #qapos.volume_long_today -= amount
+                res = True
+            else:
+                self.log("SELL CLOSE 仓位不足")
+        elif towards in [ORDER_DIRECTION.SELL]:
+            # self.log("sellclose")
+            # self.log(self.volume_long - self.volume_long_frozen)
+            # self.log(amount)
+            if (qapos.volume_long_his - qapos.volume_long_frozen) >= amount:
                 qapos.volume_long_frozen_today += amount
                 #qapos.volume_long_today -= amount
                 res = True
