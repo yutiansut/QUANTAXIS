@@ -1237,7 +1237,7 @@ class QA_AccountPRO(QA_Worker):
                         (
                             self.frozen[code][str(trade_towards)]['avg_price'] *
                             self.frozen[code][str(trade_towards)]['amount']
-                        ) + abs(trade_money)
+                        ) + abs(raw_trade_money)
                     ) / (
                         self.frozen[code][str(trade_towards)]['amount'] +
                         trade_amount
@@ -1348,7 +1348,7 @@ class QA_AccountPRO(QA_Worker):
             ] else 0
 
             try:
-                total_frozen = sum([itex.get('avg_price', 0) * itex.get('amount', 0)
+                total_frozen = sum([itex.get('money', 0) * itex.get('amount', 0)
                                     for item in self.frozen.values() for itex in item.values()])
             except Exception as e:
                 print(e)
