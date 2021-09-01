@@ -776,8 +776,7 @@ def QA_fetch_get_index_list(ip=None, port=None):
         sz = sz.assign(sec=sz.code.apply(for_sz))
         sh = sh.assign(sec=sh.code.apply(for_sh))
         return pd.concat([sz, sh], sort=False).query(
-            'sec=="index_cn"').sort_index().assign(
-            name=data['name'].apply(lambda x: str(x)[0:6]))
+            'sec=="index_cn"').sort_index()#.assign(name=data['name'].apply(lambda x: str(x)[0:6]))
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
@@ -803,8 +802,7 @@ def QA_fetch_get_bond_list(ip=None, port=None):
         sh = data.query('sse=="sh"')
         sz = sz.assign(sec=sz.code.apply(for_sz))
         sh = sh.assign(sec=sh.code.apply(for_sh))
-        return pd.concat([sz, sh], sort=False).query('sec=="bond_cn"').sort_index().assign(
-            name=data['name'].apply(lambda x: str(x)[0:6]))
+        return pd.concat([sz, sh], sort=False).query('sec=="bond_cn"').sort_index()#.assign(name=data['name'].apply(lambda x: str(x)[0:6]))
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None,
