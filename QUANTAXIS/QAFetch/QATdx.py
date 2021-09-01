@@ -649,6 +649,10 @@ def for_sz(code):
         code {[type]} -- [description]
     Returns:
         [type] -- [description]
+    A股       以000打头
+    B股       以200打头
+    中小板  以002打头
+    创业板  以300打头
     """
 
     if str(code)[0:2] in ['00', '30', '02']:
@@ -677,9 +681,14 @@ def for_sz(code):
 
 
 def for_sh(code):
+    '''https://blog.csdn.net/breakbridge/article/details/108261453?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_title~default-0.control&spm=1001.2101.3001.4242
+    A股       以600、601、603打头
+    B股       以900打头
+    科创板  以688、787、789打头
+    '''
     if str(code)[0] == '6':
         return 'stock_cn'
-    elif str(code)[0:3] in ['000', '880']:
+    elif str(code)[0:3] in ['000', '880','999']:
         return 'index_cn'
     elif str(code)[0:2] in ['51', '58']:
         return 'etf_cn'
@@ -722,25 +731,20 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
             # res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
             # return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
             return pd.concat([sz, sh], sort=False).query(
-                'sec=="stock_cn"').sort_index().assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
+                'sec=="stock_cn"').sort_index() # .assign(name=data['name'].apply(lambda x: str(x)[0:6]))
 
         elif type_ in ['index', 'zs']:
-
             return pd.concat([sz, sh], sort=False).query(
-                'sec=="index_cn"').sort_index().assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
+                'sec=="index_cn"').sort_index()#.assign(name=data['name'].apply(lambda x: str(x)[0:6]))
+
             # .assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
             # .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
         elif type_ in ['etf', 'ETF']:
             return pd.concat([sz, sh], sort=False).query(
-                'sec=="etf_cn"').sort_index().assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
-
+                'sec=="etf_cn"').sort_index()#.assign(name=data['name'].apply(lambda x: str(x)[0:6]))
         else:
             return data.assign(
-                code=data['code'].apply(lambda x: str(x))).assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
+                code=data['code'].apply(lambda x: str(x)))#.assign(name=data['name'].apply(lambda x: str(x)[0:6]))
             # .assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
             #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
 
