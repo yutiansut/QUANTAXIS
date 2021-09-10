@@ -8,7 +8,6 @@ import matplotlib.ticker as ticker
 import numpy as np
 import pandas as pd
 
-from QUANTAXIS.QAAnalysis.QAAnalysis_dataframe import QAAnalysis_stock
 from QUANTAXIS.QAData.data_marketvalue import QA_data_marketvalue
 from QUANTAXIS.QAFetch.Fetcher import QA_quotation
 from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_info

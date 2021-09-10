@@ -40,11 +40,9 @@ import sys
 
 # CMD and Cli
 import QUANTAXIS.QACmd
-from QUANTAXIS.QAAnalysis import *
+
 
 # Backtest
-from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
-from QUANTAXIS.QAApplication.QAResult import backtest_result_analyzer
 from QUANTAXIS.QAARP.QAAccount import QA_Account
 from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio, QA_PortfolioView
 from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
@@ -92,7 +90,6 @@ from QUANTAXIS.QAData import (
 from QUANTAXIS.QAData.dsmethods import *
 # ENGINE
 from QUANTAXIS.QAEngine import (
-    QA_AsyncExec,
     QA_AsyncQueue,
     QA_AsyncScheduler,
     QA_AsyncTask,

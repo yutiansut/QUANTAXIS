@@ -34,8 +34,7 @@ import sys
 import requests
 
 from QUANTAXIS import __version__
-from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
-from QUANTAXIS.QACmd.runner import run, run_backtest
+
 # Tushare 基本面数据
 from QUANTAXIS.QAFactor.localize import (QA_ts_update_daily_basic,
                                          QA_ts_update_inc,
