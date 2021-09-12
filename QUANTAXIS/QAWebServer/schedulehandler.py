@@ -23,7 +23,7 @@ def init_scheduler():
     global scheduler
     scheduler = TornadoScheduler(jobstores=jobstores)
     scheduler.start()
-    print('[QAScheduler Init]APScheduler has been started')
+    print('[QAScheduler Init]Scheduler has been started')
 
 # 要执行的定时任务在这里
 
