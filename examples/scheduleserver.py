@@ -11,18 +11,19 @@ scheduler = init_scheduler()
 class ScheduleForRunning(QASchedulerHandler):
 
     """
-    http://0.0.0.0:2225/scheduler?job_id=1&action=add
-
+    添加:  get http://0.0.0.0:2225/scheduler/map?action=add&job_id=11&interval=2
+    查询所有任务: gethttp://0.0.0.0:2225/scheduler?query
     """
 
     def get(self):
         jobid = self.get_argument('jobid', 1)
-
+        action = self.get_argument('action', 'add')
         running_interval = self.get_argument('interval', 3)
-
-        scheduler.add_job(task, 'interval',
-                            seconds=running_interval, id=jobid, args=(jobid,))
-
+        if action == 'add':
+            scheduler.add_job(task, 'interval',
+                                seconds=running_interval, id=jobid, args=(jobid,))
+        elif action == 'remove':
+            scheduler.remove_job(jobid)
 
 
 start_server([(r"/scheduler/map/?", ScheduleForRunning),
