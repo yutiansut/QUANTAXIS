@@ -1,12 +1,13 @@
-from datetime import datetime
-from tornado.ioloop import IOLoop, PeriodicCallback
-from tornado.web import RequestHandler, Application
-from apscheduler.schedulers.tornado import TornadoScheduler
 import threading
-from QUANTAXIS.QAWebServer.basehandles import QABaseHandler
-from qaenv import mongo_ip, mongo_port
-from apscheduler.jobstores.mongodb import MongoDBJobStore
+import datetime
 import pymongo
+from apscheduler.jobstores.mongodb import MongoDBJobStore
+from apscheduler.schedulers.tornado import TornadoScheduler
+from qaenv import mongo_ip, mongo_port
+from QUANTAXIS.QAWebServer.basehandles import QABaseHandler
+from tornado.ioloop import IOLoop, PeriodicCallback
+from tornado.web import Application, RequestHandler
+
 """
 增加 mongodb 的数据读取
 
@@ -33,7 +34,7 @@ def init_scheduler(database='qascheduler', collection='jobs'):
 
 
 def task1(options):
-    print('{} [QASchedule][Task]-{}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'), options))
+    print('{} [QASchedule][Task]-{}'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'), options))
     # print(threading.enumerate())
 
 
