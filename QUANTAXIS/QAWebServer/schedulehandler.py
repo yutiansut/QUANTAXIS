@@ -24,6 +24,8 @@ def init_scheduler():
     scheduler = TornadoScheduler(jobstores=jobstores)
     scheduler.start()
     print('[QAScheduler Init]Scheduler has been started')
+    return scheduler
+    
 
 # 要执行的定时任务在这里
 

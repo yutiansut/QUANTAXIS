@@ -1,10 +1,12 @@
-from QUANTAXIS.QAWebServer.schedulehandler import QASchedulerHandler
+from QUANTAXIS.QAWebServer.schedulehandler import *
 from QUANTAXIS.QAWebServer.server import start_server
 
 
-def task():
-    print('fin')
+def task(job_id):
+    print('fin', job_id)
 
+    
+scheduler = init_scheduler()
 
 class ScheduleForRunning(QASchedulerHandler):
 
@@ -14,9 +16,14 @@ class ScheduleForRunning(QASchedulerHandler):
     """
 
     def get(self):
-        jobid = self.get_argument('jobid')
+        jobid = self.get_argument('jobid', 1)
+
+        running_interval = self.get_argument('interval', 3)
+
         scheduler.add_job(task, 'interval',
-                          seconds=3, id=jobid, args=(jobid,))
+                            seconds=running_interval, id=jobid, args=(jobid,))
 
 
-start_server([(r"/scheduler/map/?", QASchedulerHandler), ], port=2225)
+
+start_server([(r"/scheduler/map/?", ScheduleForRunning),
+              (r"/scheduler/query", QAScheduleQuery), ], port=2225)
