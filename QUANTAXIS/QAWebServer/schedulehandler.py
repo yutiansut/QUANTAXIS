@@ -35,7 +35,7 @@ def task1(options):
 
 class QASchedulerHandler(QABaseHandler):
     """
-    http://0.0.0.0:8010/scheduler?job_id=1&action=add
+    http://0.0.0.0:8010/scheduler/map?job_id=1&action=add
     """
 
     def get(self):
@@ -77,7 +77,7 @@ def format_joboutput(job):
 
 class QAScheduleQuery(QABaseHandler):
     def get(self):
-        action = self.get_argument('action', None)
+        action = self.get_argument('action', 'queryall')
         print(action)
         if action == 'queryall':
             jobs = scheduler.get_jobs()
