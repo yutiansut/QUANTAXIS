@@ -33,3 +33,4 @@ pika
 empyrical
 pyfolio
 tornado>=6.1
+qaenv
