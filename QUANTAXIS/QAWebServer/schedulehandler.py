@@ -13,19 +13,21 @@ import pymongo
 """
 scheduler = None
 job_ids = []
-jobstores = {
-    'default': MongoDBJobStore(database='qascheduler', collection='jobs', client=pymongo.MongoClient(host=mongo_ip, port=mongo_port))
-}
+
 # 初始化
 
 
-def init_scheduler():
+def init_scheduler(database='qascheduler', collection='jobs'):
+
+    jobstores = {
+        'default': MongoDBJobStore(database=database, collection=collection, client=pymongo.MongoClient(host=mongo_ip, port=mongo_port))
+    }
     global scheduler
     scheduler = TornadoScheduler(jobstores=jobstores)
     scheduler.start()
     print('[QAScheduler Init]Scheduler has been started')
     return scheduler
-    
+
 
 # 要执行的定时任务在这里
 
