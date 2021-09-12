@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.0.0.dev1'
+__version__ = '2.0.0.dev2'
 __author__ = 'yutiansut'
 
 import argparse
@@ -275,21 +275,23 @@ from QUANTAXIS.QAFactor.preprocess import (
     QA_winsorize_factor
 )
 from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
-from QUANTAXIS.QAPubSub import *
-# from QUANTAXIS.QASU.save_backtest import (
-#     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
 
-# event driver
 
-# Account,Risk,Portfolio,User,Strategy
+from QUANTAXIS.QAPubSub.consumer import subscriber,subscriber_topic,subscriber_routing
+from QUANTAXIS.QAPubSub.producer import publisher,publisher_topic,publisher_routing
+from QUANTAXIS.QAPubSub.base import base_ps
+from QUANTAXIS.QAPubSub.debugtoool import debug_sub, debug_pub
 
-# Setting
 
-# Util
+from QUANTAXIS.QAWebServer.basehandles import QABaseHandler, QAWebSocketHandler
+from QUANTAXIS.QAWebServer.schedulehandler import QAScheduleQuery, QASchedulerHandler
+from QUANTAXIS.QAWebServer.server import start_server
 
-#from QUANTAXIS.QAFetch.QATdx_adv import bat
+from QUANTAXIS.QIFI.QifiAccount import QIFI_Account
+from QUANTAXIS.QIFI.QifiManager import QA_QIFIMANAGER, QA_QIFISMANAGER
 
-if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
+
+if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8, 9]:
     print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
     sys.exit()
 
@@ -319,4 +321,4 @@ def __repr__():
 
 
 __str__ = __repr__
-# QA_util_log_info(Logo)
+

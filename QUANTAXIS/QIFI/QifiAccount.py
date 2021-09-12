@@ -6,32 +6,8 @@ from qaenv import mongo_ip
 import bson
 from QUANTAXIS.QAMarket.QAPosition import QA_Position
 from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
+from QUANTAXIS.QAMarket.QAOrder import ORDER_DIRECTION
 
-
-class ORDER_DIRECTION():
-    """订单的买卖方向
-
-    BUY 股票 买入
-    SELL 股票 卖出
-    BUY_OPEN 期货 多开
-    BUY_CLOSE 期货 空平(多头平旧仓)
-    SELL_OPEN 期货 空开
-    SELL_CLOSE 期货 多平(空头平旧仓)
-
-    ASK  申购
-    """
-
-    BUY = 1
-    SELL = -1
-    BUY_OPEN = 2
-    BUY_CLOSE = 3
-    SELL_OPEN = -2
-    SELL_CLOSE = -3
-    SELL_CLOSETODAY = -4
-    BUY_CLOSETODAY = 4
-    ASK = 0
-    XDXR = 5
-    OTHER = 6
 
 
 def parse_orderdirection(od):
@@ -205,6 +181,44 @@ class QIFI_Account():
     def create_fromQIFI(self, message):
         pass
 
+    def order_rule(self):
+        """
+        订单流控
+        """
+        pass
+
+    def batch_buy(self, codedf: pd.Series, datetime: str, totalamount: float = 1000000, model: enumerate = 'avg_money'):
+        """
+        批量调仓接口
+
+        codedf: pd.Series
+
+            Series.index -> code
+            Series.value -> price
+
+
+        totalamount: 总买入金额
+
+        model Enum
+            'avg_money': 等市值买入
+            'avg_amount': 等股数买入(买入总金额==totalamount)
+        """
+        if model == 'avg_money':
+            moneyper = totalamount / len(codedf)
+            amount = (moneyper/codedf).apply(lambda x: (int(100/x)*100)
+                                             if int(100/x) > 0 else 100)
+        elif model == 'avg_amount':
+            amountx = int(totalamount/(100*codedf.sum()))
+            if amountx == 0:
+                return False
+            else:
+                amount = codedf.apply(lambda x: amountx*100)
+        orderres = pd.concat([codedf, amount], axis=1)
+        orderres.columns = ['price', 'amount']
+        res = orderres.assign(datetime=datetime).apply(lambda x: self.send_order(
+            code=x.index, amount=x.amount, price=x.price, towards=1, datetime=x.datetime))
+        return res
+
     def sync(self):
         self.on_sync()
         try:
@@ -221,7 +235,8 @@ class QIFI_Account():
                     self.db.hisaccount.insert_one(
                         {'updatetime': self.dtstr, 'account_cookie': self.user_id, 'accounts': self.account_msg})
             else:
-                print('pretend to save to database {}/{}'.format(self.user_id, self.trading_day))
+                print(
+                    'pretend to save to database {}/{}'.format(self.user_id, self.trading_day))
                 print(self.message)
                 return self.message
         except:
@@ -272,11 +287,10 @@ class QIFI_Account():
 
     @property
     def dtstr(self):
-        if self.model=="BACKTEST":
+        if self.model == "BACKTEST":
             return self.datetime.replace('.', '_')
         else:
             return str(datetime.datetime.now()).replace('.', '_')
-
 
     def ask_deposit(self, money):
 
@@ -516,6 +530,8 @@ class QIFI_Account():
         res = False
         qapos = self.get_position(code)
 
+        #res = qapos.order_check(amount, price, towards, order_id)
+        print('account order_check')
         self.log(qapos.curpos)
         self.log(qapos.close_available)
         if towards == ORDER_DIRECTION.BUY_CLOSE:
@@ -547,17 +563,17 @@ class QIFI_Account():
                 res = True
             else:
                 self.log("SELL CLOSE 仓位不足")
-        elif towards in [ORDER_DIRECTION.SELL]:
-            # self.log("sellclose")
-            # self.log(self.volume_long - self.volume_long_frozen)
-            # self.log(amount)
-            if (qapos.volume_long_his - qapos.volume_long_frozen) >= amount:
-                qapos.volume_long_frozen_today += amount
-                #qapos.volume_long_today -= amount
-                res = True
-            else:
-                self.log("SELL CLOSE 仓位不足")
+        elif towards == ORDER_DIRECTION.SELL:
 
+            """
+            only for stock
+            """
+            if (qapos.volume_long_his - qapos.volume_long_frozen_today) >= amount:
+
+                qapos.volume_long_frozen_today += amount
+                return True
+            else:
+                print('SELLCLOSE 今日仓位不足')
         elif towards == ORDER_DIRECTION.SELL_CLOSETODAY:
             if (qapos.volume_long_today - qapos.volume_long_frozen_today) >= amount:
                 # self.log("sellclosetoday")
@@ -591,10 +607,11 @@ class QIFI_Account():
             else:
                 self.log("开仓保证金不足 TOWARDS{} Need{} HAVE{}".format(
                     towards, moneyneed, self.available))
-
+        # self.order_rule()
         return res
 
     def send_order(self, code: str, amount: float, price: float, towards: int, order_id: str = '', datetime: str = ''):
+
         if datetime:
             self.on_price_change(code, price, datetime)
         order_id = str(uuid.uuid4()) if order_id == '' else order_id
