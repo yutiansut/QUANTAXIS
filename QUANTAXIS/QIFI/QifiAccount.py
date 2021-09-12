@@ -1,13 +1,13 @@
 import datetime
-import uuid
 import traceback
+import uuid
+
+import bson
 import pymongo
 from qaenv import mongo_ip
-import bson
-from QUANTAXIS.QAMarket.QAPosition import QA_Position
-from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
+from QUANTAXIS.QAMarket.market_preset import MARKET_PRESET
 from QUANTAXIS.QAMarket.QAOrder import ORDER_DIRECTION
-
+from QUANTAXIS.QAMarket.QAPosition import QA_Position
 
 
 def parse_orderdirection(od):
@@ -490,6 +490,7 @@ class QIFI_Account():
 
 
 # 惰性计算
+
 
     @property
     def available(self):

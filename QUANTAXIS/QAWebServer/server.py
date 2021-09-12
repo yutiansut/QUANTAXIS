@@ -33,16 +33,14 @@ from tornado.options import (define, options, parse_command_line,
 from tornado.web import Application, RequestHandler, authenticated
 
 
-from QAWebServer.basehandles import QABaseHandler
+from QUANTAXIS.QAWebServer.basehandles import QABaseHandler
 from QUANTAXIS.QAWebServer.commandhandler import (CommandHandler, CommandHandlerWS,
                                         RunnerHandler)
 
 
-from QAWebServer.userhandles import (PersonBlockHandler, SigninHandler,
-                                     SignupHandler, UserHandler)
 
 from QUANTAXIS.QAUtil.QASetting import QASETTING
-from QAWebServer.QAWebServer.schedulehandler import init_scheduler, QASchedulerHandler, QAScheduleQuery
+from QUANTAXIS.QAWebServer.schedulehandler import init_scheduler, QASchedulerHandler, QAScheduleQuery
 from QUANTAXIS import __version__
 
 class INDEX(QABaseHandler):
@@ -61,14 +59,7 @@ class INDEX(QABaseHandler):
 handlers = [
     (r"/",
      INDEX),
-    (r"/user/signin",
-     SigninHandler),
-    (r"/user/signup",
-     SignupHandler),
-    (r"/user",
-     UserHandler),
-    (r"/user/blocksetting",
-     PersonBlockHandler),
+
     (r"/command/run",
      CommandHandler),
     (r"/command/runws",
@@ -77,8 +68,7 @@ handlers = [
      RunnerHandler),
     (r"/scheduler/map/?", QASchedulerHandler),
     (r"/scheduler/query", QAScheduleQuery),
-    (r"/file",
-     FileHandler),
+
 ]
 
 

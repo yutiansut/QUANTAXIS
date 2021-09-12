@@ -38,7 +38,7 @@ from pyconvert.pyconv import (convert2JSON, convert2XML, convertJSON2OBJ,
 from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler
 
-from QAWebServer.util import (APPLICATION_JSON, APPLICATION_XML, TEXT_XML,
+from QUANTAXIS.QAWebServer.util import (APPLICATION_JSON, APPLICATION_XML, TEXT_XML,
                               convert)
 
 

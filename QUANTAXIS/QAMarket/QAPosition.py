@@ -2,7 +2,7 @@
 import re
 import uuid
 import datetime
-from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
+from QUANTAXIS.QAMarket.market_preset import MARKET_PRESET
 from QUANTAXIS.QAMarket.QAOrder import QA_Order
 from QUANTAXIS.QAUtil.QAParameter import (
     EXCHANGE_ID,
@@ -12,7 +12,6 @@ from QUANTAXIS.QAUtil.QAParameter import (
 )
 from QUANTAXIS.QASU.save_position import save_position
 from QUANTAXIS.QAUtil.QASetting import DATABASE
-from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
 
 
 class QA_Position():

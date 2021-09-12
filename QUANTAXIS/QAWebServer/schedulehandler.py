@@ -3,7 +3,7 @@ from tornado.ioloop import IOLoop, PeriodicCallback
 from tornado.web import RequestHandler, Application
 from apscheduler.schedulers.tornado import TornadoScheduler
 import threading
-from QAWebServer.basehandles import QABaseHandler
+from QUANTAXIS.QAWebServer.basehandles import QABaseHandler
 from qaenv import mongo_ip, mongo_port
 from apscheduler.jobstores.mongodb import MongoDBJobStore
 import pymongo
