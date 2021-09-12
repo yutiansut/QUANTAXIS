@@ -43,11 +43,7 @@ import QUANTAXIS.QACmd
 
 
 # Backtest
-from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio, QA_PortfolioView
-from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
-from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
-from QUANTAXIS.QAARP.QAUser import QA_User
+
 from QUANTAXIS.QACmd import QA_cmd
 # Data
 from QUANTAXIS.QAData import (
