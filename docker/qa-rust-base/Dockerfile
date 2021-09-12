@@ -3,7 +3,7 @@ FROM ubuntu:16.04
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
-    RUST_VERSION=1.48.0
+    RUST_VERSION=1.55.0
 
 ARG CMAKE_VERSION=3.12.0
 WORKDIR /tmp

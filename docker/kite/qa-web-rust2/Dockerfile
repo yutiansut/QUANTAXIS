@@ -20,7 +20,7 @@ RUN cd /root && git clone https://gitee.com/yutiansut/qamazing_community && cd q
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
-    RUST_VERSION=1.48.0
+    RUST_VERSION=1.55.0
     #https://cmake.org/files/v3.19/cmake-3.19.0-Linux-x86_64.tar.gz
 ARG CMAKE_VERSION=3.19.0
 WORKDIR /tmp
