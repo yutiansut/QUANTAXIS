@@ -26,7 +26,7 @@ import threading
 import datetime
 import pandas as pd
 
-from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
+from QUANTAXIS.QAMarket.market_preset import MARKET_PRESET
 
 from QUANTAXIS.QAUtil import (
     QA_util_log_info,

@@ -86,7 +86,7 @@ def main():
     start_server(handlers, address, port)
 
 
-def start_server(handlers, address, port):
+def start_server(handlers, address='0.0.0.0', port=8010):
     apps = Application(
         handlers=handlers,
         debug=True,
