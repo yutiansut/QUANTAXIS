@@ -2,9 +2,6 @@ import datetime
 
 from QUANTAXIS.QAWebServer.schedulehandler import *
 from QUANTAXIS.QAWebServer.server import start_server
-from HTMLTable import (
-  HTMLTable,
-)
 
 def task(job_id):
     print('fin', job_id, datetime.datetime.now())
@@ -28,8 +25,8 @@ class ScheduleForRunning(QASchedulerHandler):
 
     def get(self):
         jobid = self.get_argument('jobid', 1)
-        action = self.get_argument('action', 'add')
-        running_interval = self.get_argument('addinterval', 3)
+        action = self.get_argument('action', 'addinterval')
+        running_interval = self.get_argument('interval', 3)
         hour = int(self.get_argument('hour', 3))
         minute = int(self.get_argument('minute', 3))
         second = int(self.get_argument('second', 3))
