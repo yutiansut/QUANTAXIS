@@ -199,6 +199,7 @@ from QUANTAXIS.QAFetch.QAQuery import (
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 from QUANTAXIS.QAIndicator import *
 # market
+from QUANTAXIS.QAFetch.QAClickhouse import QACKClient
 
 from QUANTAXIS.QASetting.QALocalize import (
     cache_path,
@@ -260,21 +261,9 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse,
     QA_util_get_next_period)
 
-# Factor
-from QUANTAXIS.QAFactor.analyze import FactorAnalyzer
-from QUANTAXIS.QAFactor.data import DataApi
-from QUANTAXIS.QAFactor.preprocess import (
-    QA_fmt_factor,
-    QA_fetch_factor_weight,
-    QA_fetch_get_factor_groupby,
-    QA_standardize_factor,
-    QA_winsorize_factor
-)
-from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
 
-
-from QUANTAXIS.QAPubSub.consumer import subscriber,subscriber_topic,subscriber_routing
-from QUANTAXIS.QAPubSub.producer import publisher,publisher_topic,publisher_routing
+from QUANTAXIS.QAPubSub.consumer import subscriber, subscriber_topic, subscriber_routing
+from QUANTAXIS.QAPubSub.producer import publisher, publisher_topic, publisher_routing
 from QUANTAXIS.QAPubSub.base import base_ps
 from QUANTAXIS.QAPubSub.debugtoool import debug_sub, debug_pub
 
@@ -286,6 +275,7 @@ from QUANTAXIS.QAWebServer.server import start_server
 from QUANTAXIS.QIFI.QifiAccount import QIFI_Account
 from QUANTAXIS.QIFI.QifiManager import QA_QIFIMANAGER, QA_QIFISMANAGER
 
+from QUANTAXIS.QAStrategy.qactabase import QAStrategyCtaBase
 
 if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8, 9]:
     print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
@@ -317,4 +307,3 @@ def __repr__():
 
 
 __str__ = __repr__
-
