@@ -43,7 +43,7 @@ import pymongo
 
 from QUANTAXIS.QAUtil import QA_util_date_valid, QA_util_log_info
 
-from QUANTAXIS.QAFetch import data_list as data_list
+
 
 
 def QA_fetch_get_stock_info(name, startDate, endDate):

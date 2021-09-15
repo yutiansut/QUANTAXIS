@@ -36,11 +36,11 @@ import requests
 from QUANTAXIS import __version__
 
 # Tushare 基本面数据
-from QUANTAXIS.QAFactor.localize import (QA_ts_update_daily_basic,
-                                         QA_ts_update_inc,
-                                         QA_ts_update_industry,
-                                         QA_ts_update_namechange,
-                                         QA_ts_update_stock_basic)
+# from QUANTAXIS.QAFactor.localize import (QA_ts_update_daily_basic,
+#                                          QA_ts_update_inc,
+#                                          QA_ts_update_industry,
+#                                          QA_ts_update_namechange,
+#                                          QA_ts_update_stock_basic)
 # 东方财富爬虫
 from QUANTAXIS.QASU.main import (QA_SU_crawl_eastmoney, QA_SU_save_bond_day,
                                  QA_SU_save_bond_list, QA_SU_save_bond_min,

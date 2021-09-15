@@ -1,7 +1,7 @@
 ##
 
 from QUANTAXIS.QAStrategy.util import QA_data_futuremin_resample
-from QUANTAXIS.QAStrategy.qactabase import QAStrategyCTABase
+from QUANTAXIS.QAStrategy.qactabase import QAStrategyCtaBase
 
 
 """
