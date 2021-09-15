@@ -16,7 +16,7 @@ def promise_list(x): return [x] if isinstance(x, str) else x
 
 class QACKClient():
     def __init__(self):
-        self.client = clickhouse_driver.Client(host=clickhouse_ip, database='quantaxis', user=clickhouse_user, password=clickhouse_password,
+        self.client = clickhouse_driver.Client(host=clickhouse_ip, port=clickhouse_port,  database='quantaxis', user=clickhouse_user, password=clickhouse_password,
                                                settings={
                                                    'insert_block_size': 100000000},
                                                compression=True)
