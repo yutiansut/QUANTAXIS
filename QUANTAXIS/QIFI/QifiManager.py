@@ -59,6 +59,9 @@ class QA_QIFIMANAGER():
         return pymongo.MongoClient(mongo_ip).get_database(
             database_name).get_collection(collection_name)
 
+    def get_qifislice(self, date):
+        return self.database.find_one({'account_cookie': self.account_cookie, 'trading_day': date})
+
     @property
     def returns(self):
         returns = self.assets.pct_change()
