@@ -1,5 +1,6 @@
-import threading
 import datetime
+import threading
+
 import pymongo
 from apscheduler.jobstores.mongodb import MongoDBJobStore
 from apscheduler.schedulers.tornado import TornadoScheduler
@@ -34,7 +35,8 @@ def init_scheduler(database='qascheduler', collection='jobs'):
 
 
 def task1(options):
-    print('{} [QASchedule][Task]-{}'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'), options))
+    print('{} [QASchedule][Task]-{}'.format(
+        datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f'), options))
     # print(threading.enumerate())
 
 

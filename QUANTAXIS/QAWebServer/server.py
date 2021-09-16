@@ -26,22 +26,19 @@ import os
 import sys
 
 import tornado
-
-
+from QUANTAXIS import __version__
+from QUANTAXIS.QAUtil.QASetting import QASETTING
+from QUANTAXIS.QAWebServer.basehandles import QABaseHandler
+from QUANTAXIS.QAWebServer.commandhandler import (CommandHandler,
+                                                  CommandHandlerWS,
+                                                  RunnerHandler)
+from QUANTAXIS.QAWebServer.schedulehandler import (QAScheduleQuery,
+                                                   QASchedulerHandler,
+                                                   init_scheduler)
 from tornado.options import (define, options, parse_command_line,
                              parse_config_file)
 from tornado.web import Application, RequestHandler, authenticated
 
-
-from QUANTAXIS.QAWebServer.basehandles import QABaseHandler
-from QUANTAXIS.QAWebServer.commandhandler import (CommandHandler, CommandHandlerWS,
-                                        RunnerHandler)
-
-
-
-from QUANTAXIS.QAUtil.QASetting import QASETTING
-from QUANTAXIS.QAWebServer.schedulehandler import init_scheduler, QASchedulerHandler, QAScheduleQuery
-from QUANTAXIS import __version__
 
 class INDEX(QABaseHandler):
 

@@ -1,13 +1,15 @@
 import datetime
-import QUANTAXIS as QA
+import re
+
 import empyrical as em
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import pyfolio as pf
 import pymongo
+import QUANTAXIS as QA
 from qaenv import mongo_ip
-import re
+
 #mongo_ip = '192.168.2.117'
 
 
@@ -177,6 +179,11 @@ class QA_QIFISMANAGER():
 
         return res.bfill().ffill().loc[start:end]
 
+    def get_sharpe(self, n):
+        a = ((n.iloc[-1]/n.iloc[0] - 1)/len(n)*365) / \
+            abs((n.pct_change()*100).std())
+        return 0 if np.isnan(a) else a
+
     def get_portfolio_assets(self, portfolio, start='1990-01-01', end=str(datetime.date.today())) -> pd.Series:
         """
                         KTKS_t05_au2106_15min  KTKS_t04b_au2106_5min  KTKS_t12_au2106_30min  KTKS_t04_au2106_15min  ...  KTKS_t01_au2106_15min  KTKS_t03_au2106_15min  KTKS_t01b2_au2106_5min  KTKS_t15_au2106_5min
@@ -270,5 +277,5 @@ if __name__ == "__main__":
     # r.plot.bar()
     # plt.show()
     # print(r)
-    print(manager.get_holding_panel(
-        '5c9b4ed1-8f13-4006-b24a-8fed6e1d5749', '2018-01-02'))
+    # print(manager.get_holding_panel(
+    #     '5c9b4ed1-8f13-4006-b24a-8fed6e1d5749', '2018-01-02'))

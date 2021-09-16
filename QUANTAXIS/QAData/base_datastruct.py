@@ -22,28 +22,26 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import json
 import datetime
+import json
 import os
 import statistics
 import webbrowser
 from abc import abstractmethod
 from copy import copy, deepcopy
 from functools import lru_cache
-from dateutil import parser
+
 import numpy as np
 import pandas as pd
+from dateutil import parser
 
 try:
-    from pyecharts import Kline, Bar, Grid
+    from pyecharts import Bar, Grid, Kline
 except:
     from pyecharts.charts import Kline, Bar, Grid
 
-from QUANTAXIS.QAUtil import (
-    QA_util_log_info,
-    QA_util_random_with_topic,
-    QA_util_to_json_from_pandas
-)
+from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
+                              QA_util_to_json_from_pandas)
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 
 # todo 🛠基类名字 _quotation_base 小写是因为 不直接初始化， 建议改成抽象类

@@ -35,12 +35,10 @@ import tornado.web
 import tornado.wsgi
 from pyconvert.pyconv import (convert2JSON, convert2XML, convertJSON2OBJ,
                               convertXML2OBJ)
+from QUANTAXIS.QAWebServer.util import (APPLICATION_JSON, APPLICATION_XML,
+                                        TEXT_XML, convert)
 from tornado.web import RequestHandler
 from tornado.websocket import WebSocketHandler
-
-from QUANTAXIS.QAWebServer.util import (APPLICATION_JSON, APPLICATION_XML, TEXT_XML,
-                              convert)
-
 
 """
 基础类
@@ -107,4 +105,3 @@ class QAWebSocketHandler(WebSocketHandler):
 
     def open(self,  *args, **kwargs):
         self.write_message('x')
-

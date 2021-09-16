@@ -1,13 +1,12 @@
-import pandas as pd
-
 import numpy as np
+import pandas as pd
 from dateutil import parser
 
 
 class QAPanelDataStruct():
     def __init__(self, data, dtype) -> None:
         self.data = data
-        
+
         self.type = dtype
 
     def get_loc(self, codelist, start, end):
@@ -19,3 +18,11 @@ class QAPanelDataStruct():
             end = parser.parse(end).date()
 
         return self.data.loc[slice(start, end), codelist]
+
+    def get_date(self, codelist, date):
+        if 'min' in self.type:
+            date = parser.parse(date)
+        elif 'day' in self.type:
+            date = parser.parse(date).date()
+
+        return self.data.loc[date, codelist]

@@ -5,12 +5,11 @@ import subprocess
 import threading
 
 import tornado
-from tornado.web import Application, RequestHandler, authenticated
-from tornado.websocket import WebSocketHandler
-
-from QUANTAXIS.QAWebServer.basehandles import QABaseHandler, QAWebSocketHandler
 from QUANTAXIS.QAUtil import QA_util_log_info
 from QUANTAXIS.QAUtil.QADict import QA_util_dict_remove_key
+from QUANTAXIS.QAWebServer.basehandles import QABaseHandler, QAWebSocketHandler
+from tornado.web import Application, RequestHandler, authenticated
+from tornado.websocket import WebSocketHandler
 
 
 def background_task(command):
