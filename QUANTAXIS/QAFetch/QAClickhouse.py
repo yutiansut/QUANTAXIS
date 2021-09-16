@@ -15,8 +15,8 @@ def promise_list(x): return [x] if isinstance(x, str) else x
 
 
 class QACKClient():
-    def __init__(self):
-        self.client = clickhouse_driver.Client(host=clickhouse_ip, port=clickhouse_port,  database='quantaxis', user=clickhouse_user, password=clickhouse_password,
+    def __init__(self, host=clickhouse_ip, port=clickhouse_port,  database='quantaxis', user=clickhouse_user, password=clickhouse_password):
+        self.client = clickhouse_driver.Client(host=host, port=port,  database=database, user=user, password=password,
                                                settings={
                                                    'insert_block_size': 100000000},
                                                compression=True)
@@ -148,6 +148,11 @@ class QACKClient():
                 pass
 
         return data.sort_index()
+
+    def get_stock_day_qfq_adv(self, codelist, start, end):
+
+        res = self.get_stock_day_qfq( codelist, start, end).reset_index()
+        return QA_DataStruct_Stock_day(res.assign(amount = res.total_turnover, code=  res.order_book_id).set_index(['date', 'code']), if_fq='qfq')
 
     def get_stock_list(self):
         return self.client.query_dataframe('select * from stock_cn_codelist').query('status=="Active"')

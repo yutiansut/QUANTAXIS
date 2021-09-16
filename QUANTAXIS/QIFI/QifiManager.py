@@ -89,7 +89,7 @@ class QA_QIFIMANAGER():
     def get_historyassets(self, start='1990-01-01', end=str(datetime.date.today())) -> pd.Series:
         b = [(item['accounts']['balance'], item['trading_day']) for item in self.database.find(
             {'account_cookie': self.account_cookie}, {'_id': 0, 'accounts': 1, 'trading_day': 1})]
-        res = pd.DataFrame(b, columns=['balance', 'trading_day'])
+        res = pd.DataFrame(b, columns=['balance', 'trading_day']).dropna()
         res = res.assign(datetime=pd.to_datetime(
             res['trading_day']), balance=res.balance.apply(round, 2)).set_index('datetime').sort_index()
         res = res.balance

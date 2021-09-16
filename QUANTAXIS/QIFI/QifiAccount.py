@@ -484,6 +484,9 @@ class QIFI_Account():
 
     def transform_dt(self, times):
         if isinstance(times, str):
+
+            if len(times)==10:
+                times = times+' 00:00:00'
             tradedt = datetime.datetime.strptime(times, '%Y-%m-%d %H:%M:%S') if len(
                 times) == 19 else datetime.datetime.strptime(times.replace('_', '.'), '%Y-%m-%d %H:%M:%S.%f')
             return bson.int64.Int64(tradedt.timestamp()*1000000000)
@@ -767,7 +770,14 @@ class QIFI_Account():
 
     def get_position(self, code: str = None) -> QA_Position:
 
-        #exchange_id =  self.market_preset.get_exchange(code)
+        """
+        兼容 code.XSHE 诸如
+        
+        """
+
+        
+
+
         if code is None:
             return list(self.positions.values())[0]
         else:
@@ -788,6 +798,7 @@ class QIFI_Account():
         pass
 
     def format_code(self, code):
+        
         if '.' in code:
             return code
         else:
