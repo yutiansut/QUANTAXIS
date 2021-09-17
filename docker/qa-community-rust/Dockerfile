@@ -1,4 +1,4 @@
-FROM daocloud.io/quantaxis/qa-jupyter:latest
+FROM ghcr.io/yutiansut/quantaxis/qa-jupyer:latest
 USER root
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
