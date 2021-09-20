@@ -68,3 +68,5 @@ from QUANTAXIS.QAData.QADataStruct import (
 from QUANTAXIS.QAData.QAFinancialStruct import QA_DataStruct_Financial
 from QUANTAXIS.QAData.QAIndicatorStruct import QA_DataStruct_Indicators
 from QUANTAXIS.QAData.QASeriesStruct import QA_DataStruct_Series
+
+from QUANTAXIS.QAData.paneldatastruct import QAPanelDataStruct
