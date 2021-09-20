@@ -136,7 +136,7 @@ class QACKClient():
 
         u = u.set_index(['date', 'order_book_id'], drop=False).sort_index()
 
-        data = u.join(adjx).set_index(['date', 'order_book_id']).sort_index()
+        data = u.join(adjx).set_index(['date', 'order_book_id']).sort_index().fillna(1)
 
         for col in ['open', 'high', 'low', 'close']:
             data[col] = data[col] * data['adj']
