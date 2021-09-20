@@ -1,12 +1,17 @@
+from clickhouse_driver.util.helpers import column_chunks
 import numpy as np
 import pandas as pd
 from dateutil import parser
 
 
 class QAPanelDataStruct():
+
+    """
+    paneldata
+    
+    """
     def __init__(self, data, dtype) -> None:
         self.data = data
-
         self.type = dtype
 
     def get_loc(self, codelist, start, end):
