@@ -13,7 +13,8 @@ from QUANTAXIS.QAUtil import QA_util_get_real_date
 
 def promise_list(x): return [x] if isinstance(x, str) else x
 
-
+def stock_format(code):
+    return code+ '.XSHE' if code[0] !='6' else code+'.XSHG'
 class QACKClient():
     def __init__(self, host=clickhouse_ip, port=clickhouse_port,  database='quantaxis', user=clickhouse_user, password=clickhouse_password):
         self.client = clickhouse_driver.Client(host=host, port=port,  database=database, user=user, password=password,
