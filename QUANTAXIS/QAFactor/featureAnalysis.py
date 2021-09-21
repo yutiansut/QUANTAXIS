@@ -14,6 +14,7 @@ from copy import deepcopy
 from functools import lru_cache
 from statsmodels.api import OLS
 
+
 class QAFeatureAnalysis():
     def __init__(self, featuredata, stock_data=None, host=clickhouse_ip, port=clickhouse_port, user=clickhouse_user, password=clickhouse_password) -> None:
         self.feature = featuredata
@@ -39,12 +40,11 @@ class QAFeatureAnalysis():
     def remake_returns(self, model='next_open', day=5):
         self.returns = self.make_ret(self.stock_data.data, model, day)
 
-    def get_benckmark(self, benchmarkcode='000905.XSHG'):
+    def get_benchmark(self, benchmarkcode='000905.XSHG'):
         return self.client.get_index_day(benchmarkcode, self.start, self.end)
 
     def get_barra(self, barra_data):
         return barra_data
-
 
     def make_ret(self, data, model='next_open', day=5):
         """
@@ -86,12 +86,12 @@ class QAFeatureAnalysis():
                                                     panelprice,
                                                     groupby=None,
                                                     binning_by_group=False,
-                                                    quantiles=5,
+                                                    quantiles=10,
                                                     bins=None,
                                                     periods=(1, 5, 10),
                                                     filter_zscore=20,
                                                     groupby_labels=None,
-                                                    max_loss=0.35,
+                                                    max_loss=0.15,
                                                     zero_aware=False,
                                                     cumulative_returns=True)
 
@@ -116,5 +116,3 @@ class QAFeatureAnalysis():
     @lru_cache()
     def ir(self):
         return self.ic.rolling(20).apply(lambda x: x.mean()/x.std())
-
-
