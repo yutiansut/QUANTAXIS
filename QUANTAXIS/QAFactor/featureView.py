@@ -19,8 +19,9 @@ class QAFeatureView():
     def get_all_tables(self):
         return self.client.query_dataframe('show tables').drop_duplicates()
 
-    def get_single_factor(self, factorname):
+    def get_single_factor(self, factorname, start=None, end=None):
         print(factorname)
+
         res = self.client.query_dataframe(
             'select * from {}'.format(factorname))
         if len(res) > 0:
@@ -43,3 +44,5 @@ class QAFeatureView():
                          for factor in factorlist], axis=1)
 
         return res
+
+
