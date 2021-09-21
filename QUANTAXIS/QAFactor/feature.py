@@ -1,9 +1,9 @@
-import clickhouse_driver
 import datetime
+
+import clickhouse_driver
 import pandas as pd
-
-
-from qaenv import clickhouse_ip, clickhouse_password, clickhouse_port, clickhouse_user
+from qaenv import (clickhouse_ip, clickhouse_password, clickhouse_port,
+                   clickhouse_user)
 
 
 class QASingleFactor_DailyBase():
@@ -24,13 +24,11 @@ class QASingleFactor_DailyBase():
         self.factor_name = factor_name
 
         self.description = 'None'
-
+        self.finit()
         if not self.check_if_exist():
             print('start register')
             self.register()
             self.init_database()
-
-        self.finit()
 
     def finit(self):
 

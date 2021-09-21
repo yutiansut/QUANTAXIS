@@ -1,9 +1,9 @@
-import clickhouse_driver
 import datetime
-import pandas as pd
-import QUANTAXIS as QA
 
-from qaenv import clickhouse_ip, clickhouse_password, clickhouse_port, clickhouse_user
+import clickhouse_driver
+import pandas as pd
+from qaenv import (clickhouse_ip, clickhouse_password, clickhouse_port,
+                   clickhouse_user)
 
 
 class QAFeatureView():
