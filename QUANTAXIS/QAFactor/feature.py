@@ -12,7 +12,7 @@ class QASingleFactor_DailyBase():
                                                database='factor')
 
         self.client.execute("CREATE TABLE IF NOT EXISTS \
-                `factor`.`regfactor` (　\
+                `factor`.`factormetadata` (　\
                 factorname String, \
                 create_date Date, \
                 update_date Date, \
@@ -58,19 +58,18 @@ class QASingleFactor_DailyBase():
                             factor Float32\
                             )\
                             ENGINE = ReplacingMergeTree() \
-                            PARTITION BY (toYYYYMMDD(`date`)) \
                             ORDER BY (date, code)\
                             SETTINGS index_granularity=8192'.format(self.factor_name))
 
     def register(self):
-        self.client.execute("INSERT INTO regfactor VALUES", [{
+        self.client.execute("INSERT INTO factormetadata VALUES", [{
             'factorname': self.factor_name,
             'create_date': datetime.date.today(),
             'update_date': datetime.date.today(),
             'version': 1.0,
             'description': self.description
         }])
-        self.client.execute('OPTIMIZE TABLE regfactor FINAL')
+        self.client.execute('OPTIMIZE TABLE factormetadata FINAL')
 
     def insert_data(self, data: pd.DataFrame):
 
@@ -95,8 +94,8 @@ class QASingleFactor_DailyBase():
 
     def update_metadb(self):
         raw_reg_message = self.client.execute(
-            "select create_date from regfactor where factorname=='{}'".format(self.factor_name))[0][0]
-        self.client.execute("INSERT INTO regfactor VALUES", [{
+            "select create_date from factormetadata where factorname=='{}'".format(self.factor_name))[0][0]
+        self.client.execute("INSERT INTO factormetadata VALUES", [{
             'factorname': self.factor_name,
             'create_date': raw_reg_message,
             'update_date': datetime.date.today(),
