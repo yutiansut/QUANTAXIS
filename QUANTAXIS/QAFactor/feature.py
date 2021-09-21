@@ -79,10 +79,10 @@ class QASingleFactor_DailyBase():
             raise Exception('columns not exists')
 
         data = data.to_dict('records')
-        rangex = 100
-        for i in range(0, len(data), rangex):
-            self.client.execute('INSERT INTO {} VALUES'.format(
-                self.factor_name), data[i:i+rangex])
+
+
+        self.client.execute('INSERT INTO {} VALUES'.format(
+            self.factor_name), data)
 
         self.client.execute('OPTIMIZE TABLE {} FINAL'.format(self.factor_name))
 

@@ -26,6 +26,7 @@ class QAFeatureView():
         if len(res) > 0:
 
             res.columns = ['date', 'code', factorname]
+            res.assign(date=pd.to_datetime(res.date))
             return res.set_index(['date', 'code']).sort_index()
         else:
             return pd.DataFrame([])
