@@ -13,8 +13,11 @@ from QUANTAXIS.QAUtil import QA_util_get_real_date
 
 def promise_list(x): return [x] if isinstance(x, str) else x
 
+
 def stock_format(code):
-    return code+ '.XSHE' if code[0] !='6' else code+'.XSHG'
+    return code + '.XSHE' if code[0] != '6' else code+'.XSHG'
+
+
 class QACKClient():
     def __init__(self, host=clickhouse_ip, port=clickhouse_port,  database='quantaxis', user=clickhouse_user, password=clickhouse_password):
         self.client = clickhouse_driver.Client(host=host, port=port,  database=database, user=user, password=password,
@@ -37,6 +40,10 @@ class QACKClient():
         if adjx is None:
             data = u.set_index(['datetime', 'code'])
         else:
+
+            adjx = adjx.reset_index()
+            adjx = adjx.assign(code=adjx.order_book_id).set_index(
+                ['date', 'code']).adj
             data = u.join(adjx).set_index(['datetime', 'code']).fillna(1)
 
             for col in ['open', 'high', 'low', 'close']:
@@ -137,7 +144,8 @@ class QACKClient():
 
         u = u.set_index(['date', 'order_book_id'], drop=False).sort_index()
 
-        data = u.join(adjx).set_index(['date', 'order_book_id']).sort_index().fillna(1)
+        data = u.join(adjx).set_index(
+            ['date', 'order_book_id']).sort_index().fillna(1)
 
         for col in ['open', 'high', 'low', 'close']:
             data[col] = data[col] * data['adj']
@@ -152,8 +160,11 @@ class QACKClient():
 
     def get_stock_day_qfq_adv(self, codelist, start, end):
 
-        res = self.get_stock_day_qfq( codelist, start, end).reset_index()
-        return QA_DataStruct_Stock_day(res.assign(amount = res.total_turnover, code=  res.order_book_id).set_index(['date', 'code']), if_fq='qfq')
+        res = self.get_stock_day_qfq(codelist, start, end).reset_index()
+        return QA_DataStruct_Stock_day(res.assign(amount=res.total_turnover, code=res.order_book_id).set_index(['date', 'code']), if_fq='qfq')
+
+    def get_stock_min_qfq_adv(self, codelist, start, end):
+        return self.to_qfq(self.get_stock_min(codelist, start, end))
 
     def get_stock_list(self):
         return self.client.query_dataframe('select * from stock_cn_codelist').query('status=="Active"')
