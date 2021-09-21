@@ -7,8 +7,8 @@ from qaenv import clickhouse_ip, clickhouse_password, clickhouse_port, clickhous
 
 
 class QAFeatureView():
-    def __init__(self) -> None:
-        self.client = clickhouse_driver.Client(host=clickhouse_ip, port=clickhouse_port, user=clickhouse_user, password=clickhouse_password,
+    def __init__(self, host=clickhouse_ip, port=clickhouse_port, user=clickhouse_user, password=clickhouse_password) -> None:
+        self.client = clickhouse_driver.Client(host=host, port=port, user=user, password=password,
                                                database='factor')
 
     def get_all_factorname(self):

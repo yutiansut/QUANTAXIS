@@ -1,14 +1,14 @@
 import clickhouse_driver
 import datetime
 import pandas as pd
-import QUANTAXIS as QA
+
 
 from qaenv import clickhouse_ip, clickhouse_password, clickhouse_port, clickhouse_user
 
 
 class QASingleFactor_DailyBase():
-    def __init__(self, factor_name="QAF_test", ):
-        self.client = clickhouse_driver.Client(host=clickhouse_ip, port=clickhouse_port, user=clickhouse_user, password=clickhouse_password,
+    def __init__(self, factor_name="QAF_test", host=clickhouse_ip, port=clickhouse_port, user=clickhouse_user, password=clickhouse_password,):
+        self.client = clickhouse_driver.Client(host=host, port=port, user=user, password=password,
                                                database='factor')
 
         self.client.execute("CREATE TABLE IF NOT EXISTS \
