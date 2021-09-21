@@ -29,10 +29,10 @@ class QACKClient():
         u = res.data.reset_index()
         u = u.assign(date=u.datetime.apply(lambda x: x.date()))
         u = u.set_index(['date', 'code'], drop=False)
-        codelist = res.index.levels[0].unique().tolist()
+        codelist = u.index.levels[1].unique().tolist()
 
-        start = res.index.levels[1][0]
-        end = res.index.levels[1][-1]
+        start = u.index.levels[0][0]
+        end = u.index.levels[0][-1]
         adjx = self.get_stock_adj(codelist, start, end)
         if adjx is None:
             data = u.set_index(['datetime', 'code'])
