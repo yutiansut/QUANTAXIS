@@ -79,6 +79,7 @@ def main():
     parse_command_line()
     port = options.port
     address = options.address
+    scheduler = init_scheduler()
 
     start_server(handlers, address, port)
 
@@ -90,8 +91,7 @@ def start_server(handlers, address='0.0.0.0', port=8010):
         autoreload=True,
         compress_response=True
     )
-    init_scheduler()
-
+    
     print('========WELCOME QUANTAXIS_WEBSERVER 2.0 ============')
     print('QUANTAXIS VERSION: {}'.format(__version__))
     print('QUANTAXIS WEBSERVER is Listening on: http://{}:{}'.format(address, port))
