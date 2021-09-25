@@ -130,7 +130,6 @@ sh_snapshot_columns = ['SecurityID', 'DateTime', 'PreClosePx', 'OpenPx', 'HighPx
                        'ETFBuyNumber', 'ETFBuyAmount', 'ETFBuyMoney', 'ETFSellNumber', 'ETFSellAmount', 'ETFSellMoney']
 
 
-
 def maketime(time):
     time = str(time)
     return time[0:4]+'-'+time[4:6]+'-' + time[6:8] + ' '+time[8:10]+':'+time[10:12]+':'+time[12:14]
