@@ -37,3 +37,4 @@ qaenv>=0.0.4
 lz4
 clickhouse-driver
 alphalens
+qanotify
