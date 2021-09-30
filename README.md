@@ -142,7 +142,7 @@ QUANTAXIS 期货实盘多账户的本地部署群 (请勿浪费群资源 没有�
 
 ### 公共号
 
-欢迎关注公众号: ![公众号](http://picx.gulizhu.com/alipay.png)
+欢迎关注公众号: ![公众号](http://picx.gulizhu.com/Fr0pHbwB7-zrq_HAKsvB8g2zaP_A)
 
 QAPRO公共号免费提供了下单推送接口, 关注公共号回复trade即可使用
 
