@@ -1,6 +1,6 @@
-QUANTAXIS 2.0
+# QUANTAXIS 2.0.0
 
-本版本不是稳定版本的 quantaxis, 涉及一些改变
+本版本为不兼容升级的 2.0 quantaxis, 涉及一些改变
 
 ## 数据部分
 
