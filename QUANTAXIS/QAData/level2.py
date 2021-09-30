@@ -70,8 +70,21 @@ BizIndex 业务序列号 NUMBER 业务序列号
 Channel 连续
 自 2021 年 4 月 26 日启用
 """
-
-
+shold_tick_columns = ['TradeTime', 'TradeChannel', 'SendingTime', 'SellNo', 'TradeAmount',
+                      'TradeBSFlag', 'TradeIndex', 'TradePrice', 'TradeQty', 'BuyNo']
+shold_snapshot_columns = ['NumTrades', 'OfferTradeMaxDuration', 'ImageStatus', 'TotalBidNumber',
+                          'TotalWarrantExecQty', 'WithdrawSellMoney', 'IOPV', 'BidOrders',
+                          'ETFSellAmount', 'TotalOfferQty', 'WithdrawBuyNumber',
+                          'WeightedAvgOfferPx', 'ETFBuyNumber', 'WarLowerPx', 'MsgSeqNum',
+                          'WithdrawSellAmount', 'ETFSellMoney', 'Volume', 'BidOrderQty', 'OpenPx',
+                          'HighPx', 'PreClosePx', 'LowPx', 'WeightedAvgBidPx', 'ETFSellNumber',
+                          'OfferNumOrders', 'WithdrawSellNumber', 'ETFBuyAmount',
+                          'TotalOfferNumber', 'OfferPrice', 'NumOfferOrders', 'BidPrice',
+                          'OfferOrderQty', 'TotalBidQty', 'SendingTime', 'ETFBuyMoney',
+                          'InstrumentStatus', 'WithdrawBuyAmount', 'ClosePx',
+                          'BidTradeMaxDuration', 'NumBidOrders', 'LastPx', 'Amount', 'AveragePx',
+                          'WarUpperPx', 'YieldToMaturity', 'BidNumOrders', 'WithdrawBuyMoney',
+                          'TradingPhaseCode', 'QuotTime', 'OfferOrders']
 sz_snapshot_columns = ['NumTrades', 'OfferNumOrders', 'LowerLimitPx', 'ImageStatus',
                        'OfferPrice', 'BidPrice', 'BidOrders', 'OfferOrderQty', 'PeRatio2',
                        'TotalBidQty', 'SendingTime', 'PeRatio1', 'TotalOfferQty', 'ClosePx',
