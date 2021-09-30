@@ -124,7 +124,7 @@ QUANTAXIS 是一个开放的项目, 在开源的3年中有大量的小伙伴加�
 写代码不易...请作者喝杯咖啡呗?
 
 
-![](http://pic.yutiansut.com/alipay.png)
+![](http://picx.gulizhu.com/alipay.png)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 
@@ -142,7 +142,7 @@ QUANTAXIS 期货实盘多账户的本地部署群 (请勿浪费群资源 没有�
 
 ### 公共号
 
-欢迎关注公众号: ![公众号](http://data.yutiansut.com/qrcode_for_gh_bbb47e0550f7_258.jpg)
+欢迎关注公众号: ![公众号](http://picx.gulizhu.com/alipay.png)
 
 QAPRO公共号免费提供了下单推送接口, 关注公共号回复trade即可使用
 
