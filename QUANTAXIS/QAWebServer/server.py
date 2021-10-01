@@ -35,6 +35,7 @@ from QUANTAXIS.QAWebServer.commandhandler import (CommandHandler,
 from QUANTAXIS.QAWebServer.schedulehandler import (QAScheduleQuery,
                                                    QASchedulerHandler,
                                                    init_scheduler)
+from QUANTAXIS.QAWebServer.qifiserver import QAQIFI_Handler, QAQIFIS_Handler
 from tornado.options import (define, options, parse_command_line,
                              parse_config_file)
 from tornado.web import Application, RequestHandler, authenticated
@@ -65,6 +66,8 @@ handlers = [
      RunnerHandler),
     (r"/scheduler/map/?", QASchedulerHandler),
     (r"/scheduler/query", QAScheduleQuery),
+    (r"/qifi", QAQIFI_Handler),
+    (r"/qifis", QAQIFIS_Handler)
 
 ]
 

@@ -119,7 +119,9 @@ setup(
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
             'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat',
-            'qarun=QUANTAXIS.QACmd.runner:run'
+            'qarun=QUANTAXIS.QACmd.runner:run',
+            'qawebserver=QUANTAXIS.QAWebServer.server:main',
+            
         ]
     },
     keywords=KEYWORDS,
