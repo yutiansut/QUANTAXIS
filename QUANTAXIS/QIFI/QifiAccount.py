@@ -32,7 +32,8 @@ def parse_orderdirection(od):
 
 class QIFI_Account():
 
-    def __init__(self, username, password, model="SIM", broker_name="QAPaperTrading", trade_host=mongo_ip, init_cash=1000000, taskid=str(uuid.uuid4()), nodatabase=False):
+    def __init__(self, username, password, model="SIM", broker_name="QAPaperTrading", portfolioname ='QAPaperTrade',
+            trade_host=mongo_ip, init_cash=1000000, taskid=str(uuid.uuid4()), nodatabase=False):
         """Initial
         QIFI Account是一个基于 DIFF/ QIFI/ QAAccount后的一个实盘适用的Account基类
 
@@ -52,7 +53,7 @@ class QIFI_Account():
         self.source_id = "QIFI_Account"  # 识别号
         self.market_preset = MARKET_PRESET()
         # 指的是 Account所属的账户编组(实时的时候的账户观察组)
-        self.portfolio = "QAPaperTrade"
+        self.portfolio = portfolioname
         self.model = model
 
         self.broker_name = broker_name    # 所属期货公司/ 模拟的组
