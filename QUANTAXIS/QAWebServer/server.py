@@ -53,11 +53,14 @@ class INDEX(QABaseHandler):
         )
 
 
+class QAUserhander(QABaseHandler):
+    def get(self):
+        self.write({'status': 200, 'result':{'user_cookie': 'xx'}})
+
 #term_manager = SingleTermManager(shell_command=['bash'])
 handlers = [
     (r"/",
      INDEX),
-
     (r"/command/run",
      CommandHandler),
     (r"/command/runws",
@@ -67,7 +70,8 @@ handlers = [
     (r"/scheduler/map/?", QASchedulerHandler),
     (r"/scheduler/query", QAScheduleQuery),
     (r"/qifi", QAQIFI_Handler),
-    (r"/qifis", QAQIFIS_Handler)
+    (r"/qifis", QAQIFIS_Handler),
+    (r"/user", QAUserhander)
 
 ]
 

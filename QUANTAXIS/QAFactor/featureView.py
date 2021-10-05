@@ -46,3 +46,12 @@ class QAFeatureView():
         return res
 
 
+    def factor_vif(self):
+        """
+        因子的 vif 测试
+
+        
+        
+        """
+        pass
+
