@@ -95,12 +95,17 @@ class QA_QIFIMANAGER():
         b = [(item['accounts']['balance'], item['trading_day']) for item in self.database.find(
             {'account_cookie': self.account_cookie}, {'_id': 0, 'accounts': 1, 'trading_day': 1})]
         res = pd.DataFrame(b, columns=['balance', 'trading_day']).dropna()
+
+
+        print(res.trading_day[0])
+        res = res[res.trading_day.apply(lambda x: x!='')]
         res = res.assign(datetime=pd.to_datetime(
-            res['trading_day']), balance=res.balance.apply(round, 2)).set_index('datetime').sort_index()
+            res['trading_day']), balance=res.balance.apply(round, 2)).dropna().set_index('datetime').sort_index()
         res = res.balance
         res.name = self.account_cookie
 
-        return res.bfill().ffill().loc[start:end]
+        print(res)
+        return res.bfill().ffill().sort_index().loc[start:end]
 
     def get_historytrade(self,):
         b = [item['trades'].values() for item in self.database.find(

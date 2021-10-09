@@ -14,7 +14,7 @@ backtest for feature data
 
 
 class QAFeatureBacktest():
-    def __init__(self, feature, quantile=0.998, init_cash=50000000, rolling=5,
+    def __init__(self, feature, quantile=0.998, init_cash=50000000, rolling=5,portfolioname='feature',
                  clickhouse_host=clickhouse_ip, clickhouse_port=clickhouse_port, clickhouse_user=clickhouse_user, clickhouse_password=clickhouse_password) -> None:
         """
         feature --> standard QAFeature
@@ -41,13 +41,13 @@ class QAFeatureBacktest():
             level=0, as_index=False, group_keys=False).apply(lambda x: self.slice_feature(x))
         self.datacenter = self.client.get_stock_day_qfq_adv(
             self.codelist, self.start, self.end)
-
-        self.account = QIFI_Account(init_cash=init_cash, username='QAFB_{}_{}'.format(self.featurename, uuid4()), broker_name='feature', portfolioname='feature',
+        self.closepanel = self.datacenter.closepanel.bfill() ## 向前复权 匹配股票停牌模式 使用复牌后第一个收盘价卖出
+        self.account = QIFI_Account(init_cash=init_cash, username='QAFB_{}_{}'.format(self.featurename, uuid4()), broker_name='feature', portfolioname=portfolioname,
                                     password='1', nodatabase=False, model='BACKTEST')
         self.tradetable = {}
         self.rolling = rolling
         self.cashpre = init_cash/rolling
-
+        
         self.account.initial()
 
     def slice_feature(self, data):
@@ -99,12 +99,7 @@ class QAFeatureBacktest():
                 pass
 
             else:
-                d = self.datacenter.selects(
-                    selllist, date).close.map(lambda x: round(x, 2))
-
-                d.index = d.index.droplevel(0)
-
-                data = d.to_dict()
+                data = self.closepanel.loc[parser.parse(date).date(), selllist].map(lambda x: round(x,2)).to_dict()
                 cashpre = self.cashpre/len(selllist)
                 for code in selllist:
 
@@ -120,34 +115,39 @@ class QAFeatureBacktest():
             if len(buylist) != 0:
 
                 d = self.datacenter.selects(
-                    buylist, date).open.map(lambda x: round(x, 2))
+                    buylist, date, date).open.map(lambda x: round(x, 2))
 
                 d.index = d.index.droplevel(0)
 
                 data = d.to_dict()
                 cashpre = self.cashpre/len(buylist)
                 for code in buylist:
-
-                    volume = int(
-                        0.01*cashpre/data[code])*100 if data[code] != 0 else 0
-                    if volume < 100:
+                    try:
+                        volume = int(
+                            0.01*cashpre/data[code])*100 if data[code] != 0 else 0
+                        if volume < 100:
+                            pass
+                        else:
+                            order = self.account.send_order(
+                                code[0:6], volume, price=data[code], datetime=date+' 09:30:00', towards=1)
+                            self.account.make_deal(order)
+                            self.tradetable[date][code] = volume
+                    except:
+                        """
+                        主要是停牌买不入 直接放弃
+                        
+                        此处买入未加入连续一字板的检测 rust 会增加此处的逻辑
+                        
+                        """
                         pass
-                    else:
-                        order = self.account.send_order(
-                            code[0:6], volume, price=data[code], datetime=date+' 09:30:00', towards=1)
-                        self.account.make_deal(order)
-                        self.tradetable[date][code] = volume
-
             else:
                 pass
 
             holdinglist = [QA_util_code_change_format(code)
                            for code in list(self.account.positions.keys())]
-            pricepanel = self.datacenter.selects(
-                holdinglist, date).close.map(lambda x: round(x, 2))
-            pricepanel.index = pricepanel.index.droplevel(0)
-            pricepanel = pricepanel.to_dict()
-
+            pricepanel = self.closepanel.loc[parser.parse(date).date(), holdinglist].map(lambda x: round(x,2))
+            #pricepanel.index = pricepanel.index.droplevel(0)
+            pricepanel =pricepanel.to_dict()
             for code in holdinglist:
 
                 self.account.on_price_change(code[0:6], pricepanel[code])

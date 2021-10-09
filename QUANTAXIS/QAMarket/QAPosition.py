@@ -103,7 +103,7 @@ class QA_Position():
                  trades=None,
                  orders=None,
                  name=None,
-                 commission=0,
+                 commission=0.0015,
                  auto_reload=False,
                  allow_exceed=False,
 
@@ -566,6 +566,7 @@ class QA_Position():
                     self.volume_long_frozen_today -= amount
 
                     marginValue = -1*(self.position_price_long * amount)
+                    
                     self.margin_long += marginValue
                     profit = (price - self.position_price_long) * amount
                     self.moneypresetLeft += (-marginValue + profit)
@@ -583,7 +584,7 @@ class QA_Position():
                     self.moneypresetLeft += (-marginValue + profit)
 
             else:
-                return 0, 0
+                return 0, 0,0
 
         elif towards == ORDER_DIRECTION.BUY_OPEN:
 
@@ -732,8 +733,9 @@ class QA_Position():
             self.margin_long += marginValue
             self.moneypresetLeft += (-marginValue + profit)
         # 计算收益/成本
-
-        return marginValue, profit
+        commission= self.calc_commission( price, amount, towards)
+        self.commission +=commission
+        return marginValue, profit, commission
 
     def settle(self):
         '''收盘后的结算事件
@@ -809,7 +811,17 @@ class QA_Position():
                 commission_fee = commission_fee_preset['commission_coeff_today_pervol'] * trade_amount + \
                     commission_fee_preset['commission_coeff_today_peramount'] * \
                     abs(value)
-            return commission_fee
+            
+        elif self.market_type == MARKET_TYPE.STOCK_CN:
+            if trade_towards == ORDER_DIRECTION.BUY_OPEN:
+                """买入万 2 滑点"""
+                commission_fee = value *  0.0002
+            else:
+                value = trade_price * trade_amount
+                """卖出千 1.3 手续费+ 万 2 滑点"""
+                commission_fee = value *  0.0015
+
+        return commission_fee
 
     def loadfrommessage(self, message):
         try:

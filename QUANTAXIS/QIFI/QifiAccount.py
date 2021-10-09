@@ -61,7 +61,7 @@ class QIFI_Account():
         self.bank_password = ""
         self.capital_password = ""
         self.wsuri = ""
-
+        self.commission_fee = 0.0015
         self.bank_id = "QASIM"
         self.bankname = "QASIMBank"
 
@@ -745,6 +745,12 @@ class QIFI_Account():
             self.event_id += 1
             trade_id = str(uuid.uuid4()) if trade_id is None else trade_id
 
+
+            # update accounts
+            print('update trade')
+
+            margin, close_profit, commission = self.get_position(code).update_pos(
+                trade_price, trade_amount, trade_towards)
             self.trades[trade_id] = {
                 "seqno": self.event_id,
                 "user_id":  self.user_id,
@@ -758,17 +764,11 @@ class QIFI_Account():
                 "volume": trade_amount,
                 "price": trade_price,
                 "trade_time": trade_time,
-                "commission": float(0),
+                "commission": commission,
                 "trade_date_time": self.transform_dt(trade_time)}
 
-            # update accounts
-            print('update trade')
-
-            margin, close_profit = self.get_position(code).update_pos(
-                trade_price, trade_amount, trade_towards)
-
             self.money -= (margin - close_profit)
-            self.close_profit += close_profit
+            self.close_profit += (close_profit - commission)
 
             pos =  self.get_position(code)
             if pos.volume_long ==0 and pos.volume_short ==0:
