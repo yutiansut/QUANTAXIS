@@ -620,7 +620,10 @@ class QIFI_Account():
     def send_order(self, code: str, amount: float, price: float, towards: int, order_id: str = '', datetime: str = ''):
 
         if datetime:
+            # if datetime< self.datetime:
+            #     pass
             self.on_price_change(code, price, datetime)
+
         order_id = str(uuid.uuid4()) if order_id == '' else order_id
         if self.order_check(code, amount, price, towards, order_id):
             self.log("order check success")
@@ -766,6 +769,10 @@ class QIFI_Account():
 
             self.money -= (margin - close_profit)
             self.close_profit += close_profit
+
+            pos =  self.get_position(code)
+            if pos.volume_long ==0 and pos.volume_short ==0:
+                self.positions.pop(self.format_code(code))
             if self.model != "BACKTEST":
                 self.sync()
 

@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.0.0.dev17'
+__version__ = '2.0.0.dev18'
 __author__ = 'yutiansut'
 
 import argparse
@@ -281,7 +281,7 @@ from QUANTAXIS.QAFactor.feature import QASingleFactor_DailyBase
 from QUANTAXIS.QAFactor.featurepool import MA10
 from QUANTAXIS.QAFactor.featureView import QAFeatureView
 from QUANTAXIS.QAFactor.featureAnalysis import QAFeatureAnalysis
-
+from QUANTAXIS.QAFactor.featurebacktest import QAFeatureBacktest
 
 if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8, 9]:
     print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')

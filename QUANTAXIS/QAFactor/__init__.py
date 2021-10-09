@@ -17,3 +17,4 @@ from QUANTAXIS.QAFactor.feature import QASingleFactor_DailyBase
 from QUANTAXIS.QAFactor.featurepool import MA10
 from QUANTAXIS.QAFactor.featureView import QAFeatureView
 from QUANTAXIS.QAFactor.featureAnalysis import QAFeatureAnalysis
+from QUANTAXIS.QAFactor.featurebacktest import QAFeatureBacktest
