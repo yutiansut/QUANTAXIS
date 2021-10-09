@@ -21,9 +21,11 @@ class QAFeatureView():
 
     def get_single_factor(self, factorname, start=None, end=None):
         print(factorname)
-
-        res = self.client.query_dataframe(
-            'select * from {}'.format(factorname))
+        if start is None and end is None:
+            res = self.client.query_dataframe(
+                'select * from {}'.format(factorname))
+        else:
+            res =  self.client.query_dataframe("select * from {} where ((`date` >= '{}')) AND (`date` <= '{}') ".format(factorname, start, end))
         if len(res) > 0:
 
             res.columns = ['date', 'code', factorname]
@@ -37,10 +39,10 @@ class QAFeatureView():
             "ALTER TABLE factormetadata DELETE WHERE factorname='{}'".format(factorname))
         self.client.execute('drop table {}'.format(factorname))
 
-    def get_all_factor_values(self, factorlist=None):
+    def get_all_factor_values(self, factorlist=None, start=None, end=None):
         factorlist = self.get_all_factorname() if factorlist is None else factorlist
 
-        res = pd.concat([self.get_single_factor(factor)
+        res = pd.concat([self.get_single_factor(factor, start, end)
                          for factor in factorlist], axis=1)
 
         return res

@@ -157,7 +157,7 @@ class QAFeatureBacktest():
 if __name__ == "__main__":
     from QUANTAXIS.QAFactor import QAFeatureView
     featurepreview = QAFeatureView()
-    feature = featurepreview.get_single_feature('Factor')
+    feature = featurepreview.get_single_factor('Factor')
 
     print(feature)
     QAFB = QAFeatureBacktest(feature)
