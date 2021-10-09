@@ -558,9 +558,9 @@ class QA_Position():
                 # and self.volume_long>=amount:
                 if self.volume_long > 0:
                     self.position_cost_long = self.position_cost_long * \
-                        (self.volume_long - amount)/self.volume_long
+                        (self.volume_long)/self.volume_long+ amount
                     self.open_cost_long = self.open_cost_long * \
-                        (self.volume_long-amount)/self.volume_long
+                        (self.volume_long-amount)/self.volume_long +amount
 
                     self.volume_long_his -= amount
                     self.volume_long_frozen_today -= amount
