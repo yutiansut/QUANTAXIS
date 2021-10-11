@@ -381,6 +381,67 @@ class QA_Position():
             'trades': self.trades,
             'orders': self.orders
         }
+    @property
+    def qifimessage(self):
+        return {
+            # 基础字段
+            'code': self.code,  # 品种名称
+            'instrument_id': self.code,
+            'user_id': self.account_cookie,
+            'portfolio_cookie': self.portfolio_cookie,
+            'username': self.username,
+            'position_id': self.position_id,
+            'account_cookie': self.account_cookie,
+            'market_type': self.market_type,
+            'exchange_id': self.exchange_id,  # 交易所ID
+            # 持仓量
+            'volume_long_today': int(self.volume_long_today),
+            'volume_long_his': int(self.volume_long_his),
+            'volume_long': int(self.volume_long),
+            'volume_long_yd': 0,
+            'volume_short_yd': 0,
+            'volume_short_today': int(self.volume_short_today),
+            'volume_short_his': int(self.volume_short_his),
+            'volume_short': int(self.volume_short),
+            'pos_long_his': int(self.volume_long_his),
+            'pos_long_today': int(self.volume_long_today),
+            'pos_short_his': int(self.volume_short_his),
+            'pos_short_today': int(self.volume_short_today),
+            # 平仓委托冻结(未成交)
+            'volume_long_frozen_today': int(self.volume_long_frozen_today),
+            'volume_long_frozen_his': int(self.volume_long_frozen_his),
+            'volume_long_frozen': int(self.volume_long_frozen),
+            'volume_short_frozen_today': int(self.volume_short_frozen_today),
+            'volume_short_frozen_his': int(self.volume_short_frozen_his),
+            'volume_short_frozen': int(self.volume_short_frozen),
+            # 保证金
+            'margin_long': self.margin_long,       # 多头保证金
+            'margin_short': self.margin_short,
+            'margin': self.margin,
+            # 持仓字段
+            'position_price_long': self.position_price_long,  # 多头成本价
+            'position_cost_long': self.position_cost_long,   # 多头总成本(  总市值)
+            'position_price_short': self.position_price_short,
+            'position_cost_short': self.position_cost_short,
+            # 平仓字段
+            'open_price_long': self.open_price_long,  # 多头开仓价
+            'open_cost_long': self.open_cost_long,  # 多头开仓成本
+            'open_price_short': self.open_price_short,  # 空头开仓价
+            'open_cost_short': self.open_cost_short,  # 空头成本
+
+            # 扩展字段
+            'last_price': self.last_price,
+            # //多头浮动盈亏  ps.last_price * ps.volume_long * ps.ins->volume_multiple - ps.open_cost_long;
+            'float_profit_long': self.float_profit_long,
+            # //空头浮动盈亏  ps.open_cost_short - ps.last_price * ps.volume_short * ps.ins->volume_multiple;
+            'float_profit_short': self.float_profit_short,
+            # //浮动盈亏 = float_profit_long + float_profit_short
+            'float_profit': self.float_profit,
+            'position_profit_long': self.position_profit_long,  # //多头持仓盈亏
+            'position_profit_short': self.position_profit_short,  # //空头持仓盈亏
+            # //持仓盈亏 = position_profit_long + position_profit_short
+            'position_profit': self.position_profit
+        }
 
     @property
     def hold_detail(self):

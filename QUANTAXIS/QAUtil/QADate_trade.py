@@ -7620,6 +7620,21 @@ trade_date_sse = [
     "2021-12-31",
 ]
 
+def QA_util_get_real_tradeday():
+
+    """
+    获取当前时间下真实的 tradeday
+
+    如果当前是交易日的 早上 4 点 <9:00 开盘 -> 认定为上一个交易日
+    """
+    now =datetime.datetime.now()
+    date =  str(now.date())
+    tradeday =   QA_util_get_real_date(date)
+
+    if now.hour<9:
+        tradeday = QA_util_get_last_day(tradeday)
+
+    return tradeday
 
 def QA_util_format_date2str(cursor_date):
     """

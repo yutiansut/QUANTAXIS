@@ -6,10 +6,12 @@ import bson
 import numpy as np
 import pandas as pd
 import pymongo
-from qaenv import mongo_ip
+from pymongo import message
+from qaenv import mongo_ip, clickhouse_ip, clickhouse_password, clickhouse_port, clickhouse_user
 from QUANTAXIS.QAMarket.market_preset import MARKET_PRESET
 from QUANTAXIS.QAMarket.QAOrder import ORDER_DIRECTION
 from QUANTAXIS.QAMarket.QAPosition import QA_Position
+import clickhouse_driver
 
 
 def parse_orderdirection(od):
@@ -32,8 +34,9 @@ def parse_orderdirection(od):
 
 class QIFI_Account():
 
-    def __init__(self, username, password, model="SIM", broker_name="QAPaperTrading", portfolioname ='QAPaperTrade',
-            trade_host=mongo_ip, init_cash=1000000, taskid=str(uuid.uuid4()), nodatabase=False):
+    def __init__(self, username, password, model="SIM", broker_name="QAPaperTrading", portfolioname='QAPaperTrade',
+                 trade_host=mongo_ip, init_cash=1000000, taskid=str(uuid.uuid4()), nodatabase=False, dbname='mongodb',
+                 clickhouse_ip=clickhouse_ip, clickhouse_port=clickhouse_port, clickhouse_user=clickhouse_user, clickhouse_password=clickhouse_password):
         """Initial
         QIFI Account是一个基于 DIFF/ QIFI/ QAAccount后的一个实盘适用的Account基类
 
@@ -45,11 +48,14 @@ class QIFI_Account():
 
         qifiaccount 不去区分你的持仓是股票还是期货, 因此你可以实现跨市场的交易持仓管理
         nodatabase 离线模式
+
+
+        source_id ==> 基于 user_id / tradeday 区分
         """
         self.user_id = username
         self.username = username
         self.password = password
-
+        self.qifi_id = str(uuid.uuid4())
         self.source_id = "QIFI_Account"  # 识别号
         self.market_preset = MARKET_PRESET()
         # 指的是 Account所属的账户编组(实时的时候的账户观察组)
@@ -66,10 +72,6 @@ class QIFI_Account():
         self.bankname = "QASIMBank"
 
         self.trade_host = trade_host
-        if model == 'BACKTEST':
-            self.db = pymongo.MongoClient(trade_host).quantaxis
-        else:
-            self.db = pymongo.MongoClient(trade_host).QAREALTIME
 
         self.pub_host = ""
         self.trade_host = ""
@@ -103,16 +105,61 @@ class QIFI_Account():
         self.orders = {}
         self.market_preset = MARKET_PRESET()
         self.nodatabase = nodatabase
+        self.dbname = dbname
+        self._clickhouse_ip = clickhouse_ip
+        self._clickhouse_port = clickhouse_port
+        self._clickhouse_user = clickhouse_user
+        self._clickhouse_password = clickhouse_password
 
     def initial(self):
+        if not self.nodatabase:
+            if self.dbname in ['ck', 'clickhouse']:
+                self.db = clickhouse_driver.Client(host=self._clickhouse_ip, port=self._clickhouse_port,
+                                                    user=self._clickhouse_user, password=self._clickhouse_password,
+                                                    database='qifi',
+                                                    settings={
+                                                        'insert_block_size': 100000000},
+                                                    compression=True)
+                self.reload_ck()
 
-        self.reload()
+            else:
+
+                if self.model == "BACKTEST":
+                    self.db = pymongo.MongoClient(
+                        self.trade_host).quantaxis
+                else:
+                    self.db = pymongo.MongoClient(
+                        self.trade_host).QAREALTIME
+                self.reload()
+        else:
+            """
+            非数据库模式  不用 reload
+            """
+            print('当前为 QIFIAccount::非数据库模式, 适用于测试/二次开发')
 
         if self.pre_balance == 0 and self.balance == 0 and self.model != "REAL":
             self.log('Create new Account')
             self.create_simaccount()
-
         self.sync()
+
+
+
+    def save_ck(self):
+        for tablename  in ['accounts', 'positions', 'orders', 'trades', 'banks', 'qifi']:
+            print(tablename)
+
+            res = self.get_for_ck(tablename)
+            if res and len(res)>0:
+
+                self.db.execute('INSERT INTO qifi.{} VALUES'.format(tablename), res)
+                self.db.execute('OPTIMIZE TABLE qifi.{}'.format(tablename))
+    def reload_ck(self):
+        if self.model.upper() in ['REAL', 'SIM']:
+            res = self.db.execute("select * from qifi.qifi where account_cookie='{}' and trading_day='{}' limit 1".format(self.user_id, self.trading_day))
+            if len(res) ==1:
+                self.qifi_id =res['qifi_id']
+
+
 
     @property
     def trading_day(self):
@@ -222,22 +269,159 @@ class QIFI_Account():
             code=x.index, amount=x.amount, price=x.price, towards=1, datetime=x.datetime))
         return res
 
+    def update_qifiid(self, val:dict):
+        val['qifi_id'] = self.qifi_id
+        return val
+    def get_for_ck(self, name):
+        """
+        name should be in
+        ['accounts', 'positions', 'orders', 'trades', 'banks', 'qifi']
+        """
+        if name == 'accounts':
+            return [self.update_qifiid(self.account_msg)]
+        elif name == 'orders':
+            """
+
+            "account_cookie": self.user_id,
+                "user_id": self.user_id,
+                "instrument_id": code,
+                "towards": int(towards),
+                "exchange_id": self.market_preset.get_exchange(code),
+
+                "volume": int(amount),
+                "price": float(price),
+                "order_id": order_id,
+                "seqno": self.event_id,
+                "direction": direction,
+                "offset": offset,
+                "volume_orign": int(amount),
+                "price_type": "LIMIT",
+                "limit_price": float(price),
+                "time_condition": "GFD",
+                "volume_condition": "ANY",
+                "insert_date_time": self.transform_dt(self.dtstr),
+                'order_time': self.dtstr,
+                "exchange_order_id": str(uuid.uuid4()),
+                "status": "ALIVE",
+                "volume_left": int(amount),
+                "last_msg": "已报"
+            qifi_id          String,
+            seqno             Int32,
+            user_id           String,
+            order_id          String,
+            exchange_id       String,
+            instrument_id     String,
+            direction         String,
+            offset            String,
+            volume_orign      Float64,
+            price_type        String,
+            limit_price       Float64,
+            time_condition    String,
+            insert_date_time  Int64,
+            exchange_order_id String,
+            order_time        String,
+            status            String,
+            volume_left       Float64,
+            volume_condition  String,
+            last_msg          String"""
+            res =  list(self.orders.values())
+            if len(res)>0:
+                res = [self.update_qifiid(i) for i in res]
+                return res
+            else:
+                return []
+        elif name == 'trades':
+            res =  list(self.trades.values())
+            if len(res)>0:
+                res = [self.update_qifiid(i) for i in res]
+            return res
+
+        elif name == 'positions':
+            res= list(self.position_msg.values())
+            if len(res)>0:
+                res = [self.update_qifiid(i) for i in res]
+                return res
+            else:
+                return []
+        elif name == 'banks':
+            res= list(self.banks.values())
+            if len(res)>0:
+                res = [self.update_qifiid(i) for i in res]
+            return res
+        elif name == 'qifi':
+
+            """
+            
+                account_cookie   String,
+                bank_password   String,
+                qifi_id          String,
+                bankid           String,
+                bankname         String,
+                broker_name      String,
+                capital_password String,
+                eventmq_ip       String,
+                investor_name    String,
+                money            Float64,
+                password         String,
+                ping_gap         Int32,
+                portfolio        String,
+                pub_host         String,
+                taskid           String,
+                trade_host       String,
+                updatetime       String,
+                wsuri            String,
+                trading_day      String,
+                status           Int32,
+                databaseip       String"""
+            return [{
+                "account_cookie": self.user_id,
+                "password": self.password,
+                "databaseip": self.trade_host,
+                'qifi_id': self.qifi_id,
+                "ping_gap": 5,
+                "eventmq_ip": self.trade_host,
+                "portfolio": self.portfolio,
+                "broker_name": self.broker_name,  # // 接入商名称
+                "capital_password": self.capital_password,  # // 资金密码 (实盘用)
+                "bank_password": self.bank_password,  # // 银行密码(实盘用)
+                "bankid": self.bank_id,  # // 银行id
+                "investor_name": self.investor_name,  # // 开户人名称
+                "money": self.money,         # // 当前可用现金
+                "pub_host": self.pub_host,
+                "trade_host": self.trade_host,
+                "taskid": self.taskid,
+                "updatetime": str(self.last_updatetime),
+                "wsuri": self.wsuri,
+                "bankname": self.bankname,
+                "trading_day": str(self.trading_day),
+                "status": self.status,
+            }]
     def sync(self):
         self.on_sync()
         try:
             if not self.nodatabase:
-                if self.model == "BACKTEST":
-                    ## 数据库: quantaxis.history
-                    self.db.history.update({'account_cookie': self.user_id, 'trading_day': self.trading_day}, {
-                        '$set': self.message}, upsert=True)
+                if self.dbname in ['ck', 'clickhouse']:
+                    self.save_ck()
                 else:
-                    ## 数据库: QAREALTIME.account
-                    self.db.account.update({'account_cookie': self.user_id, 'password': self.password}, {
-                        '$set': self.message}, upsert=True)
 
-                    self.db.hisaccount.insert_one(
-                        {'updatetime': self.dtstr, 'account_cookie': self.user_id, 'accounts': self.account_msg})
+                    if self.model == "BACKTEST":
+
+                        self.db = pymongo.MongoClient(
+                            self.trade_host).quantaxis
+                        ## 数据库: quantaxis.history
+                        self.db.history.update({'account_cookie': self.user_id, 'trading_day': self.trading_day}, {
+                            '$set': self.message}, upsert=True)
+                    else:
+
+                        ## 数据库: QAREALTIME.account
+                        self.db.account.update({'account_cookie': self.user_id, 'password': self.password}, {
+                            '$set': self.message}, upsert=True)
+
+                        self.db.hisaccount.insert_one(
+                            {'updatetime': self.dtstr, 'account_cookie': self.user_id, 'accounts': self.account_msg})
+
             else:
+
                 print(
                     'pretend to save to database {}/{}'.format(self.user_id, self.trading_day))
                 print(self.message)
@@ -281,6 +465,7 @@ class QIFI_Account():
             self.send_order(order['code'], order['amount'],
                             order['price'], order['towards'], order['order_id'])
         self.schedule = {}
+        self.qifi_id = uuid.uuid4()
 
     def on_sync(self):
         pass
@@ -470,6 +655,9 @@ class QIFI_Account():
     @property
     def position_msg(self):
         return dict(zip(self.positions.keys(), [item.message for item in self.positions.values()]))
+    @property
+    def position_qifimsg(self):
+        return dict(zip(self.positions.keys(), [item.qifimessage for item in self.positions.values()]))
 
     @property
     def position_profit(self):
@@ -486,7 +674,7 @@ class QIFI_Account():
     def transform_dt(self, times):
         if isinstance(times, str):
 
-            if len(times)==10:
+            if len(times) == 10:
                 times = times+' 00:00:00'
             tradedt = datetime.datetime.strptime(times, '%Y-%m-%d %H:%M:%S') if len(
                 times) == 19 else datetime.datetime.strptime(times.replace('_', '.'), '%Y-%m-%d %H:%M:%S.%f')
@@ -617,7 +805,7 @@ class QIFI_Account():
         # self.order_rule()
         return res
 
-    def send_order(self, code: str, amount: float, price: float, towards: int, order_id: str = '', datetime: str = ''):
+    def send_order(self, code: str, amount: float, price: float, towards: int, order_id: str = '', datetime: str = '') -> dict:
 
         if datetime:
             # if datetime< self.datetime:
@@ -635,7 +823,6 @@ class QIFI_Account():
                 "instrument_id": code,
                 "towards": int(towards),
                 "exchange_id": self.market_preset.get_exchange(code),
-                "order_time": self.dtstr,
                 "volume": int(amount),
                 "price": float(price),
                 "order_id": order_id,
@@ -745,7 +932,6 @@ class QIFI_Account():
             self.event_id += 1
             trade_id = str(uuid.uuid4()) if trade_id is None else trade_id
 
-
             # update accounts
             print('update trade')
 
@@ -770,21 +956,17 @@ class QIFI_Account():
             self.money -= (margin - close_profit)
             self.close_profit += (close_profit - commission)
 
-            pos =  self.get_position(code)
-            if pos.volume_long ==0 and pos.volume_short ==0:
+            pos = self.get_position(code)
+            if pos.volume_long == 0 and pos.volume_short == 0:
                 self.positions.pop(self.format_code(code))
             if self.model != "BACKTEST":
                 self.sync()
 
     def get_position(self, code: str = None) -> QA_Position:
-
         """
         兼容 code.XSHE 诸如
-        
+
         """
-
-        
-
 
         if code is None:
             return list(self.positions.values())[0]
@@ -806,7 +988,7 @@ class QIFI_Account():
         pass
 
     def format_code(self, code):
-        
+
         if '.' in code:
             return code
         else:

@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.0.0.dev21'
+__version__ = '2.0.0.dev22'
 __author__ = 'yutiansut'
 
 import argparse
@@ -258,7 +258,7 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     QA_util_to_list_from_numpy, QA_util_to_list_from_pandas,
     QA_util_to_pandas_from_json, QA_util_to_pandas_from_list, QA_util_web_ping,
     QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse,
-    QA_util_get_next_period)
+    QA_util_get_next_period, QA_util_get_real_tradeday)
 
 
 from QUANTAXIS.QAPubSub.consumer import subscriber, subscriber_topic, subscriber_routing
