@@ -68,14 +68,14 @@ class QA_QIFIMANAGER():
     def returns(self):
         returns = self.assets.pct_change()
 
-        returns.index = returns.index.tz_localize('Asia/Shanghai')
+        returns.index = returns.index
         return returns
 
     @property
     def benchmark_returns(self):
         returns = self.benchmark_assets.pct_change()
         try:
-            returns.index = returns.index.tz_localize('Asia/Shanghai')
+            returns.index = returns.index
         except:
             pass
         return returns

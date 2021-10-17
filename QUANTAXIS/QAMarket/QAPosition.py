@@ -874,11 +874,11 @@ class QA_Position():
                     abs(value)
             
         elif self.market_type == MARKET_TYPE.STOCK_CN:
+            value = trade_price * trade_amount
             if trade_towards == ORDER_DIRECTION.BUY_OPEN:
                 """买入万 2 滑点"""
                 commission_fee = value *  0.0002
             else:
-                value = trade_price * trade_amount
                 """卖出千 1.3 手续费+ 万 2 滑点"""
                 commission_fee = value *  0.0015
 
