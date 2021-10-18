@@ -7454,8 +7454,6 @@ trade_date_sse = [
     "2021-04-28",
     "2021-04-29",
     "2021-04-30",
-    "2021-05-04",
-    "2021-05-05",
     "2021-05-06",
     "2021-05-07",
     "2021-05-10",
@@ -7552,7 +7550,6 @@ trade_date_sse = [
     "2021-09-15",
     "2021-09-16",
     "2021-09-17",
-    "2021-09-20",
     "2021-09-22",
     "2021-09-23",
     "2021-09-24",
@@ -7623,6 +7620,21 @@ trade_date_sse = [
     "2021-12-31",
 ]
 
+def QA_util_get_real_tradeday():
+
+    """
+    获取当前时间下真实的 tradeday
+
+    如果当前是交易日的 早上 4 点 <9:00 开盘 -> 认定为上一个交易日
+    """
+    now =datetime.datetime.now()
+    date =  str(now.date())
+    tradeday =   QA_util_get_real_date(date)
+
+    if now.hour<9:
+        tradeday = QA_util_get_last_day(tradeday)
+
+    return tradeday
 
 def QA_util_format_date2str(cursor_date):
     """

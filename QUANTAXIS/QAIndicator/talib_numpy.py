@@ -27,6 +27,7 @@
 import numpy as np
 import pandas as pd
 from QUANTAXIS.QAIndicator.base import *
+
 try:
     import talib
 except:
@@ -44,10 +45,12 @@ Volume HMA(完成)
 """
 
 # 定义MACD函数
-def TA_MACD(prices:np.ndarray, 
-            fastperiod:int=12, 
-            slowperiod:int=26, 
-            signalperiod:int=9) -> np.ndarray:
+
+
+def TA_MACD(prices: np.ndarray,
+            fastperiod: int = 12,
+            slowperiod: int = 26,
+            signalperiod: int = 9) -> np.ndarray:
     '''
     参数设置:
         fastperiod = 12
@@ -56,9 +59,9 @@ def TA_MACD(prices:np.ndarray,
 
     返回: macd - dif, signal - dea, hist * 2 - bar, delta
     '''
-    macd, signal, hist = talib.MACD(prices, 
-                                    fastperiod=fastperiod, 
-                                    slowperiod=slowperiod, 
+    macd, signal, hist = talib.MACD(prices,
+                                    fastperiod=fastperiod,
+                                    slowperiod=slowperiod,
                                     signalperiod=signalperiod)
     hist = (macd - signal) * 2
     delta = np.r_[np.nan, np.diff(hist)]
@@ -66,8 +69,8 @@ def TA_MACD(prices:np.ndarray,
 
 
 # 定义RSI函数
-def TA_RSI(prices:np.ndarray, 
-           timeperiod:int=12) -> np.ndarray:
+def TA_RSI(prices: np.ndarray,
+           timeperiod: int = 12) -> np.ndarray:
     '''
     参数设置:
         timeperiod = 12
@@ -80,11 +83,11 @@ def TA_RSI(prices:np.ndarray,
 
 
 # 定义RSI函数
-def TA_BBANDS(prices:np.ndarray, 
-              timeperiod:int=5, 
-              nbdevup:int=2, 
-              nbdevdn:int=2, 
-              matype:int=0) -> np.ndarray:
+def TA_BBANDS(prices: np.ndarray,
+              timeperiod: int = 5,
+              nbdevup: int = 2,
+              nbdevdn: int = 2,
+              matype: int = 0) -> np.ndarray:
     '''
     参数设置:
         timeperiod = 5
@@ -93,23 +96,23 @@ def TA_BBANDS(prices:np.ndarray,
 
     返回: up, middle, low
     '''
-    up, middle, low = talib.BBANDS(prices, 
-                                   timeperiod, 
-                                   nbdevup, 
-                                   nbdevdn, 
+    up, middle, low = talib.BBANDS(prices,
+                                   timeperiod,
+                                   nbdevup,
+                                   nbdevdn,
                                    matype)
     ch = (up - low) / middle
     delta = np.r_[np.nan, np.diff(ch)]
     return np.c_[up, middle, low, ch, delta]
 
 
-def TA_KDJ(high:np.ndarray, 
-           low:np.ndarray, 
-           close:np.ndarray, 
-           fastk_period:int=9, 
-           slowk_matype:int=0, 
-           slowk_period:int=3, 
-           slowd_period:int=3) -> np.ndarray:
+def TA_KDJ(high: np.ndarray,
+           low: np.ndarray,
+           close: np.ndarray,
+           fastk_period: int = 9,
+           slowk_matype: int = 0,
+           slowk_period: int = 3,
+           slowd_period: int = 3) -> np.ndarray:
     '''
     参数设置:
         fastk_period = 9
@@ -119,12 +122,12 @@ def TA_KDJ(high:np.ndarray,
 
     返回: K, D, J
     '''
-    K, D = talib.STOCH(high, 
-                       low, 
-                       close, 
-                       fastk_period=fastk_period, 
-                       slowk_matype=slowk_matype, 
-                       slowk_period=slowk_period, 
+    K, D = talib.STOCH(high,
+                       low,
+                       close,
+                       fastk_period=fastk_period,
+                       slowk_matype=slowk_matype,
+                       slowk_period=slowk_period,
                        slowd_period=slowd_period)
     J = 3 * K - 2 * D
     delta = np.r_[np.nan, np.diff(J)]
@@ -149,18 +152,18 @@ def TA_ADXR(high, low, close, timeperiod=14) -> np.ndarray:
     return np.c_[real]
 
 
-def TA_CCI(high:np.ndarray, 
-           low:np.ndarray, 
-           close:np.ndarray, 
-           timeperiod:int=14) -> np.ndarray:
+def TA_CCI(high: np.ndarray,
+           low: np.ndarray,
+           close: np.ndarray,
+           timeperiod: int = 14) -> np.ndarray:
     """
     名称：平均趋向指数的趋向指数
     简介：使用CCI指标，指标判断CCI趋势。
     CCI - Commodity Channel Index
     """
-    real = talib.CCI(high, 
-                     low, 
-                     close, 
+    real = talib.CCI(high,
+                     low,
+                     close,
                      timeperiod=timeperiod)
     delta = np.r_[np.nan, np.diff(real)]
     return np.c_[real, delta]
@@ -182,7 +185,8 @@ def TA_HMA(close, period):
     Formula:
     HMA = WMA(2*WMA(n/2) - WMA(n)), sqrt(n)
     """
-    hma = talib.WMA(2 * talib.WMA(close, int(period / 2)) - talib.WMA(close, period), int(np.sqrt(period)))
+    hma = talib.WMA(2 * talib.WMA(close, int(period / 2)) -
+                    talib.WMA(close, period), int(np.sqrt(period)))
     return hma
 
 
@@ -219,18 +223,23 @@ def ADX_MA(data, period=14, smooth=14, limit=18):
     up = data.high.pct_change()
     down = data.low.pct_change() * -1
 
-    trur = TA_HMA(talib.TRANGE(data.high.values, data.low.values, data.close.values) , period)
-    plus = 100 * TA_HMA(np.where(((up > down) & (up > 0)), up, 0), period) / trur
-    minus = 100 * TA_HMA(np.where(((down > up) & (down > 0)), down, 0), period) / trur
+    trur = TA_HMA(talib.TRANGE(data.high.values,
+                               data.low.values, data.close.values), period)
+    plus = 100 * TA_HMA(np.where(((up > down) & (up > 0)),
+                                 up, 0), period) / trur
+    minus = 100 * \
+        TA_HMA(np.where(((down > up) & (down > 0)), down, 0), period) / trur
 
     # 这里是dropna的替代解决办法，因为我觉得nparray的传递方式如果随便drop了可能会跟 data.index
     # 对不上，所以我选择补零替代dropna
     plus = np.r_[np.zeros(period + 2), plus[(period + 2):]]
     minus = np.r_[np.zeros(period + 2), minus[(period + 2):]]
-    sum = plus + minus 
-    adx = 100 * TA_HMA(abs(plus - minus) / (np.where((sum == 0), 1, sum)), smooth)
+    sum = plus + minus
+    adx = 100 * TA_HMA(abs(plus - minus) /
+                       (np.where((sum == 0), 1, sum)), smooth)
     adx = np.r_[np.zeros(smooth + 2), adx[(smooth + 2):]]
-    ADXm = np.where(((adx > limit) & (plus > minus)), 1, np.where(((adx > limit) & (plus < minus)), -1, 0))
+    ADXm = np.where(((adx > limit) & (plus > minus)), 1,
+                    np.where(((adx > limit) & (plus < minus)), -1, 0))
     return adx, ADXm
 
 
@@ -269,8 +278,10 @@ def ATR_RSI_Stops(data, period=10):
     PRICE_PREDICT = pd.DataFrame(columns=['POSITION'], index=data.index)
     PREDICT_JX = (CROSS(data.close, top_line) == 1)
     PREDICT_SX = (CROSS(bottom_line, data.close) == 1)
-    PREDICT_JX = PREDICT_JX[PREDICT_JX.apply(lambda x: x == True)]  # eqv.  Trim(x == False)
-    PREDICT_SX = PREDICT_SX[PREDICT_SX.apply(lambda x: x == True)]  # eqv.  Trim(x == False)
+    PREDICT_JX = PREDICT_JX[PREDICT_JX.apply(
+        lambda x: x == True)]  # eqv.  Trim(x == False)
+    PREDICT_SX = PREDICT_SX[PREDICT_SX.apply(
+        lambda x: x == True)]  # eqv.  Trim(x == False)
     PRICE_PREDICT.loc[PREDICT_JX.index, 'POSITION'] = 1
     PRICE_PREDICT.loc[PREDICT_SX.index, 'POSITION'] = -1
     PRICE_PREDICT['POSITION'] = PRICE_PREDICT['POSITION'].ffill()
@@ -303,27 +314,29 @@ def ATR_SuperTrend_cross(klines, length=12, Factor=3):
 
     """
     src = klines.close.values
-    Factor = 3 # Factor of Super Trend
-    ATR_period = 12 # ATR period
+    Factor = 3  # Factor of Super Trend
+    ATR_period = 12  # ATR period
 
-    Up = (klines.high + klines.low) / 2 - (Factor * talib.ATR(klines.high, 
-                                   klines.low, 
-                                   klines.close, 
-                                   ATR_period))
-    Dn = (klines.high + klines.low) / 2 + (Factor * talib.ATR(klines.high, 
-                                   klines.low, 
-                                   klines.close, 
-                                   ATR_period))
+    Up = (klines.high + klines.low) / 2 - (Factor * talib.ATR(klines.high,
+                                                              klines.low,
+                                                              klines.close,
+                                                              ATR_period))
+    Dn = (klines.high + klines.low) / 2 + (Factor * talib.ATR(klines.high,
+                                                              klines.low,
+                                                              klines.close,
+                                                              ATR_period))
     TUp = np.full([len(src)], np.nan)
     for i in np.arange(1, len(src)):
-        TUp[i] = max(Up[i], TUp[i - 1]) if (src[i - 1] > TUp[i - 1]) else Up[i] 
+        TUp[i] = max(Up[i], TUp[i - 1]) if (src[i - 1] > TUp[i - 1]) else Up[i]
     TDown = np.full([len(src)], np.nan)
     for i in np.arange(1, len(src)):
-        TDown[i] = min(Dn[i], TDown[i - 1]) if (src[i - 1] < TDown[i - 1]) else Dn[i]
+        TDown[i] = min(Dn[i], TDown[i - 1]) if (src[i - 1]
+                                                < TDown[i - 1]) else Dn[i]
 
     Trend = np.full([len(src)], np.nan)
     for i in np.arange(1, len(src)):
-        Trend[i] = 1 if (src[i] > TDown[i - 1]) else (-1 if (src[i] < TUp[i - 1]) else Trend[i - 1])
+        Trend[i] = 1 if (src[i] > TDown[i - 1]
+                         ) else (-1 if (src[i] < TUp[i - 1]) else Trend[i - 1])
 
     Tsl = np.where(Trend == 1, TUp, TDown)
     return Tsl, Trend
@@ -353,10 +366,11 @@ def Volume_HMA(klines, period=5):
         the vhma indicator and thread directions sequence. (-1/-2, 0, 1/2) means for (Neagtive, No Trend, Positive)
 
     """
-    src1 = talib.EMA(klines.close * klines.volume, period) / talib.EMA(klines.volume, period)
+    src1 = talib.EMA(klines.close * klines.volume, period) / \
+        talib.EMA(klines.volume, period)
     vhma = TA_HMA(src1, period)
     vhma_s = pd.Series(vhma)
 
     lineDirection = np.where((vhma > vhma_s.shift(1).values), 1, -1)
     hu = np.where((vhma > vhma_s.shift(2).values), 1, -1)
-    return vhma, lineDirection + hu 
+    return vhma, lineDirection + hu

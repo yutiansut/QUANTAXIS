@@ -1,4 +1,4 @@
-FROM daocloud.io/quantaxis/qa-jupyter:latest
+FROM ghcr.io/yutiansut/quantaxis/qa-jupyer:latest
 USER root
 ENV TZ=Asia/Shanghai
 ENV DEBIAN_FRONTEND noninteractive
@@ -19,7 +19,7 @@ RUN cd /root && git clone https://gitee.com/yutiansut/qamazing_community && cd q
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
-    RUST_VERSION=1.48.0
+    RUST_VERSION=1.55.0
     #https://cmake.org/files/v3.19/cmake-3.19.0-Linux-x86_64.tar.gz
 ARG CMAKE_VERSION=3.19.0
 WORKDIR /tmp
@@ -93,5 +93,6 @@ RUN apt-get update && apt-get -y install libcurl4-openssl-dev iputils-ping libss
 
 
 WORKDIR /root
-EXPOSE 80 8010 8787 8020 8029 8018 8019 8028
+EXPOSE 80 8010 8787 8020 8029 8018 8019 8028 8080
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/bin/bash", "/root/run-community.sh"]

@@ -65,9 +65,10 @@ NAME = "quantaxis"
 """
 
 """
-PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", "QUANTAXIS.QAMarket", 'QUANTAXIS.QASetting', "QUANTAXIS.QACmd", "QUANTAXIS.QAFactor",
-            "QUANTAXIS.QAApplication", "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", 'QUANTAXIS.QAData.proto', "QUANTAXIS.QAAnalysis", 'QUANTAXIS.QASelector',
-            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil", "QUANTAXIS.QAARP", "QUANTAXIS.QAIndicator"]
+PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", 'QUANTAXIS.QASetting', "QUANTAXIS.QAFactor",
+            "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", "QUANTAXIS.QAAnalysis", "QUANTAXIS.QAPubSub",
+            "QUANTAXIS.QASU", "QUANTAXIS.QAUtil",  "QUANTAXIS.QAIndicator", "QUANTAXIS.QAStrategy",
+            "QUANTAXIS.QAMarket", "QUANTAXIS.QIFI","QUANTAXIS.QAWebServer"]
 """
 
 """
@@ -113,12 +114,14 @@ setup(
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
     ],
-    install_requires= INSTALL_REQUIRES, 
+    install_requires=INSTALL_REQUIRES,
     entry_points={
         'console_scripts': [
             'quantaxis=QUANTAXIS.QACmd:QA_cmd',
             'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat',
-            'qarun=QUANTAXIS.QACmd.runner:run'
+            'qarun=QUANTAXIS.QACmd.runner:run',
+            'qawebserver=QUANTAXIS.QAWebServer.server:main',
+            
         ]
     },
     keywords=KEYWORDS,

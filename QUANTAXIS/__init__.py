@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '1.10.18'
+__version__ = '2.0.0.dev24'
 __author__ = 'yutiansut'
 
 import argparse
@@ -40,16 +40,10 @@ import sys
 
 # CMD and Cli
 import QUANTAXIS.QACmd
-from QUANTAXIS.QAAnalysis import *
-from QUANTAXIS.QAApplication.QAAnalysis import QA_backtest_analysis_backtest
+
+
 # Backtest
-from QUANTAXIS.QAApplication.QABacktest import QA_Backtest
-from QUANTAXIS.QAApplication.QAResult import backtest_result_analyzer
-from QUANTAXIS.QAARP.QAAccount import QA_Account
-from QUANTAXIS.QAARP.QAPortfolio import QA_Portfolio, QA_PortfolioView
-from QUANTAXIS.QAARP.QARisk import QA_Performance, QA_Risk
-from QUANTAXIS.QAARP.QAStrategy import QA_Strategy
-from QUANTAXIS.QAARP.QAUser import QA_User
+
 from QUANTAXIS.QACmd import QA_cmd
 # Data
 from QUANTAXIS.QAData import (
@@ -92,7 +86,6 @@ from QUANTAXIS.QAData import (
 from QUANTAXIS.QAData.dsmethods import *
 # ENGINE
 from QUANTAXIS.QAEngine import (
-    QA_AsyncExec,
     QA_AsyncQueue,
     QA_AsyncScheduler,
     QA_AsyncTask,
@@ -147,7 +140,6 @@ from QUANTAXIS.QAFetch import (
     QA_fetch_get_security_bars,
     QA_fetch_get_stock_block,
     QA_fetch_get_stock_day,
-    QA_fetch_get_stock_indicator,
     QA_fetch_get_stock_info,
     QA_fetch_get_stock_list,
     QA_fetch_get_stock_min,
@@ -206,20 +198,8 @@ from QUANTAXIS.QAFetch.QAQuery import (
 from QUANTAXIS.QAFetch.QAQuery_Advance import *
 from QUANTAXIS.QAIndicator import *
 # market
-from QUANTAXIS.QAMarket import (
-    QA_BacktestBroker,
-    QA_Broker,
-    QA_Dealer,
-    QA_Market,
-    QA_Order,
-    QA_OrderHandler,
-    QA_OrderQueue,
-    QA_Position,
-    QA_RandomBroker,
-    QA_RealBroker,
-    QA_SimulatedBroker,
-    QA_TTSBroker
-)
+from QUANTAXIS.QAFetch.QAClickhouse import QACKClient
+
 from QUANTAXIS.QASetting.QALocalize import (
     cache_path,
     download_path,
@@ -278,34 +258,32 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     QA_util_to_list_from_numpy, QA_util_to_list_from_pandas,
     QA_util_to_pandas_from_json, QA_util_to_pandas_from_list, QA_util_web_ping,
     QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse,
-    QA_util_get_next_period)
+    QA_util_get_next_period, QA_util_get_real_tradeday)
 
-# Factor
-from QUANTAXIS.QAFactor.analyze import FactorAnalyzer
-from QUANTAXIS.QAFactor.data import DataApi
-from QUANTAXIS.QAFactor.preprocess import (
-    QA_fmt_factor,
-    QA_fetch_factor_weight,
-    QA_fetch_get_factor_groupby,
-    QA_standardize_factor,
-    QA_winsorize_factor
-)
-from QUANTAXIS.QAFactor.utils import QA_fmt_code_list
 
-# from QUANTAXIS.QASU.save_backtest import (
-#     QA_SU_save_account_message, QA_SU_save_backtest_message, QA_SU_save_account_to_csv)
+from QUANTAXIS.QAPubSub.consumer import subscriber, subscriber_topic, subscriber_routing
+from QUANTAXIS.QAPubSub.producer import publisher, publisher_topic, publisher_routing
+from QUANTAXIS.QAPubSub.base import base_ps
+from QUANTAXIS.QAPubSub.debugtoool import debug_sub, debug_pub
 
-# event driver
 
-# Account,Risk,Portfolio,User,Strategy
+from QUANTAXIS.QAWebServer.basehandles import QABaseHandler, QAWebSocketHandler
+from QUANTAXIS.QAWebServer.schedulehandler import QAScheduleQuery, QASchedulerHandler
+from QUANTAXIS.QAWebServer.server import start_server
 
-# Setting
+from QUANTAXIS.QIFI.QifiAccount import QIFI_Account
+from QUANTAXIS.QIFI.QifiManager import QA_QIFIMANAGER, QA_QIFISMANAGER
 
-# Util
+from QUANTAXIS.QAStrategy.qactabase import QAStrategyCtaBase
 
-#from QUANTAXIS.QAFetch.QATdx_adv import bat
 
-if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8]:
+from QUANTAXIS.QAFactor.feature import QASingleFactor_DailyBase
+from QUANTAXIS.QAFactor.featurepool import MA10
+from QUANTAXIS.QAFactor.featureView import QAFeatureView
+from QUANTAXIS.QAFactor.featureAnalysis import QAFeatureAnalysis
+from QUANTAXIS.QAFactor.featurebacktest import QAFeatureBacktest
+
+if sys.version_info.major != 3 or sys.version_info.minor not in [4, 5, 6, 7, 8, 9]:
     print('wrong version, should be 3.4/3.5/3.6/3.7/3.8 version')
     sys.exit()
 
@@ -335,4 +313,3 @@ def __repr__():
 
 
 __str__ = __repr__
-# QA_util_log_info(Logo)

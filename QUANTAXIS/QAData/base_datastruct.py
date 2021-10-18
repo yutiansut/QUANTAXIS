@@ -22,8 +22,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import json
 import datetime
+import json
 import os
 import statistics
 import webbrowser
@@ -33,17 +33,15 @@ from functools import lru_cache
 
 import numpy as np
 import pandas as pd
+from dateutil import parser
 
 try:
-    from pyecharts import Kline, Bar, Grid
+    from pyecharts import Bar, Grid, Kline
 except:
     from pyecharts.charts import Kline, Bar, Grid
 
-from QUANTAXIS.QAUtil import (
-    QA_util_log_info,
-    QA_util_random_with_topic,
-    QA_util_to_json_from_pandas
-)
+from QUANTAXIS.QAUtil import (QA_util_log_info, QA_util_random_with_topic,
+                              QA_util_to_json_from_pandas)
 from QUANTAXIS.QAUtil.QADate import QA_util_to_datetime
 
 # todo 🛠基类名字 _quotation_base 小写是因为 不直接初始化， 建议改成抽象类
@@ -316,6 +314,22 @@ class _quotation_base():
 
     @property
     @lru_cache()
+    def closepanel(self):
+        if 'min' in self.type:
+            return self.close.reset_index().pivot(index='datetime', columns='code', values='close')
+        elif 'day' in self.type:
+            return self.close.reset_index().pivot(index='date', columns='code', values='close')
+
+    @property
+    @lru_cache()
+    def openpanel(self):
+        if 'min' in self.type:
+            return self.open.reset_index().pivot(index='datetime', columns='code', values='open')
+        elif 'day' in self.type:
+            return self.open.reset_index().pivot(index='date', columns='code', values='open')
+
+    @property
+    @lru_cache()
     def amount(self):
         if 'amount' in self.data.columns:
             return self.data.amount
@@ -386,9 +400,9 @@ class _quotation_base():
         index = self.data.index.remove_unused_levels()
         try:
             return index.levels[0
-                               ] if 'date' in self.data.index.names else sorted(
-                                   list(set(self.datetime.date))
-                               )
+                                ] if 'date' in self.data.index.names else sorted(
+                list(set(self.datetime.date))
+            )
         except:
             return None
 
@@ -398,8 +412,7 @@ class _quotation_base():
         '分钟线结构返回datetime 日线结构返回date'
         index = self.data.index.remove_unused_levels()
         return pd.to_datetime(
-            index.levels[0]
-        , utc=False)
+            index.levels[0], utc=False)
 
     @property
     @lru_cache()
@@ -421,7 +434,7 @@ class _quotation_base():
     @property
     @lru_cache()
     def ndarray(self):
-        return self.to_numpy()
+        return self.reset_index().values
 
     '''
     ########################################################################################################
@@ -466,7 +479,7 @@ class _quotation_base():
     def pvariance(self):
         '返回DataStruct.price的方差 variance'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.pvariance(x))
+                                 ).apply(lambda x: statistics.pvariance(x))
         res.name = 'pvariance'
         return res
 
@@ -476,7 +489,7 @@ class _quotation_base():
     def variance(self):
         '返回DataStruct.price的方差 variance'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.variance(x))
+                                 ).apply(lambda x: statistics.variance(x))
         res.name = 'variance'
         return res
 
@@ -522,7 +535,7 @@ class _quotation_base():
     def mean_harmonic(self):
         '返回DataStruct.price的调和平均数'
         res = self.price.groupby(level=1
-                                ).apply(lambda x: statistics.harmonic_mean(x))
+                                 ).apply(lambda x: statistics.harmonic_mean(x))
         res.name = 'mean_harmonic'
         return res
 
@@ -533,7 +546,7 @@ class _quotation_base():
         '返回DataStruct.price的众数'
         try:
             res = self.price.groupby(level=1
-                                    ).apply(lambda x: statistics.mode(x))
+                                     ).apply(lambda x: statistics.mode(x))
             res.name = 'mode'
             return res
         except:
@@ -920,6 +933,16 @@ class _quotation_base():
                 'QADATASTRUCT ERROR: ONLY ACCEPT DATETIME-INDEX FORMAT'
             )
 
+    def locclose(self, codelist, start, end):
+        if 'min' in self.type:
+            start = parser.parse(start)
+            end = parser.parse(end)
+        elif 'day' in self.type:
+            start = parser.parse(start).date()
+            end = parser.parse(end).date()
+
+        return self.closepanel.loc[slice(start, end), codelist]
+
     def iterrows(self):
         return self.data.iterrows()
 
@@ -1167,11 +1190,18 @@ class _quotation_base():
         全部恢复
         """
 
+        if 'min' in self.type:
+            start = parser.parse(start)
+            end = parser.parse(end) if end else end
+        elif 'day' in self.type:
+            start = parser.parse(start).date()
+            end = parser.parse(end).date() if end else end
+
         def _selects(code, start, end):
             if end is not None:
-                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), code), :]
+                return self.data.loc[(slice(start, end), code), :]
             else:
-                return self.data.loc[(slice(pd.Timestamp(start), None), code), :]
+                return self.data.loc[(slice(start, None), code), :]
 
         try:
             return self.new(_selects(code, start, end), self.type, self.if_fq)
@@ -1202,11 +1232,18 @@ class _quotation_base():
         全部恢复
         """
 
+        if 'min' in self.type:
+            start = parser.parse(start)
+            end = parser.parse(end) if end else end
+        elif 'day' in self.type:
+            start = parser.parse(start).date()
+            end = parser.parse(end).date() if end else end
+
         def _select_time(start, end):
             if end is not None:
-                return self.data.loc[(slice(pd.Timestamp(start), pd.Timestamp(end)), slice(None)), :]
+                return self.data.loc[(slice(start, end), slice(None)), :]
             else:
-                return self.data.loc[(slice(pd.Timestamp(start), None), slice(None)), :]
+                return self.data.loc[(slice(start, None), slice(None)), :]
 
         try:
             return self.new(_select_time(start, end), self.type, self.if_fq)
@@ -1308,7 +1345,7 @@ class _quotation_base():
             lambda x: x.minute == minute and x.hour == hour and x.second ==
             second
         ),
-                             slice(None)]
+            slice(None)]
 
     def get_bar(self, code, time):
         """

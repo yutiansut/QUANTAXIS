@@ -86,6 +86,17 @@ services:
         restart: always
 
 
+    qaredis:
+        image: daocloud.io/quantaxis/qaredis:latest
+        ports:
+            - "6379:6379"
+        environment:
+            - TZ=Asia/Shanghai
+        networks:
+            qanetwork:
+                ipv4_address: 172.19.0.6
+        restart: always
+
 
 
     qatrader:

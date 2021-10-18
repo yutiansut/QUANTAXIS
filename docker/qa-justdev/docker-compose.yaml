@@ -1,48 +1,5 @@
 version: "2"
 services:
-    qa:
-        image: daocloud.io/quantaxis/qacommunity:latest
-        container_name: qacommunity
-        depends_on:
-            - mgdb
-            - qaeventmq
-        networks:
-            qanetwork_pro:
-                ipv4_address: 172.19.3.3
-        ports:
-            - "8888:8888"
-            - "81:80"
-        environment:
-            - TZ=Asia/Shanghai
-            - MONGODB=mgdb
-            - QARUN=qaweb
-        volumes:
-            - qacode:/home
-        restart: always
-    qaweb_run:
-        image: daocloud.io/quantaxis/qarun:latest
-        container_name: qarun
-        networks:
-            qanetwork_pro:
-                ipv4_address: 172.19.3.4
-        depends_on:
-            - mgdb
-            - qaeventmq
-        ports:
-            - "8010:8010"
-        environment:
-            - MONGODB=mgdb
-            - QAPUBSUB_IP=qaeventmq
-            - QAPUBSUB_PORT=5672
-            - QAPUBSUB_USER=admin
-            - QAPUBSUB_PWD=admin
-            - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
-            - TZ=Asia/Shanghai
-        restart: always
-        depends_on:
-          - qaeventmq
-          - mgdb
-        command: ['/root/wait_for_it.sh', 'qaeventmq:15672', '--' , "/root/runcelery.sh"]
 
     mgdb:
         image: daocloud.io/quantaxis/qamongo_single:latest
@@ -72,17 +29,7 @@ services:
         restart: always
 
         restart: always
-    qamonitor:
-        image: daocloud.io/quantaxis/qa-monitor:latest
-        ports:
-            - "61209:61209"
-            - "61208:61208"
-        pid: "host"
-        networks:
-            qanetwork_pro:
-                ipv4_address: 172.19.3.6
 
-        restart: always
 
     qaredis:
         image: daocloud.io/quantaxis/qaredis:latest
