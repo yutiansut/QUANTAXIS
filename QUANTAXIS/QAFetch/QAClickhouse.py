@@ -174,6 +174,9 @@ class QACKClient():
 
     def get_etf_components(self, etf, start, end):
         codelist = promise_list(etf)
+        columns_raw = ['stock_code', 'stock_amount', 'cash_substitute',
+                        'cash_substitute_proportion', 'fixed_cash_substitute', 'order_book_id',
+                        'trading_date']
         return self.client.query_dataframe("SELECT * FROM quantaxis.etf_components  WHERE ((`trading_date` >= '{}')) \
                                 AND (`trading_date` <= '{}') AND (`order_book_id` IN ({}))".format(start, end, "'{}'".format("','".join(codelist)))).loc[:, columns_raw].drop_duplicates(['trading_date', 'order_book_id'])
 
