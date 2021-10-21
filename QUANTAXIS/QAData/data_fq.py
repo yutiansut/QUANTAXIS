@@ -163,7 +163,7 @@ def _QA_data_stock_to_fq(bfq_data, xdxr_data, fqtype):
     data['volume'] = data['volume']  if 'volume' in data.columns else data['vol']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
-        data['low_limit'] = data['high_limit'] * data['adj']
+        data['low_limit'] = data['low_limit'] * data['adj']
     except:
         pass
     return data.query('if_trade==1 and open != 0').drop(
