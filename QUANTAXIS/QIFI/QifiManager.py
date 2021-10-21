@@ -217,6 +217,18 @@ class QA_QIFISMANAGER():
             lambda x:  datetime.datetime.fromtimestamp(x/1000000000))).set_index(['tradetime', 'code']).sort_index()
         return res.drop_duplicates().sort_index()
 
+    def get_historyorders(self, account_cookie):
+        b = [item['orders'].values() for item in self.database.find(
+            {'account_cookie': account_cookie}, {'_id': 0, 'orders': 1, 'trading_day': 1})]
+        i = []
+        for ix in b:
+            i.extend(list(ix))
+        res = pd.DataFrame(i)
+        res = res.assign(account_cookie=res['user_id'], code=res['instrument_id'], ordertime=res['insert_date_time'].apply(
+            lambda x:  datetime.datetime.fromtimestamp(x/1000000000))).set_index(['ordertime', 'code']).sort_index()
+        return res.drop_duplicates().sort_index()
+
+
     def rankstrategy(self, code):
         res = pd.concat([self.get_historyassets(i) for i in code], axis=1)
         res = res.fillna(method='bfill').ffill()
