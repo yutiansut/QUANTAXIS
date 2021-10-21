@@ -146,10 +146,15 @@ class QA_QIFISMANAGER():
 
     """
 
-    def __init__(self, mongo_ip=mongo_ip, account_cookie=''):
-        self.database = pymongo.MongoClient(mongo_ip).quantaxis.history
-        self.database.create_index([("account_cookie", pymongo.ASCENDING),
-                                    ("trading_day", pymongo.ASCENDING)], unique=True)
+    def __init__(self, mongo_ip=mongo_ip, account_cookie='', model='BACKTEST'):
+
+        if model =='REALTIME':
+            self.database = pymongo.MongoClient(mongo_ip).QAREALTIME.account
+        else:
+
+            self.database = pymongo.MongoClient(mongo_ip).quantaxis.history
+            self.database.create_index([("account_cookie", pymongo.ASCENDING),
+                                        ("trading_day", pymongo.ASCENDING)], unique=True)
 
     def promise_list(self, value) -> list:
         return value if isinstance(value, list) else [value]
