@@ -64,7 +64,7 @@ def QA_util_code_tostr(code):
             return code.split(".")[0]
         raise ValueError("错误的股票代码格式")
     if isinstance(code, list):
-        return QA_util_code_to_str(code[0])
+        return [QA_util_code_tostr(item) for item in code]
 
 
 def QA_util_code_tolist(code, auto_fill=True):
