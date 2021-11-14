@@ -68,7 +68,7 @@ class QAFeatureAnalysis():
         """
         if model == 'next_open':
             r = data.groupby(level=1).open.apply(
-                lambda x: x.pct_change(day).shift(-day))
+                lambda x: x.pct_change(day).shift(-day-1))
             r.name = 'ret_{}'.format(day)
             return r
         elif model == 'close':
