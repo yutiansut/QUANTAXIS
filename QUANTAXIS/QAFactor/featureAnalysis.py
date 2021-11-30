@@ -119,7 +119,7 @@ class QAFeatureAnalysis():
     def concatRes(self):
         res = pd.concat([self.feature, self.returns, ], axis=1)
 
-        res = pd.concat([res.reset_index(0), self.get_industry().set_index('order_book_id').first_industry_name], axis=1)
+        res = pd.concat([res, self.get_industry().set_index(['date','order_book_id']).first_industry_name], axis=1)
         return res
 
     @property

@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.0.0.dev28'
+__version__ = '2.0.0.dev30'
 __author__ = 'yutiansut'
 
 import argparse
