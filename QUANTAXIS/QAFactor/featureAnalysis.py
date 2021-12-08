@@ -35,8 +35,8 @@ class QAFeatureAnalysis():
         self.feature.name = self.featurename
 
         self.codelist = self.feature.index.levels[1].unique().tolist()
-        self.start = self.feature.index.levels[0][0]
-        self.end = self.feature.index.levels[0][-1]
+        self.start = str(self.feature.index.levels[0][0])[0:10]
+        self.end = str(self.feature.index.levels[0][-1])[0:10]
 
         self._host = host
         self._port = port
