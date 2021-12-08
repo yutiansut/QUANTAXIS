@@ -3,10 +3,22 @@ import clickhouse_driver
 import datetime
 import pprint
 import numpy as np
-import rqdatac as rq
-from rqdatac import *
 
 import pandas as pd
+
+"""
+from rqdatac import *
+from jqdatac import *
+
+
+可以从 jqdata/ rqdata import 标准的
+
+get_price
+all_instrument
+index_weight
+等函数
+
+"""
 
 
 class datamodelx:
