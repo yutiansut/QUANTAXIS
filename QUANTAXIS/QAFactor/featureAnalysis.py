@@ -35,8 +35,8 @@ class QAFeatureAnalysis():
         self.feature.name = self.featurename
 
         self.codelist = self.feature.index.levels[1].unique().tolist()
-        self.start = self.feature.index.levels[0][0]
-        self.end = self.feature.index.levels[0][-1]
+        self.start = str(self.feature.index.levels[0][0])[0:10]
+        self.end = str(self.feature.index.levels[0][-1])[0:10]
 
         self._host = host
         self._port = port
@@ -68,7 +68,7 @@ class QAFeatureAnalysis():
         """
         if model == 'next_open':
             r = data.groupby(level=1).open.apply(
-                lambda x: x.pct_change(day).shift(-day))
+                lambda x: x.pct_change(day).shift(-day-1))
             r.name = 'ret_{}'.format(day)
             return r
         elif model == 'close':
@@ -119,7 +119,7 @@ class QAFeatureAnalysis():
     def concatRes(self):
         res = pd.concat([self.feature, self.returns, ], axis=1)
 
-        res = pd.concat([res.reset_index(0), self.get_industry().set_index('order_book_id').first_industry_name], axis=1)
+        res = pd.concat([res, self.get_industry().set_index(['date','order_book_id']).first_industry_name], axis=1)
         return res
 
     @property

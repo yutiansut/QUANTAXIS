@@ -709,7 +709,7 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
                 j
                 in range(2)], axis=0, sort=False)
         # data.code = data.code.apply(int)
-
+        data = data.drop_duplicates()
         data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
                 ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
@@ -764,6 +764,7 @@ def QA_fetch_get_index_list(ip=None, port=None):
                 range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
                 j
                 in range(2)], axis=0, sort=False)
+        data = data.drop_duplicates()
         data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
                 ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
@@ -793,6 +794,7 @@ def QA_fetch_get_bond_list(ip=None, port=None):
                 j
                 in range(2)], axis=0, sort=False)
         # data.code = data.code.apply(int)
+        data = data.drop_duplicates()
         data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
                 ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
