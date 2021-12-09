@@ -40,3 +40,5 @@ clickhouse-driver
 clickhouse-cityhash
 alphalens
 qanotify
+
+pyarrow>=6.0.1
