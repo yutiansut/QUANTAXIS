@@ -31,9 +31,11 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.0.0.dev28'
+__version__ = '2.0.0.dev32'
 __author__ = 'yutiansut'
 
+import logging
+logging.disable(logging.INFO)
 import argparse
 # check
 import sys

@@ -68,7 +68,7 @@ NAME = "quantaxis"
 PACKAGES = ["QUANTAXIS", "QUANTAXIS.QAFetch", "QUANTAXIS.QACmd", 'QUANTAXIS.QASetting', "QUANTAXIS.QAFactor",
             "QUANTAXIS.QAEngine", "QUANTAXIS.QAData", "QUANTAXIS.QAAnalysis", "QUANTAXIS.QAPubSub",
             "QUANTAXIS.QASU", "QUANTAXIS.QAUtil",  "QUANTAXIS.QAIndicator", "QUANTAXIS.QAStrategy",
-            "QUANTAXIS.QAMarket", "QUANTAXIS.QIFI","QUANTAXIS.QAWebServer"]
+            "QUANTAXIS.QAMarket", "QUANTAXIS.QIFI", "QUANTAXIS.QAWebServer"]
 """
 
 """
@@ -121,7 +121,7 @@ setup(
             'quantaxisq=QUANTAXIS.QAFetch.QATdx_adv:bat',
             'qarun=QUANTAXIS.QACmd.runner:run',
             'qawebserver=QUANTAXIS.QAWebServer.server:main',
-            
+
         ]
     },
     keywords=KEYWORDS,
