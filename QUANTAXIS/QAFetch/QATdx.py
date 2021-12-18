@@ -63,7 +63,7 @@ def init_fetcher():
 
 def ping(ip, port=7709, type_='stock'):
     api = TdxHq_API()
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     __time1 = datetime.datetime.now()
     try:
         if type_ in ['stock']:
@@ -1489,7 +1489,7 @@ extension_market_list = None
 
 def QA_fetch_get_extensionmarket_count(ip=None, port=None):
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     with apix.connect(ip, port):
         global extension_market_info
         extension_market_info = apix.to_df(apix.get_markets())
@@ -1498,7 +1498,7 @@ def QA_fetch_get_extensionmarket_count(ip=None, port=None):
 
 def QA_fetch_get_extensionmarket_info(ip=None, port=None):
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     with apix.connect(ip, port):
         global extension_market_info
         extension_market_info = apix.to_df(apix.get_markets())
@@ -1508,7 +1508,7 @@ def QA_fetch_get_extensionmarket_info(ip=None, port=None):
 def QA_fetch_get_extensionmarket_list(ip=None, port=None):
     '期货代码list'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     with apix.connect(ip, port):
         num = apix.get_instrument_count()
         return pd.concat([apix.to_df(
@@ -2450,7 +2450,7 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day',
                             ip=None, port=None):
     '期货数据 日线'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     start_date = str(start_date)[0:10]
     today_ = datetime.date.today()
     lens = QA_util_get_trade_gap(start_date, today_)
@@ -2496,7 +2496,7 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None,
                             port=None):
     '期货数据 分钟线'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     type_ = ''
     start_date = str(start)[0:10]
     today_ = datetime.date.today()
@@ -2586,7 +2586,7 @@ def QA_fetch_get_future_transaction(code, start, end, retry=4, ip=None,
                                     port=None):
     '期货历史成交分笔'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list
@@ -2628,7 +2628,7 @@ def QA_fetch_get_future_transaction(code, start, end, retry=4, ip=None,
 def QA_fetch_get_future_transaction_realtime(code, ip=None, port=None):
     '期货历史成交分笔'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list
@@ -2650,7 +2650,7 @@ def QA_fetch_get_future_transaction_realtime(code, ip=None, port=None):
 def QA_fetch_get_future_realtime(code, ip=None, port=None):
     '期货实时价格'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list
