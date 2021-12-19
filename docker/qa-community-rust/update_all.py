@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/opt/conda/bin/python
 
 #coding :utf-8
 #
@@ -57,3 +57,4 @@ QA_SU_save_index_day('tdx')
 QA_SU_save_stock_list('tdx')
 QA_SU_save_stock_block('tdx')
 # QA_SU_save_stock_info('tdx')
+QA_SU_save_single_index_day('000300','tdx')
