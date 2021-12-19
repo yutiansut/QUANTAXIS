@@ -62,7 +62,7 @@ class QACKClient():
         use open data make ret
         """
         r = data.groupby(level=1).open.apply(
-            lambda x: x.pct_change(5).shift(-5))
+            lambda x: x.pct_change(5).shift(-6))
         r.name = 'ret5'
         return r
 
