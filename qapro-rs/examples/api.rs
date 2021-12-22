@@ -23,9 +23,9 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .data(realtime_addr.clone())
-            .route("/ws/", web::get().to(index))
+
             //.service(web::scope("/ws").route("/", web::get().to(index)))
-            .route("/ws2/",web::get().to(websocket_router))
+            .route("/ws/",web::get().to(websocket_router))
 
     })
         .bind(&CONFIG.common.addr)?
