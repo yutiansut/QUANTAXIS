@@ -108,7 +108,30 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketHandler 
                                 ctx.text(WSRsp::ok(self.id.clone(), "auth_result").to_string());
                             }
                         }
-
+                        "realtime_sub" => {
+                            let room = request["room"].to_string().replace('"', "");
+                            self.realtime_addr.do_send(Join {
+                                id: self.id.clone(),
+                                room,
+                                room_type: RoomType::Factor,
+                            });
+                            ctx.text(
+                                WSRsp::ok("success".to_string(), "realtime_sub_result").to_string(),
+                            );
+                        }
+                        // 处理取消订阅行情{"topic":"realtime_unsub","room":"stock_SZ_000001$*$1min"}
+                        "realtime_unsub" => {
+                            let room = request["room"].to_string().replace('"', "");
+                            self.realtime_addr.do_send(Leave {
+                                id: self.id.clone(),
+                                room,
+                                room_type: RoomType::Factor,
+                            });
+                            ctx.text(
+                                WSRsp::ok("success".to_string(), "realtime_unsub_result")
+                                    .to_string(),
+                            );
+                        }
                         _ => {}
                     }
                 }
