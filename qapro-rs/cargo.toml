@@ -52,9 +52,7 @@ chrono = "0.4.19"
 thiserror = "1.0"
 rand = "0.7"
 
-arrow = { version = "^5.0", features = ["prettyprint"] }
-parquet = { version = "^5.0", features = ["arrow"] }
-datafusion = "5.0.0"
+
 
 [dependencies.clickhouse-rs]
 git = "https://github.com/suharev7/clickhouse-rs"
