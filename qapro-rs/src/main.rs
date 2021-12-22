@@ -6,7 +6,7 @@ use std::io::{BufRead, BufReader, Error, Write};
 
 use actix::Actor;
 use actix_rt;
-use actix_rt::Arbiter;
+use actix_rt::{ArbiterHandle, Arbiter};
 use chrono::{Date, Local};
 use chrono_tz::{Tz, UTC};
 use serde_json::Value;
@@ -35,10 +35,10 @@ async fn main() {
 
     let codelist = ["600010.XSHG", "300002.XSHE"];
     let hisdata = c
-        .exectue(Vec::from(codelist), "2021-07-11", "2021-08-05", "day")
+        .exectue(Vec::from(codelist), "2021-07-11", "2021-12-22", "day")
         .await
         .unwrap();
-    println!("{:#?}",hisdata.to_kline());
+    //println!("{:#?}",hisdata.to_kline());
 
     println!(
         "QARUNTIME Start: {}",
@@ -73,7 +73,7 @@ async fn main() {
     let morm = morm_addr.clone();
     let arb = Arbiter::new();
 
-    InstructMQ::start_in_arbiter(&arb, move |_| InstructMQ {
+    InstructMQ::start_in_arbiter(&arb.handle(), move |_| InstructMQ {
         amqp: CONFIG.instruct.uri.clone(),
         exchange: CONFIG.instruct.exchange.clone(),
         routing_key: CONFIG.instruct.routing_key.clone(),
@@ -86,7 +86,7 @@ async fn main() {
         let mc = code.clone();
         let arc = Arbiter::new();
 
-        MarketMQ::start_in_arbiter(&arc, move |_| {
+        MarketMQ::start_in_arbiter(&arc.handle(), move |_| {
             MarketMQ::new(
                 CONFIG.realtime.uri.clone(),
                 CONFIG.realtime.exchange.clone(),

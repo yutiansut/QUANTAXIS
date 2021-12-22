@@ -6,11 +6,13 @@ use log::{error, info, warn};
 use serde_json::value::Value;
 use std::time::Duration;
 use uuid::Uuid;
+use std::str;
+use serde::de::Unexpected::Str;
 
-use crate::db::mongo::fetch_qifi;
-use crate::helper::config::CONFIG;
-use crate::helper::state::WSRsp;
-use crate::realtime::{Connect, Disconnect, Join, Leave, Realtime, RoomType};
+
+use crate::qaenv::localenv::CONFIG;
+use crate::qahandlers::state::WSRsp;
+use crate::qahandlers::realtime::{Connect, Disconnect, Join, Leave, Realtime, RoomType};
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -87,7 +89,9 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketHandler 
             Ok(ws::Message::Pong(_)) => {}
             Ok(ws::Message::Text(text)) => {
                 info!("Text> {}", text);
-                let request: Value = match serde_json::from_str(&text.as_str()) {
+
+
+                let request: Value = match serde_json::from_str( text.to_string().as_str()) {
                     Ok(x) => x,
                     Err(e) => {
                         error!("{:?}", e.to_string());
@@ -104,84 +108,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketHandler 
                                 ctx.text(WSRsp::ok(self.id.clone(), "auth_result").to_string());
                             }
                         }
-                        // qifi账户实时订阅{"topic":"qifisub","room":"xx"}
-                        "qifisub" => {
-                            let room = request["room"].to_string().replace('"', "");
-                            if let Some(qifi) = fetch_qifi(room.clone()) {
-                                self.realtime_addr.do_send(Join {
-                                    id: self.id.clone(),
-                                    room: room.clone(),
-                                    room_type: RoomType::Account,
-                                });
-                                ctx.text(WSRsp::ok(qifi, "qifi_pub").to_string());
-                            } else {
-                                ctx.text(
-                                    WSRsp::fail("not data".to_string(), "qifi_sub_result")
-                                        .to_string(),
-                                );
-                            }
-                        }
-                        // 取消订阅qifi账户{"topic":"qifiunsub","room":"xx"}
-                        "qifiunsub" => {
-                            let room = request["room"].to_string().replace('"', "");
-                            self.realtime_addr.do_send(Leave {
-                                id: self.id.clone(),
-                                room: room.clone(),
-                                room_type: RoomType::Account,
-                            });
-                            ctx.text(
-                                WSRsp::ok("success".to_string(), "qifi_unsub_result").to_string(),
-                            )
-                        }
-                        // 处理订阅行情{"topic":"realtime_sub","room":"stock_SZ_000001$*$1min"}
-                        "realtime_sub" => {
-                            let room = request["room"].to_string().replace('"', "");
-                            self.realtime_addr.do_send(Join {
-                                id: self.id.clone(),
-                                room,
-                                room_type: RoomType::Future,
-                            });
-                            ctx.text(
-                                WSRsp::ok("success".to_string(), "realtime_sub_result").to_string(),
-                            );
-                        }
-                        // 处理取消订阅行情{"topic":"realtime_unsub","room":"stock_SZ_000001$*$1min"}
-                        "realtime_unsub" => {
-                            let room = request["room"].to_string().replace('"', "");
-                            self.realtime_addr.do_send(Leave {
-                                id: self.id.clone(),
-                                room,
-                                room_type: RoomType::Future,
-                            });
-                            ctx.text(
-                                WSRsp::ok("success".to_string(), "realtime_unsub_result")
-                                    .to_string(),
-                            );
-                        }
-                        // 上下五档{"topic":"full_sub","room":"future_DCE_jm2109$*$full"}
-                        "full_sub" => {
-                            let room = request["room"].to_string().replace('"', "");
-                            self.realtime_addr.do_send(Join {
-                                id: self.id.clone(),
-                                room,
-                                room_type: RoomType::Future,
-                            });
-                            ctx.text(
-                                WSRsp::ok("success".to_string(), "full_sub_result").to_string(),
-                            );
-                        }
-                        // 上下五档取消订阅行情
-                        "full_unsub" => {
-                            let room = request["room"].to_string().replace('"', "");
-                            self.realtime_addr.do_send(Leave {
-                                id: self.id.clone(),
-                                room,
-                                room_type: RoomType::Future,
-                            });
-                            ctx.text(
-                                WSRsp::ok("success".to_string(), "full_unsub_result").to_string(),
-                            );
-                        }
+
                         _ => {}
                     }
                 }

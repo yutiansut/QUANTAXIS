@@ -2,17 +2,13 @@ use actix::prelude::*;
 use actix_redis::RedisActor;
 use chrono::{Local, Timelike};
 use log::{error, info, warn};
-use rand::StdRng;
+use rand::rngs::StdRng;
 use reqwest;
 use std::collections::{HashMap, HashSet};
-
-use crate::account::account_handler::{AccountHandler, QIFISub, QIFIUnSub};
-use crate::db::redis::flushall;
-use crate::future::future_handler::FutureHandler;
-use crate::helper::state::WSRsp;
-use crate::stock::stock_handler::StockHandler;
-use crate::ws::ws_handler::{WSMessage, WebsocketHandler};
+use crate::qahandlers::state::WSRsp;
+use crate::qahandlers::websocket::{WSMessage, WebsocketHandler};
 use std::time::Duration;
+use rand::SeedableRng;
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -69,17 +65,7 @@ pub struct RoomMessage {
 #[rtype(result = "Vec<String>")]
 pub struct ListRooms;
 
-#[derive(Message)]
-#[rtype(result = "()")]
-pub struct RegisterAccount(pub Addr<AccountHandler>);
 
-#[derive(Message)]
-#[rtype(result = "()")]
-pub struct RegisterFuture(pub Addr<FutureHandler>);
-
-#[derive(Message)]
-#[rtype(result = "()")]
-pub struct RegisterStock(pub Addr<StockHandler>);
 
 pub struct Realtime {
     // 房间名 对应 id
@@ -88,9 +74,7 @@ pub struct Realtime {
     sessions: HashMap<String, Addr<WebsocketHandler>>,
     rng: StdRng,
     redis_addr: Addr<RedisActor>,
-    account_handler: Option<Addr<AccountHandler>>,
-    stock_handler: Option<Addr<StockHandler>>,
-    future_handler: Option<Addr<FutureHandler>>,
+
     //
     flushall_ts: i64,
 }
@@ -102,10 +86,7 @@ impl Realtime {
             rooms,
             redis_addr,
             sessions: HashMap::new(),
-            rng: rand::StdRng::new().unwrap(),
-            account_handler: None,
-            stock_handler: None,
-            future_handler: None,
+            rng: StdRng::from_entropy(),
             flushall_ts: 0,
         }
     }
@@ -136,17 +117,7 @@ impl Realtime {
         self.rooms.insert(room_name.clone(), Default::default());
     }
 
-    fn flushall(&mut self) {
-        let now = Local::now();
-        let hour = now.hour();
-        let minute = now.minute();
-        if now.timestamp() - self.flushall_ts > 600 && hour == 20 && (minute == 50 || minute == 51)
-        {
-            flushall(self.redis_addr.clone());
-            self.flushall_ts = now.timestamp();
-            info!("FLUSHALL");
-        }
-    }
+
 }
 
 impl Actor for Realtime {
@@ -154,31 +125,11 @@ impl Actor for Realtime {
 
     fn started(&mut self, ctx: &mut Self::Context) {
         ctx.run_interval(Duration::from_secs(60), |act, ctx| {
-            act.flushall();
+            //act.flushall();
         });
     }
 }
 
-impl Handler<RegisterAccount> for Realtime {
-    type Result = ();
-    fn handle(&mut self, msg: RegisterAccount, _: &mut Context<Self>) -> Self::Result {
-        self.account_handler = Some(msg.0);
-    }
-}
-
-impl Handler<RegisterFuture> for Realtime {
-    type Result = ();
-    fn handle(&mut self, msg: RegisterFuture, _: &mut Context<Self>) -> Self::Result {
-        self.future_handler = Some(msg.0);
-    }
-}
-
-impl Handler<RegisterStock> for Realtime {
-    type Result = ();
-    fn handle(&mut self, msg: RegisterStock, _: &mut Context<Self>) -> Self::Result {
-        self.stock_handler = Some(msg.0);
-    }
-}
 
 /// 处理客户端信息
 impl Handler<RoomMessage> for Realtime {
@@ -233,12 +184,7 @@ impl Handler<Join> for Realtime {
             r.insert(id.clone());
             self.rooms.insert(nt.clone(), r);
         }
-        match room_type {
-            RoomType::Account => self.account_handler.as_ref().unwrap().do_send(QIFISub {
-                account_cookie: nt.clone(),
-            }),
-            _ => {}
-        }
+
         true
     }
 }
@@ -257,12 +203,7 @@ impl Handler<Leave> for Realtime {
         if let Some(r) = self.rooms.get_mut(&nt) {
             r.remove(&id);
         }
-        match room_type {
-            RoomType::Account => self.account_handler.as_ref().unwrap().do_send(QIFIUnSub {
-                account_cookie: nt.clone(),
-            }),
-            _ => {}
-        }
+
         true
     }
 }
