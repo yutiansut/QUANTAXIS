@@ -14,3 +14,5 @@ pub mod qalog;
 pub mod qamacros;
 pub mod qapraser;
 
+pub mod qafactor;
+pub mod qahandlers;

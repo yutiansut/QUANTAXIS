@@ -32,6 +32,7 @@ impl StrategyFunc for QAStrategy {
     fn on_bar_next(&mut self, data: &BAR, context: &mut QAContext) {
         //println!("strategy receive --{:#?}", data);
         if rand::random() {
+            println!("rand !! xxxx");
             let pos_long = context.acc.get_volume_long(data.code.as_str());
             let pos_short = context.acc.get_volume_short(data.code.as_str());
             if pos_long > 0.0 {
@@ -82,6 +83,7 @@ impl StrategyFunc for QAStrategy {
     fn on_bar_update(&mut self, data: &BAR, context: &mut QAContext) {
         //println!("strategy receive --{:#?}", data);
         if rand::random() {
+            println!("rand !! yyy");
             let pos_long = context.acc.get_volume_long(data.code.as_str());
             let pos_short = context.acc.get_volume_short(data.code.as_str());
             if pos_long > 0.0 {
