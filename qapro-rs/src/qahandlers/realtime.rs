@@ -7,6 +7,7 @@ use reqwest;
 use std::collections::{HashMap, HashSet};
 use crate::qahandlers::state::WSRsp;
 use crate::qahandlers::websocket::{WSMessage, WebsocketHandler};
+use crate::qahandlers::factorhandler::FactorHandler;
 use std::time::Duration;
 use rand::SeedableRng;
 
@@ -27,8 +28,8 @@ pub struct Disconnect {
 #[derive(Debug)]
 pub enum RoomType {
     Account,
-    Future,
-    Stock,
+    Factor,
+
 }
 
 /// 加入房间 如果room不存在那么创建一个新的.
@@ -66,7 +67,15 @@ pub struct RoomMessage {
 pub struct ListRooms;
 
 
-
+#[derive(Message)]
+#[rtype(result = "()")]
+pub struct RegisterFactor(pub Addr<FactorHandler>);
+impl Handler<RegisterFactor> for Realtime {
+    type Result = ();
+    fn handle(&mut self, msg: RegisterFactor, _: &mut Context<Self>) -> Self::Result {
+        self.factorhandler = Some(msg.0);
+    }
+}
 pub struct Realtime {
     // 房间名 对应 id
     rooms: HashMap<String, HashSet<String>>,
@@ -74,7 +83,7 @@ pub struct Realtime {
     sessions: HashMap<String, Addr<WebsocketHandler>>,
     rng: StdRng,
     redis_addr: Addr<RedisActor>,
-
+    factorhandler:  Option<Addr<FactorHandler>>,
     //
     flushall_ts: i64,
 }
@@ -87,11 +96,12 @@ impl Realtime {
             redis_addr,
             sessions: HashMap::new(),
             rng: StdRng::from_entropy(),
+            factorhandler:None,
             flushall_ts: 0,
         }
     }
 
-    /// Send message to all users in the stock/future message
+    /// Send message to all users in the factor message
     fn send_message(&self, room: &str, message: String, ctx: &mut Context<Self>) -> bool {
         if let Some(sessions) = self.rooms.get(room) {
             let _ = sessions
