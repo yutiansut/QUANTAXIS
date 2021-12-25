@@ -52,7 +52,8 @@ chrono = "0.4.19"
 thiserror = "1.0"
 rand = "0.7"
 
-arrow = {version='6.4.0'}
+arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettyprint", ] }
+
 datafusion = {version='6.0.0'}
 
 

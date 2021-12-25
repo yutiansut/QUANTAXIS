@@ -1,15 +1,15 @@
+use crate::qahandlers::factorhandler::FactorHandler;
+use crate::qahandlers::state::WSRsp;
+use crate::qahandlers::websocket::{WSMessage, WebsocketHandler};
 use actix::prelude::*;
 use actix_redis::RedisActor;
 use chrono::{Local, Timelike};
 use log::{error, info, warn};
 use rand::rngs::StdRng;
+use rand::SeedableRng;
 use reqwest;
 use std::collections::{HashMap, HashSet};
-use crate::qahandlers::state::WSRsp;
-use crate::qahandlers::websocket::{WSMessage, WebsocketHandler};
-use crate::qahandlers::factorhandler::FactorHandler;
 use std::time::Duration;
-use rand::SeedableRng;
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -29,7 +29,6 @@ pub struct Disconnect {
 pub enum RoomType {
     Account,
     Factor,
-
 }
 
 /// 加入房间 如果room不存在那么创建一个新的.
@@ -66,7 +65,6 @@ pub struct RoomMessage {
 #[rtype(result = "Vec<String>")]
 pub struct ListRooms;
 
-
 #[derive(Message)]
 #[rtype(result = "()")]
 pub struct RegisterFactor(pub Addr<FactorHandler>);
@@ -83,7 +81,7 @@ pub struct Realtime {
     sessions: HashMap<String, Addr<WebsocketHandler>>,
     rng: StdRng,
     redis_addr: Addr<RedisActor>,
-    factorhandler:  Option<Addr<FactorHandler>>,
+    factorhandler: Option<Addr<FactorHandler>>,
     //
     flushall_ts: i64,
 }
@@ -96,7 +94,7 @@ impl Realtime {
             redis_addr,
             sessions: HashMap::new(),
             rng: StdRng::from_entropy(),
-            factorhandler:None,
+            factorhandler: None,
             flushall_ts: 0,
         }
     }
@@ -113,7 +111,7 @@ impl Realtime {
                             (async {
                                 let _ = fut.await;
                             })
-                                .into_actor(self),
+                            .into_actor(self),
                         );
                     }
                 })
@@ -126,8 +124,6 @@ impl Realtime {
     fn add_room(&mut self, room_name: String) {
         self.rooms.insert(room_name.clone(), Default::default());
     }
-
-
 }
 
 impl Actor for Realtime {
@@ -139,7 +135,6 @@ impl Actor for Realtime {
         });
     }
 }
-
 
 /// 处理客户端信息
 impl Handler<RoomMessage> for Realtime {

@@ -5,7 +5,6 @@ use serde_json::{Error, Value};
 // use mongodb::Cursor;
 use serde::Serialize;
 
-
 /// 此处为了描述如何从bson数据载入为可用的结构体,传入一个bson以使用它
 pub fn from_bson_(data: Bson) -> Option<Bson> {
     from_bson(data).unwrap()
@@ -24,8 +23,8 @@ pub fn from_bson_(data: Bson) -> Option<Bson> {
 /// ```
 ///
 pub fn from_serde_value<T>(value: Value) -> Result<T, Error>
-    where
-        T: DeserializeOwned,
+where
+    T: DeserializeOwned,
 {
     T::deserialize(value)
 }
@@ -86,7 +85,6 @@ pub fn from_str(data: &str) -> Option<Value> {
 //     serde_json::to_string(&docs).unwrap()
 // }
 
-
 /// 将结构体转换可以直接插入的doc参数
 ///     Note: 注意你的数据类型中尽量不要使用 **u8等数据类型**,他会导致bson无法解析结构体. 参见 https://github.com/mongodb/bson-rust/issues/89
 /// Examples
@@ -102,11 +100,11 @@ pub fn from_str(data: &str) -> Option<Value> {
 ///
 /// ```
 pub fn to_doc<T>(value: T) -> Document
-    where
-        T: Serialize + std::fmt::Debug
+where
+    T: Serialize + std::fmt::Debug,
 {
     // println!("{:?}", value);
-    let serialized = bson::to_bson(&value).unwrap();  // Serialize
+    let serialized = bson::to_bson(&value).unwrap(); // Serialize
     let x = serialized.as_document().expect("期望一个合法的document");
     x.to_owned()
 }

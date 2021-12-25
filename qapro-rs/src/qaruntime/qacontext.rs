@@ -7,9 +7,7 @@ use crate::qaaccount::account::QA_Account;
 use crate::qaaccount::order::{QAOrder, TradeOrder};
 use crate::qaprotocol::mifi::market::BAR;
 
-use crate::qadata::datafunc::{
-    dhhv, dllv, max, min, Que,
-};
+use crate::qadata::datafunc::{dhhv, dllv, max, min, Que};
 
 pub trait StrategyFunc {
     fn on_bar_next(&mut self, data: &BAR, context: &mut QAContext);
@@ -40,7 +38,6 @@ pub struct MTrade {
     pub trade: TradeOrder,
 }
 
-
 #[derive(Debug, Clone)]
 pub struct QAContext {
     pub acc: QA_Account,
@@ -61,12 +58,7 @@ pub struct QAContext {
 }
 
 impl QAContext {
-    pub fn new(
-        account_cookie: &str,
-        frequence: &str,
-        code: &str,
-        environment: String,
-    ) -> Self {
+    pub fn new(account_cookie: &str, frequence: &str, code: &str, environment: String) -> Self {
         let mut acc = QA_Account::new(
             account_cookie,
             "test",
@@ -88,7 +80,7 @@ impl QAContext {
                 low: 0.0,
                 close: 0.0,
                 volume: 0.0,
-                amount: 0.0
+                amount: 0.0,
             },
             lasttradebar: 0,
             priceoffset: 0.0,
@@ -112,12 +104,10 @@ impl QAContext {
         false
     }
 
-
     pub fn account_reload(&mut self, acc: QA_Account) {
         self.acc = acc;
         self.init(self.code.clone().as_str());
     }
-
 
     pub fn init(&mut self, code: &str) {
         if !self.acc.hold.contains_key(code) {
@@ -165,12 +155,15 @@ impl QAContext {
     /// buy| sell| buy_open| sell_open| buy_close| sell_close|
     /// send_order
 
-
     pub fn buy_open(&mut self, code: &str, amount: f64, time: &str, price: f64) {
         println!("buy open");
         match self.acc.buy_open(code, amount, time, price) {
             Ok(order) => {
-                self.order_que.push(MOrder { model: self.current_model.clone(), time: time.to_owned(), order });
+                self.order_que.push(MOrder {
+                    model: self.current_model.clone(),
+                    time: time.to_owned(),
+                    order,
+                });
                 self.lasttradebar = self.bar_id;
             }
             Err(e) => {}
@@ -179,7 +172,11 @@ impl QAContext {
     pub fn sell_open(&mut self, code: &str, amount: f64, time: &str, price: f64) {
         match self.acc.sell_open(code, amount, time, price) {
             Ok(order) => {
-                self.order_que.push(MOrder { model: self.current_model.clone(), time: time.to_owned(), order });
+                self.order_que.push(MOrder {
+                    model: self.current_model.clone(),
+                    time: time.to_owned(),
+                    order,
+                });
                 self.lasttradebar = self.bar_id;
             }
             Err(e) => {}
@@ -188,7 +185,11 @@ impl QAContext {
     pub fn buy_close(&mut self, code: &str, amount: f64, time: &str, price: f64) {
         match self.acc.buy_close(code, amount, time, price) {
             Ok(order) => {
-                self.order_que.push(MOrder { model: self.current_model.clone(), time: time.to_owned(), order });
+                self.order_que.push(MOrder {
+                    model: self.current_model.clone(),
+                    time: time.to_owned(),
+                    order,
+                });
                 self.lasttradebar = self.bar_id;
             }
             Err(e) => {}
@@ -197,7 +198,11 @@ impl QAContext {
     pub fn sell_close(&mut self, code: &str, amount: f64, time: &str, price: f64) {
         match self.acc.sell_close(code, amount, time, price) {
             Ok(order) => {
-                self.order_que.push(MOrder { model: self.current_model.clone(), time: time.to_owned(), order });
+                self.order_que.push(MOrder {
+                    model: self.current_model.clone(),
+                    time: time.to_owned(),
+                    order,
+                });
                 self.lasttradebar = self.bar_id;
             }
             Err(e) => {}

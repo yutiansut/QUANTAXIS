@@ -1,3 +1,4 @@
+use crate::qaprotocol::mifi::qafastkline::QAKlineBase;
 use crate::qaruntime::base::{MQAddr, QAKline};
 use crate::qaruntime::qamanagers::mq_manager::MQManager;
 use actix::prelude::*;
@@ -7,7 +8,6 @@ use amiquip::{
     ExchangeType, FieldTable, Publish, QueueDeclareOptions, Result,
 };
 use log::{error, info, warn};
-use crate::qaprotocol::mifi::qafastkline::QAKlineBase;
 use serde_json::Value;
 
 trait Attach {

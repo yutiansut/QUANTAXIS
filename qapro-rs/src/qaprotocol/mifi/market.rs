@@ -846,7 +846,7 @@ pub struct BAR {
     pub low: f64,
     pub close: f64,
     pub volume: f64,
-    pub amount: f64
+    pub amount: f64,
 }
 
 //┌───────date─┬─order_book_id─┬─num_trades─┬─limit_up─┬─limit_down─┬──open─┬──high─┬───low─┬─close─┬───volume─┬─total_turnover─┐

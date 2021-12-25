@@ -5,22 +5,16 @@ use std::f64::INFINITY;
 
 use chrono::prelude::Utc;
 
-use crate::qaaccount::{
-    account::QA_Account,
-    order::QAOrder,
-    transaction::QATransaction
-};
+use crate::qaaccount::{account::QA_Account, order::QAOrder, transaction::QATransaction};
 
 use serde::{Deserialize, Serialize};
 
-use crate::qaruntime::qacontext::{QAContext, StrategyFunc};
-use crate::qadata::datafunc::{dhhv, dllv, max, min, Que, vec_bigger, vec_smaller};
+use crate::qadata::datafunc::{dhhv, dllv, max, min, vec_bigger, vec_smaller, Que};
 use crate::qaprotocol::mifi::market::BAR;
+use crate::qaruntime::qacontext::{QAContext, StrategyFunc};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Params {
-
-}
+pub struct Params {}
 
 // impl Params {
 //     pub fn default() -> Params {
@@ -58,5 +52,3 @@ pub struct QAStrategy {
 // //-----------------Strategy---Content-------------------------
 //     }
 // }
-
-

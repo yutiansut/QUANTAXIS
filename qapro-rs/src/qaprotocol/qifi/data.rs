@@ -1,8 +1,10 @@
 /*
 此处描述了quantaxis-rs标准的期货/股票/数据结构
 */
+use crate::qaprotocol::qifi::default::{
+    default_bool, default_f64, default_i128, default_i32, default_i64, default_string,
+};
 use serde::{Deserialize, Serialize};
-use  crate::qaprotocol::qifi::default::{default_bool,default_f64,default_i32,default_i64, default_i128, default_string};
 
 #[allow(dead_code)]
 #[derive(Serialize, Clone, Deserialize, Debug)]
@@ -12,7 +14,7 @@ pub struct DataItem {
     #[serde(default = "default_f64")]
     pub high: f64,
     #[serde(default = "default_f64")]
-    pub  low: f64,
+    pub low: f64,
     #[serde(default = "default_f64")]
     pub close: f64,
     #[serde(default = "default_i64")]
@@ -132,7 +134,7 @@ pub struct L2X {
     #[serde(default = "default_i32")]
     pub vol: i32,
     #[serde(default = "default_i32")]
-    pub  buyno: i32,
+    pub buyno: i32,
     #[serde(default = "default_i32")]
     pub sellno: i32,
     #[serde(default = "default_f64")]

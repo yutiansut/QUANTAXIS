@@ -6,7 +6,7 @@ use std::io::{BufRead, BufReader, Error, Write};
 
 use actix::Actor;
 use actix_rt;
-use actix_rt::{ArbiterHandle, Arbiter};
+use actix_rt::{Arbiter, ArbiterHandle};
 use chrono::{Date, Local};
 use chrono_tz::{Tz, UTC};
 use serde_json::Value;

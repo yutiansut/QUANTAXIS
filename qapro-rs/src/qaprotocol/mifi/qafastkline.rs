@@ -1,10 +1,9 @@
-use std::collections::HashMap;
 use crate::qaprotocol::mifi::market::BAR;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use serde_json::json;
 use serde_json::value::Value;
-
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QAKlineBase {
@@ -23,7 +22,6 @@ pub struct QAKlineBase {
     pub is_last: bool,
 }
 
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QAColumnBar {
     pub datetime: Vec<String>,
@@ -35,52 +33,46 @@ pub struct QAColumnBar {
     pub volume: Vec<f64>,
     pub amount: Vec<f64>,
     pub frequence: String,
-    pub currentidx : i32
+    pub currentidx: i32,
 }
 
-
 impl QAColumnBar {
-
-    fn len(& self) -> usize{
+    fn len(&self) -> usize {
         (self.datetime).len()
     }
-    fn next(& mut self) -> QAKlineBase{
-
-        self.currentidx+=1;
+    fn next(&mut self) -> QAKlineBase {
+        self.currentidx += 1;
         let id = self.currentidx.clone() as usize;
         self.get_id(id)
     }
 
-    fn get_id(& self, id:usize)-> QAKlineBase{
-        QAKlineBase{
+    fn get_id(&self, id: usize) -> QAKlineBase {
+        QAKlineBase {
             datetime: String::from(self.datetime.get(id).unwrap().clone()),
-            updatetime:String::from(self.datetime.get(id).unwrap().clone()),
+            updatetime: String::from(self.datetime.get(id).unwrap().clone()),
             code: String::from(self.code.get(id).unwrap().clone()),
             open: self.open.get(id).unwrap().clone(),
-            high:self.high.get(id).unwrap().clone(),
+            high: self.high.get(id).unwrap().clone(),
             low: self.low.get(id).unwrap().clone(),
-            close:self.close.get(id).unwrap().clone(),
-            volume:self.volume.get(id).unwrap().clone(),
+            close: self.close.get(id).unwrap().clone(),
+            volume: self.volume.get(id).unwrap().clone(),
             amount: self.amount.get(id).unwrap().clone(),
             frequence: self.frequence.clone(),
             pctchange: 0.0,
             startstamp: 0,
-            is_last: false
+            is_last: false,
         }
     }
-    pub fn to_kline(& self) -> Vec<QAKlineBase>{
+    pub fn to_kline(&self) -> Vec<QAKlineBase> {
         let mut res = vec![];
-        let length =self.len();
-        for i in 0..length{
+        let length = self.len();
+        for i in 0..length {
             let st = self.get_id(i).clone();
             res.push(st)
         }
         res
     }
-
 }
-
-
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QAAskBidBase {
@@ -197,7 +189,7 @@ impl QAKlineBase {
             low: self.low,
             close: self.close,
             volume: self.volume,
-            amount: self.amount
+            amount: self.amount,
         };
         u
     }
@@ -211,7 +203,7 @@ impl QAKlineBase {
             low: self.low,
             close: self.close,
             volume: self.volume,
-            amount: self.amount
+            amount: self.amount,
         };
         u
     }

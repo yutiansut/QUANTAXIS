@@ -1,6 +1,6 @@
+use actix_web::{middleware, web, App, HttpResponse, HttpServer};
 use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
-use actix_web::{middleware, web, App, HttpResponse, HttpServer};
 
 use actix::Actor;
 use actix_cors::Cors;
@@ -19,6 +19,4 @@ async fn main() {
         .await
         .unwrap();
     println!("{:#?}", hisdata.to_kline());
-
-
 }

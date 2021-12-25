@@ -9,20 +9,18 @@ use std::fmt::Debug;
 use std::time::Duration;
 use uuid::Version::Mac;
 
-use crate::qaruntime::base::{Ack, AddMonitor, Instruct, Order, QAKline, QAOrderRsp, QifiRsp};
-use crate::qaruntime::qamanagers::monitor_manager::MonitorManager;
-use crate::qaenv::localenv::CONFIG;
-use crate::qaprotocol::qifi::account::QIFI;
-use crate::qaaccount::marketpreset::MarketPreset;
 use crate::qaaccount::account::QA_Account;
+use crate::qaaccount::marketpreset::MarketPreset;
 use crate::qaaccount::order::QAOrder;
-use crate::qautil::tradedate::QATradeDate;
-use crate::qaruntime::qacontext::{QAContext, StrategyFunc};
 use crate::qaconnector::mongo::mongoclient::QAMongoClient;
-use crate::qaprotocol::mifi::qafastkline::QAKlineBase;
 use crate::qadata::resample::{resample_db, QARealtimeResampler};
-
-
+use crate::qaenv::localenv::CONFIG;
+use crate::qaprotocol::mifi::qafastkline::QAKlineBase;
+use crate::qaprotocol::qifi::account::QIFI;
+use crate::qaruntime::base::{Ack, AddMonitor, Instruct, Order, QAKline, QAOrderRsp, QifiRsp};
+use crate::qaruntime::qacontext::{QAContext, StrategyFunc};
+use crate::qaruntime::qamanagers::monitor_manager::MonitorManager;
+use crate::qautil::tradedate::QATradeDate;
 
 enum StateCode {}
 
@@ -129,7 +127,9 @@ where
         info!("[{}] backtest redis end", self.qactx.account_cookie);
         // 回测的订单不发出
 
-        self.qactx.acc.to_csv(format!("{}.csv",  self.qactx.account_cookie));
+        self.qactx
+            .acc
+            .to_csv(format!("{}.csv", self.qactx.account_cookie));
         self.qactx.order_que.clear();
     }
 
@@ -156,7 +156,6 @@ where
         }) {
             Err(e) => {
                 let m = format!("pub orders fail {:?}", e.to_string());
-
             }
             _ => {}
         }
@@ -173,7 +172,6 @@ where
         }) {
             Err(e) => {
                 let m = format!("qifi save fail {:?}", e.to_string());
-
             }
             _ => {
                 self.qifi_ts = Local::now().timestamp();
@@ -245,7 +243,7 @@ where
 
     pub fn get_clock(&mut self, instruct: Instruct) {
         match instruct.body.as_str() {
-            "stg_status" => println!("{:#?}",&self.stg),
+            "stg_status" => println!("{:#?}", &self.stg),
             _ => {}
         }
         self.ack(instruct, 200, self.qactx.clock.clone());
@@ -260,7 +258,7 @@ where
         }) {
             Err(e) => {
                 let s = format!("[{}] ack fail {}", self.qactx.account_cookie, e.to_string());
-                println!("{:#?}",&s);
+                println!("{:#?}", &s);
             }
             _ => {}
         };
