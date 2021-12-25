@@ -1,6 +1,6 @@
-use std::ops::Index;
 use chrono::Local;
 use chrono::TimeZone;
+use std::ops::Index;
 
 pub struct QATradeDate {
     pub(crate) trade_date: Vec<i32>,
@@ -24,9 +24,10 @@ pub fn QA_util_date_to_string(date: i32) -> String {
     let u = format!("{}-{}-{}", year, month_1, day_1);
     u
 }
-pub fn QA_util_datelist_to_string(date: Vec<i32>) -> Vec<String>{
-    date.into_iter().map(
-        |x| QA_util_date_to_string(x)).collect::<Vec<String>>()
+pub fn QA_util_datelist_to_string(date: Vec<i32>) -> Vec<String> {
+    date.into_iter()
+        .map(|x| QA_util_date_to_string(x))
+        .collect::<Vec<String>>()
 }
 
 impl QATradeDate {
@@ -985,15 +986,14 @@ impl QATradeDate {
 
         QATradeDate { trade_date }
     }
-    pub fn get_index(&mut self, start:&str, end: &str) ->Vec<i32>{
-        let startint =  self.to_i32(start);
+    pub fn get_index(&mut self, start: &str, end: &str) -> Vec<i32> {
+        let startint = self.to_i32(start);
         let endint = self.to_i32(end);
 
-
-        let s= self.trade_date.iter().position(|x| x >= &startint).unwrap();
+        let s = self.trade_date.iter().position(|x| x >= &startint).unwrap();
 
         let e = self.trade_date.iter().position(|x| x > &endint).unwrap();
-        let res = & self.trade_date[s..e];
+        let res = &self.trade_date[s..e];
         res.to_vec()
     }
 
@@ -1027,7 +1027,6 @@ impl QATradeDate {
             false
         }
     }
-
 
     pub fn get_real_date(&mut self, date: &str) -> String {
         let realdate: String;
@@ -1205,33 +1204,24 @@ mod tests {
     }
 
     #[test]
-    fn test_get_index(){
-        let start  ="2021-01-04";
+    fn test_get_index() {
+        let start = "2021-01-04";
         let end = "2021-01-20";
         let mut u = QATradeDate::new();
-        let res =  u.get_index(start, end);
+        let res = u.get_index(start, end);
         println!("{:#?}", res);
-        assert_eq!(res, vec![
-            20210104,
-            20210105,
-            20210106,
-            20210107,
-            20210108,
-            20210111,
-            20210112,
-            20210113,
-            20210114,
-            20210115,
-            20210118,
-            20210119,
-            20210120,
-        ]
+        assert_eq!(
+            res,
+            vec![
+                20210104, 20210105, 20210106, 20210107, 20210108, 20210111, 20210112, 20210113,
+                20210114, 20210115, 20210118, 20210119, 20210120,
+            ]
         );
-        println!("{:#?}", res.into_iter().map(
-            |x| QA_util_date_to_string(x)).collect::<Vec<String>>());
+        println!(
+            "{:#?}",
+            res.into_iter()
+                .map(|x| QA_util_date_to_string(x))
+                .collect::<Vec<String>>()
+        );
     }
-
-
-
-
 }

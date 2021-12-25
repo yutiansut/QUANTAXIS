@@ -1,11 +1,11 @@
-use serde::{Deserialize, Serialize};
+use crate::qahandlers::realtime::{Join, Leave, ListRooms, Realtime, RoomType};
+use crate::qahandlers::state::Rsp;
 use actix::Addr;
 use actix_redis::RedisActor;
 use actix_web::{web, HttpRequest, HttpResponse};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
-use crate::qahandlers::state::Rsp;
-use crate::qahandlers::realtime::{Join, Leave, ListRooms, Realtime, RoomType};
 #[derive(Serialize, Clone, Debug, Deserialize)]
 pub struct SubscribeForm {
     pub sid: String,
@@ -17,8 +17,6 @@ pub struct UnSubscribeForm {
     pub sid: String,
     pub room: String,
 }
-
-
 
 pub async fn realtime_sub(
     r: HttpRequest,

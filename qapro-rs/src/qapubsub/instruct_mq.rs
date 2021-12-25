@@ -1,7 +1,6 @@
 use crate::qaruntime::base::Instruct;
 use crate::qaruntime::qamanagers::monitor_manager::MonitorManager;
 
-
 use actix::prelude::*;
 use actix::{Actor, Addr, Context, Handler, Recipient};
 use amiquip::{

@@ -1,19 +1,14 @@
-
 use rand::prelude::*;
 use serde::{Deserialize, Serialize};
 
-
-use crate::qaruntime::qacontext::{StrategyFunc, QAContext};
 use crate::qaprotocol::mifi::market::BAR;
-
+use crate::qaruntime::qacontext::{QAContext, StrategyFunc};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Params {
-}
+pub struct Params {}
 impl Params {
     pub fn default() -> Params {
-        Params {
-        }
+        Params {}
     }
 }
 
@@ -43,7 +38,6 @@ impl StrategyFunc for QAStrategy {
                         data.datetime.clone().as_ref(),
                         data.close.clone(),
                     );
-
                 }
             } else {
                 if rand::random() {
@@ -53,7 +47,6 @@ impl StrategyFunc for QAStrategy {
                         data.datetime.clone().as_ref(),
                         data.close.clone(),
                     );
-
                 }
             }
             if pos_short > 0.0 {
@@ -64,7 +57,6 @@ impl StrategyFunc for QAStrategy {
                         data.datetime.clone().as_ref(),
                         data.close.clone(),
                     );
-
                 }
             } else {
                 if rand::random() {
@@ -74,7 +66,6 @@ impl StrategyFunc for QAStrategy {
                         data.datetime.clone().as_ref(),
                         data.close.clone(),
                     );
-
                 }
             }
         }
@@ -95,7 +86,6 @@ impl StrategyFunc for QAStrategy {
                         data.datetime.clone().as_ref(),
                         data.close.clone(),
                     );
-
                 }
             }
             if pos_short > 0.0 {
@@ -107,7 +97,6 @@ impl StrategyFunc for QAStrategy {
                         data.datetime.clone().as_ref(),
                         data.close.clone(),
                     );
-
                 }
             }
         }

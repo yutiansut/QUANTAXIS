@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader, Error, Write};
 
 pub fn backtest(
-    data: Vec< BAR>,
+    data: Vec<BAR>,
     name: String,
     code: String,
     frequence: i32,

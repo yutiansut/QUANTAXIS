@@ -2,13 +2,13 @@
 
 use serde::{Deserialize, Serialize};
 
-use std::collections::{HashMap, BTreeMap};
+use std::collections::{BTreeMap, HashMap};
 
-use crate::qaprotocol::qifi::default::{default_string, default_i32};
+use crate::qaprotocol::qifi::default::{default_i32, default_string};
 
 // 注意当前设置的数据大小 是否可能会出现溢出情况  这需要我们进行考虑
 #[allow(dead_code, non_snake_case)]
-#[derive(Serialize, Clone, Deserialize, Debug,Default)]
+#[derive(Serialize, Clone, Deserialize, Debug, Default)]
 pub struct Account {
     pub user_id: String,
     pub currency: String,
@@ -32,7 +32,7 @@ pub struct Account {
 }
 
 #[allow(dead_code)]
-#[derive(Serialize, Clone, Deserialize, Debug,Default)]
+#[derive(Serialize, Clone, Deserialize, Debug, Default)]
 pub struct BankDetail {
     pub id: String,
     pub name: String,
@@ -42,7 +42,7 @@ pub struct BankDetail {
 }
 
 #[allow(dead_code)]
-#[derive(Serialize, Clone, Deserialize, Debug,Default)]
+#[derive(Serialize, Clone, Deserialize, Debug, Default)]
 pub struct Order {
     pub seqno: i32,
     pub user_id: String,
@@ -64,7 +64,7 @@ pub struct Order {
 }
 
 #[allow(dead_code)]
-#[derive(Serialize, Clone, Deserialize, Debug,Default)]
+#[derive(Serialize, Clone, Deserialize, Debug, Default)]
 pub struct Position {
     pub user_id: String,
     pub exchange_id: String,
@@ -108,7 +108,7 @@ pub struct Position {
 }
 
 #[allow(dead_code)]
-#[derive(Serialize, Clone, Deserialize, Debug,Default)]
+#[derive(Serialize, Clone, Deserialize, Debug, Default)]
 pub struct Trade {
     pub seqno: i32,
     pub user_id: String,
@@ -126,7 +126,7 @@ pub struct Trade {
 }
 
 #[allow(dead_code)]
-#[derive(Serialize, Clone, Deserialize, Debug,Default)]
+#[derive(Serialize, Clone, Deserialize, Debug, Default)]
 pub struct Transfer {
     pub datetime: i64,
     pub currency: String,

@@ -366,19 +366,18 @@ impl QA_Account {
     }
 
     pub fn get_volume_long(&mut self, code: &str) -> f64 {
-        if self.hold.contains_key(code){
+        if self.hold.contains_key(code) {
             let pos = self.get_position(code).unwrap();
             pos.volume_long()
-        }else{
+        } else {
             0.0
         }
-
     }
     pub fn get_volume_short(&mut self, code: &str) -> f64 {
         if self.hold.contains_key(code) {
             let pos = self.get_position(code).unwrap();
             pos.volume_short()
-        }else{
+        } else {
             0.0
         }
     }
@@ -819,12 +818,11 @@ impl QA_Account {
     pub fn on_price_change(&mut self, code: String, price: f64, datetime: String) {
         // 当行情变化时候 要更新计算持仓
 
-        if self.hold.contains_key(&code){
+        if self.hold.contains_key(&code) {
             let pos = self.get_position(code.as_ref()).unwrap();
             pos.on_price_change(price, datetime.clone());
             self.change_datetime(datetime);
         }
-
     }
 
     pub fn change_datetime(&mut self, datetime: String) {

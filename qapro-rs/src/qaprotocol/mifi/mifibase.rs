@@ -1,11 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-
-
 pub trait Handler {
     fn to_json(&self) -> String
-        where
-            Self: Serialize,
+    where
+        Self: Serialize,
     {
         serde_json::to_string(&self).unwrap()
     }
@@ -28,7 +26,4 @@ pub trait Handler {
     fn set_low(&mut self, low: f64) {}
     fn set_vol(&mut self, vol: f64) {}
     fn set_amount(&mut self, amount: f64) {}
-
 }
-
-

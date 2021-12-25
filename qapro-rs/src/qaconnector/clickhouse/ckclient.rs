@@ -1,11 +1,10 @@
-
 use chrono::prelude::*;
 use chrono_tz::Tz;
 use std::convert::TryInto;
 use std::io;
 use std::io::Error;
-use std::sync::{Arc, Mutex};
 use std::sync::atomic::AtomicBool;
+use std::sync::{Arc, Mutex};
 
 use async_trait::async_trait;
 use chrono;
@@ -13,14 +12,12 @@ use clickhouse_rs::{Block, Pool};
 use serde::Deserialize;
 use serde_json::Value;
 
+use self::chrono::Utc;
 use crate::qaenv::localenv::CONFIG;
 use crate::qaprotocol::mifi::market::{StockDay, StockMin};
-use crate::qaprotocol::mifi::qafastkline::{QAKlineBase, QAColumnBar};
-use self::chrono::Utc;
+use crate::qaprotocol::mifi::qafastkline::{QAColumnBar, QAKlineBase};
 use clickhouse_rs::types::Column;
 use std::ops::Deref;
-
-
 
 type ServerDate = chrono::Date<Tz>;
 type ServerDateTime = chrono::DateTime<Tz>;
@@ -86,7 +83,8 @@ pub trait DataConnector {
         &self,
         codelist: Vec<&str>,
         start: &str,
-        end: &str,) -> Result<QAColumnBar, io::Error>;
+        end: &str,
+    ) -> Result<QAColumnBar, io::Error>;
 }
 
 #[async_trait]
@@ -100,81 +98,73 @@ impl DataConnector for QACKClient {
     ) -> Result<QAColumnBar, io::Error> {
         let mut cursor = self.pool.get_handle().await?;
         let codevar = codelist.join("','");
-        let dt=if freq=="1min"{ "datetime" } else { "date" };
+        let dt = if freq == "1min" { "datetime" } else { "date" };
         let sqlx = format!("SELECT * FROM quantaxis.stock_cn_{} where order_book_id in ['{}'] AND {} BETWEEN '{}' AND '{}' order by {}",freq, codevar,dt, start, end, dt);
-
-
 
         println!("{:#?}", sqlx);
         let mut result = cursor.query(sqlx).fetch_all().await?;
 
-        let mut res : QAColumnBar;
-        let openvec: Vec<_> = result
-            .get_column("open")?
-            .iter::<f32>()?
-            .copied()
-            .collect();
-        let highvec: Vec<_> = result
-            .get_column("high")?
-            .iter::<f32>()?
-            .copied()
-            .collect();
-        let lowvec: Vec<_> = result
-            .get_column("low")?
-            .iter::<f32>()?
-            .copied()
-            .collect();
+        let mut res: QAColumnBar;
+        let openvec: Vec<_> = result.get_column("open")?.iter::<f32>()?.copied().collect();
+        let highvec: Vec<_> = result.get_column("high")?.iter::<f32>()?.copied().collect();
+        let lowvec: Vec<_> = result.get_column("low")?.iter::<f32>()?.copied().collect();
         let closevec: Vec<_> = result
             .get_column("close")?
             .iter::<f32>()?
             .copied()
             .collect();
-        let volumevec : Vec<_> = result
+        let volumevec: Vec<_> = result
             .get_column("volume")?
             .iter::<f32>()?
             .copied()
             .collect();
 
-        let codevec : Vec<_> = result
+        let codevec: Vec<_> = result
             .get_column("order_book_id")?
             .iter::<&[u8]>()?
             .collect();
-        let codev:Vec<String> = codevec.iter().map(|x|String::from_utf8(x.to_vec()).unwrap()).collect();
+        let codev: Vec<String> = codevec
+            .iter()
+            .map(|x| String::from_utf8(x.to_vec()).unwrap())
+            .collect();
 
-        let amountvec : Vec<_> = result
+        let amountvec: Vec<_> = result
             .get_column("total_turnover")?
             .iter::<f32>()?
             .copied()
             .collect();
 
-        let mut ttimevec: Vec<String> =vec![];
-        if freq =="day"{
-            let timevec: Vec<_> = result
-                .get_column("date")?
-                .iter::<Date<Tz>>()?
-                .collect();
+        let mut ttimevec: Vec<String> = vec![];
+        if freq == "day" {
+            let timevec: Vec<_> = result.get_column("date")?.iter::<Date<Tz>>()?.collect();
 
-            ttimevec =timevec.iter().map(|x| x.to_string()[0..10].parse().unwrap()).collect();
-        }else{
+            ttimevec = timevec
+                .iter()
+                .map(|x| x.to_string()[0..10].parse().unwrap())
+                .collect();
+        } else {
             let timevec: Vec<_> = result
                 .get_column("datetime")?
                 .iter::<DateTime<Tz>>()?
                 .collect();
 
-            ttimevec =timevec.iter().map(|x| x.to_string()[0..19].parse().unwrap()).collect();
+            ttimevec = timevec
+                .iter()
+                .map(|x| x.to_string()[0..19].parse().unwrap())
+                .collect();
         }
 
-        res = QAColumnBar{
-            datetime:ttimevec,
+        res = QAColumnBar {
+            datetime: ttimevec,
             code: codev,
             open: openvec.iter().map(|x| *x as f64).collect(),
-            high: highvec.iter().map(|x|  *x as f64).collect(),
-            low: lowvec.iter().map(|x|  *x as f64).collect(),
-            close: closevec.iter().map(|x|  *x as f64).collect(),
+            high: highvec.iter().map(|x| *x as f64).collect(),
+            low: lowvec.iter().map(|x| *x as f64).collect(),
+            close: closevec.iter().map(|x| *x as f64).collect(),
             volume: volumevec.iter().map(|x| *x as f64).collect(),
-            amount: amountvec.iter().map(|x|  *x as f64).collect(),
+            amount: amountvec.iter().map(|x| *x as f64).collect(),
             frequence: "".to_string(),
-            currentidx:0
+            currentidx: 0,
         };
         // for i in range(0..openvec.len()){
         //
@@ -195,7 +185,6 @@ impl DataConnector for QACKClient {
         //     startstamp: 0,
         //     is_last: false,
         // };
-
 
         //
         // for row in result.rows() {
@@ -235,11 +224,22 @@ impl DataConnector for QACKClient {
         Ok(res)
     }
 
-    async fn get_future(&self, codelist: Vec<&str>, start: &str, end: &str, freq: &str) -> Result<QAColumnBar, Error> {
+    async fn get_future(
+        &self,
+        codelist: Vec<&str>,
+        start: &str,
+        end: &str,
+        freq: &str,
+    ) -> Result<QAColumnBar, Error> {
         todo!()
     }
 
-    async fn get_stock_adj(&self, codelist: Vec<&str>, start: &str, end: &str) -> Result<QAColumnBar, Error> {
+    async fn get_stock_adj(
+        &self,
+        codelist: Vec<&str>,
+        start: &str,
+        end: &str,
+    ) -> Result<QAColumnBar, Error> {
         todo!()
     }
 }

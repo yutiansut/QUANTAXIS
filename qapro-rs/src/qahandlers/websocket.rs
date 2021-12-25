@@ -3,16 +3,15 @@ use actix::prelude::*;
 use actix_web::{web, Error, HttpRequest, HttpResponse};
 use actix_web_actors::ws;
 use log::{error, info, warn};
+use serde::de::Unexpected::Str;
 use serde_json::value::Value;
+use std::str;
 use std::time::Duration;
 use uuid::Uuid;
-use std::str;
-use serde::de::Unexpected::Str;
-
 
 use crate::qaenv::localenv::CONFIG;
-use crate::qahandlers::state::WSRsp;
 use crate::qahandlers::realtime::{Connect, Disconnect, Join, Leave, Realtime, RoomType};
+use crate::qahandlers::state::WSRsp;
 
 #[derive(Message)]
 #[rtype(result = "()")]
@@ -90,8 +89,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for WebsocketHandler 
             Ok(ws::Message::Text(text)) => {
                 info!("Text> {}", text);
 
-
-                let request: Value = match serde_json::from_str( text.to_string().as_str()) {
+                let request: Value = match serde_json::from_str(text.to_string().as_str()) {
                     Ok(x) => x,
                     Err(e) => {
                         error!("{:?}", e.to_string());

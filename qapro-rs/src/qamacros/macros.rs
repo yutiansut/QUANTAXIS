@@ -1,4 +1,3 @@
-
 #[macro_export]
 macro_rules! launchstrategy{
     ($name:expr;$code:expr;$json:expr;$ctx:expr;$morm_addr:expr;$mqm_addr:expr;$mdata:expr; $rdata:expr; $($m: ident),*) => {
@@ -32,8 +31,6 @@ macro_rules! launchstrategy{
         }
     }
 }
-
-
 
 #[macro_export]
 macro_rules! mapjobs{

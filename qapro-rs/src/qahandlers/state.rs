@@ -10,8 +10,8 @@ pub struct Rsp<T> {
 }
 
 impl<T: 'static> Rsp<T>
-    where
-        T: Serialize,
+where
+    T: Serialize,
 {
     pub fn to_string(&self) -> String {
         serde_json::to_string(self).unwrap()
@@ -58,8 +58,8 @@ pub struct WSRsp<T> {
 }
 
 impl<T: 'static> WSRsp<T>
-    where
-        T: Serialize,
+where
+    T: Serialize,
 {
     pub fn ok(data: T, topic: &str) -> Self {
         Self {
