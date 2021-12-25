@@ -34,11 +34,11 @@ bson = "0.13.0"
 mongodb = {version = "1.1.1", default-features = false, features = ["sync"]}
 
 redis-async = { version = "0.8", default-features = false, features = ["tokio10"] }
-actix-web-actors="4.0.0-beta.8"
+actix-web-actors={ version = "4.0.0-beta.8", default-features = false }
 actix-redis = "0.10.0-beta.4"
 actix = "0.12.0"
 actix-rt = "2.5.0"
-actix-web = "4.0.0-beta.5"
+actix-web ={ version = "4.0.0-beta.5" ,default-features = false }
 actix-cors = "0.6.0-beta.7"
 
 futures="0.3.5"
@@ -52,6 +52,8 @@ chrono = "0.4.19"
 thiserror = "1.0"
 rand = "0.7"
 
+arrow = {version='6.4.0'}
+datafusion = {version='6.0.0'}
 
 
 [dependencies.clickhouse-rs]

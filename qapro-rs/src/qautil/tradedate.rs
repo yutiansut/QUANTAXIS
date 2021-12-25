@@ -1,8 +1,32 @@
+use std::ops::Index;
 use chrono::Local;
 use chrono::TimeZone;
 
 pub struct QATradeDate {
-    trade_date: Vec<i32>,
+    pub(crate) trade_date: Vec<i32>,
+}
+
+pub fn QA_util_date_to_string(date: i32) -> String {
+    let year = date / 10000;
+    let month = (date - year * 10000) / 100;
+    let day = (date - year * 10000 - month * 100);
+    let month_1 = if month < 10 {
+        format!("0{}", month)
+    } else {
+        format!("{}", month)
+    };
+    let day_1 = if day < 10 {
+        format!("0{}", day)
+    } else {
+        format!("{}", day)
+    };
+
+    let u = format!("{}-{}-{}", year, month_1, day_1);
+    u
+}
+pub fn QA_util_datelist_to_string(date: Vec<i32>) -> Vec<String>{
+    date.into_iter().map(
+        |x| QA_util_date_to_string(x)).collect::<Vec<String>>()
 }
 
 impl QATradeDate {
@@ -961,6 +985,18 @@ impl QATradeDate {
 
         QATradeDate { trade_date }
     }
+    pub fn get_index(&mut self, start:&str, end: &str) ->Vec<i32>{
+        let startint =  self.to_i32(start);
+        let endint = self.to_i32(end);
+
+
+        let s= self.trade_date.iter().position(|x| x >= &startint).unwrap();
+
+        let e = self.trade_date.iter().position(|x| x > &endint).unwrap();
+        let res = & self.trade_date[s..e];
+        res.to_vec()
+    }
+
     pub fn to_i32(&mut self, date: &str) -> i32 {
         let u: i32 = date.replace('-', "").parse::<i32>().unwrap();
         u
@@ -992,6 +1028,7 @@ impl QATradeDate {
         }
     }
 
+
     pub fn get_real_date(&mut self, date: &str) -> String {
         let realdate: String;
 
@@ -1007,6 +1044,7 @@ impl QATradeDate {
         let ur = self.to_i32(date);
 
         let u = self.trade_date.iter().position(|x| x >= &ur).unwrap();
+
         let mut res = 0;
         if self.trade_date.contains(&ur) {
             res = self.trade_date.get_mut(u + 1).unwrap().to_owned();
@@ -1165,4 +1203,35 @@ mod tests {
         println!("{:#?}", x);
         assert_eq!(&x, "2020-07-03");
     }
+
+    #[test]
+    fn test_get_index(){
+        let start  ="2021-01-04";
+        let end = "2021-01-20";
+        let mut u = QATradeDate::new();
+        let res =  u.get_index(start, end);
+        println!("{:#?}", res);
+        assert_eq!(res, vec![
+            20210104,
+            20210105,
+            20210106,
+            20210107,
+            20210108,
+            20210111,
+            20210112,
+            20210113,
+            20210114,
+            20210115,
+            20210118,
+            20210119,
+            20210120,
+        ]
+        );
+        println!("{:#?}", res.into_iter().map(
+            |x| QA_util_date_to_string(x)).collect::<Vec<String>>());
+    }
+
+
+
+
 }

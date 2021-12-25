@@ -3,6 +3,7 @@ use chrono::prelude::*;
 use chrono_tz::Tz;
 use std::convert::TryInto;
 use std::io;
+use std::io::Error;
 use std::sync::{Arc, Mutex};
 use std::sync::atomic::AtomicBool;
 
@@ -65,18 +66,32 @@ impl QACKClient {
 
 #[async_trait]
 pub trait DataConnector {
-    async fn exectue(
+    async fn get_stock(
         &self,
         codelist: Vec<&str>,
         start: &str,
         end: &str,
         freq: &str,
     ) -> Result<QAColumnBar, io::Error>;
+
+    async fn get_future(
+        &self,
+        codelist: Vec<&str>,
+        start: &str,
+        end: &str,
+        freq: &str,
+    ) -> Result<QAColumnBar, io::Error>;
+
+    async fn get_stock_adj(
+        &self,
+        codelist: Vec<&str>,
+        start: &str,
+        end: &str,) -> Result<QAColumnBar, io::Error>;
 }
 
 #[async_trait]
 impl DataConnector for QACKClient {
-    async fn exectue(
+    async fn get_stock(
         &self,
         codelist: Vec<&str>,
         start: &str,
@@ -218,6 +233,14 @@ impl DataConnector for QACKClient {
         // }
 
         Ok(res)
+    }
+
+    async fn get_future(&self, codelist: Vec<&str>, start: &str, end: &str, freq: &str) -> Result<QAColumnBar, Error> {
+        todo!()
+    }
+
+    async fn get_stock_adj(&self, codelist: Vec<&str>, start: &str, end: &str) -> Result<QAColumnBar, Error> {
+        todo!()
     }
 }
 
