@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::qaprotocol::mifi::market::BAR;
 use serde::{Deserialize, Serialize};
 use serde_json;
@@ -36,6 +37,7 @@ pub struct QAColumnBar {
     pub frequence: String,
     pub currentidx : i32
 }
+
 
 impl QAColumnBar {
 
@@ -77,6 +79,7 @@ impl QAColumnBar {
     }
 
 }
+
 
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
