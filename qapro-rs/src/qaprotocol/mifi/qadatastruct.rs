@@ -61,10 +61,9 @@ async fn t() {
     let mut E =  ExC::new();
     // /E.reg_csv();
     E.ctx.register_csv("example",  "testdata.csv",  CsvReadOptions::new()).await.unwrap();
-    let res = E.ctx.sql("SELECT * from example where order_book_id = '000001.XSHE' order by date desc").await.unwrap();
+    let res = E.ctx.sql("SELECT * from example where order_book_id = '000001.XSHE' order by date").await.unwrap();
     let results = res.collect().await.unwrap();
-    let provider = MemTable::try_new(schema, vec![results])?;
-    ctx.register_table("t", Arc::new(provider))?;
+
 
     print_batches(&results).unwrap();
 }
