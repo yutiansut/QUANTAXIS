@@ -65,18 +65,33 @@ impl QADataStruct_StockDay {
         let dateS = Series::new("date", &date);
         let codeS = Series::new("code", &code);
         let order_book_idS = Series::new("order_book_id", &code);
-        let num_tradesS =  Series::new("num_trades", &num_trades);
-        let limit_upS  =  Series::new("limit_up", &limit_up);
-        let limit_downS  =  Series::new("limit_down", &limit_down);
-        let openS =  Series::new("open", &open);
-        let highS =  Series::new("high", &high);
-        let lowS =  Series::new("low", &low);
-        let closeS =  Series::new("close", &close);
-        let volumeS =  Series::new("volume", &volume);
-        let total_turnoverS =  Series::new("total_turnover", &total_turnover);
-        let amountS =  Series::new("amount", &total_turnover);
+        let num_tradesS = Series::new("num_trades", &num_trades);
+        let limit_upS = Series::new("limit_up", &limit_up);
+        let limit_downS = Series::new("limit_down", &limit_down);
+        let openS = Series::new("open", &open);
+        let highS = Series::new("high", &high);
+        let lowS = Series::new("low", &low);
+        let closeS = Series::new("close", &close);
+        let volumeS = Series::new("volume", &volume);
+        let total_turnoverS = Series::new("total_turnover", &total_turnover);
+        let amountS = Series::new("amount", &total_turnover);
 
-        let df = DataFrame::new(vec![dateS, codeS, order_book_idS, num_tradesS, limit_upS, limit_downS, openS, highS,lowS, closeS,volumeS, total_turnoverS, amountS]).unwrap();
+        let df = DataFrame::new(vec![
+            dateS,
+            codeS,
+            order_book_idS,
+            num_tradesS,
+            limit_upS,
+            limit_downS,
+            openS,
+            highS,
+            lowS,
+            closeS,
+            volumeS,
+            total_turnoverS,
+            amountS,
+        ])
+        .unwrap();
         Self { data: df }
     }
     pub fn new_from_parquet(path: &str) -> Self {
@@ -128,7 +143,7 @@ mod test {
     #[test]
     fn test_QADataStruct_StockDay_fromvec() {
         let testds = QADataStruct_StockDay::new_from_vec(
-            vec!["2021-01-01".to_string(),"2021-01-02".to_string()],
+            vec!["2021-01-01".to_string(), "2021-01-02".to_string()],
             vec!["000001.XSHE".to_string(), "000001.XSHE".to_string()],
             vec![20.1, 20.2],
             vec![22.1, 21.1],
@@ -138,9 +153,8 @@ mod test {
             vec![19.0, 19.5],
             vec![99.2, 99.2],
             vec![880.2, 990.2],
-            vec![8880.2,8890.2]
+            vec![8880.2, 8890.2],
         );
         println!("{:#?}", testds.data);
-
     }
 }

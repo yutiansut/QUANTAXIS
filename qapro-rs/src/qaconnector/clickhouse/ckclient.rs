@@ -15,8 +15,8 @@ use serde_json::Value;
 use self::chrono::Utc;
 use crate::qaenv::localenv::CONFIG;
 use crate::qaprotocol::mifi::market::{StockDay, StockMin};
+use crate::qaprotocol::mifi::qadatastruct::QADataStruct_StockDay;
 use crate::qaprotocol::mifi::qafastkline::{QAColumnBar, QAKlineBase};
-use crate::qaprotocol::mifi::qadatastruct::{QADataStruct_StockDay};
 use clickhouse_rs::types::Column;
 use std::ops::Deref;
 
@@ -192,7 +192,6 @@ impl DataConnector for QACKClient {
         println!("{:#?}", sqlx);
         let mut result = cursor.query(sqlx).fetch_all().await?;
 
-
         let openvec: Vec<_> = result.get_column("open")?.iter::<f32>()?.copied().collect();
         let highvec: Vec<_> = result.get_column("high")?.iter::<f32>()?.copied().collect();
         let lowvec: Vec<_> = result.get_column("low")?.iter::<f32>()?.copied().collect();
@@ -241,19 +240,37 @@ impl DataConnector for QACKClient {
                 .map(|x| x.to_string()[0..19].parse().unwrap())
                 .collect();
         };
-        let limitupvec: Vec<_> = result.get_column("limit_up")?.iter::<f32>()?.copied().collect();
-        let limitdownvec: Vec<_> = result.get_column("limit_down")?.iter::<f32>()?.copied().collect();
-        let numtradesvec: Vec<_> = result.get_column("num_trades")?.iter::<f32>()?.copied().collect();
+        let limitupvec: Vec<_> = result
+            .get_column("limit_up")?
+            .iter::<f32>()?
+            .copied()
+            .collect();
+        let limitdownvec: Vec<_> = result
+            .get_column("limit_down")?
+            .iter::<f32>()?
+            .copied()
+            .collect();
+        let numtradesvec: Vec<_> = result
+            .get_column("num_trades")?
+            .iter::<f32>()?
+            .copied()
+            .collect();
 
-
-        let res =  QADataStruct_StockDay::new_from_vec(ttimevec, codev, openvec,
-                                                       highvec, lowvec, closevec, limitupvec,
-                                                       limitdownvec, numtradesvec, volumevec,
-                                                        amountvec);
+        let res = QADataStruct_StockDay::new_from_vec(
+            ttimevec,
+            codev,
+            openvec,
+            highvec,
+            lowvec,
+            closevec,
+            limitupvec,
+            limitdownvec,
+            numtradesvec,
+            volumevec,
+            amountvec,
+        );
         Ok(res)
-
     }
-
 
     async fn get_future(
         &self,
@@ -303,14 +320,12 @@ mod tests {
     async fn execute() {
         let c = QACKClient::init();
 
-        let codelist =vec!["000001.XSHE", "000002.XSHE"];
+        let codelist = vec!["000001.XSHE", "000002.XSHE"];
         let b = c
             .get_stock_adv(codelist, "2021-01-10", "2021-01-21", "day")
-            .await.unwrap();
+            .await
+            .unwrap();
 
         println!("{:#?}", b.data);
-
     }
-
-
 }
