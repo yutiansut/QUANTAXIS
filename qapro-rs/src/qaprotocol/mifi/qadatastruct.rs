@@ -1,69 +1,98 @@
-extern crate arrow;
-use arrow::{
-    csv,
-    datatypes::{DataType, Field, Schema, SchemaRef},
-    record_batch::RecordBatch,
-    tensor::Tensor,
-    util::pretty::print_batches,
+use polars::prelude::{
+    CsvReader, DataFrame, DataType, Field, Result as PolarResult, RollingOptions, Schema,
+    SerReader, Series,
 };
-use std::{any::Any, collections::BTreeSet, fs::File, sync::Arc};
+use polars::series::ops::NullBehavior;
+use rayon::prelude::{IntoParallelIterator, ParallelIterator};
+use std::error::Error;
+use std::fs::{self, File};
+use std::io::Result as IoResult;
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
+use crate::qaenv::localenv::CONFIG;
+const FILES_IN_PARALLEL: usize = 2;
 
-use datafusion::{
-    datasource::TableProvider,
-    error::{DataFusionError, Result},
-    logical_plan::Expr,
-    physical_plan::{
-        ColumnStatistics, DisplayFormatType, ExecutionPlan, Partitioning,
-        SendableRecordBatchStream, Statistics,
-    },
-    prelude::{ExecutionContext,CsvReadOptions},
-    scalar::ScalarValue,
-};
-use datafusion::datasource::MemTable;
-use datafusion::prelude::DataFrame;
 
-fn read_csv() {
-    let file = File::open("testdata.csv").unwrap();
-    let builder = csv::ReaderBuilder::new()
-        .has_header(true)
-        .infer_schema(Some(100));
-    let mut csv = builder.build(file).unwrap();
-    let batch = csv.next().unwrap().unwrap();
-    let data = batch.column(3).data();
-    println!("{:#?}", data);
-
-    //print_batches(&[batch]).unwrap();
+pub struct StockDay {
+    pub data: DataFrame,
 }
 
-struct ExC{
-    ctx : ExecutionContext,
-    uri : String
+fn stockday_schema() -> Schema{
+    Schema::new(vec![
+        Field::new("date", DataType::Utf8),
+        Field::new("code", DataType::Utf8),
+        Field::new("order_book_id", DataType::Utf8),
+        Field::new("num_trades", DataType::Float32),
+        Field::new("limit_up", DataType::Float32),
+        Field::new("limit_down", DataType::Float32),
+        Field::new("open", DataType::Float32),
+        Field::new("high", DataType::Float32),
+        Field::new("low", DataType::Float32),
+        Field::new("close", DataType::Float32),
+        Field::new("volume", DataType::Float32),
+        Field::new("total_turnover", DataType::Float32),
+        Field::new("amount", DataType::Float32),
+    ])
 }
+impl StockDay {
 
-impl ExC {
-    fn new()-> Self{
-        Self{ctx: ExecutionContext::new(), uri: "testdata.csv".to_string()}
+    fn new_from_csv(path: &str) -> Self {
+        let schema = stockday_schema();
+        let file = File::open(path).expect("Cannot open file.");
+        let df = CsvReader::new(file)
+            .with_schema(&Arc::new(schema))
+            .has_header(true)
+            .finish()
+            .unwrap();
+        Self { data: df }
     }
-    async fn reg_csv(&mut self){
-        self.ctx.register_csv("example", self.uri.as_str(),  CsvReadOptions::new()).await.unwrap();
+    fn new_from_path() -> Self{
+        todo!()
+    }
+    fn new_from_vec() -> Self{
+        todo!()
+    }
+    fn new_from_parquet(path: &str) -> Self {
+        todo!()
     }
 
-    async fn read_csv(&mut self) -> Arc<dyn DataFrame>{
-        let df = self.ctx.read_csv(self.uri.as_str(), CsvReadOptions::new()).await.unwrap();
-        df
+    fn high(&mut self) -> &Series {
+        &self.data["high"]
     }
 
+    fn low(&mut self) -> &Series {
+        &self.data["low"]
+    }
+    fn close(&mut self) -> &Series {
+        &self.data["close"]
+    }
 }
+#[cfg(test)]
+mod test {
+    use super::*;
 
+    #[test]
+    fn test_stockday(){
+        let mut sd = StockDay::new_from_csv("testdata.csv");
 
-#[actix_rt::test]
-async fn t() {
-    let mut E =  ExC::new();
-    // /E.reg_csv();
-    E.ctx.register_csv("example",  "testdata.csv",  CsvReadOptions::new()).await.unwrap();
-    let res = E.ctx.sql("SELECT * from example where order_book_id = '000001.XSHE' order by date").await.unwrap();
-    let results = res.collect().await.unwrap();
+        println!("Final DataFrame:\n{}", sd.data);
+        let high = &sd.data["high"];
+        let low = &sd.data["low"];
 
+        let calc = high - low;
+        println!("Final Series high - low :\n{}", calc);
 
-    print_batches(&results).unwrap();
+        println!("High diff:\n{}", high.diff(2, NullBehavior::Drop));
+
+        println!(
+            "High rollingstd:\n{}",
+            high.rolling_std(RollingOptions {
+                window_size: 3,
+                min_periods: 1,
+                weights: None,
+                center: false
+            })
+            .unwrap()
+        );
+    }
 }
