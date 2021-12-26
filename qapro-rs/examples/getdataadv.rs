@@ -18,10 +18,5 @@ async fn main() {
         .await
         .unwrap();
 
-    println!(
-        "qadatastruct {}",
-       hisdata.data
-    );
-
-
+    println!("qadatastruct {}", hisdata.data);
 }
