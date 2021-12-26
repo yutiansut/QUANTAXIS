@@ -16,6 +16,7 @@ use self::chrono::Utc;
 use crate::qaenv::localenv::CONFIG;
 use crate::qaprotocol::mifi::market::{StockDay, StockMin};
 use crate::qaprotocol::mifi::qafastkline::{QAColumnBar, QAKlineBase};
+use crate::qaprotocol::mifi::qadatastruct::{QADataStruct_StockDay};
 use clickhouse_rs::types::Column;
 use std::ops::Deref;
 
@@ -70,6 +71,13 @@ pub trait DataConnector {
         end: &str,
         freq: &str,
     ) -> Result<QAColumnBar, io::Error>;
+    async fn get_stock_adv(
+        &self,
+        codelist: Vec<&str>,
+        start: &str,
+        end: &str,
+        freq: &str,
+    ) -> Result<QADataStruct_StockDay, io::Error>;
 
     async fn get_future(
         &self,
@@ -166,63 +174,86 @@ impl DataConnector for QACKClient {
             frequence: "".to_string(),
             currentidx: 0,
         };
-        // for i in range(0..openvec.len()){
-        //
-        // }
-        // let datestr: String = datestr.to_string();
-        // let data = QAKlineBase {
-        //     datetime: datestr.clone(),
-        //     updatetime: datestr.clone(),
-        //     code,
-        //     open: open as f64,
-        //     high: high as f64,
-        //     low: low as f64,
-        //     close: close as f64,
-        //     volume: volume as f64,
-        //     amount: amount as f64,
-        //     frequence: freq.to_string(),
-        //     pctchange: 0.0,
-        //     startstamp: 0,
-        //     is_last: false,
-        // };
-
-        //
-        // for row in result.rows() {
-        //     let mut datestr:String= String::new();
-        //
-        //     let code: String = row.get("order_book_id")?;
-        //     let open: f32 = row.get("open")?;
-        //     let high: f32 = row.get("high")?;
-        //     let low: f32 = row.get("low")?;
-        //     let close: f32 = row.get("close")?;
-        //     let volume: f32 = row.get("volume")?;
-        //     let amount: f32 = row.get("total_turnover")?;
-        //     println!("{}",amount);
-        //     println!("{:?}", row.sql_type(dt));
-        //     if freq =="day"{
-        //         let date:Option<Date<Tz>> = row.get(dt)?;
-        //         let dt= date.unwrap();
-        //         datestr =dt.to_string()[0..10].parse().unwrap();
-        //
-        //     }else{
-        //         let date:Option<DateTime<Tz>> = row.get(dt)?;
-        //         println!("{:#?}",date);
-        //         let dt = "sssssss";
-        //         println!("{:#?}",dt);
-        //
-        //         datestr =dt.to_string()[0..19].parse().unwrap();
-        //     }
-        //
-        //
-        //
-        //
-        //     //println!("{:#?}", date);
-        //
-        //     res.push(data);
-        // }
 
         Ok(res)
     }
+    async fn get_stock_adv(
+        &self,
+        codelist: Vec<&str>,
+        start: &str,
+        end: &str,
+        freq: &str,
+    ) -> Result<QADataStruct_StockDay, io::Error> {
+        let mut cursor = self.pool.get_handle().await?;
+        let codevar = codelist.join("','");
+        let dt = if freq == "1min" { "datetime" } else { "date" };
+        let sqlx = format!("SELECT * FROM quantaxis.stock_cn_{} where order_book_id in ['{}'] AND {} BETWEEN '{}' AND '{}' ",freq, codevar,dt, start, end);
+
+        println!("{:#?}", sqlx);
+        let mut result = cursor.query(sqlx).fetch_all().await?;
+
+
+        let openvec: Vec<_> = result.get_column("open")?.iter::<f32>()?.copied().collect();
+        let highvec: Vec<_> = result.get_column("high")?.iter::<f32>()?.copied().collect();
+        let lowvec: Vec<_> = result.get_column("low")?.iter::<f32>()?.copied().collect();
+        let closevec: Vec<_> = result
+            .get_column("close")?
+            .iter::<f32>()?
+            .copied()
+            .collect();
+        let volumevec: Vec<_> = result
+            .get_column("volume")?
+            .iter::<f32>()?
+            .copied()
+            .collect();
+
+        let codevec: Vec<_> = result
+            .get_column("order_book_id")?
+            .iter::<&[u8]>()?
+            .collect();
+        let codev: Vec<String> = codevec
+            .iter()
+            .map(|x| String::from_utf8(x.to_vec()).unwrap())
+            .collect();
+
+        let amountvec: Vec<_> = result
+            .get_column("total_turnover")?
+            .iter::<f32>()?
+            .copied()
+            .collect();
+
+        let mut ttimevec: Vec<String> = vec![];
+        if freq == "day" {
+            let timevec: Vec<_> = result.get_column("date")?.iter::<Date<Tz>>()?.collect();
+
+            ttimevec = timevec
+                .iter()
+                .map(|x| x.to_string()[0..10].parse().unwrap())
+                .collect();
+        } else {
+            let timevec: Vec<_> = result
+                .get_column("datetime")?
+                .iter::<DateTime<Tz>>()?
+                .collect();
+
+            ttimevec = timevec
+                .iter()
+                .map(|x| x.to_string()[0..19].parse().unwrap())
+                .collect();
+        };
+        let limitupvec: Vec<_> = result.get_column("limit_up")?.iter::<f32>()?.copied().collect();
+        let limitdownvec: Vec<_> = result.get_column("limit_down")?.iter::<f32>()?.copied().collect();
+        let numtradesvec: Vec<_> = result.get_column("num_trades")?.iter::<f32>()?.copied().collect();
+
+
+        let res =  QADataStruct_StockDay::new_from_vec(ttimevec, codev, openvec,
+                                                       highvec, lowvec, closevec, limitupvec,
+                                                       limitdownvec, numtradesvec, volumevec,
+                                                        amountvec);
+        Ok(res)
+
+    }
+
 
     async fn get_future(
         &self,
@@ -258,7 +289,7 @@ mod tests {
 
             let codelist = ["000001.XSHE", "000002.XSHE"];
             let b = c
-                .exectue(Vec::from(codelist), "2021-01-10", "2021-01-01")
+                .get_stock(Vec::from(codelist), "2021-01-10", "2021-01-01")
                 .await?;
             //assert_eq!(expected, actual);
         }
@@ -266,4 +297,20 @@ mod tests {
         task::block_on(execute()).unwrap();
         assert_eq!('1', '1');
     }
+
+    use actix_rt;
+    #[actix_rt::test]
+    async fn execute() {
+        let c = QACKClient::init();
+
+        let codelist =vec!["000001.XSHE", "000002.XSHE"];
+        let b = c
+            .get_stock_adv(codelist, "2021-01-10", "2021-01-21", "day")
+            .await.unwrap();
+
+        println!("{:#?}", b.data);
+
+    }
+
+
 }
