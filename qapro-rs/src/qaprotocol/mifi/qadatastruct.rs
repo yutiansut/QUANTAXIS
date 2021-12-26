@@ -1,7 +1,8 @@
 use polars::prelude::{
-    CsvReader, DataFrame, DataType, Field, Result as PolarResult, RollingOptions, Schema,
-    SerReader, Series,
+    CsvReader, DataFrame, DataType, Field, ParquetReader, Result as PolarResult, RollingOptions,
+    Schema, SerReader, Series,
 };
+
 use polars::series::ops::NullBehavior;
 use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use std::error::Error;
@@ -9,15 +10,15 @@ use std::fs::{self, File};
 use std::io::Result as IoResult;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
+
 use crate::qaenv::localenv::CONFIG;
 const FILES_IN_PARALLEL: usize = 2;
-
 
 pub struct StockDay {
     pub data: DataFrame,
 }
 
-fn stockday_schema() -> Schema{
+fn stockday_schema() -> Schema {
     Schema::new(vec![
         Field::new("date", DataType::Utf8),
         Field::new("code", DataType::Utf8),
@@ -35,7 +36,6 @@ fn stockday_schema() -> Schema{
     ])
 }
 impl StockDay {
-
     fn new_from_csv(path: &str) -> Self {
         let schema = stockday_schema();
         let file = File::open(path).expect("Cannot open file.");
@@ -46,14 +46,16 @@ impl StockDay {
             .unwrap();
         Self { data: df }
     }
-    fn new_from_path() -> Self{
+    fn new_from_path() -> Self {
         todo!()
     }
-    fn new_from_vec() -> Self{
+    fn new_from_vec() -> Self {
         todo!()
     }
     fn new_from_parquet(path: &str) -> Self {
-        todo!()
+        let file = File::open(path).expect("Cannot open file.");
+        let df = ParquetReader::new(file).finish().unwrap();
+        Self { data: df }
     }
 
     fn high(&mut self) -> &Series {
@@ -72,7 +74,7 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_stockday(){
+    fn test_stockday() {
         let mut sd = StockDay::new_from_csv("testdata.csv");
 
         println!("Final DataFrame:\n{}", sd.data);
