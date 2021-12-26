@@ -16,9 +16,10 @@ use datafusion::{
         ColumnStatistics, DisplayFormatType, ExecutionPlan, Partitioning,
         SendableRecordBatchStream, Statistics,
     },
-    prelude::ExecutionContext,
+    prelude::{ExecutionContext,CsvReadOptions},
     scalar::ScalarValue,
 };
+use datafusion::prelude::DataFrame;
 
 fn read_csv() {
     let file = File::open("C:\\QUANT\\quantaxis\\qapro-rs\\testdata.csv").unwrap();
@@ -27,10 +28,30 @@ fn read_csv() {
         .infer_schema(Some(100));
     let mut csv = builder.build(file).unwrap();
     let batch = csv.next().unwrap().unwrap();
-    let data = batch.column(3).max();
+    let data = batch.column(3).data();
     println!("{:#?}", data);
 
     //print_batches(&[batch]).unwrap();
+}
+
+struct ExC{
+    ctx : ExecutionContext,
+    uri : String
+}
+
+impl ExC {
+    fn new()-> Self{
+        Self{ctx: ExecutionContext::new(), uri: "C:\\QUANT\\quantaxis\\qapro-rs\\testdata.csv".to_string()}
+    }
+    async fn reg_csv(&mut self){
+        self.ctx.register_csv("example", self.uri.as_str(),  CsvReadOptions::new()).await?;
+    }
+
+    async fn read_csv(&mut self) -> Arc<dyn DataFrame>{
+        let df = self.ctx.read_csv(self.uri.as_str(), CsvReadOptions::new()).await?;
+        df
+    }
+
 }
 
 #[cfg(test)]
