@@ -51,3 +51,9 @@ addr ="127.0.0.1:5000"
 log_level="info"
 key="000000000"
 qifi_gap=3
+
+[DataPath]
+stock_day = "/media/quantaxis/data/cache/stockday"
+future_day = "/media/quantaxis/data/cache/futureday"
+stock_min = "/media/quantaxis/data/cache/stockday"
+future_min = "/media/quantaxis/data/cache/stockday"

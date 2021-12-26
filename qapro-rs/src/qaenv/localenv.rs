@@ -54,6 +54,7 @@ pub struct Config {
     pub instruct: MQConfig,
     pub ack: MQConfig,
     pub common: Common,
+    pub DataPath: DataPath
 }
 
 impl Config {
@@ -213,7 +214,20 @@ impl Default for Backtest {
         }
     }
 }
+#[derive(Clone, Debug, Deserialize)]
+#[serde(default)]
+pub struct DataPath {
+    pub cache: String,
 
+}
+
+impl Default for DataPath {
+    fn default() -> Self {
+        Self {
+           cache: "/data".to_owned()
+        }
+    }
+}
 pub fn new_config() -> Config {
     let _args: Vec<String> = env::args().collect();
 
