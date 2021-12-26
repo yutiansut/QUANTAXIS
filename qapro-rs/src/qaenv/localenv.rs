@@ -54,7 +54,7 @@ pub struct Config {
     pub instruct: MQConfig,
     pub ack: MQConfig,
     pub common: Common,
-    pub DataPath: DataPath
+    pub DataPath: DataPath,
 }
 
 impl Config {
@@ -218,13 +218,12 @@ impl Default for Backtest {
 #[serde(default)]
 pub struct DataPath {
     pub cache: String,
-
 }
 
 impl Default for DataPath {
     fn default() -> Self {
         Self {
-           cache: "/data".to_owned()
+            cache: "/data".to_owned(),
         }
     }
 }

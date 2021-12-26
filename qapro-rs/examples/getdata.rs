@@ -1,3 +1,4 @@
+use actix_rt;
 use chrono::Local;
 use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
@@ -7,7 +8,6 @@ use qapro_rs::qaprotocol::mifi::qafastkline::QAKlineBase;
 use qapro_rs::qautil::tradedate::get_n_day_before_date9;
 use serde_json::Value;
 use std::collections::HashMap;
-use actix_rt;
 #[actix_rt::main]
 async fn main() {
     let c = ckclient::QACKClient::init();

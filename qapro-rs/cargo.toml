@@ -94,7 +94,9 @@ features = [
     "diagonal_concat",
     "horizontal_concat",
     "abs",
-    "ewma"
+    "ewma",
+    "parquet",
+
 ]
 [dependencies.clickhouse-rs]
 git = "https://github.com/suharev7/clickhouse-rs"
