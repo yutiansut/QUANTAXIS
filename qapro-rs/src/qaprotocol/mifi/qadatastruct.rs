@@ -19,10 +19,11 @@ use datafusion::{
     prelude::{ExecutionContext,CsvReadOptions},
     scalar::ScalarValue,
 };
+use datafusion::datasource::MemTable;
 use datafusion::prelude::DataFrame;
 
 fn read_csv() {
-    let file = File::open("C:\\QUANT\\quantaxis\\qapro-rs\\testdata.csv").unwrap();
+    let file = File::open("testdata.csv").unwrap();
     let builder = csv::ReaderBuilder::new()
         .has_header(true)
         .infer_schema(Some(100));
@@ -41,27 +42,29 @@ struct ExC{
 
 impl ExC {
     fn new()-> Self{
-        Self{ctx: ExecutionContext::new(), uri: "C:\\QUANT\\quantaxis\\qapro-rs\\testdata.csv".to_string()}
+        Self{ctx: ExecutionContext::new(), uri: "testdata.csv".to_string()}
     }
     async fn reg_csv(&mut self){
-        self.ctx.register_csv("example", self.uri.as_str(),  CsvReadOptions::new()).await?;
+        self.ctx.register_csv("example", self.uri.as_str(),  CsvReadOptions::new()).await.unwrap();
     }
 
     async fn read_csv(&mut self) -> Arc<dyn DataFrame>{
-        let df = self.ctx.read_csv(self.uri.as_str(), CsvReadOptions::new()).await?;
+        let df = self.ctx.read_csv(self.uri.as_str(), CsvReadOptions::new()).await.unwrap();
         df
     }
 
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use arrow::util::pretty::print_batches;
-    use futures_util::StreamExt;
 
-    #[test]
-    fn t() {
-        read_csv()
-    }
+#[actix_rt::test]
+async fn t() {
+    let mut E =  ExC::new();
+    // /E.reg_csv();
+    E.ctx.register_csv("example",  "testdata.csv",  CsvReadOptions::new()).await.unwrap();
+    let res = E.ctx.sql("SELECT * from example where order_book_id = '000001.XSHE' order by date desc").await.unwrap();
+    let results = res.collect().await.unwrap();
+    let provider = MemTable::try_new(schema, vec![results])?;
+    ctx.register_table("t", Arc::new(provider))?;
+
+    print_batches(&results).unwrap();
 }
