@@ -13,10 +13,12 @@ use serde::Deserialize;
 use serde_json::Value;
 
 use self::chrono::Utc;
+use crate::qadatastruct::factorstruct::QADataStruct_Factor;
 use crate::qadatastruct::stockday::QADataStruct_StockDay;
 use crate::qaenv::localenv::CONFIG;
 use crate::qaprotocol::mifi::market::{StockDay, StockMin};
 use crate::qaprotocol::mifi::qafastkline::{QAColumnBar, QAKlineBase};
+use actix::fut::ok;
 use clickhouse_rs::types::Column;
 use std::ops::Deref;
 
@@ -93,6 +95,13 @@ pub trait DataConnector {
         start: &str,
         end: &str,
     ) -> Result<QAColumnBar, io::Error>;
+
+    async fn get_factor(
+        &self,
+        factorname: &str,
+        start: &str,
+        end: &str,
+    ) -> Result<QADataStruct_Factor, io::Error>;
 }
 
 #[async_trait]
@@ -289,6 +298,40 @@ impl DataConnector for QACKClient {
         end: &str,
     ) -> Result<QAColumnBar, Error> {
         todo!()
+    }
+
+    async fn get_factor(
+        &self,
+        factorname: &str,
+        start: &str,
+        end: &str,
+    ) -> Result<QADataStruct_Factor, Error> {
+        let mut cursor = self.pool.get_handle().await?;
+        let sqlx = format!(
+            "SELECT * FROM factor.{} where date BETWEEN '{}' AND '{}' ",
+            factorname, start, end
+        );
+
+        let mut result = cursor.query(sqlx).fetch_all().await?;
+        let factorvec: Vec<_> = result
+            .get_column("factor")?
+            .iter::<f32>()?
+            .copied()
+            .collect();
+        let mut ttimevec: Vec<String> = vec![];
+        let timevec: Vec<_> = result.get_column("date")?.iter::<Date<Tz>>()?.collect();
+        ttimevec = timevec
+            .iter()
+            .map(|x| x.to_string()[0..10].parse().unwrap())
+            .collect();
+        let codevec: Vec<_> = result.get_column("code")?.iter::<&[u8]>()?.collect();
+        let codev: Vec<String> = codevec
+            .iter()
+            .map(|x| String::from_utf8(x.to_vec()).unwrap())
+            .collect();
+        let res =
+            QADataStruct_Factor::new_from_vec(ttimevec, codev, factorvec, factorname.to_string());
+        Ok(res)
     }
 }
 

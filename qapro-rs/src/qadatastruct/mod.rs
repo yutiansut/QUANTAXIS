@@ -6,3 +6,5 @@ pub mod stockday;
 pub mod stockl1snapshot;
 pub mod stockl2snapshot;
 pub mod stockmin;
+
+pub mod factorstruct;

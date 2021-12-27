@@ -4,13 +4,16 @@ version = "0.1.0"
 authors = ["yutiansut <yutiansut@qq.com>"]
 edition = "2018"
 resolver = "2"
-
+description ="quantaxis rust version"
+license = "MIT"
+homepage ="https://github.com/yutiansut/quantaxis"
+repository="https://github.com/quantaxis/quantaxis"
 [dependencies]
-serde_json = "*"
+serde_json = "1.0.73"
 serde_derive = "1.0"
 serde = { version = "1.0", features = ["derive"] } # 序列化
 
-stopwatch = "*"
+stopwatch = "0.0.7"
 
 
 uuid = { version = "0.8", features = ["serde", "v1", "v4"] }
@@ -44,7 +47,7 @@ futures="0.3.5"
 futures-executor = "^0.3"
 futures-test = "^0.3"
 futures-util = "^0.3"
-async-trait= "*"
+async-trait= "0.1.52"
 chrono-tz= { version = "0.5.3", features = ["serde"] }
 
 chrono = "0.4.19"
@@ -55,13 +58,13 @@ arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettypr
 
 datafusion = {version='6.0.0'}
 [dependencies.polars]
-git = "https://github.com/yutiansut/polars"
+version = "0.18.0"
+#git = "https://github.com/yutiansut/polars"
+#rev = "263754ab46e7d281fc9e072f909baa2405b4093d"
 features = [
-    "dynamic_groupby",
     "zip_with",
-    "simd",
-    "strings",
 
+    "strings",
     "random",
     "object",
     "csv-file",
@@ -77,7 +80,6 @@ features = [
     "concat_str",
     "row_hash",
     "reinterpret",
-
     "mode",
     "extract_jsonpath",
     "lazy_regex",
@@ -92,14 +94,16 @@ features = [
     "true_div",
     "dtype-categorical",
     "diagonal_concat",
-    "horizontal_concat",
     "abs",
-    "ewma",
     "parquet",
 
 ]
+#    "simd",
+#    "ewma",
+#    "dynamic_groupby",
+#    "horizontal_concat",
+
 [dependencies.clickhouse-rs]
-git = "https://github.com/suharev7/clickhouse-rs"
-branch = "async-await"
+version = "1.0.0-alpha.1"
 default-features = false
 features = ["async_std"]
