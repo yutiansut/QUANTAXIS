@@ -205,12 +205,14 @@ impl Default for Cli {
 #[serde(default)]
 pub struct Backtest {
     pub start: String,
+    pub end: String
 }
 
 impl Default for Backtest {
     fn default() -> Self {
         Self {
             start: "2020-01-01 09:00:00".to_owned(),
+            end: "2021-12-01 09:00:00".to_owned(),
         }
     }
 }
@@ -218,12 +220,16 @@ impl Default for Backtest {
 #[serde(default)]
 pub struct DataPath {
     pub cache: String,
+    pub cachestart: String,
+    pub cacheend: String
 }
 
 impl Default for DataPath {
     fn default() -> Self {
         Self {
             cache: "/data/".to_owned(),
+            cachestart: "".to_string(),
+            cacheend: "".to_string()
         }
     }
 }

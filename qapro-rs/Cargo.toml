@@ -1,6 +1,6 @@
 [package]
 name = "qapro-rs"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["yutiansut <yutiansut@qq.com>"]
 edition = "2018"
 resolver = "2"
@@ -54,16 +54,15 @@ chrono = "0.4.19"
 thiserror = "1.0"
 rand = "0.7"
 
-arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettyprint", "ipc"] }
-
-datafusion = {version='6.0.0'}
+#arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettyprint", "ipc"] }
+#
+#datafusion = {version='6.0.0'}
 [dependencies.polars]
 version = "0.18.0"
 #git = "https://github.com/yutiansut/polars"
 #rev = "263754ab46e7d281fc9e072f909baa2405b4093d"
 features = [
     "zip_with",
-
     "strings",
     "random",
     "object",
@@ -82,6 +81,7 @@ features = [
     "reinterpret",
     "mode",
     "extract_jsonpath",
+    "lazy",
     "lazy_regex",
     "cum_agg",
     "rolling_window",
