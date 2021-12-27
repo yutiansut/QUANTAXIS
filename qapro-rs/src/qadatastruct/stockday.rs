@@ -1,6 +1,6 @@
 use polars::prelude::{
-    CsvReader, DataFrame, DataType, Field, NamedFrom, ParquetReader, Result as PolarResult,
-    RollingOptions, Schema, SerReader, Series,
+    CsvReader, DataFrame, DataType, Field, NamedFrom, ParquetCompression, ParquetReader,
+    ParquetWriter, Result as PolarResult, RollingOptions, Schema, SerReader, Series,
 };
 
 use polars::series::ops::NullBehavior;
@@ -92,7 +92,11 @@ impl QADataStruct_StockDay {
             amountS,
         ])
         .unwrap();
-        Self { data: df }
+        Self {
+            data: df
+                .sort(&["date", "order_book_id"], vec![false, false])
+                .unwrap(),
+        }
     }
     pub fn new_from_parquet(path: &str) -> Self {
         let file = File::open(path).expect("Cannot open file.");
@@ -109,6 +113,14 @@ impl QADataStruct_StockDay {
     }
     pub fn close(&mut self) -> &Series {
         &self.data["close"]
+    }
+
+    pub fn save_cache(&mut self) {
+        let cache = &CONFIG.DataPath.cache;
+        let cachepath = format!("{}stockday.parquet", &CONFIG.DataPath.cache);
+        let file = File::create(cachepath).expect("could not create file");
+
+        ParquetWriter::new(file).finish(&self.data);
     }
 }
 #[cfg(test)]
@@ -156,5 +168,24 @@ mod test {
             vec![8880.2, 8890.2],
         );
         println!("{:#?}", testds.data);
+    }
+    #[test]
+    fn test_QADataStruct_StockDay_save() {
+        let mut testds = QADataStruct_StockDay::new_from_vec(
+            vec!["2021-01-01".to_string(), "2021-01-02".to_string()],
+            vec!["000001.XSHE".to_string(), "000001.XSHE".to_string()],
+            vec![20.1, 20.2],
+            vec![22.1, 21.1],
+            vec![19.2, 19.8],
+            vec![21.0, 20.4],
+            vec![22.0, 23.0],
+            vec![19.0, 19.5],
+            vec![99.2, 99.2],
+            vec![880.2, 990.2],
+            vec![8880.2, 8890.2],
+        );
+        println!("{:#?}", testds.data);
+
+        testds.save_cache();
     }
 }
