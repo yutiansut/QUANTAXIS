@@ -4,7 +4,10 @@ version = "0.1.0"
 authors = ["yutiansut <yutiansut@qq.com>"]
 edition = "2018"
 resolver = "2"
-
+description ="quantaxis rust version"
+license = "MIT"
+homepage ="https://github.com/yutiansut/quantaxis"
+repository="https://github.com/quantaxis/quantaxis"
 [dependencies]
 serde_json = "*"
 serde_derive = "1.0"
@@ -59,11 +62,9 @@ version = "0.18.0"
 #git = "https://github.com/yutiansut/polars"
 #rev = "263754ab46e7d281fc9e072f909baa2405b4093d"
 features = [
-    "dynamic_groupby",
     "zip_with",
     "simd",
     "strings",
-
     "random",
     "object",
     "csv-file",
@@ -79,7 +80,6 @@ features = [
     "concat_str",
     "row_hash",
     "reinterpret",
-
     "mode",
     "extract_jsonpath",
     "lazy_regex",
@@ -94,12 +94,15 @@ features = [
     "true_div",
     "dtype-categorical",
     "diagonal_concat",
-    "horizontal_concat",
     "abs",
-    "ewma",
     "parquet",
 
 ]
+
+#    "ewma",
+#    "dynamic_groupby",
+#    "horizontal_concat",
+
 [dependencies.clickhouse-rs]
 version = "1.0.0-alpha.1"
 default-features = false
