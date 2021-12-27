@@ -53,7 +53,7 @@ key="000000000"
 qifi_gap=3
 
 [DataPath]
-stock_day = "/media/quantaxis/data/cache/stockday"
-future_day = "/media/quantaxis/data/cache/futureday"
-stock_min = "/media/quantaxis/data/cache/stockday"
-future_min = "/media/quantaxis/data/cache/stockday"
+# cache目录必须带/  或者\
+# /media/data/cache/ linux&mac
+#
+cache = "/media/data/cache/"

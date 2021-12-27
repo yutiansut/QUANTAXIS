@@ -13,9 +13,9 @@ use serde::Deserialize;
 use serde_json::Value;
 
 use self::chrono::Utc;
+use crate::qadatastruct::stockday::QADataStruct_StockDay;
 use crate::qaenv::localenv::CONFIG;
 use crate::qaprotocol::mifi::market::{StockDay, StockMin};
-use crate::qaprotocol::mifi::qadatastruct::QADataStruct_StockDay;
 use crate::qaprotocol::mifi::qafastkline::{QAColumnBar, QAKlineBase};
 use clickhouse_rs::types::Column;
 use std::ops::Deref;

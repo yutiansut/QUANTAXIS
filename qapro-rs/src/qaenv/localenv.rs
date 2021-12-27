@@ -223,7 +223,7 @@ pub struct DataPath {
 impl Default for DataPath {
     fn default() -> Self {
         Self {
-            cache: "/data".to_owned(),
+            cache: "/data/".to_owned(),
         }
     }
 }

@@ -13,10 +13,11 @@ async fn main() {
     let c = ckclient::QACKClient::init();
 
     let codelist = ["600010.XSHG", "300002.XSHE"];
-    let hisdata = c
+    let mut hisdata = c
         .get_stock_adv(Vec::from(codelist), "2021-07-11", "2021-12-22", "day")
         .await
         .unwrap();
 
     println!("qadatastruct {}", hisdata.data);
+    hisdata.save_cache();
 }

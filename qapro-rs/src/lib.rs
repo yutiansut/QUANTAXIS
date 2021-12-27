@@ -14,5 +14,6 @@ pub mod qamacros;
 pub mod qapraser;
 pub mod qastrategy;
 
+pub mod qadatastruct;
 pub mod qafactor;
 pub mod qahandlers;
