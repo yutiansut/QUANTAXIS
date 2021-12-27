@@ -58,6 +58,7 @@ async fn main() {
     println!("join factor_data time {:#?}", sw.elapsed());
     println!("data_with_factor  {:#?}", data_with_factor);
 
+    sw.restart();
     let rank = data_with_factor
         .groupby("date")
         .unwrap()
@@ -65,7 +66,7 @@ async fn main() {
         .unwrap()
         .sort(&["date", "order_book_id"], false)
         .unwrap();
-
+    println!("join factor_data time {:#?}", sw.elapsed());
     fn write_result(data:DataFrame, path: &str){
         let file = File::create(path).expect("could not create file");
 
