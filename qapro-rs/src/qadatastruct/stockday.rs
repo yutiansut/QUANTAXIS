@@ -1,6 +1,6 @@
 use polars::prelude::{
-    CsvReader, DataFrame, DataType, Field, NamedFrom, ParquetCompression, ParquetReader,
-    ParquetWriter, Result as PolarResult, RollingOptions, Schema, SerReader, Series,
+    ChunkCompare, CsvReader, DataFrame, DataType, Field, NamedFrom, ParquetCompression,
+    ParquetReader, ParquetWriter, Result as PolarResult, RollingOptions, Schema, SerReader, Series,
 };
 
 use polars::series::ops::NullBehavior;
@@ -104,6 +104,18 @@ impl QADataStruct_StockDay {
         Self { data: df }
     }
 
+    pub fn query_code(&mut self, order_book_id: &str) -> DataFrame {
+        let value = self.data.column("order_book_id").unwrap();
+        let mask = value.equal(order_book_id);
+        let selectdf = &self.data.filter(&mask).unwrap();
+        selectdf.to_owned()
+    }
+    pub fn query_date(&mut self, date: &str) -> DataFrame {
+        let value = self.data.column("date").unwrap();
+        let mask = value.equal(date);
+        let selectdf = &self.data.filter(&mask).unwrap();
+        selectdf.to_owned()
+    }
     pub fn high(&mut self) -> &Series {
         &self.data["high"]
     }
