@@ -36,7 +36,7 @@ impl QADataStruct_StockAdj {
     }
 
     pub fn save_cache(&mut self) {
-        let cache = &CONFIG.DataPath.cache;
+
         let cachepath = format!("{}stockadj.parquet", &CONFIG.DataPath.cache);
         let file = File::create(cachepath).expect("could not create file");
 

@@ -14,6 +14,7 @@ use qapro_rs::qadatastruct::stockadj::QADataStruct_StockAdj;
 use qapro_rs::qahandlers::realtime::RoomType::Factor;
 use rayon::join;
 use std::fmt::format;
+use std::fs::File;
 
 extern crate stopwatch;
 
@@ -66,7 +67,11 @@ async fn main() {
         .unwrap();
 
     fn write_result(data:DataFrame, path: &str){
-        
+        let file = File::create(path).expect("could not create file");
+
+        ParquetWriter::new(file).finish(&data);
     }
-    println!("Rank TOP40{:#?}", rank);
+
+    write_result(rank, "./cache/rankres.parquet");
+
 }
