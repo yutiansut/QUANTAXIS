@@ -1113,7 +1113,8 @@ dependencies = [
 [[package]]
 name = "clickhouse-rs"
 version = "1.0.0-alpha.1"
-source = "git+https://github.com/suharev7/clickhouse-rs?branch=async-await#1be33ab41dba1c99204c848c0a60bbd587a1eb02"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "41edeaeac73a2f3c39357e5dd42a08c2d41fbc5b85c35a76879dc10d87128010"
 dependencies = [
  "async-std",
  "byteorder",
@@ -1138,7 +1139,8 @@ dependencies = [
 [[package]]
 name = "clickhouse-rs-cityhash-sys"
 version = "0.1.2"
-source = "git+https://github.com/suharev7/clickhouse-rs?branch=async-await#1be33ab41dba1c99204c848c0a60bbd587a1eb02"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4baf9d4700a28d6cb600e17ed6ae2b43298a5245f1f76b4eab63027ebfd592b9"
 dependencies = [
  "cc",
 ]

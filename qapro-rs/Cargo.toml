@@ -55,7 +55,9 @@ arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettypr
 
 datafusion = {version='6.0.0'}
 [dependencies.polars]
-git = "https://github.com/yutiansut/polars"
+version = "0.18.0"
+#git = "https://github.com/yutiansut/polars"
+#rev = "263754ab46e7d281fc9e072f909baa2405b4093d"
 features = [
     "dynamic_groupby",
     "zip_with",
@@ -99,7 +101,6 @@ features = [
 
 ]
 [dependencies.clickhouse-rs]
-git = "https://github.com/suharev7/clickhouse-rs"
-branch = "async-await"
+version = "1.0.0-alpha.1"
 default-features = false
 features = ["async_std"]
