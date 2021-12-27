@@ -8,9 +8,10 @@ use qapro_rs::qalog::log4::init_log4;
 use qapro_rs::qaprotocol::mifi::qafastkline::QAKlineBase;
 
 use polars::frame::DataFrame;
-use polars::prelude::{col, ChunkCompare, IntoLazy, JoinType, RollingOptions};
+use polars::prelude::*;
 use polars::series::ops::NullBehavior;
 use qapro_rs::qadatastruct::stockadj::QADataStruct_StockAdj;
+use qapro_rs::qahandlers::realtime::RoomType::Factor;
 use rayon::join;
 use std::fmt::format;
 
@@ -36,22 +37,36 @@ async fn main() {
 
     let cache_file = format!("{}stockadj.parquet", &CONFIG.DataPath.cache);
 
-
     // load factor
     let factor = c
         .get_factor("Asset_LR_Gr", "2019-01-01", "2021-12-25")
         .await
         .unwrap();
 
-
     sw.restart();
-    let data_with_factor = qfq.data.join(&factor.data,&["date", "order_book_id"],
-             &["date", "order_book_id"],
-             JoinType::Inner,
-             None, ).unwrap();
+    let data_with_factor = qfq
+        .data
+        .join(
+            &factor.data,
+            &["date", "order_book_id"],
+            &["date", "order_book_id"],
+            JoinType::Inner,
+            None,
+        )
+        .unwrap();
     println!("join factor_data time {:#?}", sw.elapsed());
     println!("data_with_factor  {:#?}", data_with_factor);
 
-    let rank  = data_with_factor.groupby("date").unwrap().select("factor").rank(0.1);
+    let rank = data_with_factor
+        .groupby("date")
+        .unwrap()
+        .apply(|x| Ok(x.sort("factor", true).unwrap().head(Some(10))))
+        .unwrap()
+        .sort(&["date", "order_book_id"], false)
+        .unwrap();
 
+    fn write_result(data:DataFrame, path: &str){
+        
+    }
+    println!("Rank TOP40{:#?}", rank);
 }
