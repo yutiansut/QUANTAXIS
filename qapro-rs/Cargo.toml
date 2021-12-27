@@ -9,11 +9,11 @@ license = "MIT"
 homepage ="https://github.com/yutiansut/quantaxis"
 repository="https://github.com/quantaxis/quantaxis"
 [dependencies]
-serde_json = "*"
+serde_json = "1.0.73"
 serde_derive = "1.0"
 serde = { version = "1.0", features = ["derive"] } # 序列化
 
-stopwatch = "*"
+stopwatch = "0.0.7"
 
 
 uuid = { version = "0.8", features = ["serde", "v1", "v4"] }
@@ -47,7 +47,7 @@ futures="0.3.5"
 futures-executor = "^0.3"
 futures-test = "^0.3"
 futures-util = "^0.3"
-async-trait= "*"
+async-trait= "0.1.52"
 chrono-tz= { version = "0.5.3", features = ["serde"] }
 
 chrono = "0.4.19"
@@ -63,7 +63,7 @@ version = "0.18.0"
 #rev = "263754ab46e7d281fc9e072f909baa2405b4093d"
 features = [
     "zip_with",
-    "simd",
+
     "strings",
     "random",
     "object",
@@ -98,7 +98,7 @@ features = [
     "parquet",
 
 ]
-
+#    "simd",
 #    "ewma",
 #    "dynamic_groupby",
 #    "horizontal_concat",
