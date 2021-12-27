@@ -64,7 +64,7 @@ async fn main() {
     let selectdf = data.query_code("300002.XSHE");
     println!("select df {:#?}", selectdf);
     let close = &selectdf["close"];
-    let lastclose = close.diff(1, NullBehavior::Ignore);
+    let lastclose = close.shift(1);
     println!("pct test {:#?}", close / &lastclose);
 
     let ma20 = close

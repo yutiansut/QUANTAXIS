@@ -9,10 +9,13 @@ use qapro_rs::qaprotocol::mifi::qafastkline::QAKlineBase;
 
 use polars::frame::DataFrame;
 use polars::prelude::*;
+
+use actix::fut::ok;
 use polars::series::ops::NullBehavior;
 use qapro_rs::qadatastruct::stockadj::QADataStruct_StockAdj;
 use qapro_rs::qahandlers::realtime::RoomType::Factor;
 use rayon::join;
+use redis::Value::Data;
 use std::fmt::format;
 use std::fs::File;
 
@@ -28,14 +31,15 @@ async fn main() {
     ///
     let c = ckclient::QACKClient::init();
 
-    let stocklist = c.get_stocklist().await.unwrap();
+    //let stocklist = c.get_stocklist().await.unwrap();
+    //let stocklist = c.get_stocklist().await.unwrap();
 
     let cache_file = format!("{}stockdayqfq.parquet", &CONFIG.DataPath.cache);
     let mut sw = stopwatch::Stopwatch::new();
     sw.start();
     let mut qfq = QADataStruct_StockDay::new_from_parquet(cache_file.as_str());
     println!("load cache 2year fullmarket stockdata {:#?}", sw.elapsed());
-
+    println!("data  {:#?}", qfq.data);
     let cache_file = format!("{}stockadj.parquet", &CONFIG.DataPath.cache);
 
     // load factor
@@ -54,6 +58,11 @@ async fn main() {
             JoinType::Inner,
             None,
         )
+        .unwrap()
+        .drop_duplicates(
+            false,
+            Some(&["date".to_string(), "order_book_id".to_string()]),
+        )
         .unwrap();
     println!("join factor_data time {:#?}", sw.elapsed());
     println!("data_with_factor  {:#?}", data_with_factor);
@@ -62,17 +71,51 @@ async fn main() {
     let rank = data_with_factor
         .groupby("date")
         .unwrap()
-        .apply(|x| Ok(x.sort("factor", true).unwrap().head(Some(10))))
+        .apply(|x| Ok(x.sort("factor", true).unwrap().head(Some(40))))
         .unwrap()
         .sort(&["date", "order_book_id"], false)
         .unwrap();
-    println!("join factor_data time {:#?}", sw.elapsed());
-    fn write_result(data:DataFrame, path: &str){
+    println!("analysis factor_data time {:#?}", sw.elapsed());
+    fn write_result(data: DataFrame, path: &str) {
         let file = File::create(path).expect("could not create file");
 
         ParquetWriter::new(file).finish(&data);
     }
 
-    write_result(rank, "./cache/rankres.parquet");
+    trait pct {
+        fn pctchange(&self, n: usize) -> Series;
+    }
+    impl pct for Series {
+        fn pctchange(&self, n: usize) -> Series {
+            self / &self.shift(n as i64)
+        }
+    }
 
+    fn closepctchange(close: &Series) -> Series {
+        close.pctchange(1)
+    }
+    let rank2 = rank
+        .groupby("order_book_id")
+        .unwrap()
+        .apply(|mut x| {
+            let res = x
+                .sort("date", false)
+                .unwrap()
+                .apply("close", closepctchange)
+                .unwrap()
+                .clone();
+            //println!("rank {}", rank["close"]);
+            Ok(res)
+        })
+        .unwrap()
+        .sort("date", false)
+        .unwrap()
+        .drop_nulls(Some(&["close".to_string()]))
+        .unwrap();
+
+    println!(
+        "rank {}",
+        rank2.select(&["date", "order_book_id", "close"]).unwrap()
+    );
+    //write_result(rank, "./cache/rankres.parquet");
 }

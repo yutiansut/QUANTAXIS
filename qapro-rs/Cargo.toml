@@ -109,7 +109,8 @@ features = [
     "sort_multiple",
     "dtype-full",
     "groupby_list",
-    "avx512"
+    "avx512",
+    "pivot"
 ]
 
 [dependencies.clickhouse-rs]
