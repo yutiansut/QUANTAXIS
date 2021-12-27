@@ -8,3 +8,4 @@ pub mod stockl2snapshot;
 pub mod stockmin;
 
 pub mod factorstruct;
+pub mod stocklist;

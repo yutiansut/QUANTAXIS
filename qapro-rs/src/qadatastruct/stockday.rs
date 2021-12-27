@@ -131,7 +131,14 @@ impl QADataStruct_StockDay {
         let cache = &CONFIG.DataPath.cache;
         let cachepath = format!("{}stockday.parquet", &CONFIG.DataPath.cache);
         let file = File::create(cachepath).expect("could not create file");
+        ParquetWriter::new(file).finish(&self.data);
+    }
 
+
+    pub fn save_selfdefined_cache(&mut self, path:&str) {
+        //let cache = &CONFIG.DataPath.cache;
+       // let cachepath = format!("{}stockday.parquet", &CONFIG.DataPath.cache);
+        let file = File::create(path).expect("could not create file");
         ParquetWriter::new(file).finish(&self.data);
     }
 }
