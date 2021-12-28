@@ -1,5 +1,3 @@
-
-
 use actix_rt;
 
 use qapro_rs::qaconnector::clickhouse::ckclient;
@@ -44,7 +42,6 @@ async fn main() {
     println!("data  {:#?}", qfq.data.get_row(1).0);
     // println!("data  {:#?}", qfq.data.transpose());
 
-
     let cache_file = format!("{}stockadj.parquet", &CONFIG.DataPath.cache);
 
     // trait qatrans {
@@ -55,7 +52,6 @@ async fn main() {
     //         data.get_row(0)
     //     }
     // }
-
 
     // load factor
     let factor = c
@@ -90,8 +86,6 @@ async fn main() {
         .unwrap()
         .sort(&["date", "order_book_id"], false)
         .unwrap();
-
-
 
     println!("analysis factor_data time {:#?}", sw.elapsed());
     fn write_result(data: DataFrame, path: &str) {
@@ -149,24 +143,26 @@ async fn main() {
     //     .collect()
     //     .unwrap();
 
-
     let rank4 = rank
         .lazy()
         .groupby([col("date")])
         .agg([
-            (col("close")/col("high")).list().alias("ch"),
-            (col("close")/col("high").shift(1)).list().alias("cpreh"),
+            (col("close") / col("high")).list().alias("ch"),
+            (col("close") / col("high").shift(1)).list().alias("cpreh"),
             col("order_book_id"),
             col("date").list().alias("datetime"),
             col("close"),
-            col("factor")
+            col("factor"),
         ])
         .sort("date", false)
-        .select([col("order_book_id"), col("datetime"), col("close"), col("factor")])
+        .select([
+            col("order_book_id"),
+            col("datetime"),
+            col("close"),
+            col("factor"),
+        ])
         .collect()
-
         .unwrap();
-
 
     println!("calc lazy time {:#?}", sw.elapsed());
     println!("lazy res {:#?}", rank4);
@@ -176,9 +172,9 @@ async fn main() {
     // );
     //
     //
-
-
-
-
+    let s1 = rank4
+        .explode(&["order_book_id", "datetime", "close", "factor"])
+        .unwrap();
+    println!("res idx1 {:#?}", s1);
     //write_result(rank, "./cache/rankres.parquet");
 }

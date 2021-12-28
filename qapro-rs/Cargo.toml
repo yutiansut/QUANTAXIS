@@ -61,10 +61,12 @@ quadprog = "0.0.1"
 #arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettyprint", "ipc"] }
 #
 #datafusion = {version='6.0.0'}
+exmex = { git = "https://github.com/bertiqwerty/exmex.git", branch = "main" }
+evalexpr = "6.6.0"
 [dependencies.polars]
 #version = "0.18.0"
-git = "https://github.com/yutiansut/polars"
-
+git = "https://github.com/yutiansut/polars.git"
+branch = "master"
 features = [
     "zip_with",
     "strings",

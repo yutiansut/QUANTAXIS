@@ -516,7 +516,7 @@ dependencies = [
 [[package]]
 name = "arrow2"
 version = "0.8.1"
-source = "git+https://github.com/jorgecarleitao/arrow2?rev=830bf5fb519010a9b6faa347a06cedab2044206b#830bf5fb519010a9b6faa347a06cedab2044206b"
+source = "git+https://github.com/jorgecarleitao/arrow2?rev=d14ae86c69cd76957adec3b14bb62d93732b43c9#d14ae86c69cd76957adec3b14bb62d93732b43c9"
 dependencies = [
  "arrow-format",
  "base64 0.13.0",
@@ -1626,10 +1626,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "evalexpr"
+version = "6.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfc25fd417983cc7f203394ebb89eba18e2df1b0ac1be2673091b5aca52b595f"
+
+[[package]]
 name = "event-listener"
 version = "2.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7531096570974c3a9dcf9e4b8e1cede1ec26cf5046219fb3b9d897503b9be59"
+
+[[package]]
+name = "exmex"
+version = "0.12.0"
+source = "git+https://github.com/bertiqwerty/exmex.git?branch=main#9459db4d0e9d809593674c20a1336b49717b9d73"
+dependencies = [
+ "lazy_static",
+ "num 0.4.0",
+ "regex",
+ "smallvec 1.7.0",
+]
 
 [[package]]
 name = "failure"
@@ -3309,7 +3326,7 @@ checksum = "58893f751c9b0412871a09abd62ecd2a00298c6c83befa223ef98c52aef40cbe"
 [[package]]
 name = "polars"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars#20f2d053cd9019d41929d9f19f02e29306659043"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "polars-core",
  "polars-io",
@@ -3319,7 +3336,7 @@ dependencies = [
 [[package]]
 name = "polars-arrow"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars#20f2d053cd9019d41929d9f19f02e29306659043"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "arrow2",
  "num 0.4.0",
@@ -3329,7 +3346,7 @@ dependencies = [
 [[package]]
 name = "polars-core"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars#20f2d053cd9019d41929d9f19f02e29306659043"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "ahash",
  "anyhow",
@@ -3356,7 +3373,7 @@ dependencies = [
 [[package]]
 name = "polars-io"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars#20f2d053cd9019d41929d9f19f02e29306659043"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "ahash",
  "anyhow",
@@ -3380,7 +3397,7 @@ dependencies = [
 [[package]]
 name = "polars-lazy"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars#20f2d053cd9019d41929d9f19f02e29306659043"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "ahash",
  "polars-arrow",
@@ -3394,7 +3411,7 @@ dependencies = [
 [[package]]
 name = "polars-time"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars#20f2d053cd9019d41929d9f19f02e29306659043"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "chrono",
  "polars-arrow",
@@ -3403,7 +3420,7 @@ dependencies = [
 [[package]]
 name = "polars-utils"
 version = "0.1.0"
-source = "git+https://github.com/yutiansut/polars#20f2d053cd9019d41929d9f19f02e29306659043"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "parking_lot 0.11.2",
 ]
@@ -3519,6 +3536,8 @@ dependencies = [
  "clap",
  "clickhouse-rs",
  "csv",
+ "evalexpr",
+ "exmex",
  "futures 0.3.19",
  "futures-executor",
  "futures-test",
