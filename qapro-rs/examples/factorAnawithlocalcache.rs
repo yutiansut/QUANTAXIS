@@ -94,6 +94,7 @@ async fn main() {
     fn closepctchange(close: &Series) -> Series {
         close.pctchange(1)
     }
+    sw.restart();
     let rank2 = rank
         .groupby("order_book_id")
         .unwrap()
@@ -112,10 +113,25 @@ async fn main() {
         .unwrap()
         .drop_nulls(Some(&["close".to_string()]))
         .unwrap();
-
+    println!("calc time {:#?}", sw.elapsed());
+    sw.restart();
+    let rank3 = rank
+        .lazy()
+        //.drop_duplicates(false, Some(vec!["date".to_string(),  "order_book_id".to_string()]))
+        .sort("date", false)
+        .groupby([col("order_book_id")])
+        .agg([(col("close") / col("close").shift(1)).list().alias("pctchange"), col("date").list()])
+        .collect()
+        .unwrap();
+    println!("calc lazy time {:#?}", sw.elapsed());
     println!(
         "rank {}",
         rank2.select(&["date", "order_book_id", "close"]).unwrap()
+    );
+
+    println!(
+        "rank lazy {}",
+        rank3
     );
     //write_result(rank, "./cache/rankres.parquet");
 }
