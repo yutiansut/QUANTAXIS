@@ -1,4 +1,4 @@
-#![recursion_limit = "256000"]
+
 pub mod qaaccount;
 pub mod qaconnector;
 pub mod qadata;
