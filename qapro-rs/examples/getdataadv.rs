@@ -15,27 +15,26 @@ use std::fmt::format;
 async fn main() {
     let c = ckclient::QACKClient::init();
 
-    let start =  CONFIG.DataPath.cachestart.as_str();
-    let end =CONFIG.DataPath.cacheend.as_str();
+    let start = CONFIG.DataPath.cachestart.as_str();
+    let end = CONFIG.DataPath.cacheend.as_str();
     let stocklist = c.get_stocklist().await.unwrap();
 
-    let stocklistvec:Vec<&str> = stocklist.iter().map(|x| x.as_str()).collect();
+    let stocklistvec: Vec<&str> = stocklist.iter().map(|x| x.as_str()).collect();
 
     let mut hisdata = c
         .get_stock_adv(stocklistvec.clone(), start, end, "day")
         .await
         .unwrap();
 
-
     println!("qadatastruct {}", hisdata.data);
     hisdata.save_cache();
 
-    let mut adj = c.get_stock_adj(stocklistvec.clone(), "2019-01-01", "2021-12-22").await.unwrap();
+    let mut adj = c
+        .get_stock_adj(stocklistvec.clone(), "2019-01-01", "2021-12-22")
+        .await
+        .unwrap();
     println!("adj  {:#?}", adj.data);
     adj.save_cache();
-
-
-
 
     let cache_file = format!("{}stockday.parquet", &CONFIG.DataPath.cache);
 
@@ -64,7 +63,7 @@ async fn main() {
     let selectdf = data.query_code("300002.XSHE");
     println!("select df {:#?}", selectdf);
     let close = &selectdf["close"];
-    let lastclose = close.diff(1, NullBehavior::Ignore);
+    let lastclose = close.shift(1);
     println!("pct test {:#?}", close / &lastclose);
 
     let ma20 = close

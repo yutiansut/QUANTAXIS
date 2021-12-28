@@ -62,12 +62,19 @@ async fn main() {
             col("high") * col("adj"),
             col("low") * col("adj"),
             col("close") * col("adj"),
+            col("limit_up") * col("adj"),
+            col("limit_down") * col("adj"),
         ])
+        .drop_duplicates(
+            false,
+            Some(vec!["date".to_string(), "order_book_id".to_string()]),
+        )
         .collect()
         .unwrap();
     println!("run qfq calc {:#?}", sw.elapsed());
     println!("qfq data {:#?}", qfq);
 
-    let mut  qfqstruct = QADataStruct_StockDay{data:qfq};
-    qfqstruct.save_selfdefined_cache(format!("{}stockdayqfq.parquet",CONFIG.DataPath.cache).as_str());
+    let mut qfqstruct = QADataStruct_StockDay { data: qfq };
+    qfqstruct
+        .save_selfdefined_cache(format!("{}stockdayqfq.parquet", CONFIG.DataPath.cache).as_str());
 }

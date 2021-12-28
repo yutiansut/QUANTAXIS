@@ -8,6 +8,9 @@ description ="quantaxis rust version"
 license = "MIT"
 homepage ="https://github.com/yutiansut/quantaxis"
 repository="https://github.com/quantaxis/quantaxis"
+
+
+
 [dependencies]
 serde_json = "1.0.73"
 serde_derive = "1.0"
@@ -53,14 +56,17 @@ chrono-tz= { version = "0.5.3", features = ["serde"] }
 chrono = "0.4.19"
 thiserror = "1.0"
 rand = "0.7"
+quadprog = "0.0.1"
 
 #arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettyprint", "ipc"] }
 #
 #datafusion = {version='6.0.0'}
+exmex = { git = "https://github.com/bertiqwerty/exmex.git", branch = "main" }
+evalexpr = "6.6.0"
 [dependencies.polars]
-version = "0.18.0"
-#git = "https://github.com/yutiansut/polars"
-#rev = "263754ab46e7d281fc9e072f909baa2405b4093d"
+#version = "0.18.0"
+git = "https://github.com/yutiansut/polars.git"
+branch = "master"
 features = [
     "zip_with",
     "strings",
@@ -73,6 +79,7 @@ features = [
     "rows",
     "round_series",
     "is_first",
+    "is_in",
     "asof_join",
     "cross_join",
     "dot_product",
@@ -96,14 +103,23 @@ features = [
     "diagonal_concat",
     "abs",
     "parquet",
-
+    "simd",
+    "ewma",
+    "dynamic_groupby",
+    "horizontal_concat",
+    "take_opt_iter",
+    "sort_multiple",
+    "dtype-full",
+    "groupby_list",
+    "avx512",
+    "pivot"
 ]
-#    "simd",
-#    "ewma",
-#    "dynamic_groupby",
-#    "horizontal_concat",
 
 [dependencies.clickhouse-rs]
 version = "1.0.0-alpha.1"
 default-features = false
 features = ["async_std"]
+
+
+
+

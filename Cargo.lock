@@ -516,8 +516,7 @@ dependencies = [
 [[package]]
 name = "arrow2"
 version = "0.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3452b2ae9727464a31a726c07ffec0c0da3b87831610d9ac99fc691c78b3a44"
+source = "git+https://github.com/jorgecarleitao/arrow2?rev=d14ae86c69cd76957adec3b14bb62d93732b43c9#d14ae86c69cd76957adec3b14bb62d93732b43c9"
 dependencies = [
  "arrow-format",
  "base64 0.13.0",
@@ -528,6 +527,7 @@ dependencies = [
  "lexical-core",
  "multiversion",
  "num-traits",
+ "packed_simd_2",
  "parquet2",
  "simdutf8",
  "streaming-iterator",
@@ -1626,10 +1626,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "evalexpr"
+version = "6.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfc25fd417983cc7f203394ebb89eba18e2df1b0ac1be2673091b5aca52b595f"
+
+[[package]]
 name = "event-listener"
 version = "2.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7531096570974c3a9dcf9e4b8e1cede1ec26cf5046219fb3b9d897503b9be59"
+
+[[package]]
+name = "exmex"
+version = "0.12.0"
+source = "git+https://github.com/bertiqwerty/exmex.git?branch=main#9459db4d0e9d809593674c20a1336b49717b9d73"
+dependencies = [
+ "lazy_static",
+ "num 0.4.0",
+ "regex",
+ "smallvec 1.7.0",
+]
 
 [[package]]
 name = "failure"
@@ -2300,15 +2317,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "itertools"
-version = "0.10.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9a9d19fa1e79b6215ff29b9d6880b706147f16e9b1dbb1e4e5947b5b02bc5e3"
-dependencies = [
- "either",
-]
-
-[[package]]
 name = "itoa"
 version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2341,8 +2349,7 @@ dependencies = [
 [[package]]
 name = "jsonpath_lib"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eaa63191d68230cccb81c5aa23abd53ed64d83337cacbb25a7b8c7979523774f"
+source = "git+https://github.com/ritchie46/jsonpath?branch=improve_compiled#f0cbeacab09287e5c003ad83ad383ac325571dbe"
 dependencies = [
  "log",
  "serde",
@@ -2464,6 +2471,12 @@ name = "libc"
 version = "0.2.112"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1b03d17f364a3a042d5e5d46b053bbbf82c92c9430c592dd4c064dc6ee997125"
+
+[[package]]
+name = "libm"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7fc7aa29613bd6a620df431842069224d8bc9011086b1db4c0e0cd47fa03ec9a"
 
 [[package]]
 name = "libm"
@@ -2997,7 +3010,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a64b1ec5cda2586e284722486d802acf1f7dbdc623e2bfc57e65ca1cd099290"
 dependencies = [
  "autocfg 1.0.1",
- "libm",
+ "libm 0.2.1",
 ]
 
 [[package]]
@@ -3087,6 +3100,16 @@ checksum = "b89dd55b8d8d97dabd0d1adc625d188378fcf87632825bfe9c956acc9a11a72a"
 dependencies = [
  "log",
  "winapi 0.3.9",
+]
+
+[[package]]
+name = "packed_simd_2"
+version = "0.3.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "71c0c06716cfc81616fa8e22b721ce92fecd594508bc0eb3d04ae3ef35ac10c5"
+dependencies = [
+ "cfg-if 0.1.10",
+ "libm 0.1.4",
 ]
 
 [[package]]
@@ -3303,8 +3326,7 @@ checksum = "58893f751c9b0412871a09abd62ecd2a00298c6c83befa223ef98c52aef40cbe"
 [[package]]
 name = "polars"
 version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3e9211d1bb8d2d81541e4ab80ce9148a8e2a987d6412c2a48017fbbe24231ea1"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "polars-core",
  "polars-io",
@@ -3314,8 +3336,7 @@ dependencies = [
 [[package]]
 name = "polars-arrow"
 version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa5ee9c385bf6643893f98efa80ff5a07169b50f65962c7843c0a13e12f0b0cf"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "arrow2",
  "num 0.4.0",
@@ -3325,21 +3346,20 @@ dependencies = [
 [[package]]
 name = "polars-core"
 version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3cb1de44e479ce2764a7a3ad057e16f434efa334feb993284e1a48bb8888c6d1"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "ahash",
  "anyhow",
  "arrow2",
- "chrono",
  "comfy-table",
  "hashbrown",
- "itertools",
  "jsonpath_lib",
  "lazy_static",
  "num 0.4.0",
  "num_cpus",
  "polars-arrow",
+ "polars-time",
+ "polars-utils",
  "prettytable-rs",
  "rand 0.8.4",
  "rand_distr",
@@ -3353,8 +3373,7 @@ dependencies = [
 [[package]]
 name = "polars-io"
 version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8bcb74f52ee9ff84863ae01de6ba25db092a9880302db4bf8f351f65b3ff0d12"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "ahash",
  "anyhow",
@@ -3369,6 +3388,7 @@ dependencies = [
  "num_cpus",
  "polars-arrow",
  "polars-core",
+ "polars-utils",
  "rayon",
  "regex",
  "simdutf8",
@@ -3377,16 +3397,32 @@ dependencies = [
 [[package]]
 name = "polars-lazy"
 version = "0.18.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43f91022ba6463df71ad6eb80ac2307884578d9959e85e1fe9dac18988291d46"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
 dependencies = [
  "ahash",
- "itertools",
  "polars-arrow",
  "polars-core",
  "polars-io",
+ "polars-utils",
  "rayon",
  "regex",
+]
+
+[[package]]
+name = "polars-time"
+version = "0.18.0"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
+dependencies = [
+ "chrono",
+ "polars-arrow",
+]
+
+[[package]]
+name = "polars-utils"
+version = "0.1.0"
+source = "git+https://github.com/yutiansut/polars.git?branch=master#e66d7c9bf17f06159138739971fa0d0773422cf0"
+dependencies = [
+ "parking_lot 0.11.2",
 ]
 
 [[package]]
@@ -3500,6 +3536,8 @@ dependencies = [
  "clap",
  "clickhouse-rs",
  "csv",
+ "evalexpr",
+ "exmex",
  "futures 0.3.19",
  "futures-executor",
  "futures-test",
@@ -3509,6 +3547,7 @@ dependencies = [
  "log4rs",
  "mongodb",
  "polars",
+ "quadprog",
  "rand 0.7.3",
  "rayon",
  "redis 0.18.0",
@@ -3523,6 +3562,12 @@ dependencies = [
  "toml",
  "uuid 0.8.2",
 ]
+
+[[package]]
+name = "quadprog"
+version = "0.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dad6c72940db1c4374a9e385fcdf2232cb409b8a76bf784964c1ab857b9b1d3b"
 
 [[package]]
 name = "quick-error"

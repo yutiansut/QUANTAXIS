@@ -1,5 +1,8 @@
 ## QAPRO-RS QUANTAXIS & Rust
 
+[如果需要 simd 的加速支持, 请使用 nightly 版本的 rust]
+> cargo +nightly run --color=always --package qapro-rs  --release example.toml
+
 具体内容可以参见http://www.quantaxis.tech:3000/topic/61c33e858481913fcb6113d5
 
 使用方式:

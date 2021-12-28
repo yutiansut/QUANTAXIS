@@ -57,3 +57,5 @@ qifi_gap=3
 # /media/data/cache/ linux&mac
 #
 cache = "/media/data/cache/"
+cachestart = "2019-01-01"
+cacheend = "2021-12-25"

@@ -205,7 +205,7 @@ impl Default for Cli {
 #[serde(default)]
 pub struct Backtest {
     pub start: String,
-    pub end: String
+    pub end: String,
 }
 
 impl Default for Backtest {
@@ -221,7 +221,7 @@ impl Default for Backtest {
 pub struct DataPath {
     pub cache: String,
     pub cachestart: String,
-    pub cacheend: String
+    pub cacheend: String,
 }
 
 impl Default for DataPath {
@@ -229,7 +229,7 @@ impl Default for DataPath {
         Self {
             cache: "/data/".to_owned(),
             cachestart: "".to_string(),
-            cacheend: "".to_string()
+            cacheend: "".to_string(),
         }
     }
 }
