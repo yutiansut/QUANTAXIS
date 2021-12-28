@@ -1,7 +1,10 @@
-use std::fs::File;
-use polars::frame::select::Selection;
-use polars::prelude::{CsvReader, DataFrame, DataType, Field, NamedFrom, ParquetReader, Result as PolarResult, RollingOptions, Schema, SerReader, Series, ParquetWriter};
 use crate::qaenv::localenv::CONFIG;
+use polars::frame::select::Selection;
+use polars::prelude::{
+    CsvReader, DataFrame, DataType, Field, NamedFrom, ParquetReader, ParquetWriter,
+    Result as PolarResult, RollingOptions, Schema, SerReader, Series,
+};
+use std::fs::File;
 
 fn QADataStruct_StockAdj_schema() -> Schema {
     Schema::new(vec![
@@ -12,7 +15,7 @@ fn QADataStruct_StockAdj_schema() -> Schema {
 }
 pub struct QADataStruct_StockAdj {
     pub data: DataFrame,
-    name: String
+    name: String,
 }
 
 impl QADataStruct_StockAdj {
@@ -26,17 +29,19 @@ impl QADataStruct_StockAdj {
             data: df
                 .sort(&["date", "order_book_id"], vec![false, false])
                 .unwrap(),
-            name: "stockadj".to_string()
+            name: "stockadj".to_string(),
         }
     }
     pub fn new_from_parquet(path: &str) -> Self {
         let file = File::open(path).expect("Cannot open file.");
         let df = ParquetReader::new(file).finish().unwrap();
-        Self { data: df , name: "stockadj".to_string() }
+        Self {
+            data: df,
+            name: "stockadj".to_string(),
+        }
     }
 
     pub fn save_cache(&mut self) {
-
         let cachepath = format!("{}stockadj.parquet", &CONFIG.DataPath.cache);
         let file = File::create(cachepath).expect("could not create file");
 

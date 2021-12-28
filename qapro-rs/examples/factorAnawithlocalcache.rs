@@ -120,18 +120,21 @@ async fn main() {
         //.drop_duplicates(false, Some(vec!["date".to_string(),  "order_book_id".to_string()]))
         .sort("date", false)
         .groupby([col("order_book_id")])
-        .agg([(col("close") / col("close").shift(1)).list().alias("pctchange"), col("date").list()])
+        .agg([
+            (col("close") / col("close").shift(1))
+                .list()
+                .alias("pctchange"),
+            col("date").list(),
+        ])
         .collect()
         .unwrap();
+
     println!("calc lazy time {:#?}", sw.elapsed());
     println!(
         "rank {}",
         rank2.select(&["date", "order_book_id", "close"]).unwrap()
     );
 
-    println!(
-        "rank lazy {}",
-        rank3
-    );
+    println!("rank lazy {}", rank3);
     //write_result(rank, "./cache/rankres.parquet");
 }
