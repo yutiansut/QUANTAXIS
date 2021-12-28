@@ -1,3 +1,5 @@
+
+
 use actix_rt;
 
 use qapro_rs::qaconnector::clickhouse::ckclient;
@@ -39,8 +41,21 @@ async fn main() {
     sw.start();
     let mut qfq = QADataStruct_StockDay::new_from_parquet(cache_file.as_str());
     println!("load cache 2year fullmarket stockdata {:#?}", sw.elapsed());
-    println!("data  {:#?}", qfq.data);
+    println!("data  {:#?}", qfq.data.get_row(1).0);
+    // println!("data  {:#?}", qfq.data.transpose());
+
+
     let cache_file = format!("{}stockadj.parquet", &CONFIG.DataPath.cache);
+
+    // trait qatrans {
+    //     fn transform_qadatastruct(data:DataFrame) -> Vec<QAKlineBase>;
+    // }
+    // impl  qatrans for DataFrame{
+    //     fn transform_qadatastruct(data:DataFrame) -> Vec<QAKlineBase>{
+    //         data.get_row(0)
+    //     }
+    // }
+
 
     // load factor
     let factor = c
@@ -75,6 +90,9 @@ async fn main() {
         .unwrap()
         .sort(&["date", "order_book_id"], false)
         .unwrap();
+
+
+
     println!("analysis factor_data time {:#?}", sw.elapsed());
     fn write_result(data: DataFrame, path: &str) {
         let file = File::create(path).expect("could not create file");
@@ -115,26 +133,52 @@ async fn main() {
         .unwrap();
     println!("calc time {:#?}", sw.elapsed());
     sw.restart();
-    let rank3 = rank
+    // let rank3 = rank
+    //     .lazy()
+    //     //.drop_duplicates(false, Some(vec!["date".to_string(),  "order_book_id".to_string()]))
+    //     .sort("date", false)
+    //     .groupby([col("order_book_id")])
+    //     .agg([
+    //         (col("close") / col("close").shift(1))
+    //             .list()
+    //             .alias("pctchange"),
+    //         col("date").list(),
+    //         col("close"),
+    //         col("factor")
+    //     ])
+    //     .collect()
+    //     .unwrap();
+
+
+    let rank4 = rank
         .lazy()
-        //.drop_duplicates(false, Some(vec!["date".to_string(),  "order_book_id".to_string()]))
-        .sort("date", false)
-        .groupby([col("order_book_id")])
+        .groupby([col("date")])
         .agg([
-            (col("close") / col("close").shift(1))
-                .list()
-                .alias("pctchange"),
-            col("date").list(),
+            (col("close")/col("high")).list().alias("ch"),
+            (col("close")/col("high").shift(1)).list().alias("cpreh"),
+            col("order_book_id"),
+            col("date").list().alias("datetime"),
+            col("close"),
+            col("factor")
         ])
+        .sort("date", false)
+        .select([col("order_book_id"), col("datetime"), col("close"), col("factor")])
         .collect()
+
         .unwrap();
 
-    println!("calc lazy time {:#?}", sw.elapsed());
-    println!(
-        "rank {}",
-        rank2.select(&["date", "order_book_id", "close"]).unwrap()
-    );
 
-    println!("rank lazy {}", rank3);
+    println!("calc lazy time {:#?}", sw.elapsed());
+    println!("lazy res {:#?}", rank4);
+    // println!(
+    //     "rank {}",
+    //     rank2.select(&["date", "order_book_id", "close"]).unwrap()
+    // );
+    //
+    //
+
+
+
+
     //write_result(rank, "./cache/rankres.parquet");
 }
