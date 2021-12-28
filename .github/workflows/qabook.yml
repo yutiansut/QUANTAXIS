@@ -1,0 +1,25 @@
+name: Build LaTeX document
+on: 
+  push:
+    branches:
+      - "master"
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+      - name: Compile Portfolio+ document
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: qabook/quantaxis.tex
+          latexmk_use_xelatex: true
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "QUANTAXIS BooK"
+          files: 
+            quantaxis.pdf

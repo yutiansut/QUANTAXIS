@@ -1,0 +1,114 @@
+%!TEX program = xelatex
+\documentclass{scrartcl}
+\usepackage{silence}
+\usepackage[a4paper, left=3.17cm, right=3.17cm, top=2.54cm, bottom=2.54cm]{geometry}
+\WarningFilter{scrartcl}{Usage of package `fancyhdr'}
+\usepackage[UTF8]{ctex}
+\usepackage{amsfonts}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{lipsum}
+\usepackage{booktabs}
+\usepackage{amssymb}
+\usepackage{xcolor}  
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,chains} 
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+% \usepackage{txfonts}
+\usepackage{mathdots}
+\usepackage{pythonhighlight}
+\usepackage{graphicx}
+\setlength{\parskip}{0.5em}
+\usepackage[classicReIm]{kpfonts}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+% \usepackage{fontspec}
+\pagestyle{fancy}
+\usepackage{etoc}
+\usepackage{cases}
+\numberwithin{equation}{section}
+% \newfontface{\backitshape}{lmroman10-italic}[
+%   Extension=.otf,
+%   FakeSlant=-0.4,
+% ]
+\DeclareTextFontCommand{\textbackit}{\backitshape}
+
+\begin{document}
+\title{QUANTAXIS}%%textbf
+\subtitle{Leading Quantitative Framework}
+\author{@yutiansut}
+\begin{titlepage}
+    \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+    \includegraphics[width=8cm]{qalogo.png}\\[1cm]
+    \center
+    \quad\\[1.5cm]
+    \textbf{\Large  QUANTAXIS FINTECH RESEARCH }\\[0.5cm]
+    \textsl{\large Quantitative Finance with Leading Tech Methods}\\[0.5cm]
+
+    \makeatletter
+    \HRule \\[0.4cm]
+    { \huge \bfseries \@title}\\[0.4cm]
+    \textsl{\large QUANATXIS DOCS}\\[0.5cm]
+    \HRule \\[1.5cm]
+    \begin{minipage}{0.4\textwidth}
+        \begin{flushleft} \large
+            \emph{Author:}\\
+            \@author
+        \end{flushleft}
+    \end{minipage}
+    ~
+    \begin{minipage}{0.4\textwidth}
+        \begin{flushright} \large
+            \emph{Supervisor:} \\
+            \textup{yutiansut}
+        \end{flushright}
+    \end{minipage}\\[2cm]
+    \makeatother
+    {\large Strictly Private / Confidential Draft for Discussion Purpose Only}\\[0.5cm]
+    % {\large \emph{Place Your Course Code and Course Name at Here}}\\[0.5cm]
+    {\large \today}\\[1cm]
+    \vfill
+\end{titlepage}
+
+% 设置 plain style 的属性
+\maketitle
+\lhead{}
+\chead{}
+\rhead{\bfseries QUANTAXIS FINTECH RESEARCH}
+\lfoot{Author:@yutiansut}
+\cfoot{}
+\rfoot{\thepage}
+
+\setlength{\hoffset}{0mm}
+\setlength{\voffset}{0mm}
+\newpage
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\tableofcontents
+\etocsettocstyle{\subsection*{\contentsname}}{}
+\etocsettocdepth{subsection}
+
+\newpage
+\section{前言}
+\textsl{QUANATXIS实际上是本科毕业论文的一个附带部分的 matlab 程序, 大约是在 2016 年夏天的时候 }
+
+
+
+\newpage
+\section{环境准备}
+
+\newpage
+\section{数据}
+
+\newpage
+\section{分析}
+\newpage
+\section{}
+
+
+
+\end{document}

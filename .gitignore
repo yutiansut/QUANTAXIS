@@ -157,7 +157,13 @@ kernel*.json
 
 # sqlite database
 *.db
-
+*.aux
+*.log
+*.out
+*.pdf
+*.gz
+*.toc
+.synctex(busy)
 
 *.dad
 *.cover
