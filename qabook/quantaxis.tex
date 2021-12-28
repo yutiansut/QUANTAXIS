@@ -94,9 +94,13 @@
 
 \newpage
 \section{前言}
-\textsl{QUANATXIS实际上是本科毕业论文的一个附带部分的 matlab 程序, 大约是在 2016 年夏天的时候 }
+\textsl{QUANATXIS实际上是本科毕业论文的一个附带部分的 matlab 程序, 第一个版本大约是在 2016 年夏天的时候, 基于matlab的OOP编程实现了基础的一些数据获取和账户撮合部分, 在2017年的时候, 学习了一阵子python的爬虫以后开始进行了重写, 最开始主要是把账户部分从matlab搬运过来并进行一个简单的回测过程, 之后又用nodejs优化了一下基础的界面部分, 这里就涉及到一些数据的python-js的获取, 于是产生了quantaxiswebserver项目去作为nodejs的数据部分.\\ 大约是在2018年的时候, 社区的@安东尼建议我采用docker进行一部分的封装于是 httpapi+ docker逐步产生了一个微服务结构的雏形, 在一路发展过程中, 开源和社区始终是推动着qa不断发展的主要动力, 在qa的不断修改和重构过程中, 快期的diff交易协议也给了我很多的灵感.\\ 2019年的时候基于实盘的结构, 在diff的基础上我扩充了一个qifi协议作为quantaxis的账户部分的主要协议, 并在测试了qifiaccount项目以后逐步替换了老版本的qaaaccount, 同时 diff协议也作为后期引入多语言(rust/go)等埋下了基础. \\2019年底, 因为业务的需求, 在处理大量的实时账户计算和监控的过程中,python逐步难以满足业务的需求, 在测试了go, dart, scala, swift(google)等语言后, 最终选择了rust作为下一代quantaxis的底层语言. 经过2年左右的不断实践和探索, rust在quantaxis内部的应用越加广泛, 在闭源开发了一阵子以后, 2021年我选择重新开源部分的rust项目, 以希望可以帮助更多的同行者在解决更大的数据分析量以及更快的数据分析需求场景下python表现难以为继的问题.\\ 量化的场景看似虽小, 实际上在解决问题的时却需要同时兼顾多个方向和领域的知识, 这需要开发者在充分理解业务的同时发挥自己的想象力,对于场景进行抽象, 以数据流和数据分析为核心, 构建适合策略场景的量化infra架构. \\quantaxis在设计之初就是高度解耦的微服务模式结构, 因此你可以将其作为一个业务结构的infra雏形来不断匹配和修改, 尽可能的适配实际的业务场景. 我也很欢迎你在对于业务有了一定的理解和理念的升级以后提交PR或者是ISSUE}
 
+\subsection{QUANTAXIS的设计思想}
 
+\subsection{QUANTAXIS适合谁去使用}
+
+\subsection{QUANATXIS适用于哪些场景}
 
 \newpage
 \section{环境准备}
@@ -107,8 +111,10 @@
 \newpage
 \section{分析}
 \newpage
-\section{}
-
+\section{交易}
+\newpage
+\section{可视化}
+\newpage
 
 
 \end{document}
