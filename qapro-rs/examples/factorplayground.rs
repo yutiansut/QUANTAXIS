@@ -8,6 +8,7 @@ use qapro_rs::qaenv::localenv::CONFIG;
 use polars::frame::DataFrame;
 use polars::prelude::*;
 
+use polars::series::ops::NullBehavior;
 use std::fs::File;
 
 extern crate stopwatch;
@@ -85,86 +86,81 @@ async fn main() {
         ParquetWriter::new(file).finish(&data);
     }
 
-    trait pct {
-        fn pctchange(&self, n: usize) -> Series;
-    }
-    impl pct for Series {
-        fn pctchange(&self, n: usize) -> Series {
-            self / &self.shift(n as i64)
-        }
-    }
-
-    fn closepctchange(close: &Series) -> Series {
-        close.pctchange(1)
-    }
+    // trait pct {
+    //     fn pctchange(&self, n: usize) -> Series;
+    // }
+    // impl pct for Series {
+    //     fn pctchange(&self, n: usize) -> Series {
+    //         &self.diff(n, NullBehavior::Ignore) / self
+    //     }
+    // }
+    //
+    // fn closepctchange(close: &Series) -> Series {
+    //     close.pctchange(1)
+    // }
     sw.restart();
-    let rank2 = rank
-        .groupby("order_book_id")
-        .unwrap()
-        .apply(|mut x| {
-            let res = x
-                .sort("date", false)
-                .unwrap()
-                .apply("close", closepctchange)
-                .unwrap()
-                .clone();
-            //println!("rank {}", rank["close"]);
-            Ok(res)
-        })
-        .unwrap()
-        .sort("date", false)
-        .unwrap()
-        .drop_nulls(Some(&["close".to_string()]))
-        .unwrap();
-    println!("calc time {:#?}", sw.elapsed());
-    sw.restart();
-    // let rank3 = rank
-    //     .lazy()
-    //     //.drop_duplicates(false, Some(vec!["date".to_string(),  "order_book_id".to_string()]))
+    // let rank2 = rank
+    //     .groupby("order_book_id")
+    //     .unwrap()
+    //     .apply(|mut x| {
+    //         let res = x
+    //             .sort("date", false)
+    //             .unwrap()
+    //             .apply("close", closepctchange)
+    //             .unwrap()
+    //             .clone();
+    //         //println!("rank {}", rank["close"]);
+    //         Ok(res)
+    //     })
+    //     .unwrap()
     //     .sort("date", false)
-    //     .groupby([col("order_book_id")])
-    //     .agg([
-    //         (col("close") / col("close").shift(1))
-    //             .list()
-    //             .alias("pctchange"),
-    //         col("date").list(),
-    //         col("close"),
-    //         col("factor")
-    //     ])
-    //     .collect()
+    //     .unwrap()
+    //     .drop_nulls(Some(&["close".to_string()]))
     //     .unwrap();
+    // println!("calc time {:#?}", sw.elapsed());
 
     let rank4 = rank
+        .sort("date", false)
+        .unwrap()
         .lazy()
-        .groupby([col("date")])
+        .groupby([col("order_book_id")])
         .agg([
-            (col("close") / col("high")).list().alias("ch"),
-            (col("close") / col("high").shift(1)).list().alias("cpreh"),
-            col("order_book_id"),
-            col("date").list().alias("datetime"),
+            col("close").pct_change(1).alias("pct"),
+            col("date"),
             col("close"),
+            col("open"),
+            col("limit_up"),
+            col("limit_down"),
             col("factor"),
         ])
-        .sort("date", false)
         .select([
             col("order_book_id"),
-            col("datetime"),
+            col("date"),
             col("close"),
             col("factor"),
+            col("open"),
+            col("limit_up"),
+            col("limit_down"),
+            col("pct")
+
         ])
         .collect()
         .unwrap();
 
     println!("calc lazy time {:#?}", sw.elapsed());
     println!("lazy res {:#?}", rank4);
-    // println!(
-    //     "rank {}",
-    //     rank2.select(&["date", "order_book_id", "close"]).unwrap()
-    // );
-    //
-    //
+
     let s1 = rank4
-        .explode(&["order_book_id", "datetime", "close", "factor"])
+        .explode(&[
+
+            "date",
+            "close",
+            "factor",
+            "open",
+            "limit_up",
+            "limit_down",
+            "pct",
+        ])
         .unwrap();
     println!("res idx1 {:#?}", s1);
     //write_result(rank, "./cache/rankres.parquet");
