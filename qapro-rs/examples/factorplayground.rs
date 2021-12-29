@@ -1,17 +1,16 @@
+extern crate stopwatch;
+
+use std::fs::File;
+
 use actix_rt;
+use polars::frame::DataFrame;
+use polars::prelude::*;
+use polars::series::ops::NullBehavior;
 
 use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
 use qapro_rs::qadatastruct::stockday::QADataStruct_StockDay;
 use qapro_rs::qaenv::localenv::CONFIG;
-
-use polars::frame::DataFrame;
-use polars::prelude::*;
-
-use polars::series::ops::NullBehavior;
-use std::fs::File;
-
-extern crate stopwatch;
 
 #[actix_rt::main]
 async fn main() {
@@ -145,9 +144,11 @@ async fn main() {
     // }
 
     sw.restart();
-    println!("res idx1 {:#?}", get_row_vec(&rank4, 1));
+    get_row_vec(&rank4, 1);
     println!("calc get row time {:#?}", sw.elapsed());
-
+    let closes = rank4["close"].f32().unwrap();
+    let codes = rank4["order_book_id"].utf8().unwrap();
+    let dates = rank4["date"].utf8().unwrap();
     sw.restart();
     // for i in 0..rank4.height() {
     //     let t = get_row_vec(&rank4, i);
@@ -156,14 +157,14 @@ async fn main() {
     //     println!("{}-{}", code, datex);
     // }
 
-    let closes = rank4["close"].f32().unwrap();
-    let codes = rank4["order_book_id"].utf8().unwrap();
-    let dates = rank4["date"].utf8().unwrap();
-    for (code, (close, date)) in codes.into_iter().zip((closes.into_iter().zip(dates.into_iter()))) {
 
-        let code2: &str =code.unwrap();
-        let date2 :&str= date.unwrap();
-        let close2 :f32 =close.unwrap();
+    for (code, (close, date)) in codes
+        .into_iter()
+        .zip((closes.into_iter().zip(dates.into_iter())))
+    {
+        let code2: &str = code.unwrap();
+        let date2: &str = date.unwrap();
+        let close2: f32 = close.unwrap();
     }
 
     println!("calc get row time {:#?}", sw.elapsed());
