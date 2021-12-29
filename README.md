@@ -10,6 +10,9 @@
 
 ![gvp](http://picx.gulizhu.com/gvp.jpg)
 
+
+更多文档在[QABook Release](https://github.com/QUANTAXIS/QUANTAXIS/releases/download/latest/quantaxis.pdf)
+
 Quantitative Financial FrameWork
 
 本项目分为几个大块:
