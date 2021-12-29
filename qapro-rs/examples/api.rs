@@ -1,9 +1,9 @@
 use actix::Actor;
-use actix_cors::Cors;
+
 use actix_redis::RedisActor;
 use actix_rt::Arbiter;
 
-use actix_web::{http::header, middleware, web, App, HttpResponse, HttpServer};
+use actix_web::{web, App, HttpServer};
 use qapro_rs::qaenv::localenv::CONFIG;
 use qapro_rs::qahandlers::factorhandler::FactorHandler;
 use qapro_rs::qahandlers::realtime::Realtime;

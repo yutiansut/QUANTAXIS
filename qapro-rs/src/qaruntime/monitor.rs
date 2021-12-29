@@ -43,8 +43,8 @@ where
     pub fn new(qactx: QAContext, stg: T, mor_manger: Addr<MonitorManager>) -> Self {
         let f = qactx.frequence.clone();
         let freq = f[0..f.len() - 3].parse::<i64>().unwrap();
-        let mut qarere = QARealtimeResampler::new(freq);
-        let mut u = Self {
+        let qarere = QARealtimeResampler::new(freq);
+        let u = Self {
             qactx,
             stg,
             mor_manger,

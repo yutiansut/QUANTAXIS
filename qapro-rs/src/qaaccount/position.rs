@@ -149,7 +149,7 @@ impl QA_Postions {
         open_price_long: f64,
         open_price_short: f64,
     ) -> Self {
-        let mut preset: CodePreset = MarketPreset::new().get(code.as_ref());
+        let preset: CodePreset = MarketPreset::new().get(code.as_ref());
 
         let mut pos = Self {
             preset,

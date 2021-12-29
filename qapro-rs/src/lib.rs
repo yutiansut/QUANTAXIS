@@ -1,4 +1,3 @@
-
 pub mod qaaccount;
 pub mod qaconnector;
 pub mod qadata;
