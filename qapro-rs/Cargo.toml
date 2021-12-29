@@ -66,7 +66,7 @@ evalexpr = "6.6.0"
 [dependencies.polars]
 #version = "0.18.0"
 git = "https://github.com/yutiansut/polars.git"
-branch = "master"
+rev = "d6eeac2c82ab592021522a5d4d51bef856a30996"
 features = [
     "zip_with",
     "strings",
@@ -112,7 +112,8 @@ features = [
     "dtype-full",
     "groupby_list",
     "avx512",
-    "pivot"
+    "pivot",
+    "pct_change"
 ]
 
 [dependencies.clickhouse-rs]
