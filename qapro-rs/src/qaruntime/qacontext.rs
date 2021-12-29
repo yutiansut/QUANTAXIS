@@ -59,7 +59,7 @@ pub struct QAContext {
 
 impl QAContext {
     pub fn new(account_cookie: &str, frequence: &str, code: &str, environment: String) -> Self {
-        let mut acc = QA_Account::new(
+        let acc = QA_Account::new(
             account_cookie,
             "test",
             "admin",

@@ -4,15 +4,11 @@ use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
 use qapro_rs::qadatastruct::stockday::QADataStruct_StockDay;
 use qapro_rs::qaenv::localenv::CONFIG;
-use qapro_rs::qalog::log4::init_log4;
-use qapro_rs::qaprotocol::mifi::qafastkline::QAKlineBase;
 
 use polars::frame::DataFrame;
 use polars::prelude::{col, ChunkCompare, IntoLazy, JoinType, RollingOptions};
 use polars::series::ops::NullBehavior;
 use qapro_rs::qadatastruct::stockadj::QADataStruct_StockAdj;
-use rayon::join;
-use std::fmt::format;
 
 extern crate stopwatch;
 

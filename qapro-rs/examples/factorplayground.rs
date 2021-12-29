@@ -4,19 +4,10 @@ use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
 use qapro_rs::qadatastruct::stockday::QADataStruct_StockDay;
 use qapro_rs::qaenv::localenv::CONFIG;
-use qapro_rs::qalog::log4::init_log4;
-use qapro_rs::qaprotocol::mifi::qafastkline::QAKlineBase;
 
 use polars::frame::DataFrame;
 use polars::prelude::*;
 
-use actix::fut::ok;
-use polars::series::ops::NullBehavior;
-use qapro_rs::qadatastruct::stockadj::QADataStruct_StockAdj;
-use qapro_rs::qahandlers::realtime::RoomType::Factor;
-use rayon::join;
-use redis::Value::Data;
-use std::fmt::format;
 use std::fs::File;
 
 extern crate stopwatch;

@@ -1,13 +1,5 @@
-use actix_web::{middleware, web, App, HttpResponse, HttpServer};
 use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
-
-use actix::Actor;
-use actix_cors::Cors;
-use actix_redis::RedisActor;
-use actix_rt::Arbiter;
-
-use log4rs;
 
 #[actix_rt::main]
 async fn main() {

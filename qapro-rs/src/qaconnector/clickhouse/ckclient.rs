@@ -1,29 +1,21 @@
 use chrono::prelude::*;
 use chrono_tz::Tz;
-use std::convert::TryInto;
+
 use std::io;
 use std::io::Error;
-use std::sync::atomic::AtomicBool;
-use std::sync::{Arc, Mutex};
 
 use async_trait::async_trait;
 use chrono;
-use clickhouse_rs::{Block, Pool};
-use serde::Deserialize;
-use serde_json::Value;
+use clickhouse_rs::Pool;
 
-use self::chrono::Utc;
 use crate::qadatastruct::factorstruct::QADataStruct_Factor;
 use crate::qadatastruct::stockadj::QADataStruct_StockAdj;
 use crate::qadatastruct::stockday::QADataStruct_StockDay;
 
 use crate::qadatastruct::stocklist::QADataStruct_StockList;
 use crate::qaenv::localenv::CONFIG;
-use crate::qaprotocol::mifi::market::{StockDay, StockMin};
-use crate::qaprotocol::mifi::qafastkline::{QAColumnBar, QAKlineBase};
-use actix::fut::ok;
-use clickhouse_rs::types::Column;
-use std::ops::Deref;
+
+use crate::qaprotocol::mifi::qafastkline::QAColumnBar;
 
 type ServerDate = chrono::Date<Tz>;
 type ServerDateTime = chrono::DateTime<Tz>;
@@ -178,9 +170,9 @@ impl DataConnector for QACKClient {
         let sqlx = format!("SELECT * FROM quantaxis.stock_cn_{} where order_book_id in ['{}'] AND {} BETWEEN '{}' AND '{}' order by {}",freq, codevar,dt, start, end, dt);
 
         println!("{:#?}", sqlx);
-        let mut result = cursor.query(sqlx).fetch_all().await?;
+        let result = cursor.query(sqlx).fetch_all().await?;
 
-        let mut res: QAColumnBar;
+        let res: QAColumnBar;
         let openvec: Vec<_> = result.get_column("open")?.iter::<f32>()?.copied().collect();
         let highvec: Vec<_> = result.get_column("high")?.iter::<f32>()?.copied().collect();
         let lowvec: Vec<_> = result.get_column("low")?.iter::<f32>()?.copied().collect();
@@ -258,7 +250,7 @@ impl DataConnector for QACKClient {
         let sqlx = format!("SELECT * FROM quantaxis.stock_cn_{} where order_book_id in ['{}'] AND {} BETWEEN '{}' AND '{}' ",freq, codevar,dt, start, end);
 
         println!("{:#?}", sqlx);
-        let mut result = cursor.query(sqlx).fetch_all().await?;
+        let result = cursor.query(sqlx).fetch_all().await?;
 
         let openvec: Vec<_> = result.get_column("open")?.iter::<f32>()?.copied().collect();
         let highvec: Vec<_> = result.get_column("high")?.iter::<f32>()?.copied().collect();
