@@ -86,38 +86,7 @@ async fn main() {
         ParquetWriter::new(file).finish(&data);
     }
 
-    // trait pct {
-    //     fn pctchange(&self, n: usize) -> Series;
-    // }
-    // impl pct for Series {
-    //     fn pctchange(&self, n: usize) -> Series {
-    //         &self.diff(n, NullBehavior::Ignore) / self
-    //     }
-    // }
-    //
-    // fn closepctchange(close: &Series) -> Series {
-    //     close.pctchange(1)
-    // }
     sw.restart();
-    // let rank2 = rank
-    //     .groupby("order_book_id")
-    //     .unwrap()
-    //     .apply(|mut x| {
-    //         let res = x
-    //             .sort("date", false)
-    //             .unwrap()
-    //             .apply("close", closepctchange)
-    //             .unwrap()
-    //             .clone();
-    //         //println!("rank {}", rank["close"]);
-    //         Ok(res)
-    //     })
-    //     .unwrap()
-    //     .sort("date", false)
-    //     .unwrap()
-    //     .drop_nulls(Some(&["close".to_string()]))
-    //     .unwrap();
-    // println!("calc time {:#?}", sw.elapsed());
 
     let rank4 = rank
         .sort("date", false)
@@ -141,27 +110,63 @@ async fn main() {
             col("open"),
             col("limit_up"),
             col("limit_down"),
-            col("pct")
-
+            col("pct"),
         ])
+        .explode(vec![
+            col("date"),
+            col("close"),
+            col("factor"),
+            col("open"),
+            col("limit_up"),
+            col("limit_down"),
+            col("pct"),
+        ])
+        .sort("date", false)
         .collect()
         .unwrap();
 
     println!("calc lazy time {:#?}", sw.elapsed());
     println!("lazy res {:#?}", rank4);
+    pub fn get_row_vec(data: &DataFrame, idx: usize) -> Vec<AnyValue> {
+        let values = data.iter().map(|s| s.get(idx)).collect::<Vec<_>>();
+        values
+    }
+    //
+    // pub fn get_row_vec(data:&DataFrame, idx: usize) -> Vec<(String, String,f32, f32, f32, f32, f32, f32)>{
+    //     let values = data.iter().map(|s|
+    //         match s.dtype(){
+    //
+    //
+    //             DataType::Float32 => {s.f32().unwrap().get(idx).unwrap()}
+    //
+    //             DataType::Utf8 => {s.utf8().unwrap().get(idx).unwrap()}
+    //             _ => {}
+    //         }).collect::<(String, String,f32, f32, f32, f32, f32, f32)>();
+    // }
 
-    let s1 = rank4
-        .explode(&[
+    sw.restart();
+    println!("res idx1 {:#?}", get_row_vec(&rank4, 1));
+    println!("calc get row time {:#?}", sw.elapsed());
 
-            "date",
-            "close",
-            "factor",
-            "open",
-            "limit_up",
-            "limit_down",
-            "pct",
-        ])
-        .unwrap();
-    println!("res idx1 {:#?}", s1);
+    sw.restart();
+    // for i in 0..rank4.height() {
+    //     let t = get_row_vec(&rank4, i);
+    //     let code: String = t.get(0).unwrap().get(0).
+    //     let datex: String = t.get(0).unwrap().1.clone();
+    //     println!("{}-{}", code, datex);
+    // }
+
+    let closes = rank4["close"].f32().unwrap();
+    let codes = rank4["order_book_id"].utf8().unwrap();
+    let dates = rank4["date"].utf8().unwrap();
+    for (code, (close, date)) in codes.into_iter().zip((closes.into_iter().zip(dates.into_iter()))) {
+
+        let code2: &str =code.unwrap();
+        let date2 :&str= date.unwrap();
+        let close2 :f32 =close.unwrap();
+    }
+
+    println!("calc get row time {:#?}", sw.elapsed());
+
     //write_result(rank, "./cache/rankres.parquet");
 }
