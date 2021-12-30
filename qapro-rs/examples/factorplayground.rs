@@ -7,6 +7,7 @@ use polars::frame::DataFrame;
 use polars::prelude::*;
 use polars::series::ops::NullBehavior;
 
+use itertools::izip;
 use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
 use qapro_rs::qadatastruct::stockday::QADataStruct_StockDay;
@@ -126,48 +127,17 @@ async fn main() {
 
     println!("calc lazy time {:#?}", sw.elapsed());
     println!("lazy res {:#?}", rank4);
-    pub fn get_row_vec(data: &DataFrame, idx: usize) -> Vec<AnyValue> {
-        let values = data.iter().map(|s| s.get(idx)).collect::<Vec<_>>();
-        values
-    }
-    //
-    // pub fn get_row_vec(data:&DataFrame, idx: usize) -> Vec<(String, String,f32, f32, f32, f32, f32, f32)>{
-    //     let values = data.iter().map(|s|
-    //         match s.dtype(){
-    //
-    //
-    //             DataType::Float32 => {s.f32().unwrap().get(idx).unwrap()}
-    //
-    //             DataType::Utf8 => {s.utf8().unwrap().get(idx).unwrap()}
-    //             _ => {}
-    //         }).collect::<(String, String,f32, f32, f32, f32, f32, f32)>();
-    // }
 
-    sw.restart();
-    get_row_vec(&rank4, 1);
-    println!("calc get row time {:#?}", sw.elapsed());
     let closes = rank4["close"].f32().unwrap();
     let codes = rank4["order_book_id"].utf8().unwrap();
     let dates = rank4["date"].utf8().unwrap();
     sw.restart();
-    // for i in 0..rank4.height() {
-    //     let t = get_row_vec(&rank4, i);
-    //     let code: String = t.get(0).unwrap().get(0).
-    //     let datex: String = t.get(0).unwrap().1.clone();
-    //     println!("{}-{}", code, datex);
-    // }
 
-
-    for (code, (close, date)) in codes
-        .into_iter()
-        .zip((closes.into_iter().zip(dates.into_iter())))
-    {
+    for (code, date, close) in izip!(codes, dates, closes) {
         let code2: &str = code.unwrap();
         let date2: &str = date.unwrap();
         let close2: f32 = close.unwrap();
     }
 
     println!("calc get row time {:#?}", sw.elapsed());
-
-    //write_result(rank, "./cache/rankres.parquet");
 }
