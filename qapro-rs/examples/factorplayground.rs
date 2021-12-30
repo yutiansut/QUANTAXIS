@@ -1,17 +1,17 @@
-use actix_rt;
+extern crate stopwatch;
 
+use std::fs::File;
+
+use actix_rt;
+use polars::frame::DataFrame;
+use polars::prelude::*;
+use polars::series::ops::NullBehavior;
+
+use itertools::izip;
 use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
 use qapro_rs::qadatastruct::stockday::QADataStruct_StockDay;
 use qapro_rs::qaenv::localenv::CONFIG;
-
-use polars::frame::DataFrame;
-use polars::prelude::*;
-
-use polars::series::ops::NullBehavior;
-use std::fs::File;
-
-extern crate stopwatch;
 
 #[actix_rt::main]
 async fn main() {
@@ -86,38 +86,7 @@ async fn main() {
         ParquetWriter::new(file).finish(&data);
     }
 
-    // trait pct {
-    //     fn pctchange(&self, n: usize) -> Series;
-    // }
-    // impl pct for Series {
-    //     fn pctchange(&self, n: usize) -> Series {
-    //         &self.diff(n, NullBehavior::Ignore) / self
-    //     }
-    // }
-    //
-    // fn closepctchange(close: &Series) -> Series {
-    //     close.pctchange(1)
-    // }
     sw.restart();
-    // let rank2 = rank
-    //     .groupby("order_book_id")
-    //     .unwrap()
-    //     .apply(|mut x| {
-    //         let res = x
-    //             .sort("date", false)
-    //             .unwrap()
-    //             .apply("close", closepctchange)
-    //             .unwrap()
-    //             .clone();
-    //         //println!("rank {}", rank["close"]);
-    //         Ok(res)
-    //     })
-    //     .unwrap()
-    //     .sort("date", false)
-    //     .unwrap()
-    //     .drop_nulls(Some(&["close".to_string()]))
-    //     .unwrap();
-    // println!("calc time {:#?}", sw.elapsed());
 
     let rank4 = rank
         .sort("date", false)
@@ -141,27 +110,34 @@ async fn main() {
             col("open"),
             col("limit_up"),
             col("limit_down"),
-            col("pct")
-
+            col("pct"),
         ])
+        .explode(vec![
+            col("date"),
+            col("close"),
+            col("factor"),
+            col("open"),
+            col("limit_up"),
+            col("limit_down"),
+            col("pct"),
+        ])
+        .sort("date", false)
         .collect()
         .unwrap();
 
     println!("calc lazy time {:#?}", sw.elapsed());
     println!("lazy res {:#?}", rank4);
 
-    let s1 = rank4
-        .explode(&[
+    let closes = rank4["close"].f32().unwrap();
+    let codes = rank4["order_book_id"].utf8().unwrap();
+    let dates = rank4["date"].utf8().unwrap();
+    sw.restart();
 
-            "date",
-            "close",
-            "factor",
-            "open",
-            "limit_up",
-            "limit_down",
-            "pct",
-        ])
-        .unwrap();
-    println!("res idx1 {:#?}", s1);
-    //write_result(rank, "./cache/rankres.parquet");
+    for (code, date, close) in izip!(codes, dates, closes) {
+        let code2: &str = code.unwrap();
+        let date2: &str = date.unwrap();
+        let close2: f32 = close.unwrap();
+    }
+
+    println!("calc get row time {:#?}", sw.elapsed());
 }

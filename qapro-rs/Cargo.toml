@@ -57,7 +57,7 @@ chrono = "0.4.19"
 thiserror = "1.0"
 rand = "0.7"
 quadprog = "0.0.1"
-
+itertools = "0.10.3"
 #arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettyprint", "ipc"] }
 #
 #datafusion = {version='6.0.0'}
@@ -66,7 +66,7 @@ evalexpr = "6.6.0"
 [dependencies.polars]
 #version = "0.18.0"
 git = "https://github.com/yutiansut/polars.git"
-rev = "d6eeac2c82ab592021522a5d4d51bef856a30996"
+rev = "0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
 features = [
     "zip_with",
     "strings",
