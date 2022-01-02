@@ -516,7 +516,7 @@ dependencies = [
 [[package]]
 name = "arrow2"
 version = "0.8.1"
-source = "git+https://github.com/jorgecarleitao/arrow2?rev=25a35f87761bd364860264afbba56d33b3ce74d1#25a35f87761bd364860264afbba56d33b3ce74d1"
+source = "git+https://github.com/jorgecarleitao/arrow2?rev=b617331354fd8c64c2126b6f4fc6f9935f7971ab#b617331354fd8c64c2126b6f4fc6f9935f7971ab"
 dependencies = [
  "arrow-format",
  "base64 0.13.0",
@@ -3335,7 +3335,7 @@ checksum = "58893f751c9b0412871a09abd62ecd2a00298c6c83befa223ef98c52aef40cbe"
 [[package]]
 name = "polars"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars.git?rev=0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c#0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+source = "git+https://github.com/yutiansut/polars.git?rev=cb5b36e897c35404d5e9e77b040b741c1841c81f#cb5b36e897c35404d5e9e77b040b741c1841c81f"
 dependencies = [
  "polars-core",
  "polars-io",
@@ -3345,9 +3345,10 @@ dependencies = [
 [[package]]
 name = "polars-arrow"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars.git?rev=0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c#0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+source = "git+https://github.com/yutiansut/polars.git?rev=cb5b36e897c35404d5e9e77b040b741c1841c81f#cb5b36e897c35404d5e9e77b040b741c1841c81f"
 dependencies = [
  "arrow2",
+ "hashbrown",
  "num 0.4.0",
  "thiserror",
 ]
@@ -3355,7 +3356,7 @@ dependencies = [
 [[package]]
 name = "polars-core"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars.git?rev=0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c#0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+source = "git+https://github.com/yutiansut/polars.git?rev=cb5b36e897c35404d5e9e77b040b741c1841c81f#cb5b36e897c35404d5e9e77b040b741c1841c81f"
 dependencies = [
  "ahash",
  "anyhow",
@@ -3382,7 +3383,7 @@ dependencies = [
 [[package]]
 name = "polars-io"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars.git?rev=0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c#0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+source = "git+https://github.com/yutiansut/polars.git?rev=cb5b36e897c35404d5e9e77b040b741c1841c81f#cb5b36e897c35404d5e9e77b040b741c1841c81f"
 dependencies = [
  "ahash",
  "anyhow",
@@ -3406,7 +3407,7 @@ dependencies = [
 [[package]]
 name = "polars-lazy"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars.git?rev=0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c#0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+source = "git+https://github.com/yutiansut/polars.git?rev=cb5b36e897c35404d5e9e77b040b741c1841c81f#cb5b36e897c35404d5e9e77b040b741c1841c81f"
 dependencies = [
  "ahash",
  "polars-arrow",
@@ -3420,7 +3421,7 @@ dependencies = [
 [[package]]
 name = "polars-time"
 version = "0.18.0"
-source = "git+https://github.com/yutiansut/polars.git?rev=0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c#0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+source = "git+https://github.com/yutiansut/polars.git?rev=cb5b36e897c35404d5e9e77b040b741c1841c81f#cb5b36e897c35404d5e9e77b040b741c1841c81f"
 dependencies = [
  "chrono",
  "polars-arrow",
@@ -3429,7 +3430,7 @@ dependencies = [
 [[package]]
 name = "polars-utils"
 version = "0.1.0"
-source = "git+https://github.com/yutiansut/polars.git?rev=0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c#0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+source = "git+https://github.com/yutiansut/polars.git?rev=cb5b36e897c35404d5e9e77b040b741c1841c81f#cb5b36e897c35404d5e9e77b040b741c1841c81f"
 dependencies = [
  "parking_lot 0.11.2",
 ]

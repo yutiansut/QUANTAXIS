@@ -66,7 +66,7 @@ evalexpr = "6.6.0"
 [dependencies.polars]
 #version = "0.18.0"
 git = "https://github.com/yutiansut/polars.git"
-rev = "0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+rev = "cb5b36e897c35404d5e9e77b040b741c1841c81f"
 features = [
     "zip_with",
     "strings",
