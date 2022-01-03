@@ -78,10 +78,10 @@ mod tests {
     use std::str::FromStr;
 
     use super::Env;
-    use crate::planner::Drain;
-    use crate::sql::Expr;
-    use crate::sql::Field;
-    use crate::sql::Sql;
+    use crate::parsers::planner::Drain;
+    use crate::parsers::sql::Expr;
+    use crate::parsers::sql::Field;
+    use crate::parsers::sql::Sql;
 
     #[test]
     fn get_full_path() -> anyhow::Result<()> {

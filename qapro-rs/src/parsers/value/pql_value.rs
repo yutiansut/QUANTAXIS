@@ -477,14 +477,14 @@ mod tests {
 
     use ordered_float::OrderedFloat;
 
-    use crate::planner::LogicalPlan;
-    use crate::pqlir_parser;
-    use crate::sql::Env;
-    use crate::sql::Expr;
-    use crate::sql::Selector;
-    use crate::sql::SelectorNode;
-    use crate::sql::Sql;
-    use crate::value::PqlValue;
+    use crate::parsers::planner::LogicalPlan;
+    use crate::parsers::pqlir_parser;
+    use crate::parsers::sql::Env;
+    use crate::parsers::sql::Expr;
+    use crate::parsers::sql::Selector;
+    use crate::parsers::sql::SelectorNode;
+    use crate::parsers::sql::Sql;
+    use crate::parsers::value::PqlValue;
 
     #[test]
     fn add_sub_mul_div() {

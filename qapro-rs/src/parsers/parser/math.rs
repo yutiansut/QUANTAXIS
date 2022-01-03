@@ -83,7 +83,7 @@ fn parse_number(input: &str) -> IResult<&str, Expr> {
 #[cfg(test)]
 mod tests {
     use super::parse;
-    use crate::sql::{Expr, Selector};
+    use crate::parsers::sql::{Expr, Selector};
 
     #[test]
     fn parse_sub_sub_path() {

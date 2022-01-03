@@ -18,10 +18,10 @@ pub fn evaluate<'a>(sql: Sql, data: PqlValue) -> PqlValue {
 mod tests {
     use std::str::FromStr;
 
-    use crate::planner::LogicalPlan;
-    use crate::sql::Env;
-    use crate::sql::Sql;
-    use crate::value::PqlValue;
+    use crate::parsers::planner::LogicalPlan;
+    use crate::parsers::sql::Env;
+    use crate::parsers::sql::Sql;
+    use crate::parsers::value::PqlValue;
 
     #[test]
     fn test_rename() -> anyhow::Result<()> {

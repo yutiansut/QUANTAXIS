@@ -106,14 +106,14 @@ impl PqlValue {
 mod tests {
     use std::str::FromStr;
 
-    use crate::pqlir_parser;
+    use crate::parsers::pqlir_parser;
 
-    use crate::sql::Expr;
+    use crate::parsers::sql::Expr;
 
-    use crate::sql::Selector;
+    use crate::parsers::sql::Selector;
 
-    use crate::sql::WhereCond;
-    use crate::value::PqlValue;
+    use crate::parsers::sql::WhereCond;
+    use crate::parsers::value::PqlValue;
 
     #[test]
     fn missing() -> anyhow::Result<()> {

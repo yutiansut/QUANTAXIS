@@ -82,8 +82,8 @@ fn parse_str<'a, E: ParseError<&'a str>>(i: &'a str) -> IResult<&'a str, &'a str
 #[cfg(test)]
 mod tests {
     use super::float_number;
-    use crate::sql::Expr;
-    use crate::value::PqlValue;
+    use crate::parsers::sql::Expr;
+    use crate::parsers::value::PqlValue;
 
     fn float(input: &str) -> anyhow::Result<Expr> {
         match float_number(input) {

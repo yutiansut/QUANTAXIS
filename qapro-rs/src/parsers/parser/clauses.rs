@@ -147,7 +147,7 @@ mod tests {
     use std::str::FromStr;
 
     use super::from;
-    use crate::sql::Field;
+    use crate::parsers::sql::Field;
 
     #[test]
     fn parse_from() -> anyhow::Result<()> {

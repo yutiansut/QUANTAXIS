@@ -245,13 +245,13 @@ impl Expr {
 mod tests {
     use std::str::FromStr;
 
-    use crate::parser;
-    use crate::planner::LogicalPlan;
-    use crate::sql::Env;
-    use crate::sql::Expr;
-    use crate::sql::Selector;
-    use crate::sql::Sql;
-    use crate::value::PqlValue;
+    use crate::parsers::parser;
+    use crate::parsers::planner::LogicalPlan;
+    use crate::parsers::sql::Env;
+    use crate::parsers::sql::Expr;
+    use crate::parsers::sql::Selector;
+    use crate::parsers::sql::Sql;
+    use crate::parsers::value::PqlValue;
 
     #[test]
     fn test_expr_mul() -> anyhow::Result<()> {
