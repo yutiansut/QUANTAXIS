@@ -1,3 +1,4 @@
+#![feature(box_patterns)]
 pub mod qaaccount;
 pub mod qaconnector;
 pub mod qadata;
@@ -17,3 +18,5 @@ pub mod qastrategy;
 pub mod qadatastruct;
 pub mod qafactor;
 pub mod qahandlers;
+
+pub mod parsers;

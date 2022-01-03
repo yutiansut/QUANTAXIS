@@ -52,12 +52,31 @@ futures-test = "^0.3"
 futures-util = "^0.3"
 async-trait= "0.1.52"
 chrono-tz= { version = "0.5.3", features = ["serde"] }
+chrono = { version = "0.4.19", features = ["serde"] }
 
-chrono = "0.4.19"
 thiserror = "1.0"
 rand = "0.7"
 quadprog = "0.0.1"
 itertools = "0.10.3"
+
+
+##parsers
+
+parse-display = "0.5.0"
+quick-xml = { version = "0.22.0", features = ["serialize"] }
+serde_yaml = "0.8.17"
+serde_partiql = "1.1.64"
+structopt = { version = "0.3.21", optional = true }
+anyhow = "1.0.40"
+atty = "0.2.14"
+bat = { version = "0.18.1", optional = true }
+collect-mac = "0.1.0"
+indexmap = { version = "1.6.2", features = ["serde"] }
+
+nom = "6.1.2"
+ordered-float = { version = "2.0", default-features = false, features = [
+    "serde",
+] }
 #arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettyprint", "ipc"] }
 #
 #datafusion = {version='6.0.0'}
@@ -66,7 +85,7 @@ evalexpr = "6.6.0"
 [dependencies.polars]
 #version = "0.18.0"
 git = "https://github.com/yutiansut/polars.git"
-rev = "0bbc68f8ea2ae2cdc657b5c899c08677f2c5169c"
+rev = "16ab34c5d2d1015354577aa473103b1acb5989a8"
 features = [
     "zip_with",
     "strings",
