@@ -8,11 +8,11 @@ use polars::prelude::*;
 use polars::series::ops::NullBehavior;
 
 use itertools::izip;
+use qapro_rs::qaaccount::account::QA_Account;
 use qapro_rs::qaconnector::clickhouse::ckclient;
 use qapro_rs::qaconnector::clickhouse::ckclient::DataConnector;
 use qapro_rs::qadatastruct::stockday::QADataStruct_StockDay;
 use qapro_rs::qaenv::localenv::CONFIG;
-use qapro_rs::qaaccount::account::QA_Account;
 
 #[actix_rt::main]
 async fn main() {
@@ -161,7 +161,6 @@ async fn main() {
             }
         }
     }
-
 
     println!("calc get row time {:#?}", sw.elapsed());
     acc.to_csv("".to_string());
