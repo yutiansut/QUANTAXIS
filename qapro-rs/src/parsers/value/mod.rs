@@ -2,7 +2,7 @@ pub mod json_value;
 mod pql_value;
 mod pql_vector;
 
-#[cfg(feature = "table")]
+
 pub mod table;
 mod toml_value;
 
