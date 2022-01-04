@@ -18,7 +18,7 @@ impl FromStr for Field {
         match parser::expressions::parse_field(s) {
             Ok((_, field)) => Ok(field),
             Err(nom::Err::Error(err)) => {
-                eprint!("{}", err);
+                eprint!("{:#?}", err);
                 anyhow::bail!("failed")
             }
             _ => todo!(),

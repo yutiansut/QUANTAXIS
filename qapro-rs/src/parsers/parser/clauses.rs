@@ -31,7 +31,19 @@ pub fn select(input: &str) -> IResult<&str, Vec<Field>> {
     )(input)?;
     Ok((input, vec))
 }
-
+pub fn calc(input: &str) -> IResult<&str, Vec<Field>> {
+    let (input, vec) = context(
+        "calc claues",
+        preceded(
+            tag_no_case("CALC"),
+            preceded(
+                multispace0,
+                separated_list1(comma, expressions::parse_field),
+            ),
+        ),
+    )(input)?;
+    Ok((input, vec))
+}
 pub fn from<'a>(input: &'a str) -> IResult<&'a str, Vec<Field>> {
     let (input, fields) = context(
         "from clause",

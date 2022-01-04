@@ -267,6 +267,21 @@ mod tests {
 
         Ok(())
     }
+    #[test]
+    fn test_expr_calc() -> anyhow::Result<()> {
+        let mut sql = Sql::default();
+        sql.select_clause = parser::clauses::select(r#"CALC 4 * a AS aa"#)?.1;
+        println!("{:#?}", sql.select_clause);
+        sql.from_clause = parser::clauses::from("FROM 3 as a")?.1;
+        let plan = LogicalPlan::from(sql);
+
+        let mut env = Env::default();
+        let res = plan.execute(&mut env);
+
+        assert_eq!(res, PqlValue::from_str(r#"[{ "aa": 12 }]"#)?);
+
+        Ok(())
+    }
 
     #[test]
     fn test_get_common_path() -> anyhow::Result<()> {
