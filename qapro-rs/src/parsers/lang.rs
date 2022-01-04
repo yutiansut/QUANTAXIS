@@ -16,7 +16,7 @@ pub enum LangType {
     Yaml,
     Toml,
     Xml,
-    Csv,
+    // Csv,
 }
 
 impl Default for LangType {
@@ -56,7 +56,7 @@ impl Lang {
     pub fn from_as(input: &str, lnag_type: LangType) -> anyhow::Result<Self> {
         match lnag_type {
 
-            LangType::Csv => Self::from_as_csv(input),
+            // LangType::Csv => Self::from_as_csv(input),
             LangType::Json => Self::from_as_json(input),
             LangType::Toml => Self::from_as_toml(input),
             LangType::Yaml => Self::from_as_yaml(input),
@@ -65,19 +65,19 @@ impl Lang {
     }
 
     
-    pub fn from_as_csv(input: &str) -> anyhow::Result<Self> {
-        if let Ok(data) = csvstr_to_pqlv(input) {
-            Ok(Self {
-                data,
-                text: input.to_string(),
-                from: LangType::Csv,
-                to: LangType::Csv,
-                colnames: Vec::default(),
-            })
-        } else {
-            anyhow::bail!("fail to parse input as csv");
-        }
-    }
+    // pub fn from_as_csv(input: &str) -> anyhow::Result<Self> {
+    //     if let Ok(data) = csvstr_to_pqlv(input) {
+    //         Ok(Self {
+    //             data,
+    //             text: input.to_string(),
+    //             from: LangType::Csv,
+    //             to: LangType::Csv,
+    //             colnames: Vec::default(),
+    //         })
+    //     } else {
+    //         anyhow::bail!("fail to parse input as csv");
+    //     }
+    // }
 
     pub fn from_as_json(input: &str) -> anyhow::Result<Self> {
         if let Ok(data) = serde_json::from_str::<serde_json::value::Value>(input) {
@@ -147,27 +147,27 @@ impl Lang {
     pub fn to_string(&self, compact: bool) -> anyhow::Result<String> {
         let output = match (&self.to, &self.from == &self.to) {
 
-            (LangType::Csv, _) => {
-                // To pad missing values with null, serialize them to json, deserialize them with polars, and write them to csv from there.
-                let sss = match &self.data {
-                    PqlValue::Array(array) => array
-                        .iter()
-                        .map(|v| serde_json::to_string(&v).unwrap())
-                        .collect::<Vec<String>>()
-                        .join("\n"),
-                    _ => anyhow::bail!("must array"),
-                };
-                let c = std::io::Cursor::new(&sss);
-                let mut df = JsonReader::new(c).infer_schema(Some(100)).finish()?;
-
-                let mut v = Vec::new();
-                CsvWriter::new(&mut v)
-                    .has_headers(true)
-                    .with_delimiter(b',')
-                    .finish(&mut df)?;
-                let s = String::from_utf8(v)?;
-                s
-            }
+            // (LangType::Csv, _) => {
+            //     // To pad missing values with null, serialize them to json, deserialize them with polars, and write them to csv from there.
+            //     let sss = match &self.data {
+            //         PqlValue::Array(array) => array
+            //             .iter()
+            //             .map(|v| serde_json::to_string(&v).unwrap())
+            //             .collect::<Vec<String>>()
+            //             .join("\n"),
+            //         _ => anyhow::bail!("must array"),
+            //     };
+            //     let c = std::io::Cursor::new(&sss);
+            //     let mut df = CsvReader::new(c).infer_schema(Some(100)).finish()?;
+            //
+            //     let mut v = Vec::new();
+            //     CsvWriter::new(&mut v)
+            //         .has_header(true)
+            //         .with_delimiter(b',')
+            //         .finish(&mut df)?;
+            //     let s = String::from_utf8(v)?;
+            //     s
+            // }
             (LangType::Json, _) if compact => serde_json::to_string(&self.data).unwrap(),
             (LangType::Json, _) => serde_json::to_string_pretty(&self.data).unwrap(),
             (_, true) => self.text.to_owned(),
@@ -193,11 +193,11 @@ impl Lang {
             let bytes = output.as_bytes().to_vec();
             let lang_type = self.to.to_string();
 
-            bat::PrettyPrinter::new()
-                .language(&lang_type)
-                .input(bat::Input::from_bytes(&bytes))
-                .print()
-                .unwrap();
+            // PrettyPrinter::new()
+            //     .language(&lang_type)
+            //     .input(bat::Input::from_bytes(&bytes))
+            //     .print()
+            //     .unwrap();
         } else {
             println!("{}", &output);
         }
@@ -206,8 +206,8 @@ impl Lang {
 }
 
 
-fn csvstr_to_pqlv(input: &str) -> anyhow::Result<PqlValue> {
-    let c = std::io::Cursor::new(input.to_owned());
-    let df = CsvReader::new(c).infer_schema(Some(100)).finish()?;
-    Ok(PqlValue::from(df))
-}
+// fn csvstr_to_pqlv(input: &str) -> anyhow::Result<PqlValue> {
+//     let c = std::io::Cursor::new(input.to_owned());
+//     let df = CsvReader::new(c).infer_schema(Some(100)).finish()?;
+//     Ok(PqlValue::from(df))
+// }
