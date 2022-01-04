@@ -272,13 +272,13 @@ impl Selector {
 mod tests {
     use std::str::FromStr;
 
-    use crate::planner::Drain;
+    use crate::parsers::planner::Drain;
 
-    use crate::sql::Env;
-    use crate::sql::Expr;
-    use crate::sql::Field;
-    use crate::sql::Selector;
-    use crate::value::PqlValue;
+    use crate::parsers::sql::Env;
+    use crate::parsers::sql::Expr;
+    use crate::parsers::sql::Field;
+    use crate::parsers::sql::Selector;
+    use crate::parsers::value::PqlValue;
 
     fn get_data() -> anyhow::Result<PqlValue> {
         PqlValue::from_str(

@@ -245,18 +245,33 @@ impl Expr {
 mod tests {
     use std::str::FromStr;
 
-    use crate::parser;
-    use crate::planner::LogicalPlan;
-    use crate::sql::Env;
-    use crate::sql::Expr;
-    use crate::sql::Selector;
-    use crate::sql::Sql;
-    use crate::value::PqlValue;
+    use crate::parsers::parser;
+    use crate::parsers::planner::LogicalPlan;
+    use crate::parsers::sql::Env;
+    use crate::parsers::sql::Expr;
+    use crate::parsers::sql::Selector;
+    use crate::parsers::sql::Sql;
+    use crate::parsers::value::PqlValue;
 
     #[test]
     fn test_expr_mul() -> anyhow::Result<()> {
         let mut sql = Sql::default();
         sql.select_clause = parser::clauses::select(r#"SELECT 4 * a AS aa"#)?.1;
+        sql.from_clause = parser::clauses::from("FROM 3 as a")?.1;
+        let plan = LogicalPlan::from(sql);
+
+        let mut env = Env::default();
+        let res = plan.execute(&mut env);
+
+        assert_eq!(res, PqlValue::from_str(r#"[{ "aa": 12 }]"#)?);
+
+        Ok(())
+    }
+    #[test]
+    fn test_expr_calc() -> anyhow::Result<()> {
+        let mut sql = Sql::default();
+        sql.select_clause = parser::clauses::select(r#"CALC 4 * a AS aa"#)?.1;
+        println!("{:#?}", sql.select_clause);
         sql.from_clause = parser::clauses::from("FROM 3 as a")?.1;
         let plan = LogicalPlan::from(sql);
 

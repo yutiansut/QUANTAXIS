@@ -38,6 +38,7 @@ pub fn parse_sql21(input: &str) -> IResult<&str, Sql> {
         input,
         (
             opt_select_clause,
+            opt_calc_clause,
             opt_from_clause,
             opt_left_join_clause,
             opt_where_clause,
@@ -46,6 +47,7 @@ pub fn parse_sql21(input: &str) -> IResult<&str, Sql> {
         ),
     ) = tuple((
         opt(preceded(multispace0, clauses::select)),
+        opt(preceded(multispace0, clauses::calc)),
         opt(preceded(multispace0, clauses::from)),
         opt(preceded(multispace0, clauses::left_join)),
         opt(preceded(multispace0, clauses::parse_where)),
@@ -55,6 +57,7 @@ pub fn parse_sql21(input: &str) -> IResult<&str, Sql> {
 
     let sql = Sql {
         select_clause: opt_select_clause.unwrap_or_default(),
+        calc_clause: opt_calc_clause.unwrap_or_default(),
         from_clause: opt_from_clause.unwrap_or_default(),
         left_join_clause: opt_left_join_clause.unwrap_or_default(),
         where_clause: opt_where_clause.map(Box::new),
@@ -72,6 +75,7 @@ pub fn parse_sql22(input: &str) -> IResult<&str, Sql> {
             opt_left_join_clause,
             opt_where_clause,
             opt_select_clause,
+            opt_calc_clause,
             opt_order_by,
             opt_limit,
         ),
@@ -80,12 +84,14 @@ pub fn parse_sql22(input: &str) -> IResult<&str, Sql> {
         opt(preceded(multispace0, clauses::left_join)),
         opt(preceded(multispace0, clauses::parse_where)),
         opt(preceded(multispace0, clauses::select)),
+        opt(preceded(multispace0, clauses::calc)),
         opt(preceded(multispace0, clauses::orderby)),
         opt(preceded(multispace0, clauses::limit)),
     ))(input)?;
 
     let sql = Sql {
         select_clause: opt_select_clause.unwrap_or_default(),
+        calc_clause: opt_calc_clause.unwrap_or_default(),
         from_clause: opt_from_clause.unwrap_or_default(),
         left_join_clause: opt_left_join_clause.unwrap_or_default(),
         where_clause: opt_where_clause.map(Box::new),

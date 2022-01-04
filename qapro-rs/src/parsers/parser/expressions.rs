@@ -180,10 +180,10 @@ pub fn parse_path_as_expr<'a>(input: &'a str) -> IResult<&'a str, Expr> {
 #[cfg(test)]
 mod tests {
     use super::parse_selector;
-    use crate::parser;
-    use crate::sql::Selector;
-    use crate::sql::SelectorNode;
-    use crate::value::PqlValue;
+    use crate::parsers::parser;
+    use crate::parsers::sql::Selector;
+    use crate::parsers::sql::SelectorNode;
+    use crate::parsers::value::PqlValue;
     use std::str::FromStr;
 
     #[test]

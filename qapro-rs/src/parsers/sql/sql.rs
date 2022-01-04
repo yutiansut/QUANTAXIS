@@ -9,6 +9,7 @@ pub use crate::parsers::sql::WhereCond;
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Sql {
     pub select_clause: Vec<Field>,
+    pub calc_clause: Vec<Field>,
     pub from_clause: Vec<Field>,
     pub left_join_clause: Vec<Field>,
     pub where_clause: Option<Box<WhereCond>>,

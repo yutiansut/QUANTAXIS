@@ -2,9 +2,9 @@ use std::str::FromStr;
 
 use parse_display::{Display, FromStr};
 
-#[cfg(feature = "table")]
+
 use polars::prelude::CsvReader;
-#[cfg(feature = "table")]
+
 use polars::prelude::*;
 
 use crate::parsers::value::{BPqlValue, PqlValue, TomlValue};
@@ -16,7 +16,6 @@ pub enum LangType {
     Yaml,
     Toml,
     Xml,
-    #[cfg(feature = "table")]
     Csv,
 }
 
@@ -56,7 +55,7 @@ impl FromStr for Lang {
 impl Lang {
     pub fn from_as(input: &str, lnag_type: LangType) -> anyhow::Result<Self> {
         match lnag_type {
-            #[cfg(feature = "table")]
+
             LangType::Csv => Self::from_as_csv(input),
             LangType::Json => Self::from_as_json(input),
             LangType::Toml => Self::from_as_toml(input),
@@ -65,7 +64,7 @@ impl Lang {
         }
     }
 
-    #[cfg(feature = "table")]
+    
     pub fn from_as_csv(input: &str) -> anyhow::Result<Self> {
         if let Ok(data) = csvstr_to_pqlv(input) {
             Ok(Self {
@@ -147,7 +146,7 @@ impl Lang {
 
     pub fn to_string(&self, compact: bool) -> anyhow::Result<String> {
         let output = match (&self.to, &self.from == &self.to) {
-            #[cfg(feature = "table")]
+
             (LangType::Csv, _) => {
                 // To pad missing values with null, serialize them to json, deserialize them with polars, and write them to csv from there.
                 let sss = match &self.data {
@@ -186,7 +185,7 @@ impl Lang {
         Ok(output)
     }
 
-    #[cfg(feature = "cli")]
+
     pub fn print(&self, compact: bool) -> anyhow::Result<()> {
         let output = self.to_string(compact)?;
 
@@ -206,7 +205,7 @@ impl Lang {
     }
 }
 
-#[cfg(feature = "table")]
+
 fn csvstr_to_pqlv(input: &str) -> anyhow::Result<PqlValue> {
     let c = std::io::Cursor::new(input.to_owned());
     let df = CsvReader::new(c).infer_schema(Some(100)).finish()?;
