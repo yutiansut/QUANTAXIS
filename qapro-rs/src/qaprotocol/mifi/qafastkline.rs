@@ -137,10 +137,10 @@ impl QAKlineBase {
             self.init_data(data.clone());
         }
         let new_price = data["close"].as_f64().unwrap();
-        if (self.high < new_price) {
+        if self.high < new_price {
             self.high = new_price;
         }
-        if (self.low > new_price) {
+        if self.low > new_price {
             self.low = new_price;
         }
         self.close = new_price;
@@ -267,10 +267,10 @@ impl QAKlineBase {
     }
 
     pub fn update_from_bar(&mut self, data: BAR) {
-        if (self.high < data.high) {
+        if self.high < data.high {
             self.high = data.high;
         }
-        if (self.low > data.low) {
+        if self.low > data.low {
             self.low = data.low;
         }
         self.close = data.close;

@@ -1,8 +1,8 @@
 use crate::qaruntime::base::Instruct;
 use crate::qaruntime::qamanagers::monitor_manager::MonitorManager;
 
-use actix::prelude::*;
-use actix::{Actor, Addr, Context, Handler, Recipient};
+
+use actix::{Actor, Addr, Context};
 use amiquip::{
     Channel, Connection, ConsumerMessage, ConsumerOptions, Exchange, ExchangeDeclareOptions,
     ExchangeType, FieldTable, Publish, QueueDeclareOptions, Result,
