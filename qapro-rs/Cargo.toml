@@ -86,7 +86,7 @@ evalexpr = "6.6.0"
 [dependencies.polars]
 #version = "0.18.0"
 git = "https://github.com/yutiansut/polars.git"
-rev = "16ab34c5d2d1015354577aa473103b1acb5989a8"
+rev = "6f8737d2a19c9ca409a7378269e1c75f96bc3fc4"
 features = [
     "zip_with",
     "strings",
@@ -123,7 +123,7 @@ features = [
     "diagonal_concat",
     "abs",
     "parquet",
-    "simd",
+
     "ewma",
     "dynamic_groupby",
     "horizontal_concat",
@@ -131,6 +131,7 @@ features = [
     "sort_multiple",
     "dtype-full",
     "groupby_list",
+    "simd",
     "avx512",
     "pivot",
     "pct_change"
