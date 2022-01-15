@@ -163,5 +163,5 @@ async fn main() {
     }
 
     println!("calc get row time {:#?}", sw.elapsed());
-    acc.to_csv("".to_string());
+    let _  = acc.to_csv("".to_string()).unwrap();
 }
