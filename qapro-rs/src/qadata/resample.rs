@@ -3,7 +3,7 @@ use crate::qaprotocol::mifi::qafastkline::QAKlineBase;
 use crate::qaprotocol::qifi::account::QIFI;
 use chrono::format::ParseError;
 use chrono::{DateTime, FixedOffset, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Utc};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 #[derive(Debug, Clone)]
 pub struct QARealtimeResampler {

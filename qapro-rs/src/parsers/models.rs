@@ -39,7 +39,7 @@ impl fmt::Display for Array {
         for atom in self.data.iter() {
             writeln!(f, "  {},", atom);
         }
-        writeln!(f, ">>");
+        writeln!(f, ">>")?;
         Ok(())
     }
 }

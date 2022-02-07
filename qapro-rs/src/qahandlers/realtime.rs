@@ -4,10 +4,10 @@ use crate::qahandlers::websocket::{WSMessage, WebsocketHandler};
 use actix::prelude::*;
 use actix_redis::RedisActor;
 use chrono::{Local, Timelike};
-use log::{error, info, warn};
+use log::{ warn};
 use rand::rngs::StdRng;
 use rand::SeedableRng;
-use reqwest;
+
 use std::collections::{HashMap, HashSet};
 use std::time::Duration;
 

@@ -137,6 +137,7 @@ features = [
   "string_encoding",
   "product",
   "ndarray",
+  "parquet"
 ]
 
 [dependencies.clickhouse-rs]
