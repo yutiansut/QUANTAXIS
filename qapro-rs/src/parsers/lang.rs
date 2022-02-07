@@ -3,7 +3,7 @@ use std::str::FromStr;
 use parse_display::{Display, FromStr};
 
 
-use polars::prelude::CsvReader;
+
 
 use polars::prelude::*;
 

@@ -56,9 +56,9 @@ async fn main() {
     // 初始化 Monitor管理
     let morm_addr = MonitorManager::new(count).await.start();
 
-    let mut cash_map: HashMap<String, f64> =
+    let cash_map: HashMap<String, f64> =
         serde_json::from_str(&format!(r#"{}"#, CONFIG.accsetup.cash_map)).unwrap();
-    let backtest_start = get_n_day_before_date9(20);
+    let _backtest_start = get_n_day_before_date9(20);
 
     let mut all_hisdata: HashMap<String, Vec<QAKlineBase>> = HashMap::new();
     for code in codes.iter() {
@@ -130,6 +130,6 @@ async fn main() {
     println!("all histdata is cleaned");
     // system.run();
 
-    let (tx, rx) = futures::channel::oneshot::channel::<()>();
-    rx.await;
+    let (_tx, rx) = futures::channel::oneshot::channel::<()>();
+    rx.await.unwrap();
 }
