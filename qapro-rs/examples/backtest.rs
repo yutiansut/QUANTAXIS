@@ -26,7 +26,7 @@ async fn main() {
     sw.restart();
     let rank4 = qfq
         .data
-        .sort("date", false)
+        .sort(["date"], false)
         .unwrap()
         .lazy()
         .groupby([col("order_book_id")])

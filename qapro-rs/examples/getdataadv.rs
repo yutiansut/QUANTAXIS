@@ -44,14 +44,14 @@ async fn main() {
 
     println!(
         "groupby test {:#?}",
-        data.data.groupby("date").unwrap().select("close").mean()
+        data.data.groupby(["date"]).unwrap().select(["close"]).mean()
     );
     println!(
         "groupby test {:#?}",
         data.data
-            .groupby("order_book_id")
+            .groupby(["order_book_id"])
             .unwrap()
-            .select("close")
+            .select(["close"])
             .mean()
     );
 
