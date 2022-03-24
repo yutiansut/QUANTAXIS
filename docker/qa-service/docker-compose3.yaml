@@ -26,9 +26,6 @@ services:
     qaweb_run:
         image: daocloud.io/quantaxis/qarun:latest
         container_name: qarun
-        depends_on:
-            - mgdb
-            - qaeventmq
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.4
