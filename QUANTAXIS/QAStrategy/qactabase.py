@@ -19,6 +19,7 @@ from QUANTAXIS.QAPubSub.producer import publisher_routing, publisher_topic
 import QUANTAXIS as QA
 from QUANTAXIS.QAStrategy.util import QA_data_futuremin_resample
 from QUANTAXIS.QIFI.QifiAccount import ORDER_DIRECTION, QIFI_Account
+from QUANTAXIS.QAMarket.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, RUNNING_ENVIRONMENT
 
@@ -62,7 +63,7 @@ class QAStrategyCtaBase():
 
         self.running_time = ''
 
-        self.market_preset = QA.QAARP.MARKET_PRESET()
+        self.market_preset = MARKET_PRESET()
         self._market_data = []
         self.risk_check_gap = risk_check_gap
         self.latest_price = {}

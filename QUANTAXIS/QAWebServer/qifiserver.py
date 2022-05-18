@@ -5,7 +5,7 @@ from QUANTAXIS.QAUtil import QA_util_to_json_from_pandas
 from QUANTAXIS.QIFI.QifiManager import QA_QIFIMANAGER, QA_QIFISMANAGER
 class QAQIFI_Handler(QABaseHandler):
     #manager = QA_QIFIMANAGER(mongo_ip)
-    manager = QA_QIFISMANAGER(mongo_ip,model='REALTIME')
+    manager = QA_QIFISMANAGER(mongo_ip,model='BACKTEST')
 
     def get(self):
         action = self.get_argument('action', 'acchistory')
@@ -98,6 +98,43 @@ class QAQIFI_Handler(QABaseHandler):
 
 
 class QAQIFIS_Handler(QABaseHandler):
+    #manager = QA_QIFIMANAGER(mongo_ip)
+    manager = QA_QIFISMANAGER(mongo_ip,model='BACKTEST')
+
+    def get(self):
+        action = self.get_argument('action', 'acchistory')
+
+        if action == 'accountlist':
+            res = self.manager.get_allaccountname()
+            self.write({'res': res})
+        elif action == 'portfoliolist':
+            res = self.manager.get_allportfolio()
+            self.write({'res': res})
+        elif action == 'accountinportfolio':
+            portfolio = self.get_argument('portfolio', 't12')
+            res = self.manager.get_portfolio_panel(portfolio)
+
+            self.write({'res': QA_util_to_json_from_pandas(res)})
+
+    def post(self):
+        action = self.get_argument('action', 'change_name')
+        if action == 'drop_account':
+
+            account_cookie = self.get_argument('account_cookie')
+            res = self.manager.drop_account(account_cookie)
+            self.write({
+                'res': res,
+                'status': 200
+            })
+        elif action == 'drop_many':
+            account_cookies = self.get_argument('account_cookies')
+            res = self.manager.drop_many(account_cookies)
+            self.write({
+                'res': res,
+                'status': 200
+            })
+
+class QAQIFIS_REALTIME_Handler(QABaseHandler):
     #manager = QA_QIFIMANAGER(mongo_ip)
     manager = QA_QIFISMANAGER(mongo_ip,model='REALTIME')
 
