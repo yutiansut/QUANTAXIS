@@ -171,9 +171,10 @@ class QA_QIFISMANAGER():
 
     def get_portfolio_panel(self, portfolio) -> pd.DataFrame:
         r = self.get_portfolio_account(portfolio)
+        
         rp = [self.database.find_one({'account_cookie': i}, {
                                      "accounts": 1, 'trading_day': 1, '_id': 0}) for i in r]
-        return pd.DataFrame([mergex(i['accounts'], {'trading_day': i['trading_day']}) for i in rp])
+        return pd.DataFrame([mergex(i['accounts'], {'trading_day': i['trading_day']}) for i in rp]).query('user_id in {}'.format(r))
 
     def get_allaccountname(self) -> list:
         return list(set([i['account_cookie'] for i in self.database.find({}, {'account_cookie': 1, '_id': 0})]))

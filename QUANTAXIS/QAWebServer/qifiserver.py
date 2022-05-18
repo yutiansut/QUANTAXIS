@@ -5,7 +5,7 @@ from QUANTAXIS.QAUtil import QA_util_to_json_from_pandas
 from QUANTAXIS.QIFI.QifiManager import QA_QIFIMANAGER, QA_QIFISMANAGER
 class QAQIFI_Handler(QABaseHandler):
     #manager = QA_QIFIMANAGER(mongo_ip)
-    manager = QA_QIFISMANAGER(mongo_ip)
+    manager = QA_QIFISMANAGER(mongo_ip,model='REALTIME')
 
     def get(self):
         action = self.get_argument('action', 'acchistory')
@@ -99,7 +99,7 @@ class QAQIFI_Handler(QABaseHandler):
 
 class QAQIFIS_Handler(QABaseHandler):
     #manager = QA_QIFIMANAGER(mongo_ip)
-    manager = QA_QIFISMANAGER(mongo_ip)
+    manager = QA_QIFISMANAGER(mongo_ip,model='REALTIME')
 
     def get(self):
         action = self.get_argument('action', 'acchistory')
