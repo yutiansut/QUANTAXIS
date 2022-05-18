@@ -18,11 +18,11 @@ from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, RUNNING_ENVIRONMENT, ORDER_DIRECTION
 from QAPUBSUB.consumer import subscriber_topic,  subscriber_routing
 from QAPUBSUB.producer import publisher_routing
-from QUANTAXIS.QAStrategy.qactabase import QAStrategyCTABase
+from QUANTAXIS.QAStrategy.qactabase import QAStrategyCtaBase
 from QUANTAXIS.QIFI.QifiAccount import QIFI_Account
 
 
-class QAStrategyStockBase(QAStrategyCTABase):
+class QAStrategyStockBase(QAStrategyCtaBase):
 
     def __init__(self, code=['000001'], frequence='1min', strategy_id='QA_STRATEGY', risk_check_gap=1, portfolio='default',
                  start='2019-01-01', end='2019-10-21', send_wx=False, market_type='stock_cn',
@@ -141,16 +141,16 @@ class QAStrategyStockBase(QAStrategyCTABase):
 
     def debug(self):
         self.running_mode = 'backtest'
-        self.database = pymongo.MongoClient(mongo_ip).QUANTAXIS
-        user = QA_User(username="admin", password='admin')
-        port = user.new_portfolio(self.portfolio)
-        self.acc = port.new_accountpro(
-            account_cookie=self.strategy_id, init_cash=self.init_cash, market_type=self.market_type, frequence= self.frequence)
-        #self.positions = self.acc.get_position(self.code)
+        # self.database = pymongo.MongoClient(mongo_ip).QUANTAXIS
+        # user = QA_User(username="admin", password='admin')
+        # port = user.new_portfolio(self.portfolio)
+        # self.acc = port.new_accountpro(
+        #     account_cookie=self.strategy_id, init_cash=self.init_cash, market_type=self.market_type, frequence= self.frequence)
+        # #self.positions = self.acc.get_position(self.code)
 
-        print(self.acc)
+        # print(self.acc)
 
-        print(self.acc.market_type)
+        # print(self.acc.market_type)
         data = QA.QA_quotation(self.code, self.start, self.end, source=QA.DATASOURCE.MONGO,
                                frequence=self.frequence, market=self.market_type, output=QA.OUTPUT_FORMAT.DATASTRUCT)
 
