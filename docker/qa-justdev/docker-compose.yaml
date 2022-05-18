@@ -28,12 +28,9 @@ services:
                 ipv4_address: 172.19.3.5
         restart: always
 
-        restart: always
-
-
     qaredis:
         image: daocloud.io/quantaxis/qaredis:latest
-        ports: 
+        ports:
             - "6379:6379"
         environment:
             - TZ=Asia/Shanghai
