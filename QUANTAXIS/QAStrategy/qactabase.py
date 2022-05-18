@@ -232,14 +232,14 @@ class QAStrategyCtaBase():
 
     def debug_t0(self):
         self.running_mode = 'backtest'
-        self.database = pymongo.MongoClient(mongo_ip).QUANTAXIS
-        user = QA_User(username=self.username, password=self.password)
-        port = user.new_portfolio(self.portfolio)
-        self.acc = port.new_accountpro(
-            account_cookie=self.strategy_id, init_cash=self.init_cash, init_hold={
-                self.code: 100000},
-            market_type=self.market_type, running_environment=RUNNING_ENVIRONMENT.TZERO)
-        self.positions = self.acc.get_position(self.code)
+        # self.database = pymongo.MongoClient(mongo_ip).QUANTAXIS
+        # user = QA_User(username=self.username, password=self.password)
+        # port = user.new_portfolio(self.portfolio)
+        # self.acc = port.new_accountpro(
+        #     account_cookie=self.strategy_id, init_cash=self.init_cash, init_hold={
+        #         self.code: 100000},
+        #     market_type=self.market_type, running_environment=RUNNING_ENVIRONMENT.TZERO)
+        # self.positions = self.acc.get_position(self.code)
         data = QA.QA_quotation(self.code.upper(), self.start, self.end, source=QA.DATASOURCE.MONGO,
                                frequence=self.frequence, market=self.market_type, output=QA.OUTPUT_FORMAT.DATASTRUCT)
 
