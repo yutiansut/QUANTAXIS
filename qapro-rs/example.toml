@@ -1,0 +1,61 @@
+[account]
+uri = "mongodb://127.0.0.1:27017"
+db = "quantaxis"
+
+[hisdata]
+uri = "mongodb://127.0.0.1:27017"
+db = "quantaxis"
+
+[realtime]
+uri = "amqp://admin:admin@127.0.0.1:5672/"
+exchange="CTPX"
+
+[order]
+uri = "amqp://admin:admin@127.0.0.1:5672/"
+exchange="QASTRATEGY"
+
+[instruct]
+uri = "amqp://admin:admin@127.0.0.1:5672/"
+exchange="INSTRUCT"
+routing_key="test"
+
+[ack]
+uri = "amqp://admin:admin@127.0.0.1:5672/"
+exchange="INSTRUCT_ACK"
+
+[redis]
+uri = "127.0.0.1:6379"
+db = 0
+[accsetup]
+cash_map = '{}'
+multiply = 1.0
+default = 100000.0
+symbol="QUANTAXIS"
+
+[backtest]
+start = "2020-01-01"
+
+[cli]
+name = [ "t00"]
+codes = ["300002.XSHE", "600010.XSHG"]
+freqs = ["5min", "15min", "30min"]
+params = 'default'
+
+
+[clickhouse]
+uri = "tcp://default@127.0.0.1:9000?compression=lz4&ping_timeout=42ms"
+
+
+[common]
+addr ="127.0.0.1:5000"
+log_level="info"
+key="000000000"
+qifi_gap=3
+
+[DataPath]
+# cache目录必须带/  或者\
+# /media/data/cache/ linux&mac
+#
+cache = "/media/data/cache/"
+cachestart = "2019-01-01"
+cacheend = "2021-12-25"

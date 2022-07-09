@@ -146,10 +146,15 @@ class QA_QIFISMANAGER():
 
     """
 
-    def __init__(self, mongo_ip=mongo_ip, account_cookie=''):
-        self.database = pymongo.MongoClient(mongo_ip).quantaxis.history
-        self.database.create_index([("account_cookie", pymongo.ASCENDING),
-                                    ("trading_day", pymongo.ASCENDING)], unique=True)
+    def __init__(self, mongo_ip=mongo_ip, account_cookie='', model='BACKTEST'):
+
+        if model =='REALTIME':
+            self.database = pymongo.MongoClient(mongo_ip).QAREALTIME.account
+        else:
+
+            self.database = pymongo.MongoClient(mongo_ip).quantaxis.history
+            self.database.create_index([("account_cookie", pymongo.ASCENDING),
+                                        ("trading_day", pymongo.ASCENDING)], unique=True)
 
     def promise_list(self, value) -> list:
         return value if isinstance(value, list) else [value]
@@ -166,9 +171,10 @@ class QA_QIFISMANAGER():
 
     def get_portfolio_panel(self, portfolio) -> pd.DataFrame:
         r = self.get_portfolio_account(portfolio)
+        
         rp = [self.database.find_one({'account_cookie': i}, {
                                      "accounts": 1, 'trading_day': 1, '_id': 0}) for i in r]
-        return pd.DataFrame([mergex(i['accounts'], {'trading_day': i['trading_day']}) for i in rp])
+        return pd.DataFrame([mergex(i['accounts'], {'trading_day': i['trading_day']}) for i in rp]).query('user_id in {}'.format(r))
 
     def get_allaccountname(self) -> list:
         return list(set([i['account_cookie'] for i in self.database.find({}, {'account_cookie': 1, '_id': 0})]))
@@ -211,6 +217,18 @@ class QA_QIFISMANAGER():
         res = res.assign(account_cookie=res['user_id'], code=res['instrument_id'], tradetime=res['trade_date_time'].apply(
             lambda x:  datetime.datetime.fromtimestamp(x/1000000000))).set_index(['tradetime', 'code']).sort_index()
         return res.drop_duplicates().sort_index()
+
+    def get_historyorders(self, account_cookie):
+        b = [item['orders'].values() for item in self.database.find(
+            {'account_cookie': account_cookie}, {'_id': 0, 'orders': 1, 'trading_day': 1})]
+        i = []
+        for ix in b:
+            i.extend(list(ix))
+        res = pd.DataFrame(i)
+        res = res.assign(account_cookie=res['user_id'], code=res['instrument_id'], ordertime=res['insert_date_time'].apply(
+            lambda x:  datetime.datetime.fromtimestamp(x/1000000000))).set_index(['ordertime', 'code']).sort_index()
+        return res.drop_duplicates().sort_index()
+
 
     def rankstrategy(self, code):
         res = pd.concat([self.get_historyassets(i) for i in code], axis=1)

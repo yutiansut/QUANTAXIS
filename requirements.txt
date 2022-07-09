@@ -1,4 +1,4 @@
-pymongo>=3.10
+pymongo==3.11.2
 bs4
 pandas>=1.1.5
 lxml
@@ -10,7 +10,7 @@ gevent-websocket>=0.10.1
 apscheduler>=3.3.1
 zenlog
 protobuf>=3.4.0
-motor>=1.1
+motor==2.2
 retrying
 seaborn>=0.11.1
 attrs>=17.4.0
@@ -21,6 +21,7 @@ pyecharts_snapshot
 async_timeout
 IPython
 numba
+tushare
 websocket-client
 statsmodels>=0.12.1
 scipy
@@ -36,5 +37,8 @@ tornado>=6.1
 qaenv>=0.0.4
 lz4
 clickhouse-driver
+clickhouse-cityhash
 alphalens
 qanotify
+
+pyarrow>=6.0.1

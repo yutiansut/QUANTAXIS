@@ -31,7 +31,7 @@
 
 import datetime
 
-import numpy as np
+import os
 import pandas as pd
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
@@ -63,7 +63,7 @@ def init_fetcher():
 
 def ping(ip, port=7709, type_='stock'):
     api = TdxHq_API()
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     __time1 = datetime.datetime.now()
     try:
         if type_ in ['stock']:
@@ -709,7 +709,7 @@ def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
                 j
                 in range(2)], axis=0, sort=False)
         # data.code = data.code.apply(int)
-
+        data = data.drop_duplicates()
         data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
                 ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
@@ -764,6 +764,7 @@ def QA_fetch_get_index_list(ip=None, port=None):
                 range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
                 j
                 in range(2)], axis=0, sort=False)
+        data = data.drop_duplicates()
         data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
                 ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
@@ -793,6 +794,7 @@ def QA_fetch_get_bond_list(ip=None, port=None):
                 j
                 in range(2)], axis=0, sort=False)
         # data.code = data.code.apply(int)
+        data = data.drop_duplicates()
         data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
                 ['code', 'sse'], drop=False)
         sz = data.query('sse=="sz"')
@@ -1305,106 +1307,135 @@ def QA_fetch_get_stock_block(ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     api = TdxHq_API()
     with api.connect(ip, port):
+        data = pd.concat([
+            api.to_df(api.get_and_parse_block_info("block.dat"   )).assign(type="yb"),
+            api.to_df(api.get_and_parse_block_info("block_fg.dat")).assign(type="fg"),
+            api.to_df(api.get_and_parse_block_info("block_gn.dat")).assign(type="gn"),
+            api.to_df(api.get_and_parse_block_info("block_zs.dat")).assign(type="zs"),
+            api.to_df(api.get_and_parse_block_info("hkblock.dat" )).assign(type="hk"),
+            api.to_df(api.get_and_parse_block_info("jjblock.dat" )).assign(type="jj"),
+            # api.to_df(api.get_and_parse_block_info("mgblock.dat" )).assign(type="mg"),
+            # api.to_df(api.get_and_parse_block_info("sbblock.dat" )).assign(type="sb"),
+            # api.to_df(api.get_and_parse_block_info("spblock.dat" )).assign(type="sp"),
+            # api.to_df(api.get_and_parse_block_info("ukblock.dat" )).assign(type="uk"),
+        ], sort=False)
+        incon_content = api.get_block_dat_ver_up("incon.dat").decode("GB18030")# tdx industry file 行业代码名字对照表文件, 有#号分段
 
-        data = pd.concat([api.to_df(
-            api.get_and_parse_block_info("block_gn.dat")).assign(type='gn'),
-            api.to_df(api.get_and_parse_block_info(
-                "block.dat")).assign(type='yb'),
-            api.to_df(api.get_and_parse_block_info(
-                "block_zs.dat")).assign(type='zs'),
-            api.to_df(api.get_and_parse_block_info(
-                "block_fg.dat")).assign(type='fg')], sort=False)
+    if incon_content and len(incon_content) > 100:
+        incon_block_info = _parse_block_name_info(incon_content)
+    else:
+        incon_block_info = None # 如果api未能获得 incon.dat, 设置为None 则从zhb.zip文件中解压获得
 
-    df = QA_fetch_get_tdx_industry()
+    df = QA_fetch_get_tdx_industry(incon_block_info=incon_block_info)
     if len(data) > 10:
-        data = data.assign(source='tdx').drop(['block_type', 'code_index'],
-                                              axis=1).set_index('code',
-                                                                drop=False,
-                                                                inplace=False).drop_duplicates()
-        if len(df):
-            df.set_index('code', drop=False, inplace=True)
-            data = data.append(
-                    df[['code', 'tdxnhy']].rename({'tdxnhy': 'blockname'}, axis=1).assign(type='tdxhy').append(
-                        df[['code', 'swhy']].rename({'swhy': 'blockname'}, axis=1).assign(type='swhy')
-                        ).assign(source='tdx')
-                    )
+        data = data.assign(source='tdx').\
+            drop(['block_type', 'code_index'], axis=1).\
+            set_index('code', drop=False, inplace=False).\
+            drop_duplicates()
+        if len(df) > 1:
+            data = data.append( df[['code', 'blockname', 'type']].assign(source='tdx') )
         return data
     else:
         QA_util_log_info('Wrong with fetch block ')
 
+def _parse_block_name_info(incon_content:str):
+    incon_content = incon_content.splitlines()
+    incon_dict = []
+    section = "Unknown"
+    for i in incon_content:
+        if len(i) <= 0: continue
+        if i[0] == '#' and i[1] != '#':
+            section = i[1:].strip("\n ")
+        elif i[1] != '#':
+            item = i.strip('\n ').split('|')
+            incon_dict.append({'hycode':item[0], 'blockname': item[-1], 'type': section } )
 
-def QA_fetch_get_tdx_industry() -> pd.DataFrame:
+    incon = pd.DataFrame(incon_dict)
+    return incon
+
+def _download_tdx_file(withZHB:bool = True) -> str:
     import random
     import tempfile
     import shutil
-    import os
     from urllib.request import urlopen
 
-    def download_tdx_file() -> str:
-        url = 'http://www.tdx.com.cn/products/data/data/dbf/base.zip'
-        tmpdir_root = tempfile.gettempdir()
-        subdir_name = 'tdx_' + str(random.randint(0, 1000000))
-        tmpdir = os.path.join(tmpdir_root, subdir_name)
-        shutil.rmtree(tmpdir, ignore_errors=True)
-        os.makedirs(tmpdir)
+    urls = [
+        'http://www.tdx.com.cn/products/data/data/dbf/base.zip',
+        'http://www.tdx.com.cn/products/data/data/dbf/gbbq.zip', # 如果从pytdx获取不到 incon.dat, 可以从本文件中再解压zhb.zip获得
+    ]
+    tmpdir_root = tempfile.gettempdir()
+    subdir_name = 'tdx_' + str(random.randint(0, 1000000))
+    tmpdir = os.path.join(tmpdir_root, subdir_name)
+    shutil.rmtree(tmpdir, ignore_errors=True)
+    os.makedirs(tmpdir)
+    zhb = os.path.join(tmpdir, "zhb.zip")
 
-        try:
-            file = tmpdir + '/' + 'base.zip'
+    try:
+        for url in urls if withZHB else urls[:-1]:
+            file = tmpdir + '/' + 'tmp.zip'
             f = urlopen(url)
             data = f.read()
             with open(file, 'wb') as code:
                 code.write(data)
             f.close()
             shutil.unpack_archive(file, extract_dir=tmpdir)
+            if os.path.exists(zhb):
+                shutil.unpack_archive(zhb, extract_dir=tmpdir)
             os.remove(file)
-        except:
-            pass
-        return tmpdir
+    except Exception as e:
+        # todo: add more exception rule
+        pass
+    return tmpdir
 
-    def read_industry(folder:str) -> pd.DataFrame:
-        incon = folder + '/incon.dat' # tdx industry file
-        hy = folder + '/tdxhy.cfg' # tdx stock file
+def _read_industry(folder: str) -> pd.DataFrame:
+    fhy: str = folder + '/tdxhy.cfg'  # tdx industry file 行业分类
+    with open(fhy, encoding='GB18030', mode='r') as f:
+        hy = f.readlines()
+    hy = [line.replace('\n', '') for line in hy]
+    hy = pd.DataFrame(line.split('|') for line in hy)
+    # filter codes
+    hy = hy[~hy[1].str.startswith('9')]
+    hy = hy[~hy[1].str.startswith('2')]
 
-        # tdx industry file
-        with open(incon, encoding='GB18030', mode='r') as f:
-            incon = f.readlines()
-        incon_dict = {}
-        for i in incon:
-            if i[0] == '#' and i[1] != '#':
-                j = i.replace('\n', '').replace('#', '')
-                incon_dict[j] = []
-            else:
-                if i[1] != '#':
-                    incon_dict[j].append(i.replace('\n', '').split(' ')[0].split('|'))
-
-        incon = pd.concat([pd.DataFrame.from_dict(v).assign(type=k) for k,v in incon_dict.items()]) \
-            .rename({0: 'code', 1: 'name'}, axis=1).reset_index(drop=True)
-
-        with open(hy, encoding='GB18030', mode='r') as f:
-            hy = f.readlines()
-        hy = [line.replace('\n', '') for line in hy]
-        hy = pd.DataFrame(line.split('|') for line in hy)
-        # filter codes
-        hy = hy[~hy[1].str.startswith('9')]
-        hy = hy[~hy[1].str.startswith('2')]
-
-        hy1 = hy[[1, 2]].set_index(2).join(incon.set_index('code')).set_index(1)[['name', 'type']]
-        hy2 = hy[[1, 3]].set_index(3).join(incon.set_index('code')).set_index(1)[['name', 'type']]
-        # join tdxhy and swhy
-        df = hy.set_index(1) \
-            .join(hy1.rename({'name': hy1.dropna()['type'].values[0], 'type': hy1.dropna()['type'].values[0]+'_type'}, axis=1)) \
-            .join(hy2.rename({'name': hy2.dropna()['type'].values[0], 'type': hy2.dropna()['type'].values[0]+'_type'}, axis=1)).reset_index()
-
-        df.rename({0: 'sse', 1: 'code', 2: 'TDX_code', 3: 'SW_code'}, axis=1, inplace=True)
-        df = df[[i for i in df.columns if not isinstance(i, int) and  '_type' not in str(i)]]
-        df.columns = [i.lower() for i in df.columns]
-
-        shutil.rmtree(folder, ignore_errors=True)
-        return df
-
-    folder = download_tdx_file()
-    df = read_industry(folder)
+    df = hy.rename({0: 'sse', 1: 'code', 2: 'tdx_code', 3: 'sw_code', 5: 'tdxrshy_code'}, axis=1). \
+        reset_index(drop=True). \
+        melt(id_vars=('sse', 'code'), value_name='hycode')
     return df
+
+def QA_fetch_get_tdx_industry(data_dir=None, incon_block_info=None):
+    # type: (str, pd.DataFrame) -> pd.DataFrame
+    # folder 参数允许从 通达信软件的目录中获取板块和行业数据文件, 通常是安装目录下的T0002\hq_cache
+    # incon_block_info 参数允许传入行业代码对照表的Dataframe
+    import shutil
+    try:
+        folder = data_dir
+        # folder = 'D:\\softs\\zd_zszq\\T0002\\hq_cache'  # todo: for test only, removable
+        if not folder:
+            folder = _download_tdx_file(False if isinstance(incon_block_info, pd.DataFrame) else True)
+        if not isinstance(incon_block_info, pd.DataFrame):
+            incon_path = os.path.join(folder, "incon.dat")
+            if not os.path.exists(incon_path):
+                zhb = os.path.join(folder, "zhb.zip")
+                if os.path.exists(zhb):
+                    shutil.unpack_archive(zhb, extract_dir=folder)
+            with open(incon_path, encoding='GB18030', mode='r') as f:
+                incon_content = f.read()
+
+            incon_block_info = _parse_block_name_info(incon_content)
+
+        df = _read_industry(folder).merge(incon_block_info, on='hycode')
+        df.set_index('code', drop=False, inplace=True)
+    except Exception as e:
+        print(e)
+        raise e
+    finally:
+        pass
+        # todo: remove above line and uncomment below
+        if not data_dir:
+            shutil.rmtree(folder, ignore_errors=True)
+
+    return df
+
 
 
 """
@@ -1487,7 +1518,7 @@ extension_market_list = None
 
 def QA_fetch_get_extensionmarket_count(ip=None, port=None):
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     with apix.connect(ip, port):
         global extension_market_info
         extension_market_info = apix.to_df(apix.get_markets())
@@ -1496,7 +1527,7 @@ def QA_fetch_get_extensionmarket_count(ip=None, port=None):
 
 def QA_fetch_get_extensionmarket_info(ip=None, port=None):
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     with apix.connect(ip, port):
         global extension_market_info
         extension_market_info = apix.to_df(apix.get_markets())
@@ -1506,7 +1537,7 @@ def QA_fetch_get_extensionmarket_info(ip=None, port=None):
 def QA_fetch_get_extensionmarket_list(ip=None, port=None):
     '期货代码list'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     with apix.connect(ip, port):
         num = apix.get_instrument_count()
         return pd.concat([apix.to_df(
@@ -2448,7 +2479,7 @@ def QA_fetch_get_future_day(code, start_date, end_date, frequence='day',
                             ip=None, port=None):
     '期货数据 日线'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     start_date = str(start_date)[0:10]
     today_ = datetime.date.today()
     lens = QA_util_get_trade_gap(start_date, today_)
@@ -2494,7 +2525,7 @@ def QA_fetch_get_future_min(code, start, end, frequence='1min', ip=None,
                             port=None):
     '期货数据 分钟线'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     type_ = ''
     start_date = str(start)[0:10]
     today_ = datetime.date.today()
@@ -2584,7 +2615,7 @@ def QA_fetch_get_future_transaction(code, start, end, retry=4, ip=None,
                                     port=None):
     '期货历史成交分笔'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list
@@ -2626,7 +2657,7 @@ def QA_fetch_get_future_transaction(code, start, end, retry=4, ip=None,
 def QA_fetch_get_future_transaction_realtime(code, ip=None, port=None):
     '期货历史成交分笔'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list
@@ -2648,7 +2679,7 @@ def QA_fetch_get_future_transaction_realtime(code, ip=None, port=None):
 def QA_fetch_get_future_realtime(code, ip=None, port=None):
     '期货实时价格'
     ip, port = get_extensionmarket_ip(ip, port)
-    apix = TdxExHq_API()
+    apix = TdxExHq_API(raise_exception=True)
     global extension_market_list
     extension_market_list = QA_fetch_get_extensionmarket_list(
     ) if extension_market_list is None else extension_market_list

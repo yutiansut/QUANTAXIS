@@ -45,7 +45,7 @@ class QAFeatureBacktest():
             self.codelist, self.start, self.end)
         self.closepanel = self.datacenter.closepanel.bfill() ## 向前复权 匹配股票停牌模式 使用复牌后第一个收盘价卖出
         self.account = QIFI_Account(init_cash=init_cash, username='QAFB_{}_{}'.format(self.featurename, uuid4()), broker_name='feature', portfolioname=portfolioname,
-                                    password='1', nodatabase=False, mongo_ip=mongo_ip, model='BACKTEST')
+                                    password='1', nodatabase=False, model='BACKTEST', trade_host=mongo_ip)
         self.tradetable = {}
         self.rolling = rolling
         self.cashpre = init_cash/rolling

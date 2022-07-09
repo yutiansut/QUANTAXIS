@@ -10,7 +10,7 @@ COPY requirements.txt /requirements.txt
 RUN apt install gnupg2  -y
 
 #COPY source.list /etc/apt/sources.list
-RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 3B4FE6ACC0B21F32 40976EAF437D05B5 && apt update &&  apt upgrade -y
+RUN  apt upgrade -y
 RUN apt install libc-bin debconf -y
 RUN apt install locales -fy
 RUN apt install gcc -y --force-yes \

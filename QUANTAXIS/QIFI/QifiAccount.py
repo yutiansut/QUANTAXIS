@@ -74,7 +74,7 @@ class QIFI_Account():
         self.trade_host = trade_host
 
         self.pub_host = ""
-        self.trade_host = ""
+        #self.trade_host = ""
         self.last_updatetime = ""
         self.status = 200
         self._trading_day = ""

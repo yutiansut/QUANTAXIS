@@ -19,6 +19,7 @@ from QUANTAXIS.QAPubSub.producer import publisher_routing, publisher_topic
 import QUANTAXIS as QA
 from QUANTAXIS.QAStrategy.util import QA_data_futuremin_resample
 from QUANTAXIS.QIFI.QifiAccount import ORDER_DIRECTION, QIFI_Account
+from QUANTAXIS.QAMarket.market_preset import MARKET_PRESET
 from QUANTAXIS.QAEngine.QAThreadEngine import QA_Thread
 from QUANTAXIS.QAUtil.QAParameter import MARKET_TYPE, RUNNING_ENVIRONMENT
 
@@ -62,7 +63,7 @@ class QAStrategyCtaBase():
 
         self.running_time = ''
 
-        self.market_preset = QA.QAARP.MARKET_PRESET()
+        self.market_preset = MARKET_PRESET()
         self._market_data = []
         self.risk_check_gap = risk_check_gap
         self.latest_price = {}
@@ -231,14 +232,14 @@ class QAStrategyCtaBase():
 
     def debug_t0(self):
         self.running_mode = 'backtest'
-        self.database = pymongo.MongoClient(mongo_ip).QUANTAXIS
-        user = QA_User(username=self.username, password=self.password)
-        port = user.new_portfolio(self.portfolio)
-        self.acc = port.new_accountpro(
-            account_cookie=self.strategy_id, init_cash=self.init_cash, init_hold={
-                self.code: 100000},
-            market_type=self.market_type, running_environment=RUNNING_ENVIRONMENT.TZERO)
-        self.positions = self.acc.get_position(self.code)
+        # self.database = pymongo.MongoClient(mongo_ip).QUANTAXIS
+        # user = QA_User(username=self.username, password=self.password)
+        # port = user.new_portfolio(self.portfolio)
+        # self.acc = port.new_accountpro(
+        #     account_cookie=self.strategy_id, init_cash=self.init_cash, init_hold={
+        #         self.code: 100000},
+        #     market_type=self.market_type, running_environment=RUNNING_ENVIRONMENT.TZERO)
+        # self.positions = self.acc.get_position(self.code)
         data = QA.QA_quotation(self.code.upper(), self.start, self.end, source=QA.DATASOURCE.MONGO,
                                frequence=self.frequence, market=self.market_type, output=QA.OUTPUT_FORMAT.DATASTRUCT)
 

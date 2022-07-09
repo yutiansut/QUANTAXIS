@@ -49,11 +49,11 @@ class QACKClient():
             for col in ['open', 'high', 'low', 'close']:
                 data[col] = data[col] * data['adj']
 
-                try:
-                    data['high_limit'] = data['high_limit'] * data['adj']
-                    data['low_limit'] = data['high_limit'] * data['adj']
-                except:
-                    pass
+            try:
+                data['high_limit'] = data['high_limit'] * data['adj']
+                data['low_limit'] = data['high_limit'] * data['adj']
+            except:
+                pass
 
         return QA_DataStruct_Stock_min(data.sort_index(), if_fq='qfq')
 
@@ -62,7 +62,7 @@ class QACKClient():
         use open data make ret
         """
         r = data.groupby(level=1).open.apply(
-            lambda x: x.pct_change(5).shift(-5))
+            lambda x: x.pct_change(5).shift(-6))
         r.name = 'ret5'
         return r
 
@@ -150,14 +150,102 @@ class QACKClient():
         for col in ['open', 'high', 'low', 'close']:
             data[col] = data[col] * data['adj']
 
-            try:
-                data['limit_up'] = data['limit_up'] * data['adj']
-                data['limit_down'] = data['limit_down'] * data['adj']
-            except:
-                pass
+        try:
+            data['limit_up'] = data['limit_up'] * data['adj']
+            data['limit_down'] = data['limit_down'] * data['adj']
+        except:
+            pass
 
         return data.sort_index()
 
+    def get_stock_min_qfq_with_fields(self, codelist, start, end, fields):
+        codelist = promise_list(codelist)
+        fields = promise_list(fields)
+        if 'XS' not in codelist[0]:
+            codelist = pd.Series(codelist).apply(
+                lambda x: x+'.XSHE' if x[0] != '6' else x+'.XSHG').tolist()
+        columns_raw = ['datetime', 'order_book_id'].extend(fields)
+
+        res = self.client.query_dataframe("SELECT datetime, order_book_id, {} FROM quantaxis.stock_cn_1min  WHERE ((`datetime` >= '{}')) \
+                         AND (`datetime` <= '{}') AND (`order_book_id` IN ({}))".format(','.join(fields),
+                         start, end, "'{}'".format("','".join(codelist)))).drop_duplicates(['datetime', 'order_book_id'])
+
+
+        u = res.assign(datetime=pd.to_datetime(res.datetime), code=res.order_book_id)
+        u = u.assign(date=u.datetime.apply(lambda x: x.date()))
+        u = u.set_index(['date', 'code'], drop=False)
+        codelist = u.index.levels[1].unique().tolist()
+
+        start = u.index.levels[0][0]
+        end = u.index.levels[0][-1]
+        adjx = self.get_stock_adj(codelist, start, end)
+        if adjx is None:
+            data = u.set_index(['datetime', 'code'])
+        else:
+
+            adjx = adjx.reset_index()
+            adjx = adjx.assign(code=adjx.order_book_id).set_index(
+                ['date', 'code']).adj
+            data = u.join(adjx).set_index(['datetime', 'code']).fillna(1)
+
+            for col in ['open', 'high', 'low', 'close']:
+                if col in fields:
+                    data[col] = data[col] * data['adj']
+
+            try:
+                data['high_limit'] = data['high_limit'] * data['adj']
+                data['low_limit'] = data['high_limit'] * data['adj']
+            except:
+                pass
+
+        return data.loc[:, fields].sort_index()
+
+    def get_stock_day_qfq_with_fields(self, codelist, start, end, fields=None):
+        codelist = promise_list(codelist)
+        fields = promise_list(fields)
+        adjx = self.get_stock_adj(codelist, start, end)
+
+        columns_raw = ['date', 'order_book_id'].extend(fields)
+        print("SELECT date, order_book_id, {} FROM quantaxis.stock_cn_day  WHERE ((`date` >= '{}')) \
+                         AND (`date` <= '{}') AND (`order_book_id` IN ({}))".format(','.join(fields),
+                         start, end, "'{}'".format("','".join(codelist))))
+
+        u = self.execute("SELECT date, order_book_id, {} FROM quantaxis.stock_cn_day  WHERE ((`date` >= '{}')) \
+                         AND (`date` <= '{}') AND (`order_book_id` IN ({}))".format(','.join(fields),
+                         start, end, "'{}'".format("','".join(codelist)))).drop_duplicates(['date', 'order_book_id'])
+
+        u = u.set_index(['date', 'order_book_id'], drop=False).sort_index()
+
+        data = u.join(adjx).set_index(
+            ['date', 'order_book_id']).sort_index().fillna(1)
+
+        for col in ['open', 'high', 'low', 'close']:
+            if col in fields:
+                data[col] = data[col] * data['adj']
+
+        try:
+            data['limit_up'] = data['limit_up'] * data['adj']
+            data['limit_down'] = data['limit_down'] * data['adj']
+        except:
+            pass
+
+        return data.loc[:, fields].sort_index()
+
+    def get_stock_day_date(self, code, start, end):
+        print("SELECT order_book_id, date FROM quantaxis.stock_cn_day  WHERE ((`date` >= '{}'))  AND (`date` <= '{}') AND (`order_book_id` == '{}')".format(start, end, code))
+        u = self.execute("SELECT order_book_id, date FROM quantaxis.stock_cn_day  WHERE ((`date` >= '{}')) \
+                         AND (`date` <= '{}') AND (`order_book_id` == '{}')".format(start, end, code)).drop_duplicates()
+
+        u = u.set_index('order_book_id').sort_values('date')
+        return u
+
+    def get_stock_min_datetime(self, code, start, end):
+
+        u = self.execute("SELECT order_book_id, datetime FROM quantaxis.stock_cn_1min  WHERE ((`datetime` >= '{}')) \
+                         AND (`datetime` <= '{}') AND (`order_book_id` == '{}')".format(start, end, code)).drop_duplicates().set_index('order_book_id').sort_values('datetime')
+        return u
+
+    #def get_stock_day_qfq()
     def get_stock_day_qfq_adv(self, codelist, start, end):
 
         res = self.get_stock_day_qfq(codelist, start, end).reset_index()
@@ -165,6 +253,7 @@ class QACKClient():
 
     def get_stock_min_qfq_adv(self, codelist, start, end):
         return self.to_qfq(self.get_stock_min(codelist, start, end))
+
 
     def get_stock_list(self):
         return self.client.query_dataframe('select * from stock_cn_codelist').query('status=="Active"')
@@ -174,8 +263,11 @@ class QACKClient():
 
     def get_etf_components(self, etf, start, end):
         codelist = promise_list(etf)
+        columns_raw = ['stock_code', 'stock_amount', 'cash_substitute',
+                       'cash_substitute_proportion', 'fixed_cash_substitute', 'order_book_id',
+                       'trading_date']
         return self.client.query_dataframe("SELECT * FROM quantaxis.etf_components  WHERE ((`trading_date` >= '{}')) \
-                                AND (`trading_date` <= '{}') AND (`order_book_id` IN ({}))".format(start, end, "'{}'".format("','".join(codelist)))).loc[:, columns_raw].drop_duplicates(['trading_date', 'order_book_id'])
+                                AND (`trading_date` <= '{}') AND (`order_book_id` IN ({}))".format(start, end, "'{}'".format("','".join(codelist)))).loc[:, columns_raw].drop_duplicates(['stock_code', 'trading_date', 'order_book_id'])
 
     def get_stock_day(self, codelist, start, end):
         codelist = promise_list(codelist)
@@ -193,7 +285,6 @@ class QACKClient():
         if 'XS' not in codelist[0]:
             codelist = pd.Series(codelist).apply(
                 lambda x: x+'.XSHE' if x[0] != '6' else x+'.XSHG').tolist()
-
         columns_raw = ['datetime', 'order_book_id',  'open',
                        'high', 'low', 'close', 'volume', 'total_turnover']
         res = self.client.query_dataframe("SELECT * FROM quantaxis.stock_cn_1min  WHERE ((`datetime` >= '{}')) \

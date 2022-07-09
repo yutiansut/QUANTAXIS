@@ -29,6 +29,7 @@ test/
 docs
 record.txt
 build/
+*/cache/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
@@ -38,7 +39,7 @@ __pycache__/
 *.zip
 # C extensions
 *.so
-
+config.toml
 # Distribution / packaging
 .Python
 env/
@@ -182,3 +183,16 @@ celerybeat*
 /QUANTAXIS/QAAnalysis/QABeyond.py
 /QUANTAXIS/QAAnalysis/QAAnalysis_kline.py
 /QUANTAXIS/.gitignore
+
+
+# latex
+
+*.aux
+*.log
+*.out
+*.pdf
+*.gz
+*.toc
+.synctex(busy)
+*.fdb_latexmk
+*.fls
