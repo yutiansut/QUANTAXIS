@@ -51,9 +51,6 @@ services:
           - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
           - TZ=Asia/Shanghai
         restart: always
-        depends_on:
-          - qaeventmq
-          - mgdb
         command: ['/root/wait_for_it.sh', 'qaeventmq:5672', '--' , "/root/runcelery.sh"]
 
 

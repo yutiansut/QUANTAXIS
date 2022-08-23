@@ -93,7 +93,7 @@ impl QAMongoClient {
 
     pub async fn save_account(&self, mut account: QA_Account) {
         // 实时切片
-        let mut slice: QIFI = account.get_qifi_slice();
+        let slice: QIFI = account.get_qifi_slice();
         self.save_qifi_slice(slice).await;
     }
 
@@ -109,10 +109,10 @@ impl QAMongoClient {
             doc! {"account_cookie": slice.account_cookie},
             v,
             UpdateOptions::builder().upsert(Option::from(true)).build(),
-        );
+        ).unwrap();
     }
 
-    pub async fn save_his_qifi_slice(&self, mut slice: QIFI) {
+    pub async fn save_his_qifi_slice(&self, slice: QIFI) {
         let coll = self
             .client
             .database(CONFIG.account.db.as_str())
@@ -123,7 +123,7 @@ impl QAMongoClient {
             doc! {"account_cookie": slice.account_cookie,"trading_day":trading_day},
             v,
             UpdateOptions::builder().upsert(Option::from(true)).build(),
-        );
+        ).unwrap();
     }
 
     pub async fn save_accounthis(&self, mut account: QA_Account) {
@@ -139,6 +139,6 @@ impl QAMongoClient {
             doc! {"account_cookie": slice.account_cookie,"trading_day":trading_day},
             v,
             UpdateOptions::builder().upsert(Option::from(true)).build(),
-        );
+        ).unwrap();
     }
 }

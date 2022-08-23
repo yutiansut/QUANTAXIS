@@ -51,9 +51,6 @@ services:
           - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
           - TZ=Asia/Shanghai
         restart: always
-        depends_on:
-          - qaeventmq
-          - mgdb
         command: ['/root/wait_for_it.sh', 'qaeventmq:5672', '--' , "/root/runcelery.sh"]
 
 
@@ -116,7 +113,6 @@ services:
             - TZ=Asia/Shanghai
         command:
             ['/root/QATrader/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'qatraderserver']
-
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.9

@@ -1,11 +1,10 @@
-use crate::qahandlers::realtime::{Join, Leave, ListRooms, Realtime, RoomType};
+use crate::qahandlers::realtime::{Join, Leave, Realtime, RoomType};
 use crate::qahandlers::state::Rsp;
 use actix::Addr;
-use actix_redis::RedisActor;
+
 use actix_web::{web, HttpRequest, HttpResponse};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use std::collections::HashMap;
+
 #[derive(Serialize, Clone, Debug, Deserialize)]
 pub struct SubscribeForm {
     pub sid: String,

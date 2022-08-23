@@ -73,11 +73,11 @@ async fn main() {
 
     sw.restart();
     let rank = data_with_factor
-        .groupby("date")
+        .groupby(["date"])
         .unwrap()
-        .apply(|x| Ok(x.sort("factor", true).unwrap().head(Some(40))))
+        .apply(|x| Ok(x.sort(["factor"], true).unwrap().head(Some(40))))
         .unwrap()
-        .sort(&["date", "order_book_id"], false)
+        .sort(["date", "order_book_id"], false)
         .unwrap();
 
     println!("analysis factor_data time {:#?}", sw.elapsed());
@@ -90,7 +90,7 @@ async fn main() {
     sw.restart();
 
     let rank4 = rank
-        .sort("date", false)
+        .sort(["date"], false)
         .unwrap()
         .lazy()
         .groupby([col("order_book_id")])
@@ -163,5 +163,5 @@ async fn main() {
     }
 
     println!("calc get row time {:#?}", sw.elapsed());
-    acc.to_csv("".to_string());
+    let _  = acc.to_csv("vv".to_string()).unwrap();
 }
