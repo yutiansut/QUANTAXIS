@@ -44,7 +44,7 @@ if __name__ == '__main__':
     QA_SU_save_stock_min('tdx')
     QA_SU_save_index_day('tdx')
     QA_SU_save_index_min('tdx')
-    QA_SU_save_etf_day('tdx') 
+    QA_SU_save_etf_day('tdx')
     QA_SU_save_etf_min('tdx')
     QA_SU_save_stock_list('tdx')
     QA_SU_save_stock_block('tdx')
