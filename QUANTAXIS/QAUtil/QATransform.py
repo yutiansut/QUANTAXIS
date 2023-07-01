@@ -32,7 +32,7 @@ import pandas as pd
 def QA_util_to_json_from_pandas(data):
     """
     explanation:
-        将pandas数据转换成json格式		
+        将pandas数据转换成json格式
 
     params:
         * data ->:
@@ -52,9 +52,11 @@ def QA_util_to_json_from_pandas(data):
 
     """需要对于datetime 和date 进行转换, 以免直接被变成了时间戳"""
     if 'datetime' in data.columns:
-        data.datetime = data.datetime.apply(str)
+        # data.datetime = data.datetime.apply(str)
+        data['datetime'] = data['datetime'].astype(str)
     if 'date' in data.columns:
-        data.date = data.date.apply(str)
+        # data.date = data.date.apply(str)
+        data['date'] = data['date'].astype(str)
     return json.loads(data.to_json(orient='records'))
 
 
@@ -69,7 +71,7 @@ def QA_util_to_json_from_list(data):
 def QA_util_to_list_from_pandas(data):
     """
     explanation:
-         将pandas数据转换成列表		
+         将pandas数据转换成列表
 
     params:
         * data ->:
@@ -93,7 +95,7 @@ def QA_util_to_list_from_pandas(data):
 def QA_util_to_list_from_numpy(data):
     """
     explanation:
-        将numpy数据转换为列表		
+        将numpy数据转换为列表
 
     params:
         * data ->:
@@ -117,7 +119,7 @@ def QA_util_to_list_from_numpy(data):
 def QA_util_to_pandas_from_json(data):
     """
     explanation:
-        将json数据载入为pandas数据		
+        将json数据载入为pandas数据
 
     params:
         * data ->:
@@ -143,7 +145,7 @@ def QA_util_to_pandas_from_json(data):
 def QA_util_to_pandas_from_list(data):
     """
     explanation:
-        将列表数据转换为pandas	
+        将列表数据转换为pandas
 
     params:
         * data ->:
