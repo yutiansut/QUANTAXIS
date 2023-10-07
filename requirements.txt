@@ -33,7 +33,7 @@ six>=1.10.0
 pika
 empyrical
 pyfolio
-tornado>=6.1
+tornado>=6.3.2
 qaenv>=0.0.4
 lz4
 clickhouse-driver
