@@ -112,7 +112,7 @@ def format_bitfinex_data_fields(datas, symbol, frequency):
     # dt.tz_localize(None) 是 Stackoverflow 的解决方案，先观察效果
     frame['datetime'] = pd.to_datetime(
         frame['time']
-    ).dt.tz_localize(None).dt.tz_localize('Asia/Shanghai')
+    , utc=False)
     frame['date'] = frame['datetime'].dt.strftime('%Y-%m-%d')
     frame['datetime'] = frame['datetime'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # GMT+0 String 转换为 UTC Timestamp
@@ -120,7 +120,7 @@ def format_bitfinex_data_fields(datas, symbol, frequency):
                                         ).astype(np.int64) // 10**9
     frame['date_stamp'] = pd.to_datetime(
         frame['date']
-    ).dt.tz_localize('Asia/Shanghai').astype(np.int64) // 10**9
+    , utc=False).astype(np.int64) // 10**9
     frame['created_at'] = int(
         time.mktime(datetime.datetime.now().utctimetuple())
     )

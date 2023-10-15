@@ -26,8 +26,8 @@ import threading
 import datetime
 import pandas as pd
 
-from QUANTAXIS.QAARP.market_preset import MARKET_PRESET
-from QUANTAXIS.QAMarket.common import exchange_code
+from QUANTAXIS.QAMarket.market_preset import MARKET_PRESET
+
 from QUANTAXIS.QAUtil import (
     QA_util_log_info,
     QA_util_random_with_topic,
@@ -194,7 +194,7 @@ class QA_Order():
         self.exchange_id = exchange_id
         self.time_condition = 'GFD'                                # 当日有效
         self._status = _status
-        self.exchange_code = exchange_code
+
         self.position_id = position_id
         # 增加订单对于多账户以及多级别账户的支持 2018/11/12
         self.mainacc_id = None if 'mainacc_id' not in kwargs.keys(
@@ -324,8 +324,6 @@ class QA_Order():
 
             return max(commission_fee, 5)
 
-    def get_exchange(self, code):
-        return self.exchange_code.get(code.lower(), 'Unknown')
 
     def create(self):
         """创建订单

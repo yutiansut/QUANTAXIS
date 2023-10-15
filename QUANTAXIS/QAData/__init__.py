@@ -40,6 +40,7 @@ from QUANTAXIS.QAData.data_resample import (
     QA_data_tick_resample_1min,
     QA_data_cryptocurrency_min_resample
 )
+from QUANTAXIS.QAData.paneldatastruct import QAPanelDataStruct
 from QUANTAXIS.QAData.dsmethods import (
     QDS_IndexDayWarpper,
     QDS_IndexMinWarpper,
@@ -67,3 +68,5 @@ from QUANTAXIS.QAData.QADataStruct import (
 from QUANTAXIS.QAData.QAFinancialStruct import QA_DataStruct_Financial
 from QUANTAXIS.QAData.QAIndicatorStruct import QA_DataStruct_Indicators
 from QUANTAXIS.QAData.QASeriesStruct import QA_DataStruct_Series
+
+from QUANTAXIS.QAData.paneldatastruct import QAPanelDataStruct

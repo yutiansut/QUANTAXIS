@@ -172,7 +172,7 @@ def QA_util_find_missing_kline(
                      'date',
                      'datetime']
         ).drop_duplicates()
-        _data['date'] = pd.to_datetime(_data['date'])
+        _data['date'] = pd.to_datetime(_data['date'], utc=False)
         _data = _data.set_index(pd.DatetimeIndex(_data['date']), drop=False)
 
     if (freq != FREQUENCE.DAY):

@@ -34,7 +34,7 @@ from QUANTAXIS.QAUtil.QACache import QA_util_cache
 # config
 from QUANTAXIS.QAUtil.QACfg import QA_util_cfg_initial, QA_util_get_cfg
 # code function
-from QUANTAXIS.QAUtil.QACode import QA_util_code_tolist, QA_util_code_tostr, QA_util_code_adjust_ctp
+from QUANTAXIS.QAUtil.QACode import QA_util_code_tolist, QA_util_code_tostr, QA_util_code_adjust_ctp, QA_util_code_change_format
 # csv
 from QUANTAXIS.QAUtil.QACsv import QA_util_save_csv
 # date
@@ -65,6 +65,7 @@ from QUANTAXIS.QAUtil.QADate_trade import (QA_util_date_gap,
                                            QA_util_get_order_datetime,
                                            QA_util_get_pre_trade_date,
                                            QA_util_get_real_date,
+                                           QA_util_get_real_tradeday,
                                            QA_util_get_real_datelist,
                                            QA_util_get_trade_datetime,
                                            QA_util_get_trade_gap,

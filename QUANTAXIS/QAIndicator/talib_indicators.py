@@ -24,6 +24,7 @@
 
 
 import pandas as pd
+
 try:
     import talib
 except:

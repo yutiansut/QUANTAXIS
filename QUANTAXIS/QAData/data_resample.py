@@ -25,6 +25,7 @@
 from datetime import time
 from QUANTAXIS.QAUtil.QAParameter import EXCHANGE_ID
 import pandas as pd
+from pandas.tseries.frequencies import to_offset
 import numpy as np
 
 
@@ -47,21 +48,38 @@ def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
     for date in sorted(list(_dates)):
         _data = tick.loc[tick.date == date]
         # morning min bar
+        #_data1 = _data[time(9,
+        #                    25):time(11,
+        #                             30)].resample(
+        #                                 type_,
+        #                                 closed='left',
+        #                                 base=30,
+        #                                 loffset=type_
+        #                             ).apply(
+        #                                 {
+        #                                     'price': 'ohlc',
+        #                                     'vol': 'sum',
+        #                                     'code': 'last',
+        #                                     'amount': 'sum'
+        #                                 }
+        #                             )
+        # 适配 pandas 1.0+，避免出现 FutureWarning: 
+        # 'loffset' in .resample() and in Grouper() is deprecated 提示
         _data1 = _data[time(9,
                             25):time(11,
-                                     30)].resample(
-                                         type_,
-                                         closed='left',
-                                         base=30,
-                                         loffset=type_
-                                     ).apply(
-                                         {
-                                             'price': 'ohlc',
-                                             'vol': 'sum',
-                                             'code': 'last',
-                                             'amount': 'sum'
-                                         }
-                                     )
+                                        30)].resample(
+                                            type_,
+                                            closed='left',
+                                            offset="30min",
+                                        ).apply(
+                                            {
+                                                'price': 'ohlc',
+                                                'vol': 'sum',
+                                                'code': 'last',
+                                                'amount': 'sum'
+                                            }
+                                        )
+        _data1.index = _data1.index + to_offset(type_)
         _data1.columns = _data1.columns.droplevel(0)
         # do fix on the first and last bar
         # 某些股票某些日期没有集合竞价信息，譬如 002468 在 2017 年 6 月 5 日的数据
@@ -101,62 +119,78 @@ def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
                                                    26):time(9,
                                                             31),
                                               'amount'].sum()
-        # 通达信分笔数据有的有 11:30 数据，有的没有
-        if len(_data.loc[time(11, 30):time(11, 30)]) > 0:
-            _data1.loc[time(11,
-                            30):time(11,
-                                     30),
-                       'high'] = _data1.loc[time(11,
-                                                 30):time(11,
-                                                          31),
-                                            'high'].max()
-            _data1.loc[time(11,
-                            30):time(11,
-                                     30),
-                       'low'] = _data1.loc[time(11,
-                                                30):time(11,
-                                                         31),
-                                           'low'].min()
-            _data1.loc[time(11,
-                            30):time(11,
-                                     30),
-                       'close'] = _data1.loc[time(11,
-                                                  31):time(11,
-                                                           31),
-                                             'close'].values
-            _data1.loc[time(11,
-                            30):time(11,
-                                     30),
-                       'vol'] = _data1.loc[time(11,
-                                                30):time(11,
-                                                         31),
-                                           'vol'].sum()
-            _data1.loc[time(11,
-                            30):time(11,
-                                     30),
-                       'amount'] = _data1.loc[time(11,
-                                                   30):time(11,
-                                                            31),
-                                              'amount'].sum()
+        ## 通达信分笔数据有的有 11:30 数据，有的没有
+        #if len(_data.loc[time(11, 30):time(11, 30)]) > 0:
+        #    _data1.loc[time(11,
+        #                    30):time(11,
+        #                             30),
+        #               'high'] = _data1.loc[time(11,
+        #                                         30):time(11,
+        #                                                  31),
+        #                                    'high'].max()
+        #    _data1.loc[time(11,
+        #                    30):time(11,
+        #                             30),
+        #               'low'] = _data1.loc[time(11,
+        #                                        30):time(11,
+        #                                                 31),
+        #                                   'low'].min()
+        #    _data1.loc[time(11,
+        #                    30):time(11,
+        #                             30),
+        #               'close'] = _data1.loc[time(11,
+        #                                          31):time(11,
+        #                                                   31),
+        #                                     'close'].values
+        #    _data1.loc[time(11,
+        #                    30):time(11,
+        #                             30),
+        #               'vol'] = _data1.loc[time(11,
+        #                                        30):time(11,
+        #                                                 31),
+        #                                   'vol'].sum()
+        #    _data1.loc[time(11,
+        #                    30):time(11,
+        #                             30),
+        #               'amount'] = _data1.loc[time(11,
+        #                                           30):time(11,
+        #                                                    31),
+        #                                      'amount'].sum()
         _data1 = _data1.loc[time(9, 31):time(11, 30)]
 
         # afternoon min bar
+        #_data2 = _data[time(13,
+        #                    0):time(15,
+        #                            0)].resample(
+        #                                type_,
+        #                                closed='left',
+        #                                base=30,
+        #                                loffset=type_
+        #                            ).apply(
+        #                                {
+        #                                    'price': 'ohlc',
+        #                                    'vol': 'sum',
+        #                                    'code': 'last',
+        #                                    'amount': 'sum'
+        #                                }
+        #                            )
+        # 适配 pandas 1.0+，避免出现 FutureWarning: 
+        # 'loffset' in .resample() and in Grouper() is deprecated 提示
         _data2 = _data[time(13,
                             0):time(15,
                                     0)].resample(
-                                        type_,
-                                        closed='left',
-                                        base=30,
-                                        loffset=type_
-                                    ).apply(
-                                        {
-                                            'price': 'ohlc',
-                                            'vol': 'sum',
-                                            'code': 'last',
-                                            'amount': 'sum'
-                                        }
-                                    )
-
+                                            type_,
+                                            closed='left',
+                                            offset="30min",
+                                        ).apply(
+                                            {
+                                                'price': 'ohlc',
+                                                'vol': 'sum',
+                                                'code': 'last',
+                                                'amount': 'sum'
+                                            }
+                                        )
+        _data2.index = _data2.index + to_offset(type_)
         _data2.columns = _data2.columns.droplevel(0)
         # 沪市股票在 2018-08-20 起，尾盘 3 分钟集合竞价
         if (pd.Timestamp(date) <
@@ -225,14 +259,30 @@ def QA_data_tick_resample(tick, type_='1min'):
 
     for item in _temp:
         _data = tick.loc[str(item)]
+        #_data1 = _data[time(9,
+        #                    31):time(11,
+        #                             30)].resample(
+        #                                 type_,
+        #                                 closed='right',
+        #                                 base=30,
+        #                                 loffset=type_
+        #                             ).apply(
+        #                                 {
+        #                                     'price': 'ohlc',
+        #                                     'vol': 'sum',
+        #                                     'code': 'last',
+        #                                     'amount': 'sum'
+        #                                 }
+        #                             )
+        # 适配 pandas 1.0+，避免出现 FutureWarning: 
+        # 'loffset' in .resample() and in Grouper() is deprecated 提示
         _data1 = _data[time(9,
                             31):time(11,
                                      30)].resample(
                                          type_,
                                          closed='right',
-                                         base=30,
-                                         loffset=type_
-                                     ).apply(
+                                         offset="30min",
+                                        ).apply(
                                          {
                                              'price': 'ohlc',
                                              'vol': 'sum',
@@ -240,13 +290,26 @@ def QA_data_tick_resample(tick, type_='1min'):
                                              'amount': 'sum'
                                          }
                                      )
-
+        _data1.index = _data1.index + to_offset(type_)
+        #_data2 = _data[time(13,
+        #                    1):time(15,
+        #                            0)].resample(
+        #                                type_,
+        #                                closed='right',
+        #                                loffset=type_
+        #                            ).apply(
+        #                                {
+        #                                    'price': 'ohlc',
+        #                                    'vol': 'sum',
+        #                                    'code': 'last',
+        #                                    'amount': 'sum'
+        #                                }
+        #                            )
         _data2 = _data[time(13,
                             1):time(15,
                                     0)].resample(
                                         type_,
                                         closed='right',
-                                        loffset=type_
                                     ).apply(
                                         {
                                             'price': 'ohlc',
@@ -255,7 +318,7 @@ def QA_data_tick_resample(tick, type_='1min'):
                                             'amount': 'sum'
                                         }
                                     )
-
+        _data2.index = _data2.index + to_offset(type_)
         resx = resx.append(_data1).append(_data2)
     resx.columns = resx.columns.droplevel(0)
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
@@ -284,14 +347,30 @@ def QA_data_ctptick_resample(tick, type_='1min'):
 
         _data.volume = _data.volume.diff()
         _data = _data.assign(amount=_data.LastPrice * _data.volume)
+        #_data0 = _data[time(0,
+        #                    0):time(2,
+        #                            30)].resample(
+        #                                type_,
+        #                                closed='right',
+        #                                base=30,
+        #                                loffset=type_
+        #                            ).apply(
+        #                                {
+        #                                    'LastPrice': 'ohlc',
+        #                                    'volume': 'sum',
+        #                                    'code': 'last',
+        #                                    'amount': 'sum'
+        #                                }
+        #                            )
+        # 适配 pandas 1.0+，避免出现 FutureWarning: 
+        # 'loffset' in .resample() and in Grouper() is deprecated 提示
         _data0 = _data[time(0,
                             0):time(2,
                                     30)].resample(
-                                        type_,
-                                        closed='right',
-                                        base=30,
-                                        loffset=type_
-                                    ).apply(
+                                         type_,
+                                         closed='right',
+                                         offset="30min",
+                                        ).apply(
                                         {
                                             'LastPrice': 'ohlc',
                                             'volume': 'sum',
@@ -299,14 +378,28 @@ def QA_data_ctptick_resample(tick, type_='1min'):
                                             'amount': 'sum'
                                         }
                                     )
-
+        _data0.index = _data0.index + to_offset(type_)
+        #_data1 = _data[time(9,
+        #                    0):time(11,
+        #                            30)].resample(
+        #                                type_,
+        #                                closed='right',
+        #                                base=30,
+        #                                loffset=type_
+        #                            ).apply(
+        #                                {
+        #                                    'LastPrice': 'ohlc',
+        #                                    'volume': 'sum',
+        #                                    'code': 'last',
+        #                                    'amount': 'sum'
+        #                                }
+        #                            )
         _data1 = _data[time(9,
                             0):time(11,
                                     30)].resample(
                                         type_,
                                         closed='right',
-                                        base=30,
-                                        loffset=type_
+                                        offset="30min",
                                     ).apply(
                                         {
                                             'LastPrice': 'ohlc',
@@ -315,14 +408,13 @@ def QA_data_ctptick_resample(tick, type_='1min'):
                                             'amount': 'sum'
                                         }
                                     )
-
+        _data1.index = _data1.index + to_offset(type_)
         _data2 = _data[time(13,
                             1):time(15,
                                     0)].resample(
                                         type_,
                                         closed='right',
-                                        base=30,
-                                        loffset=type_
+                                        offset="30min",
                                     ).apply(
                                         {
                                             'LastPrice': 'ohlc',
@@ -331,13 +423,14 @@ def QA_data_ctptick_resample(tick, type_='1min'):
                                             'amount': 'sum'
                                         }
                                     )
+        _data2.index = _data2.index + to_offset(type_)
 
         _data3 = _data[time(21,
                             0):time(23,
                                     59)].resample(
                                         type_,
-                                        closed='left',
-                                        loffset=type_
+                                        closed='right',
+                                        offset="30min",
                                     ).apply(
                                         {
                                             'LastPrice': 'ohlc',
@@ -346,6 +439,7 @@ def QA_data_ctptick_resample(tick, type_='1min'):
                                             'amount': 'sum'
                                         }
                                     )
+        _data3.index = _data3.index + to_offset(type_)
 
         resx = resx.append(_data0).append(_data1).append(_data2).append(_data3)
     resx.columns = resx.columns.droplevel(0)
@@ -387,19 +481,27 @@ def QA_data_min_resample(min_data, type_='5min'):
     min_data = min_data.loc[:, list(CONVERSION.keys())]
     idx = min_data.index
     part_1 = min_data.iloc[idx.indexer_between_time('9:30', '11:30')]
+    #part_1_res = part_1.resample(
+    #    type_,
+    #    offset="30min",
+    #    closed='right',
+    #    loffset=type_,
+    #).apply(CONVERSION)
+    # 适配 pandas 1.0+，避免出现 FutureWarning: 
+    # 'loffset' in .resample() and in Grouper() is deprecated 提示
     part_1_res = part_1.resample(
         type_,
-        base=30,
+        offset="30min",
         closed='right',
-        loffset=type_
     ).apply(CONVERSION)
+    part_1_res.index = part_1_res.index + to_offset(type_)
     part_2 = min_data.iloc[idx.indexer_between_time('13:00', '15:00')]
     part_2_res = part_2.resample(
         type_,
-        base=0,
+        offset="0min",
         closed='right',
-        loffset=type_
     ).agg(CONVERSION)
+    part_2_res.index = part_2_res.index + to_offset(type_)
     part_1_res['type'] = part_2_res['type'] = type_ if (type_ !='1D') else 'day'
     return pd.concat(
         [part_1_res,
@@ -493,7 +595,7 @@ def QA_data_min_to_day(min_data, type_='1D'):
 
     return min_data.reset_index(1).resample(
         type_,
-        base=0,
+        offset="0min",
         closed='right'
     ).agg(CONVERSION).dropna()
 
@@ -561,14 +663,14 @@ def QA_data_futuremin_resample(
         part_1 = min_data.iloc[idx.indexer_between_time('9:30', '11:30')]
         part_1_res = part_1.resample(
             type_,
-            base=30,
+            offset="30min",
             closed='right',
             loffset=type_
         ).apply(CONVERSION)
         part_2 = min_data.iloc[idx.indexer_between_time('13:00', '15:00')]
         part_2_res = part_2.resample(
             type_,
-            base=0,
+            offset="0min",
             closed='right',
             loffset=type_
         ).agg(CONVERSION)
@@ -586,21 +688,21 @@ def QA_data_futuremin_resample(
         )]
         part_1_res = part_1.resample(
             type_,
-            base=0,
+            offset="0min",
             closed='right',
             loffset=type_
         ).apply(CONVERSION)
         part_2 = min_data.iloc[idx.indexer_between_time('13:30', '15:00')]
         part_2_res = part_2.resample(
             type_,
-            base=30,
+            offset="30min",
             closed='right',
             loffset=type_
         ).agg(CONVERSION)
         part_3 = min_data.iloc[idx.indexer_between_time('21:00', '23:59')]
         part_3_res = part_3.resample(
             type_,
-            base=0,
+            offset="0min",
             closed='right',
             loffset=type_
         ).agg(CONVERSION)
@@ -642,7 +744,7 @@ def QA_data_futuremin_resample_tb_kq(
     min_data = min_data.loc[:, list(CONVERSION.keys())]
     return min_data.resample(
         type_,
-        base=0,
+        offest='0min',
         closed='left'
     ).agg(CONVERSION).dropna().sort_index().reset_index().set_index(
         ['datetime',
@@ -678,7 +780,7 @@ def QA_data_futuremin_resample_tb_kq2(
     min_data = min_data.loc[:, list(CONVERSION.keys())]
     return min_data.resample(
         type_,
-        base=0,
+        offest='0min',
         closed='right'
     ).agg(CONVERSION).dropna().sort_index().reset_index().set_index(
         ['datetime',
@@ -733,7 +835,7 @@ def QA_data_futuremin_resample_today(
     (np.nancumsum, "cumsum"),
 
     """
-    return min_data.assign(tradedate=pd.to_datetime(min_data.tradetime.apply(lambda x: x[0:10]))).reset_index().set_index('tradedate').resample(type_).\
+    return min_data.assign(tradedate=pd.to_datetime(min_data.tradetime.apply(lambda x: x[0:10]), utc=False)).reset_index().set_index('tradedate').resample(type_).\
         apply({'code': 'first', 'open': 'first', 'high': 'max',
                'low': 'min', 'close': 'last', 'volume': 'sum'}).dropna()
 
@@ -749,7 +851,7 @@ def QA_data_futuremin_resample_series(
         min_data = min_data.reset_index(1)
         idx = min_data.index
     else:
-        idx = pd.to_datetime(min_data.index)
+        idx = pd.to_datetime(min_data.index, utc=False)
 
     CONVERSION = {
         'open': 'first',
@@ -761,19 +863,21 @@ def QA_data_futuremin_resample_series(
 
     if exchange_id == EXCHANGE_ID.CFFEX:
         part_1 = min_data.iloc[idx.indexer_between_time('9:30', '11:30')]
+        # 适配 pandas 1.0+，避免出现 FutureWarning: 
+        # 'loffset' in .resample() and in Grouper() is deprecated 提示
         part_1_res = part_1.resample(
             type_,
-            base=30,
-            closed='right',
-            loffset=type_
+            offest='30min',
+            closed='right'
         ).apply({key: CONVERSION[key]})
+        part_1_res.index = part_1_res.index + to_offset(type_)
         part_2 = min_data.iloc[idx.indexer_between_time('13:00', '15:00')]
         part_2_res = part_2.resample(
             type_,
-            base=0,
-            closed='right',
-            loffset=type_
+            offest='0min',
+            closed='right'
         ).agg({key: CONVERSION[key]})
+        part_2_res.index = part_2_res.index + to_offset(type_)
         return pd.concat([part_1_res, part_2_res]).dropna().sort_index()
     else:
         part_1 = min_data.iloc[np.append(
@@ -784,17 +888,17 @@ def QA_data_futuremin_resample_series(
         )]
         part_1_res = part_1.resample(
             type_,
-            base=0,
+            offest='0min',
             closed='right',
-            loffset=type_
         ).apply({key: CONVERSION[key]})
+        part_1_res.index = part_1_res.index + to_offset(type_)
         part_2 = min_data.iloc[idx.indexer_between_time('13:30', '15:00')]
         part_2_res = part_2.resample(
             type_,
-            base=30,
+            offest='30min',
             closed='right',
-            loffset=type_
         ).agg({key: CONVERSION[key]})
+        part_2_res.index = part_2_res.index + to_offset(type_)
         return pd.concat([part_1_res, part_2_res]).dropna().sort_index()
 
 
@@ -839,7 +943,7 @@ def QA_data_day_resample(day_data, type_='w'):
     }
 
     data = day_data.resample(type_, closed='right').apply(CONVERSION).dropna()
-    return data.assign(date=pd.to_datetime(data.date)
+    return data.assign(date=pd.to_datetime(data.date, utc=False)
                       ).set_index(['date',
                                    'code'])
 
@@ -885,7 +989,7 @@ def QA_data_futureday_resample(day_data, type_='w'):
     }
 
     data = day_data.resample(type_, closed='right').apply(CONVERSION).dropna()
-    return data.assign(date=pd.to_datetime(data.date)
+    return data.assign(date=pd.to_datetime(data.date, utc=False)
                       ).set_index(['date',
                                    'code'])
 
@@ -924,13 +1028,15 @@ def QA_data_cryptocurrency_min_resample(min_data, type_='5min'):
         'amount': 'sum'
     }
     min_data = min_data.loc[:, list(CONVERSION.keys())]
+    # 适配 pandas 1.0+，避免出现 FutureWarning: 
+    # 'loffset' in .resample() and in Grouper() is deprecated 提示
     data = min_data.resample(
         type_,
-        base=0,
+        offest='0min',
         closed='right',
-        loffset=type_
     ).apply(CONVERSION).dropna()
-    return data.assign(datetime=pd.to_datetime(data.index)
+    data.index = data.index + to_offset(type_)
+    return data.assign(datetime=pd.to_datetime(data.index, utc=False)
                       ).set_index(['datetime',
                                    'code'])
 

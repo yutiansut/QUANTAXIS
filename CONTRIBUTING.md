@@ -3,7 +3,7 @@
 写代码不易...请作者喝杯咖啡呗?
 
 
-![](http://pic.yutiansut.com/alipay.png)
+![](http://picx.gulizhu.com/alipay.png)
 
 (PS: 支付的时候 请带上你的名字/昵称呀 会维护一个赞助列表~ )
 

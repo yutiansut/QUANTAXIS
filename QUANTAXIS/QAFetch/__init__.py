@@ -31,7 +31,7 @@ QAFetch is Under [QAStandard#0.0.2@10x] Protocol
 
 
 """
-from QUANTAXIS.QAFetch import QAWind as QAWind
+
 from QUANTAXIS.QAFetch import QATushare as QATushare
 from QUANTAXIS.QAFetch import QATdx as QATdx
 from QUANTAXIS.QAFetch import QAThs as QAThs
@@ -43,15 +43,10 @@ from QUANTAXIS.QAFetch.base import get_stock_market
 from QUANTAXIS.QAFetch import QAQAWEB as QAWEB
 from QUANTAXIS.QAFetch import QAKQ as QAKQ
 
+
 def use(package):
-    if package in ['wind']:
-        try:
-            from WindPy import w
-            # w.start()
-            return QAWind
-        except ModuleNotFoundError:
-            print('NO WIND CLIENT FOUND')
-    elif package in ['tushare', 'ts']:
+
+    if package in ['tushare', 'ts']:
         return QATushare
     elif package in ['tdx', 'pytdx']:
         return QATdx
@@ -78,11 +73,6 @@ def QA_fetch_get_stock_day(package, code, start, end, if_fq='00', level='day', t
 def QA_fetch_get_stock_realtime(package, code):
     Engine = use(package)
     return Engine.QA_fetch_get_stock_realtime(code)
-
-
-def QA_fetch_get_stock_indicator(package, code, start, end):
-    Engine = use(package)
-    return Engine.QA_fetch_get_stock_indicator(code, start, end)
 
 
 def QA_fetch_get_trade_date(package, end, exchange):
@@ -166,9 +156,11 @@ def QA_fetch_get_bond_min(package, code, start, end, level='1min'):
     else:
         return 'Unsupport packages'
 
+
 def QA_fetch_get_bond_realtime(package, code):
     Engine = use(package)
     return Engine.QA_fetch_get_bond_realtime(code)
+
 
 def QA_fetch_get_stock_block(package):
     Engine = use(package)
@@ -320,6 +312,7 @@ def QA_fetch_get_future_transaction_realtime(package, code):
 
 def QA_fetch_get_future_domain():
     return QAKQ.QA_fetch_get_future_domain()
+
 
 def QA_fetch_get_future_realtime(package, code):
     Engine = use(package)

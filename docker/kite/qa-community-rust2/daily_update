@@ -1,0 +1,1 @@
+18 18 * * mon-fri root /root/QUANTAXIS/config/update_future.py > /proc/1/fd/1 2>/proc/1/fd/2

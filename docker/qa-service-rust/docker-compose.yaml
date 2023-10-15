@@ -1,7 +1,7 @@
 version: '2'
 services:
     qa:
-        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
+        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20210218
         container_name: qacommunity-rust
         depends_on:
             - mgdb
@@ -27,9 +27,9 @@ services:
         restart: always
 
 
-    qaweb_run:
-        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20201222
-        container_name: qarun
+    qaweb:
+        image: daocloud.io/quantaxis/qacommunity-rust-go:allin-20210218
+        container_name: qaweb
         depends_on:
             - mgdb
             - qaeventmq
@@ -38,6 +38,10 @@ services:
                 ipv4_address: 172.19.0.4
         ports:
             - "8010:8010"
+            - "8018:8018"
+            - "8019:8019"
+            - "8028:8028"
+            - "8029:8029"
         environment:
           - MONGODB=mgdb
           - QAPUBSUB_IP=qaeventmq
@@ -47,9 +51,6 @@ services:
           - QARUN_AMQP=pyamqp://admin:admin@qaeventmq:5672//
           - TZ=Asia/Shanghai
         restart: always
-        depends_on:
-          - qaeventmq
-          - mgdb
         command: ['/root/wait_for_it.sh', 'qaeventmq:5672', '--' , "/root/runcelery.sh"]
 
 
@@ -82,6 +83,17 @@ services:
         restart: always
 
 
+    qaredis:
+        image: daocloud.io/quantaxis/qaredis:latest
+        ports:
+            - "6379:6379"
+        environment:
+            - TZ=Asia/Shanghai
+        networks:
+            qanetwork:
+                ipv4_address: 172.19.0.6
+        restart: always
+
 
 
     qatrader:
@@ -101,7 +113,6 @@ services:
             - TZ=Asia/Shanghai
         command:
             ['/root/QATrader/docker/wait_for_it.sh', 'qaeventmq:5672', '--' ,'qatraderserver']
-
         networks:
             qanetwork:
                 ipv4_address: 172.19.0.9

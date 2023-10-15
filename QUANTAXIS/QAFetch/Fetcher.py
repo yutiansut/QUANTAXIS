@@ -46,7 +46,7 @@ from QUANTAXIS.QAFetch import QAQuery_Async as QAQueryAsync
 from QUANTAXIS.QAFetch import QATdx as QATdx
 from QUANTAXIS.QAFetch import QAThs as QAThs
 from QUANTAXIS.QAFetch import QATushare as QATushare
-from QUANTAXIS.QAFetch import QAWind as QAWind
+
 from QUANTAXIS.QAUtil.QAParameter import (DATABASE_TABLE, DATASOURCE,
                                           FREQUENCE, MARKET_TYPE,
                                           OUTPUT_FORMAT)
@@ -157,7 +157,7 @@ def QA_quotation_adv(code, start, end=save_tdx.now_time(), frequence='1min',
                         # data_tdx与从数据库获取的数据格式上做一些统一。
                         data_tdx = data_tdx.rename(columns={"vol": "volume"}).drop([
                             'date', 'date_stamp'], axis=1)
-                        data_tdx.index = pd.to_datetime(data_tdx.index)
+                        data_tdx.index = pd.to_datetime(data_tdx.index, utc=False)
                         res = pd.concat([res, data_tdx], sort=True)
                     res = QA_DataStruct_Stock_day(
                         res.reset_index().set_index(['date', 'code']))
@@ -193,7 +193,7 @@ def QA_quotation_adv(code, start, end=save_tdx.now_time(), frequence='1min',
                         # data_tdx与从数据库获取的数据格式上做一些统一。
                         data_tdx = data_tdx.rename(columns={"vol": "volume"}).drop(
                             ['date', 'datetime', 'date_stamp', 'time_stamp'], axis=1)
-                        data_tdx.index = pd.to_datetime(data_tdx.index)
+                        data_tdx.index = pd.to_datetime(data_tdx.index, utc=False)
                         res = pd.concat([res, data_tdx], sort=True)
                     res = QA_DataStruct_Stock_day(
                         res.reset_index().set_index(['datetime', 'code']))

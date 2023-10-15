@@ -107,7 +107,7 @@ def _QA_fetch_stock_adj(
         #res=[QA_util_dict_remove_key(data, '_id') for data in cursor]
 
         res = pd.DataFrame([item for item in cursor])
-        res.date = pd.to_datetime(res.date)
+        res.date = pd.to_datetime(res.date, utc=False)
         return res.set_index('date', drop=False)
 
 
@@ -154,18 +154,21 @@ class QA_DataStruct_Stock_day(_quotation_base):
                 try:
                     date = self.date
                     adj = _QA_fetch_stock_adj(
-                        self.code.to_list(),
+                        list(self.code),
                         str(date[0])[0:10],
                         str(date[-1])[0:10]
                     ).set_index(['date',
                                  'code'])
                     data = self.data.join(adj)
+                    data['adj'].fillna(method='ffill', inplace=True)
+
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']
                     # data['volume'] = data['volume'] / \
                     #     data['adj'] if 'volume' in data.columns else data['vol']/data['adj']
 
-                    data['volume'] = data['volume']  if 'volume' in data.columns else data['vol']
+                    data['volume'] = data[
+                        'volume'] if 'volume' in data.columns else data['vol']
                     try:
                         data['high_limit'] = data['high_limit'] * data['adj']
                         data['low_limit'] = data['high_limit'] * data['adj']
@@ -358,6 +361,9 @@ class QA_DataStruct_Stock_min(_quotation_base):
                         self.code.to_list(),
                         str(date[0])[0:10],
                         str(date[-1])[0:10]
+                    )
+                    adj = adj.assign(
+                        date=adj.date.apply(lambda x: x.date())
                     ).set_index(['date',
                                  'code'])
                     u = self.data.reset_index()
@@ -365,6 +371,7 @@ class QA_DataStruct_Stock_min(_quotation_base):
                     u = u.set_index(['date', 'code'], drop=False)
 
                     data = u.join(adj).set_index(['datetime', 'code'])
+                    data['adj'].fillna(method='ffill', inplace=True)
 
                     for col in ['open', 'high', 'low', 'close']:
                         data[col] = data[col] * data['adj']

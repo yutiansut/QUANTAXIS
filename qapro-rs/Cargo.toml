@@ -1,0 +1,150 @@
+[package]
+name = "qapro-rs"
+version = "0.1.1"
+authors = ["yutiansut <yutiansut@qq.com>"]
+edition = "2018"
+resolver = "2"
+description ="quantaxis rust version"
+license = "MIT"
+homepage ="https://github.com/yutiansut/quantaxis"
+repository="https://github.com/quantaxis/quantaxis"
+
+
+
+[dependencies]
+serde_json = "1.0.73"
+serde_derive = "1.0"
+serde = { version = "1.0", features = ["derive"] } # 序列化
+
+stopwatch = "0.0.7"
+
+
+uuid = { version = "0.8", features = ["serde", "v1", "v4"] }
+log = "0.4"
+regex = "1"
+log4rs = "0.13"
+
+rayon ="1.5"
+lazy_static = "1.4.0"
+
+reqwest = "0.9.22"
+csv = "1.1.3"
+clap = "2.33"
+toml = "0.5"
+redis = "0.18.0"
+amiquip = "0.4.0"
+
+
+bson = "0.13.0"
+mongodb = {version = "1.1.1", default-features = false, features = ["sync"]}
+
+redis-async = { version = "0.8", default-features = false, features = ["tokio10"] }
+actix-web-actors={ version = "4.0.0-beta.8", default-features = false }
+actix-redis = "0.10.0-beta.4"
+actix = "0.12.0"
+actix-rt = "2.5.0"
+actix-web ={ version = "4.0.0-beta.5" ,default-features = false }
+actix-cors = "0.6.0-beta.7"
+
+futures="0.3.5"
+futures-executor = "^0.3"
+futures-test = "^0.3"
+futures-util = "^0.3"
+async-trait= "0.1.52"
+chrono-tz= { version = "0.5.3", features = ["serde"] }
+chrono = { version = "0.4.19", features = ["serde"] }
+
+thiserror = "1.0"
+rand = "0.7"
+quadprog = "0.0.1"
+itertools = "0.10.3"
+
+
+##parsers
+
+parse-display = "0.5.0"
+quick-xml = { version = "0.22.0", features = ["serialize"] }
+serde_yaml = "0.8.17"
+serde_partiql = "1.1.64"
+structopt = { version = "0.3.21", optional = true }
+anyhow = "1.0.40"
+atty = "0.2.14"
+bat = { version = "0.18.3", optional = true }
+collect-mac = "0.1.0"
+indexmap = { version = "1.6.2", features = ["serde"] }
+
+nom = "6.1.2"
+ordered-float = { version = "2.0", default-features = false, features = [
+    "serde",
+] }
+#arrow = {version='6.4.0',default-features = true,   features = ["csv", "prettyprint", "ipc"] }
+#
+#datafusion = {version='6.0.0'}
+exmex = { git = "https://github.com/bertiqwerty/exmex.git", branch = "main" }
+
+evalexpr = "6.6.0"
+[dependencies.polars]
+
+#version = "0.19.1"
+git = "https://github.com/yutiansut/polars"
+rev = "1ceffe980c970794c4a299d20ca94cffe8e8ff1c"
+default-features = false
+features = [
+"dynamic_groupby",
+  "zip_with",
+  "simd",
+  "lazy",
+  "strings",
+  "temporal",
+  "random",
+  "object",
+  "csv-file",
+  "pretty_fmt",
+  "performant",
+  "dtype-full",
+  "rows",
+  "private",
+  "round_series",
+  "is_first",
+  "asof_join",
+  "cross_join",
+  "dot_product",
+  "concat_str",
+  "row_hash",
+  "reinterpret",
+  "decompress-fast",
+  "mode",
+  "extract_jsonpath",
+  "lazy_regex",
+  "cum_agg",
+  "rolling_window",
+  "interpolate",
+  "list",
+  "rank",
+  "diff",
+  "pct_change",
+  "moment",
+  "arange",
+  "true_div",
+  "dtype-categorical",
+  "diagonal_concat",
+  "horizontal_concat",
+  "abs",
+  "ewma",
+  "dot_diagram",
+  "dataframe_arithmetic",
+  "json",
+  "string_encoding",
+  "product",
+  "ndarray",
+  "parquet"
+]
+
+[dependencies.clickhouse-rs]
+version = "1.0.0-alpha.1"
+default-features = false
+features = ["async_std"]
+
+
+
+

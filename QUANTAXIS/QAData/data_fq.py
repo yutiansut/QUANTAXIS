@@ -163,7 +163,7 @@ def _QA_data_stock_to_fq(bfq_data, xdxr_data, fqtype):
     data['volume'] = data['volume']  if 'volume' in data.columns else data['vol']
     try:
         data['high_limit'] = data['high_limit'] * data['adj']
-        data['low_limit'] = data['high_limit'] * data['adj']
+        data['low_limit'] = data['low_limit'] * data['adj']
     except:
         pass
     return data.query('if_trade==1 and open != 0').drop(
@@ -191,7 +191,7 @@ def QA_data_stock_to_fq(__data, type_='01'):
                 [item for item in collections.find({'code': code})]
             ).drop(['_id'],
                    axis=1)
-            data['date'] = pd.to_datetime(data['date'])
+            data['date'] = pd.to_datetime(data['date'], utc=False)
             return data.set_index(['date', 'code'], drop=False)
         except:
             return pd.DataFrame(
