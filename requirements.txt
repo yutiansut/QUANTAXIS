@@ -15,7 +15,6 @@ retrying
 seaborn>=0.11.1
 attrs>=17.4.0
 pyconvert>=0.6.3
-demjson>=2.2.4
 janus==0.4.0
 pyecharts_snapshot
 async_timeout

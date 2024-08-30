@@ -37,8 +37,8 @@ except:
 """
 """
 
-if sys.version_info.major != 3 or sys.version_info.minor not in [5, 6, 7, 8, 9]:
-    print('wrong version, should be 3.5/3.6/3.7/3.8 version')
+if sys.version_info.major != 3 or sys.version_info.minor not in [5, 6, 7, 8, 9, 10]:
+    print('wrong version, should be 3.5/3.6/3.7/3.8/3.9 version')
     sys.exit()
 
 with io.open('QUANTAXIS/__init__.py', 'rt', encoding='utf8') as f:

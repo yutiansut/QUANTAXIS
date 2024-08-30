@@ -690,22 +690,22 @@ def QA_data_futuremin_resample(
             type_,
             offset="0min",
             closed='right',
-            loffset=type_
         ).apply(CONVERSION)
+        part_1_res.index = part_1_res.index + to_offset(type_)
         part_2 = min_data.iloc[idx.indexer_between_time('13:30', '15:00')]
         part_2_res = part_2.resample(
             type_,
             offset="30min",
             closed='right',
-            loffset=type_
         ).agg(CONVERSION)
+        part_2_res.index = part_2_res.index + to_offset(type_)
         part_3 = min_data.iloc[idx.indexer_between_time('21:00', '23:59')]
         part_3_res = part_3.resample(
             type_,
             offset="0min",
             closed='right',
-            loffset=type_
         ).agg(CONVERSION)
+        part_3_res.index = part_3_res.index + to_offset(type_)
         return pd.concat(
             [part_1_res,
              part_2_res,
