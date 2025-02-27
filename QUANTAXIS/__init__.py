@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.0.0.dev33'
+__version__ = '2.0.0.dev34'
 __author__ = 'yutiansut'
 
 import logging
