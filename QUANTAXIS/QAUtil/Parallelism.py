@@ -37,7 +37,7 @@ class Parallelism_abs(object, metaclass=ABCMeta):
         self.completed_processes = 0
         self.results = []
         self.data = []
-        self.cores = processes  # cpu核心数量
+        self.cores = min(processes, 32)  # cpu核心数量，最大不超过32
         self._loginfolist = []  # 保存打印信息
 
     def __getstate__(self):
@@ -71,7 +71,7 @@ class Parallelism(Parallelism_abs):
 
     def __init__(self, processes=cpu_count()):
         super(Parallelism, self).__init__(processes)
-        self.pool = Pool(processes=processes)
+        self.pool = Pool(processes=self.cores)
 
     def run(self, func, iter):
         if isinstance(iter, list) and self.cores > 1 and len(

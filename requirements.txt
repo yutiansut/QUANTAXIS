@@ -15,7 +15,7 @@ retrying
 seaborn>=0.11.1
 attrs>=17.4.0
 pyconvert>=0.6.3
-janus==0.4.0
+janus
 pyecharts_snapshot
 async_timeout
 IPython
