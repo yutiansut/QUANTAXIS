@@ -23,13 +23,30 @@
 # SOFTWARE.
 
 """
-QA fetch module
+QAFetch - QUANTAXIS 数据获取模块
 
-@yutiansut
+该模块提供统一的金融数据获取接口，支持多种数据源：
+- 股票市场：TDX、Tushare、同花顺等
+- 期货市场：通达信期货、CTP等
+- 数字货币：Binance、Huobi、OKEx等
+- 港股美股：通达信、Tushare等
 
-QAFetch is Under [QAStandard#0.0.2@10x] Protocol
+主要功能：
+1. 多数据源适配和统一接口
+2. 实时行情和历史数据获取
+3. 多种数据格式支持(pandas, json, numpy)
+4. 数据源切换和容错处理
 
+使用示例：
+    # 获取股票日线数据
+    data = QA_fetch_get_stock_day('tdx', '000001', '2020-01-01', '2020-12-31')
 
+    # 获取实时行情
+    realtime = QA_fetch_get_stock_realtime('tdx', '000001')
+
+@author: yutiansut
+@version: 2.0.0
+@license: MIT
 """
 
 from QUANTAXIS.QAFetch import QATushare as QATushare
