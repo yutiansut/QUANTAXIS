@@ -6,9 +6,17 @@
 
 [点击右上角Star和Watch来跟踪项目进展! 点击Fork来创建属于你的QUANTAXIS!]
 
-![QUANTAXIS_LOGO_LAST_small.jpg](http://picx.gulizhu.com/Fn0TPEcwu_uhraf58_93Ul5yfvAz)
+![QUANTAXIS_LOGO_LAST_small.jpg](./qalogo.png)
 
-![gvp](http://picx.gulizhu.com/gvp.jpg)
+更多相关项目:
+
+[QAUltra-cpp](https://github.com/QUANTAXIS/qaultra-cpp) quantaxis 的 cpp 实现
+[QAUtlra-rs](https://github.com/QUANTAXIS/qautlra-rs) quantaxis rust 的实现(部分开源)
+[QADataSwap](https://github.com/QUANTAXIS/qadataswap) quantaxis 跨语言通信框架(rust/cpp/python)
+[QAExchange-RS](https://github.com/yutiansut/qaexchange-rs) quantaxis 的 交易所实现 + 自研HTAP 混合数据库实现
+
+
+
 
 
 更多文档在[QABook Release](https://github.com/QUANTAXIS/QUANTAXIS/releases/download/latest/quantaxis.pdf)
