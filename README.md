@@ -1,5 +1,13 @@
 # QUANTAXIS 2.0.0
 
+更多相关项目:
+
+- [QAUltra-cpp](https://github.com/QUANTAXIS/qaultra-cpp) quantaxis 的 cpp 实现
+- [QAUtlra-rs](https://github.com/QUANTAXIS/qautlra-rs) quantaxis rust 的实现(部分开源)
+- [QADataSwap](https://github.com/QUANTAXIS/qadataswap) quantaxis 跨语言通信框架(rust/cpp/python)
+- [QAExchange-RS](https://github.com/yutiansut/qaexchange-rs) quantaxis 的 交易所实现 + 自研HTAP 混合数据库实现
+
+
 [![Github workers](https://img.shields.io/github/watchers/quantaxis/quantaxis.svg?style=social&label=Watchers&)](https://github.com/quantaxis/quantaxis/watchers)
 [![GitHub stars](https://img.shields.io/github/stars/quantaxis/quantaxis.svg?style=social&label=Star&)](https://github.com/quantaxis/quantaxis/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/quantaxis/quantaxis.svg?style=social&label=Fork&)](https://github.com/quantaxis/quantaxis/fork)
@@ -8,12 +16,6 @@
 
 ![QUANTAXIS_LOGO_LAST_small.jpg](./qalogo.png)
 
-更多相关项目:
-
-[QAUltra-cpp](https://github.com/QUANTAXIS/qaultra-cpp) quantaxis 的 cpp 实现
-[QAUtlra-rs](https://github.com/QUANTAXIS/qautlra-rs) quantaxis rust 的实现(部分开源)
-[QADataSwap](https://github.com/QUANTAXIS/qadataswap) quantaxis 跨语言通信框架(rust/cpp/python)
-[QAExchange-RS](https://github.com/yutiansut/qaexchange-rs) quantaxis 的 交易所实现 + 自研HTAP 混合数据库实现
 
 
 
