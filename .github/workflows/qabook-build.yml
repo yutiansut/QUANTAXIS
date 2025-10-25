@@ -1,0 +1,156 @@
+# QUANTAXIS QABook PDF自动编译与发布
+#
+# 功能说明:
+# - 当qabook/目录有更新时自动触发
+# - 使用XeLaTeX编译生成PDF
+# - 自动发布到GitHub Releases
+#
+# 作者: @yutiansut @quantaxis
+# 更新日期: 2025-10-25
+
+name: 编译QABook PDF
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'qabook/**'
+      - '.github/workflows/qabook-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-pdf:
+    name: 编译LaTeX为PDF
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 安装TeX Live
+        run: |
+          echo "📦 安装TeX Live..."
+          sudo apt-get update
+          sudo apt-get install -y \
+            texlive-xetex \
+            texlive-latex-extra \
+            texlive-lang-chinese \
+            texlive-fonts-recommended \
+            texlive-science \
+            fonts-wqy-microhei \
+            fonts-wqy-zenhei
+
+      - name: 验证XeLaTeX安装
+        run: |
+          echo "✅ 验证XeLaTeX..."
+          xelatex --version
+
+      - name: 编译PDF (第一次)
+        working-directory: qabook
+        run: |
+          echo "📄 第一次编译..."
+          xelatex -interaction=nonstopmode quantaxis.tex || {
+            echo "❌ 编译失败，查看日志："
+            tail -50 quantaxis.log
+            exit 1
+          }
+
+      - name: 编译PDF (第二次)
+        working-directory: qabook
+        run: |
+          echo "📄 第二次编译..."
+          xelatex -interaction=nonstopmode quantaxis.tex
+
+      - name: 编译PDF (第三次)
+        working-directory: qabook
+        run: |
+          echo "📄 第三次编译..."
+          xelatex -interaction=nonstopmode quantaxis.tex
+
+      - name: 检查PDF生成
+        working-directory: qabook
+        run: |
+          if [ -f "quantaxis.pdf" ]; then
+            FILE_SIZE=$(du -h quantaxis.pdf | cut -f1)
+            echo "✅ PDF生成成功！"
+            echo "📊 文件大小: ${FILE_SIZE}"
+            ls -lh quantaxis.pdf
+          else
+            echo "❌ PDF生成失败！"
+            exit 1
+          fi
+
+      - name: 生成版本标签
+        id: version
+        run: |
+          # 使用日期作为版本号
+          VERSION="qabook-$(date +'%Y%m%d-%H%M%S')"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "📌 版本: ${VERSION}"
+
+      - name: 创建Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: QABook PDF - ${{ steps.version.outputs.version }}
+          body: |
+            # QUANTAXIS QABook PDF
+
+            **自动编译生成**
+
+            - 📅 编译时间: ${{ github.event.head_commit.timestamp }}
+            - 🔖 提交: ${{ github.sha }}
+            - 👤 作者: ${{ github.actor }}
+            - 💬 提交信息: ${{ github.event.head_commit.message }}
+
+            ---
+
+            ## 📥 下载
+
+            点击下方的 `quantaxis.pdf` 下载完整文档。
+
+            ## 📚 内容
+
+            QABook包含QUANTAXIS的完整技术文档，涵盖：
+            - 量化交易理论基础
+            - 数学和统计学知识
+            - 现代资产管理理论
+            - 组合优化策略
+            - 期权定价理论
+
+            ---
+
+            **自动生成 by GitHub Actions**
+          draft: false
+          prerelease: false
+
+      - name: 上传PDF到Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./qabook/quantaxis.pdf
+          asset_name: quantaxis.pdf
+          asset_content_type: application/pdf
+
+      - name: 清理临时文件
+        if: always()
+        working-directory: qabook
+        run: |
+          echo "🧹 清理临时文件..."
+          rm -f *.aux *.log *.out *.toc *.gz *.fdb_latexmk *.fls *.synctex.gz || true
+
+      - name: 完成
+        run: |
+          echo "✅ QABook PDF编译完成！"
+          echo "📦 已发布到Release: ${{ steps.version.outputs.version }}"

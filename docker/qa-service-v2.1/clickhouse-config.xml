@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!--
+QUANTAXIS 2.1.0 ClickHouse配置
+优化查询性能和资源使用
+
+作者: @yutiansut @quantaxis
+版本: 2.1.0-alpha2
+-->
+<clickhouse>
+    <!-- 日志配置 -->
+    <logger>
+        <level>information</level>
+        <log>/var/log/clickhouse-server/clickhouse-server.log</log>
+        <errorlog>/var/log/clickhouse-server/clickhouse-server.err.log</errorlog>
+        <size>100M</size>
+        <count>10</count>
+    </logger>
+
+    <!-- HTTP端口配置 -->
+    <http_port>8123</http_port>
+
+    <!-- TCP端口配置 -->
+    <tcp_port>9000</tcp_port>
+
+    <!-- 监听地址 -->
+    <listen_host>::</listen_host>
+
+    <!-- 最大连接数 -->
+    <max_connections>1024</max_connections>
+
+    <!-- 查询超时配置 -->
+    <max_concurrent_queries>100</max_concurrent_queries>
+    <max_query_size>67108864</max_query_size>
+
+    <!-- 内存配置 -->
+    <max_server_memory_usage_to_ram_ratio>0.9</max_server_memory_usage_to_ram_ratio>
+    <max_memory_usage>10000000000</max_memory_usage>
+
+    <!-- 压缩配置 -->
+    <compression>
+        <case>
+            <method>lz4</method>
+        </case>
+    </compression>
+
+    <!-- 查询日志 -->
+    <query_log>
+        <database>system</database>
+        <table>query_log</table>
+        <partition_by>toYYYYMM(event_date)</partition_by>
+        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
+    </query_log>
+
+    <!-- 分布式DDL -->
+    <distributed_ddl>
+        <path>/clickhouse/task_queue/ddl</path>
+    </distributed_ddl>
+
+    <!-- 时区设置 -->
+    <timezone>Asia/Shanghai</timezone>
+
+    <!-- 用户配置 -->
+    <users>
+        <default>
+            <password></password>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+        </default>
+    </users>
+
+    <!-- 配置文件 -->
+    <profiles>
+        <default>
+            <max_memory_usage>10000000000</max_memory_usage>
+            <use_uncompressed_cache>0</use_uncompressed_cache>
+            <load_balancing>random</load_balancing>
+        </default>
+    </profiles>
+
+    <!-- 配额 -->
+    <quotas>
+        <default>
+            <interval>
+                <duration>3600</duration>
+                <queries>0</queries>
+                <errors>0</errors>
+                <result_rows>0</result_rows>
+                <read_rows>0</read_rows>
+                <execution_time>0</execution_time>
+            </interval>
+        </default>
+    </quotas>
+
+    <!-- QUANTAXIS特定配置 -->
+    <merge_tree>
+        <max_suspicious_broken_parts>10</max_suspicious_broken_parts>
+    </merge_tree>
+
+    <!-- 数据库配置 -->
+    <databases>
+        <quantaxis>
+            <engine>Atomic</engine>
+        </quantaxis>
+    </databases>
+</clickhouse>

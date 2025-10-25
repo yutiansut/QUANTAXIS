@@ -279,6 +279,22 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse,
     QA_util_get_next_period, QA_util_get_real_tradeday)
 
+# QAResourceManager - 统一资源管理器 (MongoDB/RabbitMQ/ClickHouse/Redis)
+try:
+    from QUANTAXIS.QAUtil.QAResourceManager import (
+        QAMongoResourceManager,
+        QARabbitMQResourceManager,
+        QAClickHouseResourceManager,
+        QARedisResourceManager,
+        QAResourcePool,
+        get_mongo_resource,
+        get_rabbitmq_resource,
+        get_clickhouse_resource,
+        get_redis_resource,
+    )
+except ImportError:
+    # 资源管理器依赖可选,不阻塞主模块加载
+    pass
 
 from QUANTAXIS.QAPubSub.consumer import subscriber, subscriber_topic, subscriber_routing
 from QUANTAXIS.QAPubSub.producer import publisher, publisher_topic, publisher_routing
@@ -292,6 +308,15 @@ from QUANTAXIS.QAWebServer.server import start_server
 
 from QUANTAXIS.QIFI.QifiAccount import QIFI_Account
 from QUANTAXIS.QIFI.QifiManager import QA_QIFIMANAGER, QA_QIFISMANAGER
+
+# QAMarket - 市场预设和订单/持仓管理
+from QUANTAXIS.QAMarket import (
+    MARKET_PRESET,
+    QA_Order,
+    QA_OrderQueue,
+    QA_Position,
+    QA_PMS,
+)
 
 # QARSBridge - Rust高性能账户和回测 (如果可用)
 try:

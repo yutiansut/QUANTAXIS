@@ -1,0 +1,96 @@
+# QUANTAXIS 2.1.0 Kubernetes ConfigMap
+#
+# 作者: @yutiansut @quantaxis
+# 版本: 2.1.0-alpha2
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quantaxis-config
+  namespace: quantaxis
+  labels:
+    app: quantaxis
+    version: "2.1.0"
+data:
+  # MongoDB配置
+  MONGODB_HOST: "mongodb-service"
+  MONGODB_PORT: "27017"
+  MONGODB_DATABASE: "quantaxis"
+
+  # RabbitMQ配置
+  RABBITMQ_HOST: "rabbitmq-service"
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_VHOST: "/"
+
+  # Redis配置
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+
+  # ClickHouse配置
+  CLICKHOUSE_HOST: "clickhouse-service"
+  CLICKHOUSE_PORT: "9000"
+  CLICKHOUSE_DATABASE: "quantaxis"
+
+  # 时区配置
+  TZ: "Asia/Shanghai"
+
+  # QUANTAXIS配置
+  QUANTAXIS_VERSION: "2.1.0-alpha2"
+  QA_RESOURCE_POOL_ENABLED: "true"
+  QA_AUTO_CLEANUP: "true"
+  PYTHONUNBUFFERED: "1"
+
+---
+# MongoDB初始化脚本
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-init-script
+  namespace: quantaxis
+  labels:
+    app: mongodb
+data:
+  init-mongo.js: |
+    // QUANTAXIS MongoDB 初始化
+    db = db.getSiblingDB('admin');
+    db.createUser({
+      user: 'quantaxis',
+      pwd: process.env.MONGO_PASSWORD || 'quantaxis',
+      roles: [
+        { role: 'readWrite', db: 'quantaxis' },
+        { role: 'dbAdmin', db: 'quantaxis' }
+      ]
+    });
+
+    db = db.getSiblingDB('quantaxis');
+    db.createCollection('stock_day');
+    db.stock_day.createIndex({ code: 1, date: 1 }, { unique: true });
+    db.createCollection('future_day');
+    db.future_day.createIndex({ code: 1, date: 1 }, { unique: true });
+    db.createCollection('account');
+    db.account.createIndex({ account_cookie: 1 }, { unique: true });
+    print('MongoDB初始化完成!');
+
+---
+# RabbitMQ配置文件
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config
+  namespace: quantaxis
+  labels:
+    app: rabbitmq
+data:
+  rabbitmq.conf: |
+    listeners.tcp.default = 5672
+    management.tcp.port = 15672
+    vm_memory_high_watermark.relative = 0.7
+    disk_free_limit.absolute = 1GB
+    log.console = true
+    log.console.level = info
+    heartbeat = 60
+    channel_max = 2048
+
+  enabled_plugins: |
+    [rabbitmq_management,rabbitmq_prometheus].

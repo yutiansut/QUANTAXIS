@@ -1,5 +1,18 @@
 # QUANTAXIS 2.1.0-alpha2
 
+<div align="center">
+
+**⭐ 如果这个项目对您有帮助，请点击Star支持我们！**
+
+**🔄 Fork本项目开始您的量化交易之旅！**
+
+Made with ❤️ by [@yutiansut](https://github.com/yutiansut) and [contributors](https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors)
+
+© 2016-2025 QUANTAXIS. Released under the MIT License.
+
+</div>
+
+
 > 🚀 **全新升级**: Python 3.9+、QARS2 Rust核心集成、100x性能提升
 >
 > **最新版本**: v2.1.0-alpha2 | **Python**: 3.9-3.12 | **更新日期**: 2025-10-25
@@ -59,7 +72,17 @@ account.buy("000001", 10.5, "2025-01-15", 1000)
 
 ![QUANTAXIS_LOGO_LAST_small.jpg](./qalogo.png)
 
+---
 
+## 📞 联系方式
+
+- **项目主页**: https://github.com/yutiansut/QUANTAXIS
+- **作者**: yutiansut
+- **Email**: yutiansut@qq.com
+- **微信公众号**: QAPRO
+- **微信**: quantitativeanalysis
+
+---
 
 
 
@@ -432,36 +455,44 @@ QA.CLICKHOUSE_PORT = 9000
 
 ## 📖 文档
 
-### 核心文档
+### 📚 文档中心
 
-- 🚀 [快速入门](./QUICKSTART.md) - 10分钟上手教程
-- 📦 [安装指南](./INSTALLATION.md) - 详细安装步骤
-- 📚 [API参考](./API_REFERENCE.md) - 完整API文档
-- 💡 [最佳实践](./BEST_PRACTICES.md) - 生产环境建议
-- 📘 [完整手册 (QABook)](https://github.com/QUANTAXIS/QUANTAXIS/releases/download/latest/quantaxis.pdf)
+完整文档请访问 **[文档中心 (Documentation Hub)](./doc/README.md)**
 
-### 模块文档
+### 快速导航
 
-- 🦀 [QARSBridge文档](./QUANTAXIS/QARSBridge/README.md) - Rust高性能账户
-- 🔄 [QADataBridge文档](./QUANTAXIS/QADataBridge/README.md) - 零拷贝数据交换
-- 📋 [QIFI协议规范](./QUANTAXIS/QARSBridge/QIFI_PROTOCOL.md) - 统一账户协议
+**🚀 入门指南**
+- [快速开始](./doc/getting-started/quickstart.md) - 10分钟上手教程
+- [安装指南](./doc/getting-started/installation.md) - 详细安装步骤
 
-### 示例代码
+**📘 API参考**
+- [API概览](./doc/api-reference/overview.md) - 完整API文档
+- [QAFetch](./doc/api-reference/qafetch.md) - 数据获取
+- [QAData](./doc/api-reference/qadata.md) - 数据结构
+- [QAMarket/QIFI](./doc/api-reference/qamarket.md) - 账户体系
 
-- 💡 [QARSBridge示例](./examples/qarsbridge_example.py) - Rust账户使用
-- 🔄 [QADataBridge示例](./examples/qadatabridge_example.py) - 零拷贝转换
+**🔧 高级功能**
+- [资源管理器](./doc/advanced/resource-manager.md) - 统一资源管理
+- [Rust集成](./doc/advanced/rust-integration.md) - 高性能组件
+- [数据桥接](./doc/advanced/data-bridge.md) - 零拷贝数据交换
 
-### 性能测试
+**🐳 部署指南**
+- [Docker部署](./doc/deployment/docker.md) - 容器化部署
+- [Kubernetes部署](./doc/deployment/kubernetes.md) - K8s集群部署
+- [部署概览](./doc/deployment/overview.md) - 完整部署指南
 
-- ⚡ [性能基准测试](./scripts/benchmark_databridge.py) - 数据转换性能
+**📦 迁移指南**
+- [2.0 → 2.1 迁移](./doc/migration/v2.0-to-v2.1.md) - 升级步骤和注意事项
+- [兼容性状态](./doc/migration/COMPATIBILITY_STATUS.md) - 100%向后兼容
 
-### 开发文档
+**👨‍💻 开发者**
+- [贡献指南](./doc/development/contributing.md) - 如何参与开发
+- [最佳实践](./doc/development/best-practices.md) - 生产环境建议
+- [开发指南 (CLAUDE.md)](./CLAUDE.md) - AI辅助开发
 
-- 🔧 [开发指南 (CLAUDE.md)](./CLAUDE.md) - AI辅助开发
-- 📊 [Phase 1完成报告](./PHASE1_COMPLETE.md) - Python环境升级
-- 🚀 [Phase 2完成报告](./PHASE2_COMPLETE.md) - QARS2集成
-- 🔄 [Phase 3完成报告](./PHASE3_COMPLETE.md) - QADataSwap集成
-- 📋 [升级计划](./UPGRADE_PLAN.md) - v2.1.0升级路线图
+**📘 其他资源**
+- [完整手册 (QABook PDF)](https://github.com/QUANTAXIS/QUANTAXIS/releases/download/latest/quantaxis.pdf)
+- [示例代码](./examples/) - 完整示例集合
 
 ---
 
@@ -535,7 +566,7 @@ QUANTAXIS 是一个开放的项目, 在开源的3年中有大量的小伙伴加�
 
 写代码不易...请作者喝杯咖啡呗? ☕
 
-![支付宝捐赠](http://picx.gulizhu.com/alipay.png)
+![支付宝捐赠](config/ali.jpg)
 
 **注**: 支付时请备注您的名字/昵称，我们会维护一个赞助列表感谢您的支持！
 
@@ -552,7 +583,7 @@ QUANTAXIS 是一个开放的项目, 在开源的3年中有大量的小伙伴加�
 本项目采用 **MIT License** 开源许可证。
 
 ```
-Copyright (c) 2017-2025 yutiansut/QUANTAXIS
+Copyright (c) 2016-2025 yutiansut/QUANTAXIS
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -609,25 +640,5 @@ QUANTAXIS得以实现离不开以下优秀的开源项目:
 - 📱 移动端支持
 - ☁️ 云原生部署
 
----
 
-## 📞 联系方式
 
-- **项目主页**: https://github.com/QUANTAXIS/QUANTAXIS
-- **作者**: yutiansut
-- **Email**: yutiansut@qq.com
-- **微信公众号**: QUANTAXIS
-
----
-
-<div align="center">
-
-**⭐ 如果这个项目对您有帮助，请点击Star支持我们！**
-
-**🔄 Fork本项目开始您的量化交易之旅！**
-
-Made with ❤️ by [@yutiansut](https://github.com/yutiansut) and [contributors](https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors)
-
-© 2017-2025 QUANTAXIS. Released under the MIT License.
-
-</div>

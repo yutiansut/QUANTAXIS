@@ -1,0 +1,45 @@
+[book]
+title = "QUANTAXIS 2.1 文档中心"
+authors = ["@yutiansut", "@quantaxis"]
+language = "zh-CN"
+multilingual = false
+src = "doc"
+description = "QUANTAXIS 2.1 量化交易框架完整文档"
+
+[build]
+build-dir = "book"
+create-missing = true
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/QUANTAXIS/QUANTAXIS"
+git-repository-icon = "fa-github"
+edit-url-template = "https://github.com/QUANTAXIS/QUANTAXIS/edit/master/doc/{path}"
+
+[output.html.fold]
+enable = true
+level = 1
+
+[output.html.search]
+enable = true
+limit-results = 30
+teaser-word-count = 30
+use-boolean-and = true
+boost-title = 2
+boost-hierarchy = 1
+boost-paragraph = 1
+expand = true
+
+[output.html.print]
+enable = true
+
+[output.html.playground]
+editable = true
+copyable = true
+copy-js = true
+line-numbers = true
+
+[preprocessor.links]
+
+[preprocessor.index]

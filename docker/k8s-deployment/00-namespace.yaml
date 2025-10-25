@@ -1,0 +1,59 @@
+# QUANTAXIS 2.1.0 Kubernetes命名空间
+#
+# 作者: @yutiansut @quantaxis
+# 版本: 2.1.0-alpha2
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: quantaxis
+  labels:
+    name: quantaxis
+    app: quantaxis
+    version: "2.1.0"
+    environment: production
+
+---
+# 资源配额
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: quantaxis-quota
+  namespace: quantaxis
+spec:
+  hard:
+    requests.cpu: "16"
+    requests.memory: 32Gi
+    limits.cpu: "32"
+    limits.memory: 64Gi
+    persistentvolumeclaims: "10"
+    services.loadbalancers: "3"
+
+---
+# 限制范围
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: quantaxis-limits
+  namespace: quantaxis
+spec:
+  limits:
+    - max:
+        cpu: "8"
+        memory: 16Gi
+      min:
+        cpu: "100m"
+        memory: 128Mi
+      default:
+        cpu: "1"
+        memory: 1Gi
+      defaultRequest:
+        cpu: "500m"
+        memory: 512Mi
+      type: Container
+
+    - max:
+        storage: 100Gi
+      min:
+        storage: 1Gi
+      type: PersistentVolumeClaim

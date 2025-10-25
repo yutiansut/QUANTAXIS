@@ -1,0 +1,228 @@
+# QUANTAXIS 2.1.0 MongoDB StatefulSet
+#
+# 作者: @yutiansut @quantaxis
+# 版本: 2.1.0-alpha2
+
+---
+# MongoDB Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-service
+  namespace: quantaxis
+  labels:
+    app: mongodb
+spec:
+  type: ClusterIP
+  clusterIP: None  # Headless service for StatefulSet
+  ports:
+    - port: 27017
+      targetPort: 27017
+      protocol: TCP
+      name: mongodb
+  selector:
+    app: mongodb
+
+---
+# MongoDB External Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-external
+  namespace: quantaxis
+  labels:
+    app: mongodb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 27017
+      targetPort: 27017
+      protocol: TCP
+      name: mongodb
+  selector:
+    app: mongodb
+
+---
+# MongoDB StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+  namespace: quantaxis
+  labels:
+    app: mongodb
+    version: "7.0"
+spec:
+  serviceName: mongodb-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+        version: "7.0"
+    spec:
+      terminationGracePeriodSeconds: 30
+
+      # 初始化容器
+      initContainers:
+        - name: init-permissions
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              chown -R 999:999 /data/db
+              chmod -R 755 /data/db
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+
+      # 主容器
+      containers:
+        - name: mongodb
+          image: mongo:7.0
+          imagePullPolicy: IfNotPresent
+
+          # 端口
+          ports:
+            - containerPort: 27017
+              name: mongodb
+              protocol: TCP
+
+          # 环境变量
+          env:
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: quantaxis-config
+                  key: TZ
+
+            - name: MONGO_INITDB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: quantaxis-config
+                  key: MONGODB_DATABASE
+
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_ROOT_USER
+
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_ROOT_PASSWORD
+
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_PASSWORD
+
+          # 数据卷挂载
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+
+            - name: mongodb-config-data
+              mountPath: /data/configdb
+
+            - name: mongodb-init-script
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+
+          # 健康检查
+          livenessProbe:
+            exec:
+              command:
+                - mongosh
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+
+          readinessProbe:
+            exec:
+              command:
+                - mongosh
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+
+          # 资源限制
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "4Gi"
+
+      # 数据卷
+      volumes:
+        - name: mongodb-config-data
+          emptyDir: {}
+
+        - name: mongodb-init-script
+          configMap:
+            name: mongodb-init-script
+            items:
+              - key: init-mongo.js
+                path: init-mongo.js
+
+  # 数据卷声明模板
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-data
+        labels:
+          app: mongodb
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: quantaxis-ssd
+        resources:
+          requests:
+            storage: 50Gi
+
+---
+# MongoDB Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mongodb-hpa
+  namespace: quantaxis
+  labels:
+    app: mongodb
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: mongodb
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
