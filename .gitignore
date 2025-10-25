@@ -199,3 +199,7 @@ celerybeat*
 .synctex(busy)
 *.fdb_latexmk
 *.fls
+
+# mdbook构建输出
+book/
+*.bak

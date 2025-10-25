@@ -432,36 +432,44 @@ QA.CLICKHOUSE_PORT = 9000
 
 ## 📖 文档
 
-### 核心文档
+### 📚 文档中心
 
-- 🚀 [快速入门](./QUICKSTART.md) - 10分钟上手教程
-- 📦 [安装指南](./INSTALLATION.md) - 详细安装步骤
-- 📚 [API参考](./API_REFERENCE.md) - 完整API文档
-- 💡 [最佳实践](./BEST_PRACTICES.md) - 生产环境建议
-- 📘 [完整手册 (QABook)](https://github.com/QUANTAXIS/QUANTAXIS/releases/download/latest/quantaxis.pdf)
+完整文档请访问 **[文档中心 (Documentation Hub)](./doc/README.md)**
 
-### 模块文档
+### 快速导航
 
-- 🦀 [QARSBridge文档](./QUANTAXIS/QARSBridge/README.md) - Rust高性能账户
-- 🔄 [QADataBridge文档](./QUANTAXIS/QADataBridge/README.md) - 零拷贝数据交换
-- 📋 [QIFI协议规范](./QUANTAXIS/QARSBridge/QIFI_PROTOCOL.md) - 统一账户协议
+**🚀 入门指南**
+- [快速开始](./doc/getting-started/quickstart.md) - 10分钟上手教程
+- [安装指南](./doc/getting-started/installation.md) - 详细安装步骤
 
-### 示例代码
+**📘 API参考**
+- [API概览](./doc/api-reference/overview.md) - 完整API文档
+- [QAFetch](./doc/api-reference/qafetch.md) - 数据获取
+- [QAData](./doc/api-reference/qadata.md) - 数据结构
+- [QAMarket/QIFI](./doc/api-reference/qamarket.md) - 账户体系
 
-- 💡 [QARSBridge示例](./examples/qarsbridge_example.py) - Rust账户使用
-- 🔄 [QADataBridge示例](./examples/qadatabridge_example.py) - 零拷贝转换
+**🔧 高级功能**
+- [资源管理器](./doc/advanced/resource-manager.md) - 统一资源管理
+- [Rust集成](./doc/advanced/rust-integration.md) - 高性能组件
+- [数据桥接](./doc/advanced/data-bridge.md) - 零拷贝数据交换
 
-### 性能测试
+**🐳 部署指南**
+- [Docker部署](./doc/deployment/docker.md) - 容器化部署
+- [Kubernetes部署](./doc/deployment/kubernetes.md) - K8s集群部署
+- [部署概览](./doc/deployment/overview.md) - 完整部署指南
 
-- ⚡ [性能基准测试](./scripts/benchmark_databridge.py) - 数据转换性能
+**📦 迁移指南**
+- [2.0 → 2.1 迁移](./doc/migration/v2.0-to-v2.1.md) - 升级步骤和注意事项
+- [兼容性状态](./doc/migration/COMPATIBILITY_STATUS.md) - 100%向后兼容
 
-### 开发文档
+**👨‍💻 开发者**
+- [贡献指南](./doc/development/contributing.md) - 如何参与开发
+- [最佳实践](./doc/development/best-practices.md) - 生产环境建议
+- [开发指南 (CLAUDE.md)](./CLAUDE.md) - AI辅助开发
 
-- 🔧 [开发指南 (CLAUDE.md)](./CLAUDE.md) - AI辅助开发
-- 📊 [Phase 1完成报告](./PHASE1_COMPLETE.md) - Python环境升级
-- 🚀 [Phase 2完成报告](./PHASE2_COMPLETE.md) - QARS2集成
-- 🔄 [Phase 3完成报告](./PHASE3_COMPLETE.md) - QADataSwap集成
-- 📋 [升级计划](./UPGRADE_PLAN.md) - v2.1.0升级路线图
+**📘 其他资源**
+- [完整手册 (QABook PDF)](https://github.com/QUANTAXIS/QUANTAXIS/releases/download/latest/quantaxis.pdf)
+- [示例代码](./examples/) - 完整示例集合
 
 ---
 
