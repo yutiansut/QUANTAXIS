@@ -1,5 +1,18 @@
 # QUANTAXIS 2.1.0-alpha2
 
+<div align="center">
+
+**⭐ 如果这个项目对您有帮助，请点击Star支持我们！**
+
+**🔄 Fork本项目开始您的量化交易之旅！**
+
+Made with ❤️ by [@yutiansut](https://github.com/yutiansut) and [contributors](https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors)
+
+© 2016-2025 QUANTAXIS. Released under the MIT License.
+
+</div>
+
+
 > 🚀 **全新升级**: Python 3.9+、QARS2 Rust核心集成、100x性能提升
 >
 > **最新版本**: v2.1.0-alpha2 | **Python**: 3.9-3.12 | **更新日期**: 2025-10-25
@@ -59,7 +72,17 @@ account.buy("000001", 10.5, "2025-01-15", 1000)
 
 ![QUANTAXIS_LOGO_LAST_small.jpg](./qalogo.png)
 
+---
 
+## 📞 联系方式
+
+- **项目主页**: https://github.com/yutiansut/QUANTAXIS
+- **作者**: yutiansut
+- **Email**: yutiansut@qq.com
+- **微信公众号**: QAPRO
+- **微信**: quantitativeanalysis
+
+---
 
 
 
@@ -543,7 +566,7 @@ QUANTAXIS 是一个开放的项目, 在开源的3年中有大量的小伙伴加�
 
 写代码不易...请作者喝杯咖啡呗? ☕
 
-![支付宝捐赠](http://picx.gulizhu.com/alipay.png)
+![支付宝捐赠](config/ali.jpg)
 
 **注**: 支付时请备注您的名字/昵称，我们会维护一个赞助列表感谢您的支持！
 
@@ -560,7 +583,7 @@ QUANTAXIS 是一个开放的项目, 在开源的3年中有大量的小伙伴加�
 本项目采用 **MIT License** 开源许可证。
 
 ```
-Copyright (c) 2017-2025 yutiansut/QUANTAXIS
+Copyright (c) 2016-2025 yutiansut/QUANTAXIS
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -617,25 +640,5 @@ QUANTAXIS得以实现离不开以下优秀的开源项目:
 - 📱 移动端支持
 - ☁️ 云原生部署
 
----
 
-## 📞 联系方式
 
-- **项目主页**: https://github.com/QUANTAXIS/QUANTAXIS
-- **作者**: yutiansut
-- **Email**: yutiansut@qq.com
-- **微信公众号**: QUANTAXIS
-
----
-
-<div align="center">
-
-**⭐ 如果这个项目对您有帮助，请点击Star支持我们！**
-
-**🔄 Fork本项目开始您的量化交易之旅！**
-
-Made with ❤️ by [@yutiansut](https://github.com/yutiansut) and [contributors](https://github.com/QUANTAXIS/QUANTAXIS/graphs/contributors)
-
-© 2017-2025 QUANTAXIS. Released under the MIT License.
-
-</div>

@@ -74,3 +74,11 @@
 - [常见问题](appendix/faq.md)
 - [术语表](appendix/glossary.md)
 - [版本历史](appendix/changelog.md)
+
+---
+
+# 📖 QABook - PDF技术文档
+
+- [QABook简介](qabook/introduction.md)
+- [LaTeX编译指南](qabook/build-guide.md)
+- [下载PDF文档](https://github.com/QUANTAXIS/QUANTAXIS/releases)

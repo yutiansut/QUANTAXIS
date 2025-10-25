@@ -39,6 +39,11 @@
 - [2.0 → 2.1 迁移](migration/v2.0-to-v2.1.md)
 - [兼容性状态](migration/COMPATIBILITY_STATUS.md)
 
+### 📖 QABook - PDF技术文档
+- [QABook简介](qabook/introduction.md) - 完整PDF技术手册
+- [LaTeX编译指南](qabook/build-guide.md) - 本地编译说明
+- [下载PDF](https://github.com/QUANTAXIS/QUANTAXIS/releases) - 预编译版本
+
 ---
 
 ## 💡 推荐学习路径

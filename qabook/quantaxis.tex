@@ -1,36 +1,56 @@
 %!TEX program = xelatex
-\documentclass{scrartcl}
-\usepackage{silence}
-\usepackage[a4paper, left=3.17cm, right=3.17cm, top=2.54cm, bottom=2.54cm]{geometry}
+% QUANTAXIS QABook - LaTeX配置
+% 作者: @yutiansut @quantaxis
+% 版本: 2.1.0-alpha2
+% 更新日期: 2025-10-25
 
+\documentclass{scrartcl}
+
+% ========== 基础配置 ==========
+\usepackage{silence}
 \WarningFilter{scrartcl}{Usage of package `fancyhdr'}
 
+% 页面布局
+\usepackage[a4paper, left=3.17cm, right=3.17cm, top=2.54cm, bottom=2.54cm]{geometry}
+
+% ========== 中文支持 ==========
 \usepackage[UTF8]{ctex}
-\usepackage{amsfonts, amssymb}
+\usepackage{indentfirst}  % 中文段落首行缩进
 
+% ========== 数学支持 ==========
+\usepackage{amsmath}      % 数学公式
+\usepackage{amsfonts}     % 数学字体
+\usepackage{amssymb}      % 数学符号
+\usepackage{mathdots}     % 矩阵点
+\usepackage[classicReIm]{kpfonts}  % 数学字体
+\usepackage{cases}        % 分情况讨论
+
+% ========== 算法支持 ==========
 \usepackage[lined,boxed,commentsnumbered,ruled,linesnumbered]{algorithm2e}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage{lipsum}
-\usepackage{amssymb}
-\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
-% \usepackage{txfonts}
-\usepackage{mathdots}
-\usepackage{pythonhighlight}
-\usepackage{graphicx}
-\setlength{\parskip}{0.5em}
-\usepackage[classicReIm]{kpfonts}
-\usepackage{graphicx}
-\usepackage{fancyhdr}
-\usepackage{multicol}    % 正文双栏
-\usepackage{indentfirst} % 中文首段缩进
-\usepackage{indentfirst} % 中文段落首行缩进
-% \usepackage{fontspec}
 
-\pagestyle{fancy}
-\usepackage{etoc}
-\usepackage{cases}
-\numberwithin{equation}{section}
+% ========== 图形支持 ==========
+\usepackage{graphicx}     % 图片插入
+
+% ========== 代码高亮 ==========
+\usepackage{pythonhighlight}  % Python代码高亮
+
+% ========== 页面样式 ==========
+\usepackage{fancyhdr}     % 页眉页脚
+\usepackage{multicol}     % 正文双栏
+
+% ========== 目录控制 ==========
+\usepackage{etoc}         % 目录控制
+
+% ========== 超链接 ==========
+\usepackage[colorlinks, linkcolor=black, anchorcolor=black, citecolor=black]{hyperref}
+
+% ========== 其他 ==========
+\usepackage{lipsum}       % 示例文本
+
+% ========== 全局设置 ==========
+\setlength{\parskip}{0.5em}        % 段落间距
+\pagestyle{fancy}                  % 使用fancy页面样式
+\numberwithin{equation}{section}   % 公式按章节编号
 % \newfontface{\backitshape}{lmroman10-italic}[
 %   Extension=.otf,
 %   FakeSlant=-0.4,
