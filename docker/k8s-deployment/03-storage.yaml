@@ -1,0 +1,139 @@
+# QUANTAXIS 2.1.0 Kubernetes 存储配置
+#
+# 作者: @yutiansut @quantaxis
+# 版本: 2.1.0-alpha2
+
+---
+# StorageClass for SSD
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: quantaxis-ssd
+  labels:
+    app: quantaxis
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+
+---
+# MongoDB PersistentVolume
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongodb-pv
+  labels:
+    app: mongodb
+    type: local
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: quantaxis-ssd
+  hostPath:
+    path: /data/quantaxis/mongodb
+    type: DirectoryOrCreate
+
+---
+# MongoDB PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+  namespace: quantaxis
+  labels:
+    app: mongodb
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: quantaxis-ssd
+  resources:
+    requests:
+      storage: 50Gi
+
+---
+# RabbitMQ PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq-pvc
+  namespace: quantaxis
+  labels:
+    app: rabbitmq
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: quantaxis-ssd
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# Redis PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  namespace: quantaxis
+  labels:
+    app: redis
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: quantaxis-ssd
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+# ClickHouse PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: clickhouse-pvc
+  namespace: quantaxis
+  labels:
+    app: clickhouse
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: quantaxis-ssd
+  resources:
+    requests:
+      storage: 100Gi
+
+---
+# QUANTAXIS Code PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quantaxis-code-pvc
+  namespace: quantaxis
+  labels:
+    app: quantaxis
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: quantaxis-ssd
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+# QUANTAXIS Logs PersistentVolumeClaim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quantaxis-logs-pvc
+  namespace: quantaxis
+  labels:
+    app: quantaxis
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: quantaxis-ssd
+  resources:
+    requests:
+      storage: 10Gi

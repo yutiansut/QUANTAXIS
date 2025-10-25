@@ -143,7 +143,10 @@ ENV/
 
 
 
-
+CLAUDE.md
+.claude/
+.archive/
+run/
 # jupyter-kernel
 
 kernel*.json
