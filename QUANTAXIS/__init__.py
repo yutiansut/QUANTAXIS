@@ -31,8 +31,25 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.0.0.dev34'
+__version__ = '2.1.0.alpha1'
 __author__ = 'yutiansut'
+
+# Rust集成支持检测
+try:
+    import qars3
+    __has_qars__ = True
+    __qars_version__ = getattr(qars3, '__version__', 'unknown')
+except ImportError:
+    __has_qars__ = False
+    __qars_version__ = None
+
+try:
+    import qadataswap
+    __has_dataswap__ = True
+    __dataswap_version__ = getattr(qadataswap, '__version__', 'unknown')
+except ImportError:
+    __has_dataswap__ = False
+    __dataswap_version__ = None
 
 import logging
 logging.disable(logging.INFO)
