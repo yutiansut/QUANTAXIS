@@ -24,13 +24,13 @@ class QARSAccount:
     使用Rust实现的QIFI账户，完全兼容QIFI协议
     API设计与QIFI_Account保持一致，可无缝替换
 
-    Args:
+    参数:
         account_cookie: 账户ID/名称
         portfolio: 投资组合名称
         init_cash: 初始资金 (默认1000000)
         environment: 运行环境 ("backtest"/"simulate"/"real")
 
-    Examples:
+    示例:
         >>> # 创建账户
         >>> account = QARSAccount(
         ...     account_cookie="my_account",
@@ -53,7 +53,7 @@ class QARSAccount:
         >>> # 从QIFI导入
         >>> account2 = QARSAccount.from_qifi(qifi)
 
-    Performance:
+    性能对比:
         创建10000个订单:
         - Python版本: ~5秒
         - Rust版本: ~0.05秒
@@ -68,7 +68,7 @@ class QARSAccount:
         """
         初始化QARS账户
 
-        Args:
+        参数:
             account_cookie: 账户ID
             portfolio: 投资组合名称
             init_cash: 初始资金
@@ -96,17 +96,17 @@ class QARSAccount:
         """
         买入股票
 
-        Args:
+        参数:
             code: 股票代码 (如 "000001")
             price: 买入价格
             date: 交易日期 ("YYYY-MM-DD")
             amount: 买入数量 (股)
             validate: 是否验证参数
 
-        Returns:
+        返回:
             bool: 是否成功
 
-        Examples:
+        示例:
             >>> account.buy("000001", 10.5, "2025-01-01", 100)
             True
         """
@@ -117,14 +117,14 @@ class QARSAccount:
         """
         卖出股票
 
-        Args:
+        参数:
             code: 股票代码
             price: 卖出价格
             date: 交易日期
             amount: 卖出数量
             validate: 是否验证参数
 
-        Returns:
+        返回:
             bool: 是否成功
         """
         return self._account.sell(code, price, date, amount, validate)
@@ -138,17 +138,17 @@ class QARSAccount:
         """
         期货买入开仓 (做多)
 
-        Args:
+        参数:
             code: 期货代码 (如 "IF2512")
             price: 开仓价格
             date: 交易日期
             amount: 开仓手数
             validate: 是否验证参数
 
-        Returns:
+        返回:
             bool: 是否成功
 
-        Examples:
+        示例:
             >>> account.buy_open("IF2512", 4500.0, "2025-01-01", 1)
             True
         """
@@ -159,14 +159,14 @@ class QARSAccount:
         """
         期货卖出开仓 (做空)
 
-        Args:
+        参数:
             code: 期货代码
             price: 开仓价格
             date: 交易日期
             amount: 开仓手数
             validate: 是否验证参数
 
-        Returns:
+        返回:
             bool: 是否成功
         """
         return self._account.sell_open(code, price, date, amount, validate)
@@ -176,14 +176,14 @@ class QARSAccount:
         """
         期货买入平仓 (平空头)
 
-        Args:
+        参数:
             code: 期货代码
             price: 平仓价格
             date: 交易日期
             amount: 平仓手数
             validate: 是否验证参数
 
-        Returns:
+        返回:
             bool: 是否成功
         """
         return self._account.buy_close(code, price, date, amount, validate)
@@ -193,14 +193,14 @@ class QARSAccount:
         """
         期货卖出平仓 (平多头)
 
-        Args:
+        参数:
             code: 期货代码
             price: 平仓价格
             date: 交易日期
             amount: 平仓手数
             validate: 是否验证参数
 
-        Returns:
+        返回:
             bool: 是否成功
         """
         return self._account.sell_close(code, price, date, amount, validate)
@@ -223,7 +223,7 @@ class QARSAccount:
         """
         获取QIFI格式账户数据
 
-        Returns:
+        返回:
             dict: QIFI协议格式的账户数据
 
         QIFI结构包含:
@@ -234,7 +234,7 @@ class QARSAccount:
             - trades: 成交记录
             - events: 事件日志
 
-        Examples:
+        示例:
             >>> qifi = account.get_qifi()
             >>> print(f"账户余额: {qifi['accounts']['balance']}")
             >>> print(f"可用资金: {qifi['accounts']['available']}")
@@ -245,10 +245,10 @@ class QARSAccount:
         """
         获取持仓数据 (DataFrame格式)
 
-        Returns:
+        返回:
             pd.DataFrame: 持仓DataFrame
 
-        Columns:
+        列说明:
             - code: 代码
             - volume_long: 多头数量
             - volume_short: 空头数量
@@ -257,7 +257,7 @@ class QARSAccount:
             - float_profit: 浮动盈亏
             - margin: 保证金
 
-        Examples:
+        示例:
             >>> positions = account.get_positions()
             >>> print(positions[['code', 'volume_long', 'float_profit']])
         """
@@ -279,10 +279,10 @@ class QARSAccount:
         """
         获取账户信息
 
-        Returns:
+        返回:
             dict: 账户信息字典
 
-        Keys:
+        字段说明:
             - balance: 账户权益
             - available: 可用资金
             - margin: 占用保证金
@@ -291,7 +291,7 @@ class QARSAccount:
             - close_profit: 平仓盈亏
             - risk_ratio: 风险度
 
-        Examples:
+        示例:
             >>> info = account.get_account_info()
             >>> print(f"账户权益: {info['balance']:.2f}")
             >>> print(f"风险度: {info['risk_ratio']:.2%}")
@@ -307,10 +307,10 @@ class QARSAccount:
         """
         执行账户结算
 
-        Args:
+        参数:
             date: 结算日期 (可选)
 
-        Examples:
+        示例:
             >>> account.settle("2025-01-01")
         """
         if hasattr(self._account, 'settle'):
@@ -327,12 +327,12 @@ class QARSAccount:
         """
         处理分红事件
 
-        Args:
+        参数:
             code: 股票代码
             dividend_per_share: 每股分红
             date: 分红日期
 
-        Returns:
+        返回:
             bool: 是否成功
         """
         return self._account.receive_dividend(code, dividend_per_share, date)
@@ -341,12 +341,12 @@ class QARSAccount:
         """
         处理拆股事件
 
-        Args:
+        参数:
             code: 股票代码
             ratio: 拆股比例 (如2.0表示1拆2)
             date: 拆股日期
 
-        Returns:
+        返回:
             bool: 是否成功
         """
         return self._account.stock_split(code, ratio, date)
@@ -360,13 +360,13 @@ class QARSAccount:
         """
         从QIFI字典创建账户
 
-        Args:
+        参数:
             qifi_dict: QIFI格式账户数据
 
-        Returns:
+        返回:
             QARSAccount: 账户实例
 
-        Examples:
+        示例:
             >>> # 从已有账户导出
             >>> qifi = account1.get_qifi()
             >>> # 创建新账户
@@ -424,15 +424,15 @@ def create_qars_account(account_cookie: str,
     """
     便捷函数: 创建QARS账户
 
-    Args:
+    参数:
         account_cookie: 账户ID
         init_cash: 初始资金
         **kwargs: 其他参数
 
-    Returns:
+    返回:
         QARSAccount: 账户实例
 
-    Examples:
+    示例:
         >>> account = create_qars_account("test", init_cash=1000000)
     """
     return QARSAccount(

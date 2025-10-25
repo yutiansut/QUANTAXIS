@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2025 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.1.0.alpha1'
+__version__ = '2.1.0.alpha2'
 __author__ = 'yutiansut'
 
 # Rust集成支持检测
@@ -292,6 +292,32 @@ from QUANTAXIS.QAWebServer.server import start_server
 
 from QUANTAXIS.QIFI.QifiAccount import QIFI_Account
 from QUANTAXIS.QIFI.QifiManager import QA_QIFIMANAGER, QA_QIFISMANAGER
+
+# QARSBridge - Rust高性能账户和回测 (如果可用)
+try:
+    from QUANTAXIS.QARSBridge import (
+        QARSAccount,
+        QARSBacktest,
+        has_qars_support,
+    )
+except ImportError:
+    # QARSBridge未安装，使用标准Python实现
+    pass
+
+# QADataBridge - 跨语言零拷贝数据交换 (如果可用)
+try:
+    from QUANTAXIS.QADataBridge import (
+        has_dataswap_support,
+        convert_pandas_to_polars,
+        convert_polars_to_pandas,
+        convert_pandas_to_arrow,
+        convert_arrow_to_pandas,
+        SharedMemoryWriter,
+        SharedMemoryReader,
+    )
+except ImportError:
+    # QADataBridge未安装，跨语言通信不可用
+    pass
 
 from QUANTAXIS.QAStrategy.qactabase import QAStrategyCtaBase
 

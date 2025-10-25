@@ -7,14 +7,14 @@ QUANTAXIS/QARSBridge - QARS2 Rust核心桥接层
 - QARSData: Polars高性能数据结构
 - has_qars_support(): 检测QARS2是否可用
 
-Examples:
+示例:
     >>> from QUANTAXIS.QARSBridge import QARSAccount, has_qars_support
     >>>
     >>> if has_qars_support():
     >>>     # 使用Rust高性能账户
     >>>     account = QARSAccount("test", init_cash=1000000)
     >>> else:
-    >>>     # 使用Python fallback
+    >>>     # 使用Python回退实现
     >>>     from QUANTAXIS.QIFI import QIFI_Account
     >>>     account = QIFI_Account("test")
 
@@ -59,10 +59,10 @@ def has_qars_support() -> bool:
     """
     检查是否有QARS2 Rust核心支持
 
-    Returns:
+    返回:
         bool: True如果QARS2可用
 
-    Examples:
+    示例:
         >>> if has_qars_support():
         >>>     print("Rust核心可用，将获得极致性能")
         >>> else:
@@ -103,10 +103,10 @@ def get_version_info() -> dict:
     """
     获取QARS桥接层版本信息
 
-    Returns:
+    返回:
         dict: 版本信息字典
 
-    Examples:
+    示例:
         >>> info = get_version_info()
         >>> print(f"QARS支持: {info['has_qars']}")
     """

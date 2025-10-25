@@ -24,12 +24,12 @@ class QARSBacktest:
     - 多策略并行回测
     - 自定义回测参数
 
-    Args:
+    参数:
         start: 回测开始日期 ("YYYY-MM-DD")
         end: 回测结束日期 ("YYYY-MM-DD")
         data_path: 数据路径 (可选)
 
-    Examples:
+    示例:
         >>> # 创建回测引擎
         >>> backtest = QARSBacktest(
         ...     start="2020-01-01",
@@ -46,7 +46,7 @@ class QARSBacktest:
         >>> result = backtest.run(MyStrategy())
         >>> print(f"总收益: {result['total_return']:.2%}")
 
-    Performance:
+    性能对比:
         10年日线回测(1000+股票):
         - Python版本: ~30秒
         - Rust版本: ~3秒
@@ -60,7 +60,7 @@ class QARSBacktest:
         """
         初始化回测引擎
 
-        Args:
+        参数:
             start: 开始日期
             end: 结束日期
             data_path: 数据路径
@@ -76,10 +76,10 @@ class QARSBacktest:
         """
         运行回测
 
-        Args:
+        参数:
             strategy: 策略实例 (QARSStrategy子类)
 
-        Returns:
+        返回:
             dict: 回测结果
 
         回测结果包含:
@@ -89,7 +89,7 @@ class QARSBacktest:
             - max_drawdown: 最大回撤
             - trades: 交易记录
 
-        Examples:
+        示例:
             >>> result = backtest.run(my_strategy)
             >>> print(f"夏普比率: {result['sharpe_ratio']:.2f}")
         """
@@ -111,13 +111,13 @@ class QARSStrategy(_RustStrategy):
 
     继承此类实现自定义策略
 
-    Methods to Override:
+    需要重写的方法:
         - on_bar(bar): 处理K线数据
         - on_tick(tick): 处理Tick数据 (可选)
         - on_start(): 策略初始化 (可选)
         - on_end(): 策略结束 (可选)
 
-    Examples:
+    示例:
         >>> class MyStrategy(QARSStrategy):
         ...     def on_start(self):
         ...         self.buy_signal = False
@@ -148,7 +148,7 @@ class QARSStrategy(_RustStrategy):
         """
         处理K线数据
 
-        Args:
+        参数:
             bar: K线数据字典
 
         K线数据包含:
@@ -165,7 +165,7 @@ class QARSStrategy(_RustStrategy):
         """
         处理Tick数据 (可选)
 
-        Args:
+        参数:
             tick: Tick数据字典
         """
         pass
@@ -189,15 +189,15 @@ def create_backtest(start: str,
     """
     便捷函数: 创建回测引擎
 
-    Args:
+    参数:
         start: 开始日期
         end: 结束日期
         data_path: 数据路径
 
-    Returns:
+    返回:
         QARSBacktest: 回测引擎实例
 
-    Examples:
+    示例:
         >>> backtest = create_backtest("2020-01-01", "2024-12-31")
     """
     return QARSBacktest(start, end, data_path)
