@@ -97,20 +97,65 @@ account.buy_open("IF2512", 4500.0, "2025-01-15", 2)  # 期货开仓
 positions = account.get_positions()                   # 查询持仓
 ```
 
-### 2. 💾 QASU / QAFetch - 多市场数据
+📖 **详细文档**: [QARSBridge README](./QUANTAXIS/QARSBridge/README.md)
+
+---
+
+### 2. 🔄 QADataBridge - 零拷贝数据交换 (v2.1新增)
+
+**基于QADataSwap的跨语言零拷贝数据传输，5-10x性能提升**
+
+- **零拷贝转换**:
+  - Pandas ↔ Polars (2.5x加速)
+  - Pandas ↔ Arrow (零拷贝)
+  - Polars ↔ Arrow (零拷贝)
+  - 批量转换支持
+
+- **共享内存通信**:
+  - 跨进程数据传输 (7x加速)
+  - 实时行情分发
+  - 策略间数据共享
+
+- **自动回退机制**: QADataSwap未安装时自动使用标准转换
+
+```python
+# 零拷贝转换示例
+from QUANTAXIS.QADataBridge import convert_pandas_to_polars
+import pandas as pd
+
+df_pandas = pd.DataFrame({'price': [10.5, 20.3], 'volume': [1000, 2000]})
+df_polars = convert_pandas_to_polars(df_pandas)  # 零拷贝，2.5x加速
+
+# 共享内存示例
+from QUANTAXIS.QADataBridge import SharedMemoryWriter, SharedMemoryReader
+
+# 进程A：写入数据
+writer = SharedMemoryWriter("market_data", size_mb=50)
+writer.write(df_polars)
+
+# 进程B：读取数据
+reader = SharedMemoryReader("market_data")
+df = reader.read(timeout_ms=5000)  # 零拷贝，7x加速
+```
+
+📖 **详细文档**: [QADataBridge README](./QUANTAXIS/QADataBridge/README.md)
+
+---
+
+### 3. 💾 QASU / QAFetch - 多市场数据
 
 - 支持MongoDB / ClickHouse存储
 - 自动运维和数据更新
 - Tick / L2 Order / Transaction数据格式
 - 因子化数据结构
 
-### 3. 🕐 QAUtil - 工具函数
+### 4. 🕐 QAUtil - 工具函数
 
 - 交易时间、交易日历
 - 时间向前向后推算
 - 市场识别、DataFrame转换
 
-### 4. 💼 QIFI / QAMarket - 统一账户体系
+### 5. 💼 QIFI / QAMarket - 统一账户体系
 
 **多市场、多语言统一账户协议**
 
@@ -125,52 +170,52 @@ positions = account.get_positions()                   # 查询持仓
 - 增量更新支持 (Diff机制)
 - MongoDB友好
 
-### 5. 📊 QAFactor - 因子研究
+### 6. 📊 QAFactor - 因子研究
 
 - 单因子研究入库
 - 因子管理、测试
 - 因子合并
 - 优化器 [开发中]
 
-### 6. 📈 QAData - 内存数据库
+### 7. 📈 QAData - 内存数据库
 
 多标的多市场数据结构，支持：
 - 实时计算
 - 回测引擎
 - 高性能数据访问
 
-### 7. 📉 QAIndicator - 自定义指标
+### 8. 📉 QAIndicator - 自定义指标
 
 - 支持自定义指标编写
 - 批量全市场apply
 - 因子表达式构建
 
-### 8. ⚙️ QAEngine - 异步计算
+### 9. ⚙️ QAEngine - 异步计算
 
 - 自定义线程/进程基类
 - 异步计算支持
 - 局域网分布式计算agent
 
-### 9. 📮 QAPubSub - 消息队列
+### 10. 📮 QAPubSub - 消息队列
 
 基于RabbitMQ的消息系统：
 - 1-1 / 1-n / n-n 消息分发
 - 计算任务分发收集
 - 实时订单流
 
-### 10. 🎯 QAStrategy - 回测套件
+### 11. 🎯 QAStrategy - 回测套件
 
 - CTA策略回测
 - 套利策略回测
 - 完整QIFI模式支持
 
-### 11. 🌐 QAWebServer - 微服务
+### 12. 🌐 QAWebServer - 微服务
 
 - Tornado Web服务器
 - 中台微服务构建
 - RESTful API
 
-### 12. 📅 QASchedule - 任务调度
+### 13. 📅 QASchedule - 任务调度
 
 - 后台任务调度
 - 自动运维
@@ -389,23 +434,34 @@ QA.CLICKHOUSE_PORT = 9000
 
 ### 核心文档
 
+- 🚀 [快速入门](./QUICKSTART.md) - 10分钟上手教程
+- 📦 [安装指南](./INSTALLATION.md) - 详细安装步骤
+- 📚 [API参考](./API_REFERENCE.md) - 完整API文档
+- 💡 [最佳实践](./BEST_PRACTICES.md) - 生产环境建议
 - 📘 [完整手册 (QABook)](https://github.com/QUANTAXIS/QUANTAXIS/releases/download/latest/quantaxis.pdf)
-- 🦀 [QIFI协议规范](./QUANTAXIS/QARSBridge/QIFI_PROTOCOL.md)
-- 📋 [升级计划](./UPGRADE_PLAN.md)
-- 💡 [使用示例](./examples/qarsbridge_example.py)
+
+### 模块文档
+
+- 🦀 [QARSBridge文档](./QUANTAXIS/QARSBridge/README.md) - Rust高性能账户
+- 🔄 [QADataBridge文档](./QUANTAXIS/QADataBridge/README.md) - 零拷贝数据交换
+- 📋 [QIFI协议规范](./QUANTAXIS/QARSBridge/QIFI_PROTOCOL.md) - 统一账户协议
+
+### 示例代码
+
+- 💡 [QARSBridge示例](./examples/qarsbridge_example.py) - Rust账户使用
+- 🔄 [QADataBridge示例](./examples/qadatabridge_example.py) - 零拷贝转换
+
+### 性能测试
+
+- ⚡ [性能基准测试](./scripts/benchmark_databridge.py) - 数据转换性能
 
 ### 开发文档
 
-- 🔧 [CLAUDE.md](./CLAUDE.md) - AI开发指南
-- 📊 [Phase 1完成报告](./PHASE1_COMPLETE.md)
-- 🚀 [Phase 2完成报告](./PHASE2_COMPLETE.md)
-
-### API文档
-
-```bash
-# 查看模块文档
-python -c "from QUANTAXIS.QARSBridge import QARSAccount; help(QARSAccount)"
-```
+- 🔧 [开发指南 (CLAUDE.md)](./CLAUDE.md) - AI辅助开发
+- 📊 [Phase 1完成报告](./PHASE1_COMPLETE.md) - Python环境升级
+- 🚀 [Phase 2完成报告](./PHASE2_COMPLETE.md) - QARS2集成
+- 🔄 [Phase 3完成报告](./PHASE3_COMPLETE.md) - QADataSwap集成
+- 📋 [升级计划](./UPGRADE_PLAN.md) - v2.1.0升级路线图
 
 ---
 
