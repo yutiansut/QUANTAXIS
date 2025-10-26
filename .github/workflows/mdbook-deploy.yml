@@ -42,7 +42,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
+      - name: Install kpfonts
+        run: sudo apt-get update && sudo apt-get install -y texlive-fonts-extra
       - name: 安装mdbook
         run: |
           mkdir -p ~/bin
