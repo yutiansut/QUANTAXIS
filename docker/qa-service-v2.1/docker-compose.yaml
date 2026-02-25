@@ -1,0 +1,589 @@
+# QUANTAXIS 2.1.0 Docker Compose配置
+# 支持资源管理器、健康检查、日志管理等现代化特性
+#
+# 作者: @yutiansut @quantaxis
+# 版本: 2.1.0-alpha2
+# 日期: 2025-10-25
+
+version: '3.8'
+
+# ============================================================================
+# 服务定义
+# ============================================================================
+services:
+
+  # ==========================================================================
+  # MongoDB 数据库服务
+  # ==========================================================================
+  mongodb:
+    image: mongo:7.0
+    container_name: quantaxis-mongodb
+    hostname: mongodb
+    restart: unless-stopped
+
+    # 端口映射
+    ports:
+      - "27017:27017"
+
+    # 环境变量
+    environment:
+      TZ: Asia/Shanghai
+      MONGO_INITDB_DATABASE: quantaxis
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-root}
+
+    # 数据持久化
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+
+    # 网络
+    networks:
+      - quantaxis_network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+        labels: "service=mongodb"
+
+  # ==========================================================================
+  # RabbitMQ 消息队列服务
+  # ==========================================================================
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: quantaxis-rabbitmq
+    hostname: rabbitmq
+    restart: unless-stopped
+
+    # 端口映射
+    ports:
+      - "5672:5672"    # AMQP协议
+      - "15672:15672"  # 管理界面
+      - "15692:15692"  # Prometheus指标
+
+    # 环境变量
+    environment:
+      TZ: Asia/Shanghai
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-admin}
+      RABBITMQ_DEFAULT_VHOST: /
+
+    # 数据持久化
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+
+    # 网络
+    networks:
+      - quantaxis_network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+        labels: "service=rabbitmq"
+
+  # ==========================================================================
+  # Redis 缓存服务
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: quantaxis-redis
+    hostname: redis
+    restart: unless-stopped
+
+    # 端口映射
+    ports:
+      - "6379:6379"
+
+    # 环境变量
+    environment:
+      TZ: Asia/Shanghai
+
+    # 启动命令(带密码保护)
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD:-quantaxis}
+      --appendonly yes
+      --appendfsync everysec
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+
+    # 数据持久化
+    volumes:
+      - redis_data:/data
+
+    # 网络
+    networks:
+      - quantaxis_network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+        labels: "service=redis"
+
+  # ==========================================================================
+  # ClickHouse 分析数据库服务 (可选)
+  # ==========================================================================
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: quantaxis-clickhouse
+    hostname: clickhouse
+    restart: unless-stopped
+    profiles: ["full", "analytics"]  # 仅在full或analytics profile时启动
+
+    # 端口映射
+    ports:
+      - "8123:8123"  # HTTP接口
+      - "9000:9000"  # Native接口
+
+    # 环境变量
+    environment:
+      TZ: Asia/Shanghai
+      CLICKHOUSE_DB: quantaxis
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-quantaxis}
+
+    # 数据持久化
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./clickhouse-config.xml:/etc/clickhouse-server/config.d/custom.xml:ro
+
+    # 网络
+    networks:
+      - quantaxis_network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+        labels: "service=clickhouse"
+
+  # ==========================================================================
+  # QUANTAXIS 核心服务
+  # ==========================================================================
+  quantaxis:
+    image: quantaxis/quantaxis:2.1.0-alpha2
+    container_name: quantaxis-core
+    hostname: quantaxis
+    restart: unless-stopped
+
+    # 依赖服务
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    # 端口映射
+    ports:
+      - "8888:8888"  # Jupyter
+      - "8010:8010"  # WebServer
+
+    # 环境变量
+    environment:
+      TZ: Asia/Shanghai
+
+      # 数据库配置
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_USER: ${MONGO_USER:-quantaxis}
+      MONGODB_PASSWORD: ${MONGO_PASSWORD:-quantaxis}
+      MONGODB_DATABASE: quantaxis
+
+      # RabbitMQ配置
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-admin}
+      RABBITMQ_VHOST: /
+
+      # Redis配置
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-quantaxis}
+      REDIS_DB: 0
+
+      # ClickHouse配置 (可选)
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: 9000
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-default}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-quantaxis}
+      CLICKHOUSE_DATABASE: quantaxis
+
+      # Python环境
+      PYTHONUNBUFFERED: 1
+      QUANTAXIS_VERSION: 2.1.0-alpha2
+
+      # 资源管理器配置
+      QA_RESOURCE_POOL_ENABLED: true
+      QA_AUTO_CLEANUP: true
+
+    # 数据持久化
+    volumes:
+      - quantaxis_code:/home/quantaxis
+      - quantaxis_logs:/var/log/quantaxis
+      - ./config:/home/quantaxis/config:ro
+
+    # 网络
+    networks:
+      - quantaxis_network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "python", "-c", "import QUANTAXIS; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+        labels: "service=quantaxis"
+
+  # ==========================================================================
+  # QUANTAXIS Web界面
+  # ==========================================================================
+  quantaxis-web:
+    image: quantaxis/quantaxis-web:2.1.0-alpha2
+    container_name: quantaxis-web
+    hostname: quantaxis-web
+    restart: unless-stopped
+
+    # 依赖服务
+    depends_on:
+      quantaxis:
+        condition: service_healthy
+
+    # 端口映射
+    ports:
+      - "8080:80"
+
+    # 环境变量
+    environment:
+      TZ: Asia/Shanghai
+      QUANTAXIS_API_URL: http://quantaxis:8010
+
+    # 网络
+    networks:
+      - quantaxis_network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+        labels: "service=quantaxis-web"
+
+  # ==========================================================================
+  # 系统监控服务
+  # ==========================================================================
+  monitor:
+    image: quantaxis/qa-monitor:latest
+    container_name: quantaxis-monitor
+    hostname: monitor
+    restart: unless-stopped
+
+    # 端口映射
+    ports:
+      - "61208:61208"  # Web界面
+      - "61209:61209"  # API
+
+    # 环境变量
+    environment:
+      TZ: Asia/Shanghai
+
+    # 特权模式(用于系统监控)
+    pid: host
+
+    # 网络
+    networks:
+      - quantaxis_network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:61208/api/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+        labels: "service=monitor"
+
+  # ==========================================================================
+  # 实时行情采集服务 (可选)
+  # ==========================================================================
+  market-collector:
+    image: quantaxis/qarealtimecollector:latest
+    container_name: quantaxis-market-collector
+    hostname: market-collector
+    restart: unless-stopped
+    profiles: ["full", "market"]  # 仅在full或market profile时启动
+
+    # 依赖服务
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+    # 端口映射
+    ports:
+      - "8011:8011"
+
+    # 环境变量
+    environment:
+      TZ: Asia/Shanghai
+      MONGODB_HOST: mongodb
+      RABBITMQ_HOST: rabbitmq
+
+    # 网络
+    networks:
+      - quantaxis_network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+        labels: "service=market-collector"
+
+# ============================================================================
+# 数据卷定义
+# ============================================================================
+volumes:
+  # MongoDB数据
+  mongodb_data:
+    driver: local
+    name: quantaxis_mongodb_data
+
+  mongodb_config:
+    driver: local
+    name: quantaxis_mongodb_config
+
+  # RabbitMQ数据
+  rabbitmq_data:
+    driver: local
+    name: quantaxis_rabbitmq_data
+
+  # Redis数据
+  redis_data:
+    driver: local
+    name: quantaxis_redis_data
+
+  # ClickHouse数据
+  clickhouse_data:
+    driver: local
+    name: quantaxis_clickhouse_data
+
+  # QUANTAXIS代码和日志
+  quantaxis_code:
+    driver: local
+    name: quantaxis_code
+
+  quantaxis_logs:
+    driver: local
+    name: quantaxis_logs
+
+# ============================================================================
+# 网络定义
+# ============================================================================
+networks:
+  quantaxis_network:
+    name: quantaxis_network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.1
+    driver_opts:
+      com.docker.network.bridge.name: qa_bridge
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+
+# ============================================================================
+# 配置说明
+# ============================================================================
+#
+# 使用方法:
+#
+# 1. 基础部署 (仅核心服务)
+#    docker-compose up -d
+#
+# 2. 完整部署 (包含所有可选服务)
+#    docker-compose --profile full up -d
+#
+# 3. 仅数据分析 (包含ClickHouse)
+#    docker-compose --profile analytics up -d
+#
+# 4. 仅行情采集
+#    docker-compose --profile market up -d
+#
+# 5. 查看日志
+#    docker-compose logs -f quantaxis
+#
+# 6. 停止服务
+#    docker-compose down
+#
+# 7. 完全清理 (包括数据卷,危险!)
+#    docker-compose down -v
+#
+# 环境变量:
+#   在同目录创建.env文件来自定义配置
+#   示例: .env.example
+#
+# ============================================================================

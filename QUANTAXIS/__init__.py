@@ -2,7 +2,7 @@
 #
 # The MIT License (MIT)
 #
-# Copyright (c) 2016-2021 yutiansut/QUANTAXIS
+# Copyright (c) 2016-2025 yutiansut/QUANTAXIS
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,8 +31,25 @@ by yutiansut
 2017/4/8
 """
 
-__version__ = '2.0.0.dev34'
+__version__ = '2.1.0.alpha2'
 __author__ = 'yutiansut'
+
+# Rust集成支持检测
+try:
+    import qars3
+    __has_qars__ = True
+    __qars_version__ = getattr(qars3, '__version__', 'unknown')
+except ImportError:
+    __has_qars__ = False
+    __qars_version__ = None
+
+try:
+    import qadataswap
+    __has_dataswap__ = True
+    __dataswap_version__ = getattr(qadataswap, '__version__', 'unknown')
+except ImportError:
+    __has_dataswap__ = False
+    __dataswap_version__ = None
 
 import logging
 logging.disable(logging.INFO)
@@ -262,6 +279,22 @@ from QUANTAXIS.QAUtil import (  # QAPARAMETER
     QATZInfo_CN, future_ip_list, info_ip_list, stock_ip_list, trade_date_sse,
     QA_util_get_next_period, QA_util_get_real_tradeday)
 
+# QAResourceManager - 统一资源管理器 (MongoDB/RabbitMQ/ClickHouse/Redis)
+try:
+    from QUANTAXIS.QAUtil.QAResourceManager import (
+        QAMongoResourceManager,
+        QARabbitMQResourceManager,
+        QAClickHouseResourceManager,
+        QARedisResourceManager,
+        QAResourcePool,
+        get_mongo_resource,
+        get_rabbitmq_resource,
+        get_clickhouse_resource,
+        get_redis_resource,
+    )
+except ImportError:
+    # 资源管理器依赖可选,不阻塞主模块加载
+    pass
 
 from QUANTAXIS.QAPubSub.consumer import subscriber, subscriber_topic, subscriber_routing
 from QUANTAXIS.QAPubSub.producer import publisher, publisher_topic, publisher_routing
@@ -275,6 +308,41 @@ from QUANTAXIS.QAWebServer.server import start_server
 
 from QUANTAXIS.QIFI.QifiAccount import QIFI_Account
 from QUANTAXIS.QIFI.QifiManager import QA_QIFIMANAGER, QA_QIFISMANAGER
+
+# QAMarket - 市场预设和订单/持仓管理
+from QUANTAXIS.QAMarket import (
+    MARKET_PRESET,
+    QA_Order,
+    QA_OrderQueue,
+    QA_Position,
+    QA_PMS,
+)
+
+# QARSBridge - Rust高性能账户和回测 (如果可用)
+try:
+    from QUANTAXIS.QARSBridge import (
+        QARSAccount,
+        QARSBacktest,
+        has_qars_support,
+    )
+except ImportError:
+    # QARSBridge未安装，使用标准Python实现
+    pass
+
+# QADataBridge - 跨语言零拷贝数据交换 (如果可用)
+try:
+    from QUANTAXIS.QADataBridge import (
+        has_dataswap_support,
+        convert_pandas_to_polars,
+        convert_polars_to_pandas,
+        convert_pandas_to_arrow,
+        convert_arrow_to_pandas,
+        SharedMemoryWriter,
+        SharedMemoryReader,
+    )
+except ImportError:
+    # QADataBridge未安装，跨语言通信不可用
+    pass
 
 from QUANTAXIS.QAStrategy.qactabase import QAStrategyCtaBase
 

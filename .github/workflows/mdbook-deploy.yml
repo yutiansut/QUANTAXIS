@@ -1,0 +1,95 @@
+# QUANTAXIS 文档自动构建与发布
+#
+# 功能说明:
+# - 当推送到master分支时自动触发
+# - 使用mdbook构建中文文档
+# - 发布到GitHub Pages
+#
+# 作者: @yutiansut @quantaxis
+# 更新日期: 2025-10-25
+
+name: 部署mdbook文档
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'doc/**'
+      - 'book.toml'
+      - '.github/workflows/mdbook-deploy.yml'
+  workflow_dispatch:
+
+# 设置GITHUB_TOKEN权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 确保同一时间只运行一个部署任务
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # 构建文档
+  build:
+    name: 构建mdbook文档
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install kpfonts
+        run: sudo apt-get update && sudo apt-get install -y texlive-fonts-extra
+      - name: 安装mdbook
+        run: |
+          mkdir -p ~/bin
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.40/mdbook-v0.4.40-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C ~/bin
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: 安装mdbook插件
+        run: |
+          # mdbook-mermaid: 支持Mermaid图表
+          cargo install mdbook-mermaid
+
+          # mdbook-toc: 生成目录
+          cargo install mdbook-toc
+
+          # mdbook-linkcheck: 检查链接有效性
+          cargo install mdbook-linkcheck
+
+      - name: 验证文档链接
+        run: |
+          mdbook build
+        continue-on-error: true
+
+      - name: 构建mdbook
+        run: mdbook build
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./book
+
+  # 部署到GitHub Pages
+  deploy:
+    name: 部署到GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 部署到GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: 输出部署URL
+        run: |
+          echo "📚 文档已成功部署!"
+          echo "🌐 访问地址: ${{ steps.deployment.outputs.page_url }}"
