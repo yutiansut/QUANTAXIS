@@ -124,15 +124,15 @@ def QA_SU_save_single_stock_day(code : str, client= DATABASE, ui_log=None):
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_stock_day.find({'code': str(code)[0:6]})
+            ref = list(coll_stock_day.find({'code': str(code)[0:6]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
 
                 QA_util_log_info(
                     'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
@@ -187,6 +187,21 @@ def QA_SU_save_single_stock_day(code : str, client= DATABASE, ui_log=None):
         QA_util_log_info(err, ui_log)
 
 
+def _get_stock_list_with_fallback():
+    """优先从 TDX 获取股票列表，失败时从 MongoDB stock_list 读取（如由 save stock_list tushare 写入）"""
+    try:
+        return QA_fetch_get_stock_list().code.unique().tolist()
+    except Exception:
+        from QUANTAXIS.QAFetch.QAQuery import QA_fetch_stock_list
+        df = QA_fetch_stock_list()
+        if df is None or len(df) == 0:
+            raise ValueError(
+                "无法获取股票列表。TDX 连接失败且 MongoDB stock_list 为空。"
+                "请先运行: save stock_list tushare (需配置 TUSHARE_TOKEN)"
+            )
+        return df['code'].unique().tolist()
+
+
 def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     '''
      save stock_day
@@ -196,7 +211,7 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
     :param ui_progress: 给GUI qt 界面使用
     :param ui_progress_int_value: 给GUI qt 界面使用
     '''
-    stock_list = QA_fetch_get_stock_list().code.unique().tolist()
+    stock_list = _get_stock_list_with_fallback()
     coll_stock_day = client.stock_day
     coll_stock_day.create_index(
         [("code",
@@ -214,15 +229,15 @@ def QA_SU_save_stock_day(client=DATABASE, ui_log=None, ui_progress=None):
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_stock_day.find({'code': str(code)[0:6]})
+            ref = list(coll_stock_day.find({'code': str(code)[0:6]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
 
                 QA_util_log_info(
                     'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'
@@ -326,12 +341,12 @@ def QA_SU_save_stock_week(client=DATABASE, ui_log=None, ui_progress=None):
                 ui_log=ui_log
             )
 
-            ref = coll_stock_week.find({'code': str(code)[0:6]})
+            ref = list(coll_stock_week.find({'code': str(code)[0:6]}))
             end_date = str(now_time())[0:10]
-            if ref.count() > 0:
+            if len(ref) > 0:
                 # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
 
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
 
                 QA_util_log_info(
                     'UPDATE_STOCK_WEEK \n Trying updating {} from {} to {}'
@@ -425,12 +440,12 @@ def QA_SU_save_stock_month(client=DATABASE, ui_log=None, ui_progress=None):
                 ui_log=ui_log
             )
 
-            ref = coll_stock_month.find({'code': str(code)[0:6]})
+            ref = list(coll_stock_month.find({'code': str(code)[0:6]}))
             end_date = str(now_time())[0:10]
-            if ref.count() > 0:
+            if len(ref) > 0:
                 # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
 
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
 
                 QA_util_log_info(
                     'UPDATE_STOCK_MONTH \n Trying updating {} from {} to {}'
@@ -524,12 +539,12 @@ def QA_SU_save_stock_year(client=DATABASE, ui_log=None, ui_progress=None):
                 ui_log=ui_log
             )
 
-            ref = coll_stock_year.find({'code': str(code)[0:6]})
+            ref = list(coll_stock_year.find({'code': str(code)[0:6]}))
             end_date = str(now_time())[0:10]
-            if ref.count() > 0:
+            if len(ref) > 0:
                 # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
 
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
 
                 QA_util_log_info(
                     'UPDATE_STOCK_YEAR \n Trying updating {} from {} to {}'
@@ -729,10 +744,10 @@ def QA_SU_save_stock_min(client=DATABASE, ui_log=None, ui_progress=None):
         )
         try:
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB03.{} Now Saving {} from {} to {} =={} '.format(
@@ -853,10 +868,10 @@ def QA_SU_save_single_stock_min(code : str, client=DATABASE, ui_log=None, ui_pro
         )
         try:
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB03.{} Now Saving {} from {} to {} =={} '.format(
@@ -969,10 +984,10 @@ def QA_SU_save_single_index_day(code : str, client=DATABASE, ui_log=None):
     def __saving_work(code, coll):
 
         try:
-            ref_ = coll.find({'code': str(code)[0:6]})
+            ref_ = list(coll.find({'code': str(code)[0:6]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB04 Now Saving INDEX_DAY==== \n Trying updating {} from {} to {}'
@@ -1062,10 +1077,10 @@ def QA_SU_save_index_day(client=DATABASE, ui_log=None, ui_progress=None):
     def __saving_work(code, coll):
 
         try:
-            ref_ = coll.find({'code': str(code)[0:6]})
+            ref_ = list(coll.find({'code': str(code)[0:6]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB04 Now Saving INDEX_DAY==== \n Trying updating {} from {} to {}'
@@ -1183,10 +1198,10 @@ def QA_SU_save_index_min(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB05.{} Now Saving {} from {} to {} =={} '.format(
@@ -1309,10 +1324,10 @@ def QA_SU_save_single_index_min(code : str, client=DATABASE, ui_log=None, ui_pro
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB05.{} Now Saving {} from {} to {} =={} '.format(
@@ -1427,10 +1442,10 @@ def QA_SU_save_single_etf_day(code : str, client=DATABASE, ui_log=None):
 
         try:
 
-            ref_ = coll.find({'code': str(code)[0:6]})
+            ref_ = list(coll.find({'code': str(code)[0:6]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB06 Now Saving ETF_DAY==== \n Trying updating {} from {} to {}'
@@ -1501,10 +1516,10 @@ def QA_SU_save_etf_day(client=DATABASE, ui_log=None, ui_progress=None):
 
         try:
 
-            ref_ = coll.find({'code': str(code)[0:6]})
+            ref_ = list(coll.find({'code': str(code)[0:6]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB06 Now Saving ETF_DAY==== \n Trying updating {} from {} to {}'
@@ -1604,10 +1619,10 @@ def QA_SU_save_etf_min(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
@@ -1731,10 +1746,10 @@ def QA_SU_save_single_etf_min(code : str, client=DATABASE, ui_log=None, ui_progr
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
@@ -1857,9 +1872,14 @@ def QA_SU_save_stock_list(client=DATABASE, ui_log=None, ui_progress=None):
         )
     except Exception as e:
         QA_util_log_info(e, ui_log=ui_log)
-        print(" Error save_tdx.QA_SU_save_stock_list exception!")
-
-        pass
+        print(" TDX 连接失败，尝试使用 Tushare 备用源...")
+        try:
+            from QUANTAXIS.QASU.save_tushare import QA_SU_save_stock_list_to_stock_list
+            QA_SU_save_stock_list_to_stock_list(client=client)
+            QA_util_log_info("已完成 (Tushare 备用源)", ui_log=ui_log)
+        except Exception as e2:
+            print(" Error save_tdx.QA_SU_save_stock_list exception! 原因: %s" % (e2,))
+            print(" 提示: 若 TDX 不可用，可尝试 save stock_list tushare (需配置 TUSHARE_TOKEN)")
 
 
 def QA_SU_save_etf_list(client=DATABASE, ui_log=None, ui_progress=None):
@@ -2193,15 +2213,15 @@ def _save_option_commodity_ru_day(
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_option_commodity_ru_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_commodity_ru_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取 期权ru 天然橡胶 日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -2347,15 +2367,15 @@ def _save_option_commodity_c_day(
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_option_commodity_c_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_commodity_c_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取 玉米C 天然橡胶 日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -2499,15 +2519,15 @@ def _save_option_commodity_cf_day(
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_option_commodity_cf_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_commodity_cf_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取 期权ru 天然橡胶 日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -2652,15 +2672,15 @@ def _save_option_commodity_sr_day(
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_option_commodity_sr_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_commodity_sr_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取期权sr白糖日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -2807,15 +2827,15 @@ def _save_option_commodity_m_day(
             # 首选查找数据库 是否 有 这个代码的数据
             # M XXXXXX 编码格式
 
-            ref = coll_option_commodity_m_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_commodity_m_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取期权M豆粕日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -2960,15 +2980,15 @@ def _save_option_commodity_al_day(client=DATABASE,ui_log=None,ui_progress=None):
 
             # 首选查找数据库 是否 有 这个代码的数据
             # 期权代码 从 10000001 开始编码  10001228
-            ref = coll_option_commodity_al_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_commodity_al_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取期权AU日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -3115,15 +3135,15 @@ def _save_option_commodity_cu_day(
 
             # 首选查找数据库 是否 有 这个代码的数据
             # 期权代码 从 10000001 开始编码  10001228
-            ref = coll_option_commodity_cu_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_commodity_cu_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取期权CU日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -3266,15 +3286,15 @@ def _save_option_commodity_au_day(client=DATABASE,ui_log=None,ui_progress=None):
 
             # 首选查找数据库 是否 有 这个代码的数据
             # 期权代码 从 10000001 开始编码  10001228
-            ref = coll_option_commodity_au_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_commodity_au_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取期权AU日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -3492,11 +3512,11 @@ def _save_option_commodity_ru_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option RU 天然橡胶 {} from {} to {} =={} '
@@ -3641,11 +3661,11 @@ def _save_option_commodity_c_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option C 玉米 {} from {} to {} =={} '
@@ -3790,11 +3810,11 @@ def _save_option_commodity_cf_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option CF 棉花 {} from {} to {} =={} '
@@ -3940,11 +3960,11 @@ def _save_option_commodity_ru_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option RU 天然橡胶 {} from {} to {} =={} '
@@ -4090,11 +4110,11 @@ def _save_option_commodity_cu_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option CU 铜 {} from {} to {} =={} '
@@ -4242,11 +4262,11 @@ def _save_option_commodity_au_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option AU 金 {} from {} to {} =={} '
@@ -4392,11 +4412,11 @@ def _save_option_commodity_al_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB20.{} Now Saving Option AL 铝 {} from {} to {} =={} '
@@ -4542,11 +4562,11 @@ def _save_option_commodity_sr_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option SR 白糖 {} from {} to {} =={} '
@@ -4689,11 +4709,11 @@ def _save_option_commodity_m_min(
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option M 豆粕  {} from {} to {} =={} '
@@ -4884,11 +4904,11 @@ def QA_SU_save_option_50etf_min(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option 50ETF {} from {} to {} =={} '
@@ -5018,15 +5038,15 @@ def QA_SU_save_option_50etf_day(client=DATABASE, ui_log=None, ui_progress=None):
 
             # 首选查找数据库 是否 有 这个代码的数据
             # 期权代码 从 10000001 开始编码  10001228
-            ref = coll_option_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取期权日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -5169,11 +5189,11 @@ def QA_SU_save_option_300etf_min(client=DATABASE, ui_log=None, ui_progress=None)
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Option shanghai 300ETF {} from {} to {} =={} '
@@ -5303,15 +5323,15 @@ def QA_SU_save_option_300etf_day(client=DATABASE, ui_log=None, ui_progress=None)
 
             # 首选查找数据库 是否 有 这个代码的数据
             # 期权代码 从 10000001 开始编码  10001228
-            ref = coll_option_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取期权日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -5464,7 +5484,7 @@ def QA_SU_save_option_contract_list(
                 akey = a_js_row['desc']
                 id0 = coll.find_one({'desc': akey})
                 if id0 is None:
-                    coll.insert(a_js_row)
+                    coll.insert_one(a_js_row)
 
             # print(result0)
 
@@ -5511,15 +5531,15 @@ def QA_SU_save_option_day_all(client=DATABASE,ui_log=None,ui_progress=None):
 
             # 首选查找数据库 是否 有 这个代码的数据
             # 期权代码 从 10000001 开始编码  10001228
-            ref = coll_option_day.find({'code': str(code)[0:8]})
+            ref = list(coll_option_day.find({'code': str(code)[0:8]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
                 QA_util_log_info(
                     ' 上次获取期权日线数据的最后日期是 {}'.format(start_date),
                     ui_log=ui_log
@@ -5664,11 +5684,11 @@ def QA_SU_save_option_min_all(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:8], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:8], 'type': type}))
 
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB99.{} Now Saving Option ALL MIN {} from {} to {} =={} '
@@ -5827,15 +5847,15 @@ def QA_SU_save_single_future_day(code : str, client=DATABASE, ui_log=None, ui_pr
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_future_day.find({'code': str(code)[0:4]})
+            ref = list(coll_future_day.find({'code': str(code)[0:4]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
 
                 QA_util_log_info(
                     'UPDATE_Future_DAY \n Trying updating {} from {} to {}'
@@ -5920,15 +5940,15 @@ def QA_SU_save_future_day(client=DATABASE, ui_log=None, ui_progress=None):
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_future_day.find({'code': str(code)[0:4]})
+            ref = list(coll_future_day.find({'code': str(code)[0:4]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
 
                 QA_util_log_info(
                     'UPDATE_Future_DAY \n Trying updating {} from {} to {}'
@@ -6024,15 +6044,15 @@ def QA_SU_save_future_day_all(client=DATABASE, ui_log=None, ui_progress=None):
             )
 
             # 首选查找数据库 是否 有 这个代码的数据
-            ref = coll_future_day.find({'code': str(code)[0:6]})
+            ref = list(coll_future_day.find({'code': str(code)[0:6]}))
             end_date = str(now_time())[0:10]
 
             # 当前数据库已经包含了这个代码的数据， 继续增量更新
             # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-            if ref.count() > 0:
+            if len(ref) > 0:
 
                 # 接着上次获取的日期继续更新
-                start_date = ref[ref.count() - 1]['date']
+                start_date = ref[-1]['date']
 
                 QA_util_log_info(
                     'UPDATE_Future_DAY \n Trying updating {} from {} to {}'
@@ -6127,10 +6147,10 @@ def QA_SU_save_single_future_min(code : str, client=DATABASE, ui_log=None, ui_pr
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Future {} from {} to {} =={} '
@@ -6233,10 +6253,10 @@ def QA_SU_save_future_min(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Future {} from {} to {} =={} '
@@ -6362,10 +6382,10 @@ def QA_SU_save_future_min_all(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB13.{} Now Saving Future {} from {} to {} =={} '
@@ -6483,10 +6503,10 @@ def QA_SU_save_single_bond_day(code : str, client=DATABASE, ui_log=None):
 
         try:
 
-            ref_ = coll.find({'code': str(code)[0:6]})
+            ref_ = list(coll.find({'code': str(code)[0:6]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB06 Now Saving BOND_DAY==== \n Trying updating {} from {} to {}'
@@ -6558,10 +6578,10 @@ def QA_SU_save_bond_day(client=DATABASE, ui_log=None, ui_progress=None):
 
         try:
 
-            ref_ = coll.find({'code': str(code)[0:6]})
+            ref_ = list(coll.find({'code': str(code)[0:6]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB06 Now Saving BOND_DAY==== \n Trying updating {} from {} to {}'
@@ -6661,10 +6681,10 @@ def QA_SU_save_bond_min(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
@@ -6789,10 +6809,10 @@ def QA_SU_save_single_bond_min(code : str, client=DATABASE, ui_log=None, ui_prog
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
@@ -6944,10 +6964,10 @@ def QA_SU_save_single_hkstock_day(code : str, client=DATABASE, ui_log=None):
 
         try:
 
-            ref_ = coll.find({'code': str(code)[0:6]})
+            ref_ = list(coll.find({'code': str(code)[0:6]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB06 Now Saving HKSTOCK_DAY==== \n Trying updating {} from {} to {}'
@@ -7019,10 +7039,10 @@ def QA_SU_save_hkstock_day(client=DATABASE, ui_log=None, ui_progress=None):
 
         try:
 
-            ref_ = coll.find({'code': str(code)[0:6]})
+            ref_ = list(coll.find({'code': str(code)[0:6]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB06 Now Saving HKSTOCK_DAY==== \n Trying updating {} from {} to {}'
@@ -7123,10 +7143,10 @@ def QA_SU_save_hkstock_min(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
@@ -7251,10 +7271,10 @@ def QA_SU_save_single_hkstock_min(code : str, client=DATABASE, ui_log=None, ui_p
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB07.{} Now Saving {} from {} to {} =={} '.format(
@@ -7407,10 +7427,10 @@ def QA_SU_save_single_usstock_day(code : str, client=DATABASE, ui_log=None):
 
         try:
             # 目前美股列表中最长的字段是7个
-            ref_ = coll.find({'code': str(code)[0:7]})
+            ref_ = list(coll.find({'code': str(code)[0:7]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB08 Now Saving USSTOCK_DAY==== \n Trying updating {} from {} to {}'
@@ -7481,10 +7501,10 @@ def QA_SU_save_usstock_day(client=DATABASE, ui_log=None, ui_progress=None):
 
         try:
             # 目前美股列表中最长的字段是7个
-            ref_ = coll.find({'code': str(code)[0:7]})
+            ref_ = list(coll.find({'code': str(code)[0:7]}))
             end_time = str(now_time())[0:10]
-            if ref_.count() > 0:
-                start_time = ref_[ref_.count() - 1]['date']
+            if len(ref_) > 0:
+                start_time = ref_[-1]['date']
 
                 QA_util_log_info(
                     '##JOB08 Now Saving USSTOCK_DAY==== \n Trying updating {} from {} to {}'
@@ -7585,10 +7605,10 @@ def QA_SU_save_usstock_min(client=DATABASE, ui_log=None, ui_progress=None):
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB09.{} Now Saving {} from {} to {} =={} '.format(
@@ -7713,10 +7733,10 @@ def QA_SU_save_single_usstock_min(code : str, client=DATABASE, ui_log=None, ui_p
         try:
 
             for type in ['1min', '5min', '15min', '30min', '60min']:
-                ref_ = coll.find({'code': str(code)[0:6], 'type': type})
+                ref_ = list(coll.find({'code': str(code)[0:6], 'type': type}))
                 end_time = str(now_time())[0:19]
-                if ref_.count() > 0:
-                    start_time = ref_[ref_.count() - 1]['datetime']
+                if len(ref_) > 0:
+                    start_time = ref_[-1]['datetime']
 
                     QA_util_log_info(
                         '##JOB09.{} Now Saving {} from {} to {} =={} '.format(

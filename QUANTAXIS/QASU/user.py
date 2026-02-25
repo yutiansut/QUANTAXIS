@@ -58,7 +58,7 @@ def QA_user_sign_up(name, password, client):
     """
 
     coll = client.user
-    if (coll.find({'username': name}).count() > 0):
+    if (coll.count_documents({'username': name}) > 0):
         print(name)
         QA_util_log_info('user name is already exist')
         return False

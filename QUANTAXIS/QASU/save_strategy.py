@@ -43,7 +43,7 @@ def QA_SU_save_strategy(name, portfolio_cookie='default', account_cookie='defaul
                 pass
 
         collection = DATABASE.strategy
-        collection.insert({'name': name, 'account_cookie': account_cookie,
+        collection.insert_one({'name': name, 'account_cookie': account_cookie,
                            'portfolio_cookie': portfolio_cookie, 'version': version,
                            'last_modify_time': str(datetime.datetime.now()),
                            'content': data.decode('utf-8'),

@@ -53,18 +53,18 @@ def run(cls_instance, code):
 def get_coll(client=None):
     cache = QA_util_cache()
     results = cache.get('tdx_coll')
-    if results:
+    # 注意：pymongo Collection 不支持布尔判断，必须与 None 比较
+    if results is not None:
         return results
-    else:
-        _coll = client.index_day
-        _coll.create_index(
-            [('code',
-              pymongo.ASCENDING),
-             ('date_stamp',
-              pymongo.ASCENDING)]
-        )
-        cache.set('tdx_coll', _coll, age=86400)
-        return _coll
+    _coll = client.index_day
+    _coll.create_index(
+        [
+            ('code', pymongo.ASCENDING),
+            ('date_stamp', pymongo.ASCENDING),
+        ]
+    )
+    cache.set('tdx_coll', _coll, age=86400)
+    return _coll
 
 
 class QA_SU_save_day_parallelism(Parallelism):

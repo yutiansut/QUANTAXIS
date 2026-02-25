@@ -183,7 +183,7 @@ class _quotation_base():
         assert self.is_same(DataStruct)
         # 🛠todo 继承的子类  QA_DataStruct_XXXX 类型的 判断必须是同一种类型才可以操作
         return self.new(
-            data=self.data.append(DataStruct.data).drop_duplicates(),
+            data=pd.concat([self.data, DataStruct.data]).drop_duplicates(),
             dtype=self.type,
             if_fq=self.if_fq
         )
@@ -947,7 +947,7 @@ class _quotation_base():
         return self.data.iterrows()
 
     def iteritems(self):
-        return self.data.iteritems()
+        return self.data.items()
 
     def itertuples(self):
         return self.data.itertuples()

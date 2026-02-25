@@ -51,11 +51,13 @@ def QA_util_to_json_from_pandas(data):
     """
 
     """需要对于datetime 和date 进行转换, 以免直接被变成了时间戳"""
-    if 'datetime' in data.columns:
-        data.datetime = data.datetime.apply(str)
-    if 'date' in data.columns:
-        data.date = data.date.apply(str)
-    return json.loads(data.to_json(orient='records'))
+    # 避免 SettingWithCopyWarning：先复制一份，后续只在本地副本上修改
+    data = data.copy()
+    if "datetime" in data.columns:
+        data.loc[:, "datetime"] = data["datetime"].astype(str)
+    if "date" in data.columns:
+        data.loc[:, "date"] = data["date"].astype(str)
+    return json.loads(data.to_json(orient="records"))
 
 
 def QA_util_to_json_from_numpy(data):

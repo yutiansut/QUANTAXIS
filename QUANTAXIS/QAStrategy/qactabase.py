@@ -164,10 +164,10 @@ class QAStrategyCtaBase():
             self.subscribe_multi(self.code, self.frequence, self.data_host,
                                  self.data_port, self.data_user, self.data_password, self.model)
         print('account {} start sim'.format(self.strategy_id))
-        self.database.strategy_schedule.job_control.update(
+        self.database.strategy_schedule.job_control.update_one(
             {'strategy_id': self.strategy_id},
-            {'strategy_id': self.strategy_id, 'taskid': self.taskid,
-             'filepath': os.path.abspath(__file__), 'status': 200}, upsert=True)
+            {'$set': {'strategy_id': self.strategy_id, 'taskid': self.taskid,
+             'filepath': os.path.abspath(__file__), 'status': 200}}, upsert=True)
 
     def debug_sim(self):
         self._debug_sim()

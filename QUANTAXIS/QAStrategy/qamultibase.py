@@ -126,10 +126,10 @@ class QAStrategyStockBase(QAStrategyCtaBase):
         self.subscribe_data(self.code, self.frequence, self.data_host,
                             self.data_port, self.data_user, self.data_password)
 
-        self.database.strategy_schedule.job_control.update(
+        self.database.strategy_schedule.job_control.update_one(
             {'strategy_id': self.strategy_id},
-            {'strategy_id': self.strategy_id, 'taskid': self.taskid,
-             'filepath': os.path.abspath(__file__), 'status': 200}, upsert=True)
+            {'$set': {'strategy_id': self.strategy_id, 'taskid': self.taskid,
+             'filepath': os.path.abspath(__file__), 'status': 200}}, upsert=True)
 
         # threading.Thread(target=, daemon=True).start()
         self.sub.start()

@@ -35,6 +35,7 @@ import os
 import pandas as pd
 from pytdx.exhq import TdxExHq_API
 from pytdx.hq import TdxHq_API
+from pytdx.errors import TdxFunctionCallError, TdxConnectionError
 from retrying import retry
 
 
@@ -62,7 +63,7 @@ def init_fetcher():
 
 
 def ping(ip, port=7709, type_='stock'):
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     apix = TdxExHq_API(raise_exception=True)
     __time1 = datetime.datetime.now()
     try:
@@ -276,7 +277,7 @@ def QA_fetch_get_security_bars(code, _type, lens, ip=None, port=None):
         [type] -- [description]
     """
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     with api.connect(ip, port):
         data = pd.concat([api.to_df(
             api.get_security_bars(_select_type(_type), _select_market_code(
@@ -318,7 +319,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00',
         如果出现网络问题/服务器拒绝, 会出现socket:time out 尝试再次获取/更换ip即可, 本函数不做处理
     """
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     try:
         with api.connect(ip, port, time_out=0.7):
 
@@ -381,7 +382,7 @@ def QA_fetch_get_stock_day(code, start_date, end_date, if_fq='00',
 def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None,
                            port=None):
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     type_ = ''
     start_date = str(start)[0:10]
     today_ = datetime.date.today()
@@ -432,7 +433,7 @@ def QA_fetch_get_stock_min(code, start, end, frequence='1min', ip=None,
 def QA_fetch_get_stock_latest(code, frequence='day', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     code = [code] if isinstance(code, str) else code
-    api = TdxHq_API(multithread=True)
+    api = TdxHq_API(multithread=True, raise_exception=True)
 
     if frequence in ['w', 'W', 'Week', 'week']:
         frequence = 5
@@ -481,14 +482,14 @@ def QA_fetch_get_stock_realtime(code=['000001', '000002'], ip=None, port=None):
     # reversed_bytes2 市场
     # # reversed_bytes0 时间
 
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     __data = pd.DataFrame()
     with api.connect(ip, port):
         code = [code] if isinstance(code, str) else code
         for id_ in range(int(len(code) / 80) + 1):
-            __data = __data.append(api.to_df(api.get_security_quotes(
+            __data = pd.concat([__data, api.to_df(api.get_security_quotes(
                 [(_select_market_code(x), x) for x in
-                 code[80 * id_:80 * (id_ + 1)]])))
+                 code[80 * id_:80 * (id_ + 1)]]))], ignore_index=True)
             __data = __data.assign(datetime=datetime.datetime.now(
             ), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
             # __data['rev']
@@ -515,14 +516,14 @@ def QA_fetch_get_index_realtime(code=['000001'], ip=None, port=None):
     # reversed_bytes2 市场
     # # reversed_bytes0 时间
 
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     __data = pd.DataFrame()
     with api.connect(ip, port):
         code = [code] if isinstance(code, str) else code
         for id_ in range(int(len(code) / 80) + 1):
-            __data = __data.append(api.to_df(api.get_security_quotes(
+            __data = pd.concat([__data, api.to_df(api.get_security_quotes(
                 [(_select_index_code(x), x) for x in
-                 code[80 * id_:80 * (id_ + 1)]])))
+                 code[80 * id_:80 * (id_ + 1)]]))], ignore_index=True)
             __data = __data.assign(datetime=datetime.datetime.now(
             ), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
             # __data['rev']
@@ -549,14 +550,14 @@ def QA_fetch_get_bond_realtime(code=['010107'], ip=None, port=None):
     # reversed_bytes2 市场
     # # reversed_bytes0 时间
 
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     __data = pd.DataFrame()
     with api.connect(ip, port):
         code = [code] if isinstance(code, str) else code
         for id_ in range(int(len(code) / 80) + 1):
-            __data = __data.append(api.to_df(api.get_security_quotes(
+            __data = pd.concat([__data, api.to_df(api.get_security_quotes(
                 [(_select_bond_market_code(x), x) for x in
-                 code[80 * id_:80 * (id_ + 1)]])))
+                 code[80 * id_:80 * (id_ + 1)]]))], ignore_index=True)
             __data = __data.assign(datetime=datetime.datetime.now(
             ), servertime=__data['reversed_bytes0'].apply(QA_util_tdxtimestamp))
             # __data['rev']
@@ -578,14 +579,14 @@ def QA_fetch_get_bond_realtime(code=['010107'], ip=None, port=None):
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_depth_market_data(code=['000001', '000002'], ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     __data = pd.DataFrame()
     with api.connect(ip, port):
         code = [code] if isinstance(code, str) else code
         for id_ in range(int(len(code) / 80) + 1):
-            __data = __data.append(api.to_df(api.get_security_quotes(
+            __data = pd.concat([__data, api.to_df(api.get_security_quotes(
                 [(_select_market_code(x), x) for x in
-                 code[80 * id_:80 * (id_ + 1)]])))
+                 code[80 * id_:80 * (id_ + 1)]]))], ignore_index=True)
             __data['datetime'] = datetime.datetime.now()
         data = __data
         # data = __data[['datetime', 'active1', 'active2', 'last_close', 'code', 'open', 'high', 'low', 'price', 'cur_vol',
@@ -696,53 +697,68 @@ def for_sh(code):
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
 def QA_fetch_get_stock_list(type_='stock', ip=None, port=None):
+    """获取股票/指数/ETF 列表（TDX 源）
+
+    type_:
+        - 'stock' / 'gp' : 股票
+        - 'index' / 'zs' : 指数
+        - 'etf' / 'ETF'  : ETF
+        - 其他           : 返回全部原始列表
+    """
     ip, port = get_mainmarket_ip(ip, port)
-    # if type_ in ['stock', 'gp']:
-    #         res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
-    #         return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     with api.connect(ip, port):
         data = pd.concat(
-            [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
-                sse='sz' if j == 0 else 'sh') for i in
-                range(int(api.get_security_count(j) / 1000) + 1)], axis=0, sort=False) for
-                j
-                in range(2)], axis=0, sort=False)
-        # data.code = data.code.apply(int)
+            [
+                pd.concat(
+                    [
+                        api.to_df(api.get_security_list(j, i * 1000)).assign(
+                            sse="sz" if j == 0 else "sh"
+                        )
+                        for i in range(int(api.get_security_count(j) / 1000) + 1)
+                    ],
+                    axis=0,
+                    sort=False,
+                )
+                for j in range(2)
+            ],
+            axis=0,
+            sort=False,
+        )
         data = data.drop_duplicates()
-        data = data.loc[:,['code','volunit','decimal_point','name','pre_close','sse']].set_index(
-                ['code', 'sse'], drop=False)
+        data = data.loc[
+            :, ["code", "volunit", "decimal_point", "name", "pre_close", "sse"]
+        ].set_index(["code", "sse"], drop=False)
         sz = data.query('sse=="sz"')
         sh = data.query('sse=="sh"')
-
         sz = sz.assign(sec=sz.code.apply(for_sz))
         sh = sh.assign(sec=sh.code.apply(for_sh))
 
-        if type_ in ['stock', 'gp']:
-            # res = pd.read_csv('http://data.yutiansut.com/stock_code.csv')
-            # return res.assign(code=res.code.apply(lambda x: QA_util_code_tostr(x)))
-            return pd.concat([sz, sh], sort=False).query(
-                'sec=="stock_cn"').sort_index().assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
-
-        elif type_ in ['index', 'zs']:
-
-            return pd.concat([sz, sh], sort=False).query(
-                'sec=="index_cn"').sort_index().assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
-            # .assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
-            # .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
-        elif type_ in ['etf', 'ETF']:
-            return pd.concat([sz, sh], sort=False).query(
-                'sec=="etf_cn"').sort_index().assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
-
+        if type_ in ["stock", "gp"]:
+            return (
+                pd.concat([sz, sh], sort=False)
+                .query('sec=="stock_cn"')
+                .sort_index()
+                .assign(name=data["name"].apply(lambda x: str(x)[0:6]))
+            )
+        elif type_ in ["index", "zs"]:
+            return (
+                pd.concat([sz, sh], sort=False)
+                .query('sec=="index_cn"')
+                .sort_index()
+                .assign(name=data["name"].apply(lambda x: str(x)[0:6]))
+            )
+        elif type_ in ["etf", "ETF"]:
+            return (
+                pd.concat([sz, sh], sort=False)
+                .query('sec=="etf_cn"')
+                .sort_index()
+                .assign(name=data["name"].apply(lambda x: str(x)[0:6]))
+            )
         else:
             return data.assign(
-                code=data['code'].apply(lambda x: str(x))).assign(
-                name=data['name'].apply(lambda x: str(x)[0:6]))
-            # .assign(szm=data['name'].apply(lambda x: ''.join([y[0] for y in lazy_pinyin(x)])))\
-            #    .assign(quanpin=data['name'].apply(lambda x: ''.join(lazy_pinyin(x))))
+                code=data["code"].apply(lambda x: str(x))
+            ).assign(name=data["name"].apply(lambda x: str(x)[0:6]))
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=50, wait_random_max=100)
@@ -756,7 +772,7 @@ def QA_fetch_get_index_list(ip=None, port=None):
     """
 
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     with api.connect(ip, port):
         data = pd.concat(
             [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
@@ -785,7 +801,7 @@ def QA_fetch_get_bond_list(ip=None, port=None):
         port {[type]} -- [description] (default: {None})
     """
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     with api.connect(ip, port):
         data = pd.concat(
             [pd.concat([api.to_df(api.get_security_list(j, i * 1000)).assign(
@@ -808,7 +824,7 @@ def QA_fetch_get_bond_list(ip=None, port=None):
 def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None,
                           port=None):
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
         frequence = 9
     elif frequence in ['w', 'W', 'Week', 'week']:
@@ -847,7 +863,7 @@ def QA_fetch_get_bond_day(code, start_date, end_date, frequence='day', ip=None,
 def QA_fetch_get_bond_min(code, start, end, frequence='1min', ip=None,
                           port=None):
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     start_date = str(start)[0:10]
     today_ = datetime.date.today()
     lens = QA_util_get_trade_gap(start_date, today_)
@@ -915,7 +931,7 @@ def QA_fetch_get_index_day(code, start_date, end_date, frequence='day',
     """
 
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     if frequence in ['day', 'd', 'D', 'DAY', 'Day']:
         frequence = 9
     elif frequence in ['w', 'W', 'Week', 'week']:
@@ -961,7 +977,7 @@ def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None,
                            port=None):
     '指数分钟线'
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     type_ = ''
 
     start_date = str(start)[0:10]
@@ -1018,7 +1034,7 @@ def QA_fetch_get_index_min(code, start, end, frequence='1min', ip=None,
 def QA_fetch_get_index_latest(code, frequence='day', ip=None, port=None):
     ip, port = get_mainmarket_ip(ip, port)
     code = [code] if isinstance(code, str) else code
-    api = TdxHq_API(multithread=True)
+    api = TdxHq_API(multithread=True, raise_exception=True)
 
     if frequence in ['w', 'W', 'Week', 'week']:
         frequence = 5
@@ -1154,7 +1170,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None,
     '''
     '历史分笔成交 buyorsell 1--sell 0--buy 2--盘前'
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
     if real_start is None:
@@ -1178,7 +1194,7 @@ def QA_fetch_get_stock_transaction(code, start, end, retry=2, ip=None,
                 QA_util_log_info(
                     'Successfully Getting {} history transaction data in day {}'.format(
                         code, trade_date_sse[index_]))
-                data = data.append(data_)
+                data = pd.concat([data, data_], ignore_index=True)
         if len(data) > 0:
 
             return data.assign(
@@ -1201,7 +1217,7 @@ def QA_fetch_get_index_transaction(code, start, end, retry=2, ip=None,
     '''
     '历史分笔成交 buyorsell 1--sell 0--buy 2--盘前'
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
 
     real_start, real_end = QA_util_get_real_datelist(start, end)
     if real_start is None:
@@ -1225,7 +1241,7 @@ def QA_fetch_get_index_transaction(code, start, end, retry=2, ip=None,
                 QA_util_log_info(
                     'Successfully Getting {} history transaction data in day {}'.format(
                         code, trade_date_sse[index_]))
-                data = data.append(data_)
+                data = pd.concat([data, data_], ignore_index=True)
         if len(data) > 0:
 
             return data.assign(
@@ -1238,7 +1254,7 @@ def QA_fetch_get_index_transaction(code, start, end, retry=2, ip=None,
 def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
     '实时分笔成交 包含集合竞价 buyorsell 1--sell 0--buy 2--盘前'
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     try:
         with api.connect(ip, port):
             data = pd.DataFrame()
@@ -1264,7 +1280,7 @@ def QA_fetch_get_stock_transaction_realtime(code, ip=None, port=None):
 def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
     '除权除息'
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     market_code = _select_market_code(code)
     with api.connect(ip, port):
         category = {
@@ -1295,7 +1311,7 @@ def QA_fetch_get_stock_xdxr(code, ip=None, port=None):
 def QA_fetch_get_stock_info(code, ip=None, port=None):
     '股票基本信息'
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     market_code = _select_market_code(code)
     with api.connect(ip, port):
         return api.to_df(api.get_finance_info(market_code, code))
@@ -1305,7 +1321,7 @@ def QA_fetch_get_stock_info(code, ip=None, port=None):
 def QA_fetch_get_stock_block(ip=None, port=None):
     '板块数据'
     ip, port = get_mainmarket_ip(ip, port)
-    api = TdxHq_API()
+    api = TdxHq_API(raise_exception=True)
     with api.connect(ip, port):
         data = pd.concat([
             api.to_df(api.get_and_parse_block_info("block.dat"   )).assign(type="yb"),
@@ -1333,7 +1349,7 @@ def QA_fetch_get_stock_block(ip=None, port=None):
             set_index('code', drop=False, inplace=False).\
             drop_duplicates()
         if len(df) > 1:
-            data = data.append( df[['code', 'blockname', 'type']].assign(source='tdx') )
+            data = pd.concat([data, df[['code', 'blockname', 'type']].assign(source='tdx')], ignore_index=True)
         return data
     else:
         QA_util_log_info('Wrong with fetch block ')
@@ -2645,7 +2661,7 @@ def QA_fetch_get_future_transaction(code, start, end, retry=4, ip=None,
                 QA_util_log_info(
                     'Successfully Getting {} history transaction data in day {}'.format(
                         code, trade_date_sse[index_]))
-                data = data.append(data_)
+                data = pd.concat([data, data_], ignore_index=True)
         if len(data) > 0:
 
             return data.assign(

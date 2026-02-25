@@ -43,7 +43,7 @@ def save_account(message, collection=DATABASE.account):
             [("account_cookie", ASCENDING), ("user_cookie", ASCENDING), ("portfolio_cookie", ASCENDING)], unique=True)
     except:
         pass
-    collection.update(
+    collection.update_one(
         {'account_cookie': message['account_cookie'], 'portfolio_cookie':
             message['portfolio_cookie'], 'user_cookie': message['user_cookie']},
         {'$set': message},
@@ -73,7 +73,7 @@ def save_riskanalysis(message, collection=DATABASE.risk):
     except:
         pass
         
-    collection.update(
+    collection.update_one(
         {'account_cookie': message['account_cookie'], 'portfolio_cookie':
             message['portfolio_cookie'], 'user_cookie': message['user_cookie']},
         {'$set': message},

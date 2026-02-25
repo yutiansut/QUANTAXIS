@@ -105,7 +105,7 @@ def QA_SU_save_stock_list(client=DATABASE):
     date = str(datetime.date.today())
     date_stamp = QA_util_date_stamp(date)
     coll = client.stock_info_tushare
-    coll.insert(
+    coll.insert_one(
         {
             'date': date,
             'date_stamp': date_stamp,
@@ -114,6 +114,47 @@ def QA_SU_save_stock_list(client=DATABASE):
             }
         }
     )
+
+
+def QA_SU_save_stock_list_to_stock_list(client=DATABASE):
+    """从 Tushare 获取股票列表并写入 stock_list（与 TDX 格式兼容）"""
+    df = None
+    try:
+        from QUANTAXIS.QAFetch.QATushare import QA_fetch_stock_basic
+        df = QA_fetch_stock_basic()
+        if df is not None and len(df) > 0:
+            if 'list_status' in df.columns:
+                df = df[df['list_status'] == 'L'].copy()
+            df['code'] = df['ts_code'].str[:6]
+            df['name'] = df.get('name', '').fillna('')
+            df['sse'] = df['ts_code'].str.split('.').str[-1].str.lower()
+    except Exception as e:
+        print("Tushare Pro 获取失败:", e)
+        try:
+            df = QATs.get_stock_basics()
+            if df is not None and len(df) > 0:
+                df = df.reset_index()
+                if 'index' in df.columns:
+                    df = df.rename(columns={'index': 'code'})
+                if 'code' not in df.columns and len(df.columns) > 0:
+                    df['code'] = df.iloc[:, 0].astype(str).str[:6]
+                df['code'] = df['code'].astype(str).str[:6]
+                df['name'] = df['name'].fillna('') if 'name' in df.columns else ''
+                df['sse'] = df['code'].apply(lambda c: 'sh' if str(c).startswith('6') else 'sz')
+        except Exception as e2:
+            print("请设置 TUSHARE_TOKEN 或环境变量 TUSHARE_TOKEN，或配置 ~/.quantaxis/setting/config.ini [TSPRO] token")
+            raise
+    if df is None or len(df) == 0:
+        raise ValueError("Tushare 未返回数据")
+    client.drop_collection('stock_list')
+    coll = client.stock_list
+    coll.create_index('code')
+    df['volunit'] = 100
+    df['decimal_point'] = 2
+    df['pre_close'] = 0
+    out = df[['code', 'volunit', 'decimal_point', 'name', 'pre_close', 'sse']].drop_duplicates('code')
+    coll.insert_many(QA_util_to_json_from_pandas(out))
+    print("已完成 stock_list (Tushare 源)")
 
 
 def QA_SU_save_stock_terminated(client=DATABASE):
@@ -137,7 +178,7 @@ def QA_SU_save_stock_terminated(client=DATABASE):
     coll = client.stock_terminated
     client.drop_collection(coll)
     json_data = json.loads(df.reset_index().to_json(orient='records'))
-    coll.insert(json_data)
+    coll.insert_many(json_data)
     print(" 保存终止上市股票列表 到 stock_terminated collection， OK")
 
 
@@ -180,7 +221,7 @@ def QA_SU_save_stock_info_tushare(client=DATABASE):
     coll = client.stock_info_tushare
     client.drop_collection(coll)
     json_data = json.loads(df.reset_index().to_json(orient='records'))
-    coll.insert(json_data)
+    coll.insert_many(json_data)
     print(" Save data to stock_info_tushare collection， OK")
 
 
@@ -285,7 +326,7 @@ def QA_save_lhb(client=DATABASE):
                 .assign(sell=pd.sell.apply(float))
             # __coll.insert_many(QA_util_to_json_from_pandas(data))
             for i in range(0, len(data)):
-                __coll.update(
+                __coll.update_one(
                     {
                         "code": data.iloc[i]['code'],
                         "date": data.iloc[i]['date']
@@ -310,16 +351,16 @@ def _saving_work(code, coll_stock_day, ui_log=None, err=[]):
         )
 
         # 首选查找数据库 是否 有 这个代码的数据
-        ref = coll_stock_day.find({'code': str(code)[0:6]})
+        ref = list(coll_stock_day.find({'code': str(code)[0:6]}))
         end_date = now_time()
 
         # 当前数据库已经包含了这个代码的数据， 继续增量更新
         # 加入这个判断的原因是因为如果股票是刚上市的 数据库会没有数据 所以会有负索引问题出现
-        if ref.count() > 0:
+        if len(ref) > 0:
 
             # 接着上次获取的日期继续更新
-            start_date_new_format = ref[ref.count() - 1]['trade_date']
-            start_date = ref[ref.count() - 1]['date']
+            start_date_new_format = ref[-1]['trade_date']
+            start_date = ref[-1]['date']
 
             QA_util_log_info(
                 'UPDATE_STOCK_DAY \n Trying updating {} from {} to {}'

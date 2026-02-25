@@ -46,8 +46,11 @@ def QA_util_mongo_initial(db=DATABASE):
 
 
 def QA_util_mongo_status(db=DATABASE):
-    QA_util_log_info(db.collection_names())
-    QA_util_log_info(db.last_status())
+    QA_util_log_info(list(db.list_collection_names()))
+    try:
+        QA_util_log_info(db.client.admin.command('serverStatus'))
+    except Exception:
+        pass
     QA_util_log_info(subprocess.call('mongostat', shell=True))
 
 
@@ -55,11 +58,13 @@ def QA_util_mongo_infos(db=DATABASE):
 
     data_struct = []
 
-    for item in db.collection_names():
+    for item in db.list_collection_names():
+        coll = db[item]
         value = []
         value.append(item)
-        value.append(eval('db.' + str(item) + '.find({}).count()'))
-        value.append(list(eval('db.' + str(item) + '.find_one()').keys()))
+        value.append(coll.count_documents({}))
+        doc = coll.find_one()
+        value.append(list(doc.keys()) if doc else [])
         data_struct.append(value)
     return pd.DataFrame(data_struct, columns=['collection_name', 'counts', 'columns']).set_index('collection_name')
 

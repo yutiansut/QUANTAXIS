@@ -32,8 +32,8 @@ import platform
 import configparser
 try:
     from setuptools import setup
-except:
-    from distutils.core import setup
+except ImportError:
+    from distutils.core import setup  # deprecated in 3.12, fallback for older
 """
 """
 
@@ -130,7 +130,10 @@ URL = "https://github.com/quantaxis/quantaxis"
 LICENSE = "MIT"
 
 with open('requirements.txt') as reqs_file:
-    INSTALL_REQUIRES = reqs_file.readlines()
+    INSTALL_REQUIRES = [
+        line.strip() for line in reqs_file
+        if line.strip() and not line.strip().startswith('#')
+    ]
 
 setup(
     name=NAME,
