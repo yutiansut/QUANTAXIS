@@ -1,11 +1,14 @@
 import datetime
 import re
+import warnings
 
 import empyrical as em
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import pyfolio as pf
+with warnings.catch_warnings():
+    warnings.filterwarnings('ignore', message='.*zipline.assets.*not found.*')
+    import pyfolio as pf
 import pymongo
 import QUANTAXIS as QA
 from qaenv import mongo_ip

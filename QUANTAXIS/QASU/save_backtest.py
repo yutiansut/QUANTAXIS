@@ -33,7 +33,7 @@ from QUANTAXIS.QAUtil import QA_util_log_expection
 def QA_SU_save_account_message(message, client):
     coll = client.quantaxis.backtest_history
     try:
-        coll.insert({
+        coll.insert_one({
             'time_stamp': message['body']['date_stamp'],
             "cookie": message['header']['cookie'],
             'user': message['header']['session']['user'],
@@ -51,7 +51,7 @@ def QA_SU_save_account_message(message, client):
 def QA_SU_save_backtest_message(message, client):
     __coll = client.quantaxis.backtest_info
 
-    __coll.insert(message)
+    __coll.insert_one(message) if isinstance(message, dict) else __coll.insert_many(message)
 
 
 def QA_SU_save_account_to_csv(message, path=os.getcwd()):

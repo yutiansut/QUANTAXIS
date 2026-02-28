@@ -59,29 +59,36 @@ from QUANTAXIS.QAFetch import QAfinancial
 from QUANTAXIS.QAFetch.base import get_stock_market
 from QUANTAXIS.QAFetch import QAQAWEB as QAWEB
 from QUANTAXIS.QAFetch import QAKQ as QAKQ
+from QUANTAXIS.QAFetch import QABaostock as QABaostock
 
 
 def use(package):
 
-    if package in ['tushare', 'ts']:
+    if package in ["tushare", "ts"]:
         return QATushare
-    elif package in ['tdx', 'pytdx']:
+    elif package in ["tdx", "pytdx"]:
         return QATdx
-    elif package in ['ths', 'THS']:
+    elif package in ["baostock", "bs", "bao"]:
+        return QABaostock
+    elif package in ["ths", "THS"]:
         return QAThs
-    elif package in ['HEXUN', 'Hexun', 'hexun']:
+    elif package in ["HEXUN", "Hexun", "hexun"]:
         return QAHexun
-    elif package in ['QA']:
+    elif package in ["QA"]:
         return QAWEB
 
 
-def QA_fetch_get_stock_day(package, code, start, end, if_fq='00', level='day', type_='pd'):
+def QA_fetch_get_stock_day(
+    package, code, start, end, if_fq="00", level="day", type_="pd"
+):
     Engine = use(package)
-    if package in ['ths', 'THS', 'wind']:
+    if package in ["ths", "THS", "wind"]:
         return Engine.QA_fetch_get_stock_day(code, start, end, if_fq)
-    elif package in ['ts', 'tushare']:
+    elif package in ["ts", "tushare"]:
         return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, type_)
-    elif package in ['tdx', 'pytdx']:
+    elif package in ["baostock", "bs", "bao"]:
+        return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, type_)
+    elif package in ["tdx", "pytdx"]:
         return Engine.QA_fetch_get_stock_day(code, start, end, if_fq, level)
     else:
         return Engine.QA_fetch_get_stock_day(code, start, end)
@@ -197,12 +204,15 @@ def QA_fetch_get_stock_info(package, code):
 # LIST
 
 
-def QA_fetch_get_stock_list(package, type_='stock'):
+def QA_fetch_get_stock_list(package, type_="stock"):
     Engine = use(package)
-    if package in ['tdx', 'pytdx']:
+    if package in ["tdx", "pytdx"]:
         return Engine.QA_fetch_get_stock_list(type_)
+    elif package in ["baostock", "bs", "bao"]:
+        # baostock 暂不区分 type_，直接返回全部股票列表
+        return Engine.QA_fetch_get_stock_list()
     else:
-        return 'Unsupport packages'
+        return "Unsupport packages"
 
 
 def QA_fetch_get_bond_list(package):

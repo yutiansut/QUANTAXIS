@@ -51,7 +51,7 @@ class QA_Tdx_Executor(QA_Thread):
         super().__init__(name='QATdxExecutor')
         self.thread_num = thread_num
         self._queue = queue.Queue(maxsize=200)
-        self.api_no_connection = TdxHq_API()
+        self.api_no_connection = TdxHq_API(raise_exception=True)
         self._api_worker = Thread(
             target=self.api_worker, args=(), name='API Worker')
         self._api_worker.start()
@@ -147,7 +147,7 @@ class QA_Tdx_Executor(QA_Thread):
                 _sec = self._test_speed(ip=item['ip'], port=item['port'])
                 if _sec < self.timeout*3:
                     try:
-                        self._queue.put(TdxHq_API(heartbeat=False).connect(
+                        self._queue.put(TdxHq_API(heartbeat=False, raise_exception=True).connect(
                             ip=item['ip'], port=item['port'], time_out=self.timeout*2))
                     except:
                         pass
@@ -160,8 +160,8 @@ class QA_Tdx_Executor(QA_Thread):
         try:
             _api = self.get_available()
 
-            __data = context.append(self.api_no_connection.to_df(_api.get_security_quotes(
-                [(self._select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]])))
+            __data = pd.concat([context, self.api_no_connection.to_df(_api.get_security_quotes(
+                [(self._select_market_code(x), x) for x in code[80 * id_:80 * (id_ + 1)]]))], ignore_index=True)
             __data['datetime'] = datetime.datetime.now()
             self._queue.put(_api)  # 加入注销
             return __data

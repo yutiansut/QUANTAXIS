@@ -235,7 +235,7 @@ def QA_data_tick_resample_1min(tick, type_='1min', if_drop=True):
                     #                        0)])
                     pass
         _data2 = _data2.loc[time(13, 1):time(15, 0)]
-        resx = resx.append(_data1).append(_data2)
+        resx = pd.concat([resx, _data1, _data2], ignore_index=True)
     resx['vol'] = resx['vol'] * 100.0
     resx['volume'] = resx['vol']
     resx['type'] = '1min'
@@ -319,7 +319,7 @@ def QA_data_tick_resample(tick, type_='1min'):
                                         }
                                     )
         _data2.index = _data2.index + to_offset(type_)
-        resx = resx.append(_data1).append(_data2)
+        resx = pd.concat([resx, _data1, _data2], ignore_index=True)
     resx.columns = resx.columns.droplevel(0)
     return resx.reset_index().drop_duplicates().set_index(['datetime', 'code'])
 
@@ -441,7 +441,7 @@ def QA_data_ctptick_resample(tick, type_='1min'):
                                     )
         _data3.index = _data3.index + to_offset(type_)
 
-        resx = resx.append(_data0).append(_data1).append(_data2).append(_data3)
+        resx = pd.concat([resx, _data0, _data1, _data2, _data3], ignore_index=True)
     resx.columns = resx.columns.droplevel(0)
     return resx.reset_index().drop_duplicates().set_index(['datetime',
                                                            'code']).sort_index()

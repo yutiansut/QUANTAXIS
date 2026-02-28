@@ -66,7 +66,7 @@ async def QA_fetch_stock_day(code, start, end, format='numpy', frequence='day', 
         try:
             res = res.drop('_id', axis=1).assign(volume=res.vol).query('volume>1').assign(date=pd.to_datetime(
                 res.date, utc=False)).drop_duplicates((['date', 'code'])).set_index('date', drop=False)
-            res = res.ix[:, ['code', 'open', 'high', 'low',
+            res = res.loc[:, ['code', 'open', 'high', 'low',
                              'close', 'volume', 'amount', 'date']]
         except:
             res = None
@@ -140,11 +140,11 @@ async def QA_fetch_stock_min(code, start, end, format='numpy', frequence='1min',
 
 if __name__ == "__main__":
 
-    loop = asyncio.get_event_loop()
-    print(id(loop))
-    res = loop.run_until_complete(asyncio.gather(
-        QA_fetch_stock_day('000001', '2016-07-01', '2018-07-15'),
-        QA_fetch_stock_min('000002', '2016-07-01', '2018-07-15')
-    ))
+    async def _main():
+        return await asyncio.gather(
+            QA_fetch_stock_day('000001', '2016-07-01', '2018-07-15'),
+            QA_fetch_stock_min('000002', '2016-07-01', '2018-07-15')
+        )
 
+    res = asyncio.run(_main())
     print(res)

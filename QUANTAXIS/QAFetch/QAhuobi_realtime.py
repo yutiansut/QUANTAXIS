@@ -723,15 +723,12 @@ class QA_Fetch_Huobi(object):
 
         for symbol in symbols:
             for freq in periods:
-                self._crypto_asset_info = self._crypto_asset_info.append(
-                    {
-                        'symbol': symbol,
-                        'market': 'huobi',
-                        'FREQUENCE': freq,
-                        'STATE': QA_Fetch_Job_Type.SUBSCRIBE,
-                    },
-                    ignore_index=True
-                )
+                self._crypto_asset_info = pd.concat([self._crypto_asset_info, pd.DataFrame([{
+                    'symbol': symbol,
+                    'market': 'huobi',
+                    'FREQUENCE': freq,
+                    'STATE': QA_Fetch_Job_Type.SUBSCRIBE,
+                }])], ignore_index=True)
 
         self._crypto_asset_info.set_index(
             ['symbol',

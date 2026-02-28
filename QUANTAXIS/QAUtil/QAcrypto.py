@@ -31,7 +31,7 @@ def QA_util_save_raw_symbols(fetch_symnol_func, exchange):
     """
     symbols = fetch_symnol_func()
     col = QASETTING.client[exchange].symbols
-    if col.find().count() == len(symbols):
+    if col.count_documents({}) == len(symbols):
         QA_util_log_info(
             "{} SYMBOLS are already existed and no more to update"
             .format(exchange)
@@ -231,42 +231,26 @@ def QA_util_find_missing_kline(
             between = int(
                 leak_datetime[x - 1].timestamp() + FREQUENCE_PERIOD_TIME[freq]
             )
-            miss_kline = miss_kline.append(
-                {
-                    'expected':
-                        int(expected),
-                    'between':
-                        int(between),
-                    'missing':
-                        '{} to {}'.format(
-                            pd.to_datetime(expected,
-                                           unit='s'
-                                          ).tz_localize('Asia/Shanghai'),
-                            pd.to_datetime(between,
-                                           unit='s'
-                                          ).tz_localize('Asia/Shanghai')
-                        )
-                },
-                ignore_index=True
-            )
+            miss_kline = pd.concat([miss_kline, pd.DataFrame([{
+                'expected': int(expected),
+                'between': int(between),
+                'missing': '{} to {}'.format(
+                    pd.to_datetime(expected, unit='s').tz_localize('Asia/Shanghai'),
+                    pd.to_datetime(between, unit='s').tz_localize('Asia/Shanghai')
+                )
+            }])], ignore_index=True)
             expected = int(leak_datetime[x].timestamp())
 
     if (int(_data.iloc[-1].time_stamp) + 1 < int(
             QA_util_datetime_to_Unix_timestamp())):
-        miss_kline = miss_kline.append(
-            {
-                'expected':
-                    int(_data.iloc[-1].time_stamp) + 1,
-                'between':
-                    int(QA_util_datetime_to_Unix_timestamp()),
-                'missing':
-                    '{} to {}'.format(
-                        int(_data.iloc[0].time_stamp) + 1,
-                        QA_util_datetime_to_Unix_timestamp()
-                    )
-            },
-            ignore_index=True
-        )
+        miss_kline = pd.concat([miss_kline, pd.DataFrame([{
+            'expected': int(_data.iloc[-1].time_stamp) + 1,
+            'between': int(QA_util_datetime_to_Unix_timestamp()),
+            'missing': '{} to {}'.format(
+                int(_data.iloc[0].time_stamp) + 1,
+                QA_util_datetime_to_Unix_timestamp()
+            )
+        }])], ignore_index=True)
     miss_kline.sort_values(by='expected', ascending=True, inplace=True)
     if (len(miss_kline) > 0):
         if (miss_kline.iloc[0].expected > QA_util_datetime_to_Unix_timestamp()) and \

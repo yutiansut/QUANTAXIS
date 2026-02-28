@@ -86,9 +86,15 @@ if HAS_QARS:
         print(f"   性能提升: 账户操作100x, 回测10x, 数据处理5-10x")
 
 else:
-    # 提供Python fallback
+    # 提供Python fallback (QIFI_Account可用; QARSBacktest需qars3)
     from ..QIFI.QifiAccount import QIFI_Account as QARSAccount
-    from ..QABacktest import QA_Backtest as QARSBacktest
+
+    class QARSBacktest:
+        """占位类: 回测需安装qars3。使用 pip install quantaxis[rust]"""
+        def __init__(self, *args, **kwargs):
+            raise ImportError(
+                "QARSBacktest 需要 qars3。安装: pip install quantaxis[rust]"
+            )
 
     import sys
     if not sys.flags.quiet:

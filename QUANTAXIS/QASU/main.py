@@ -81,6 +81,12 @@ def QA_SU_save_stock_list(engine, client=DATABASE):
     engine.QA_SU_save_stock_list(client=client)
 
 
+def QA_SU_save_stock_list_tushare(client=DATABASE):
+    """从 Tushare 获取并保存 stock_list（TDX 不可用时使用）"""
+    from QUANTAXIS.QASU.save_tushare import QA_SU_save_stock_list_to_stock_list
+    QA_SU_save_stock_list_to_stock_list(client=client)
+
+
 def QA_SU_save_index_list(engine, client=DATABASE):
     """save index_list
 
@@ -544,13 +550,14 @@ def QA_SU_save_stock_block(engine, client=DATABASE):
 
 def select_save_engine(engine, paralleled=False):
     '''
-    select save_engine , tushare ts Tushare 使用 Tushare 免费数据接口， tdx 使用通达信数据接口
+    select save_engine
     :param engine: 字符串Str
     :param paralleled: 是否并行处理；默认为False
     :return: sts means save_tushare_py  or stdx means save_tdx_py
     '''
     if engine in ['tushare', 'ts', 'Tushare']:
         return sts
+    # 默认将 'baostock' 映射到 TDX 保存模块之外，由调用方直接用 QAFetch/QABaostock
     elif engine in ['tdx']:
         if paralleled:
             return stdx_parallelism
@@ -562,8 +569,8 @@ def select_save_engine(engine, paralleled=False):
         return sjq
     else:
         print(
-            'QA Error QASU.main.py call select_save_engine \
-                with parameter %s is None of  thshare, ts, Thshare, or tdx',
+            'QA Error QASU.main.py call select_save_engine '
+            'with parameter %s is None of tushare/ts/Tushare, tdx, gm, jq',
             engine)
 
 

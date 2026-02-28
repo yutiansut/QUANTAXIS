@@ -137,7 +137,7 @@ async def create_QAAsyncScheduler(*, close_timeout=0.1, limit=100,
     if exception_handler is not None and not callable(exception_handler):
         raise TypeError('A callable object or None is expected, '
                         'got {!r}'.format(exception_handler))
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     return QA_AsyncScheduler(loop=loop, close_timeout=close_timeout,
                      limit=limit, pending_limit=pending_limit,
                      exception_handler=exception_handler)

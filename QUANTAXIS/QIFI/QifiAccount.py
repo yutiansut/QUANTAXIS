@@ -409,12 +409,12 @@ class QIFI_Account():
                         self.db = pymongo.MongoClient(
                             self.trade_host).quantaxis
                         ## 数据库: quantaxis.history
-                        self.db.history.update({'account_cookie': self.user_id, 'trading_day': self.trading_day}, {
+                        self.db.history.update_one({'account_cookie': self.user_id, 'trading_day': self.trading_day}, {
                             '$set': self.message}, upsert=True)
                     else:
 
                         ## 数据库: QAREALTIME.account
-                        self.db.account.update({'account_cookie': self.user_id, 'password': self.password}, {
+                        self.db.account.update_one({'account_cookie': self.user_id, 'password': self.password}, {
                             '$set': self.message}, upsert=True)
 
                         self.db.hisaccount.insert_one(

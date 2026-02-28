@@ -186,13 +186,12 @@ def QA_util_firstDayTrading(codelist: list):
 
     dates = []
     for code in codelist:
-        ref = coll_stock_day.find({"code": code})
-        ref2 = coll_index_day.find({'code': code})
-        #print('{} is ref is {}, ref2 is {}'.format(code, ref.count(), ref2.count()))
-        if ref.count() > 0:
+        ref = list(coll_stock_day.find({"code": code}))
+        ref2 = list(coll_index_day.find({'code': code}))
+        if len(ref) > 0:
             start_date = ref[0]['date']
             dates.append(start_date)
-        elif ref2.count() > 0:
+        elif len(ref2) > 0:
             start_date = ref2[0]['date']
             dates.append(start_date)
         else:

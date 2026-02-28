@@ -55,7 +55,7 @@ def QA_SU_save_financial_files(fromtdx=False):
 
         date = int(item.split('.')[0][-8:])
         print('QUANTAXIS NOW SAVING {}'.format(date))
-        print('在数据库中的条数 {}'.format(coll.find({'report_date': date}).count()))
+        print('在数据库中的条数 {}'.format(coll.count_documents({'report_date': date})))
         try:
             data = QA_util_to_json_from_pandas(parse_filelist([item]).reset_index(
             ).drop_duplicates(subset=['code', 'report_date']).sort_index())

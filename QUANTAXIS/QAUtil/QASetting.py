@@ -123,7 +123,7 @@ class QA_Setting():
             [type] -- [description]
         """
         t = {'section': section, option: default_value}
-        self.client.quantaxis.usersetting.update(
+        self.client.quantaxis.usersetting.update_one(
             {'section': section}, {'$set': t}, upsert=True)
 
         # if os.path.exists(CONFIGFILE_PATH):
