@@ -929,11 +929,17 @@ class QA_Position():
                 name=message['name'])
         except:
             self.read_diff(message)
-        if self.volume_long + self.volume_short > 0:
-            self.last_price = (self.open_price_long*self.volume_long + self.open_price_short *
-                               self.volume_short)/(self.volume_long + self.volume_short)
-        else:
-            self.last_price = 0
+        if self.market_type == MARKET_TYPE.STOCK_CN: 
+            pass
+            self.last_price=message['last_price'] 
+            #如果是股票 最新价格应该导入，不因该计算因为计算出来的只是成本价，不是最新价，
+            #感觉期货也是这个逻辑，但是不熟就没有改
+        elif self.market_type == MARKET_TYPE.FUTURE_CN:
+            if self.volume_long + self.volume_short > 0:
+                self.last_price = (self.open_price_long*self.volume_long + self.open_price_short *
+                                   self.volume_short)/(self.volume_long + self.volume_short)
+            else:
+                self.last_price = 0
 
         return self
 
