@@ -1267,7 +1267,7 @@ class _quotation_base():
         """
 
         def _select_day(day):
-            return self.data.loc[day, slice(None)]
+            return self.data.loc[(day, slice(None)), :]
 
         try:
             return self.new(_select_day(day), self.type, self.if_fq)
