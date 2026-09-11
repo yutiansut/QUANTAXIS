@@ -36,6 +36,7 @@ from QUANTAXIS.QAWebServer.schedulehandler import (QAScheduleQuery,
                                                    QASchedulerHandler,
                                                    init_scheduler)
 from QUANTAXIS.QAWebServer.qifiserver import QAQIFI_Handler, QAQIFIS_Handler, QAQIFIS_REALTIME_Handler
+from QUANTAXIS.QAWebServer.orcarouterhandler import ORCAROUTER_HANDLERS
 from tornado.options import (define, options, parse_command_line,
                              parse_config_file)
 from tornado.web import Application, RequestHandler, authenticated
@@ -74,7 +75,7 @@ handlers = [
     (r"/qifirealtime", QAQIFIS_REALTIME_Handler),
     (r"/user", QAUserhander)
 
-]
+] + ORCAROUTER_HANDLERS
 
 
 def main():

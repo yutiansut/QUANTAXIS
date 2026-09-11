@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OrcaRouter</title>
+<style>
+  :root {
+    --orca-bg: #ffffff;
+    --orca-fg: #111827;
+    --orca-muted: #6b7280;
+    --orca-border: #d1d5db;
+    --orca-accent: #2563eb;
+    --orca-panel: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei",
+                 sans-serif;
+    background: var(--orca-bg);
+    color: var(--orca-fg);
+  }
+  .orca-card {
+    max-width: 760px;
+    border: 1px solid var(--orca-border);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .orca-head { display: flex; align-items: center; gap: 12px; }
+  .orca-head img { width: 36px; height: 36px; }
+  .orca-head h1 { font-size: 20px; margin: 0; }
+  .orca-sub { color: var(--orca-muted); font-size: 13px; margin: 4px 0 0; }
+  fieldset.orca-auth {
+    border: 1px solid var(--orca-border);
+    border-radius: 8px;
+    margin: 18px 0 0;
+    padding: 14px;
+  }
+  fieldset.orca-auth > legend { padding: 0 6px; font-size: 13px; }
+  .orca-methods { display: flex; gap: 20px; flex-wrap: wrap; }
+  .orca-method { flex: 1 1 300px; min-width: 280px; }
+  .orca-method h3 { font-size: 14px; margin: 0 0 6px; }
+  .orca-method p { color: var(--orca-muted); font-size: 12px; margin: 0 0 8px; }
+  input[type="password"], input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--orca-border);
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  button {
+    padding: 8px 14px;
+    border: 1px solid var(--orca-border);
+    border-radius: 6px;
+    background: #f9fafb;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  button.primary { background: var(--orca-accent); border-color: var(--orca-accent); color: #fff; }
+  button[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .orca-row { margin-top: 8px; display: flex; gap: 8px; align-items: center; }
+  .orca-status { margin-top: 16px; font-size: 13px; }
+  .orca-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    border: 1px solid var(--orca-border); font-size: 12px;
+  }
+  .orca-badge.ok { border-color: #10b981; color: #047857; }
+  .orca-badge.warn { border-color: #f59e0b; color: #b45309; }
+  .orca-badge.degraded { border-color: #f59e0b; color: #b45309; }
+  .orca-field { margin-top: 18px; position: relative; }
+  .orca-field > label { display: block; font-size: 13px; margin-bottom: 6px; }
+  /* The trigger and the popup share one positioning context: the panel is
+     pinned to the trigger's right edge, so the two right edges line up. */
+  .orca-select { position: relative; display: inline-block; width: 340px; max-width: 100%; }
+  .orca-select-trigger {
+    width: 100%; text-align: left; display: flex; justify-content: space-between;
+    align-items: center; gap: 8px; background: #fff;
+  }
+  .orca-select-trigger .orca-caret { color: var(--orca-muted); }
+  #orca-model-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    width: 360px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: var(--orca-panel);
+    border: 1px solid var(--orca-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(17, 24, 39, 0.16);
+    padding: 4px;
+    z-index: 50;
+    margin: 0;
+    list-style: none;
+  }
+  #orca-model-list[hidden] { display: none; }
+  #orca-model-list li {
+    padding: 7px 9px; border-radius: 6px; font-size: 13px; cursor: pointer;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+  #orca-model-list li[aria-selected="true"] { background: #eff6ff; }
+  #orca-model-list li:hover, #orca-model-list li.orca-active { background: #f3f4f6; }
+  #orca-model-list li .orca-meta { color: var(--orca-muted); font-size: 11px; }
+  .orca-empty { color: var(--orca-muted); font-size: 12px; padding: 8px; }
+  .orca-msg { font-size: 12px; margin-top: 8px; color: var(--orca-muted); }
+  .orca-msg.error { color: #b91c1c; }
+  .orca-attach { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .orca-hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="orca-card">
+  <div class="orca-head">
+    <!-- Canonical official OrcaRouter mark.  The same-origin fallback exists
+         for self-hosted installs whose browser cannot reach the public
+         origin (LAN, air-gapped, authenticated proxy); the bytes served
+         there are the same official asset. -->
+    <img id="orca-logo" alt="OrcaRouter"
+         src="https://www.orcarouter.ai/orca-logo-classic.png"
+         onerror="if(!this.dataset.fallback){this.dataset.fallback='1';this.src='/orcarouter/asset/logo';}">
+    <div>
+      <h1 id="panel-title">OrcaRouter</h1>
+      <p class="orca-sub" id="panel-subtitle"></p>
+    </div>
+  </div>
+
+  <fieldset class="orca-auth" id="orca-auth-methods">
+    <legend id="orca-auth-legend"></legend>
+    <div class="orca-methods">
+      <div class="orca-method" id="orca-method-api-key">
+        <h3 id="orca-api-key-label"></h3>
+        <p id="orca-api-key-hint"></p>
+        <form id="orca-api-key-form" autocomplete="off">
+          <label class="orca-hidden" for="orca-api-key-input">API Key</label>
+          <input id="orca-api-key-input" name="orcarouter_api_key"
+                 type="password" autocomplete="new-password" spellcheck="false">
+          <div class="orca-row">
+            <button type="submit" id="orca-api-key-save" class="primary"></button>
+            <button type="button" id="orca-api-key-dashboard"></button>
+          </div>
+        </form>
+      </div>
+      <div class="orca-method" id="orca-method-oauth">
+        <h3 id="orca-oauth-label"></h3>
+        <p id="orca-oauth-hint"></p>
+        <div class="orca-row">
+          <button type="button" id="orca-oauth-start" class="primary"></button>
+          <button type="button" id="orca-oauth-cancel"></button>
+        </div>
+        <div id="orca-oauth-step" class="orca-hidden">
+          <div class="orca-row">
+            <label class="orca-hidden" for="orca-oauth-code">Authorization code</label>
+            <input id="orca-oauth-code" type="text" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="orca-row">
+            <button type="button" id="orca-oauth-finish" class="primary"></button>
+          </div>
+        </div>
+        <p class="orca-msg" id="orca-oauth-msg"></p>
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="orca-status" id="orca-status"></div>
+  <p class="orca-msg error orca-hidden" id="orca-status-error"></p>
+
+  <div class="orca-field">
+    <label id="orca-model-label" for="orca-model-trigger"></label>
+    <div class="orca-select" id="orca-select">
+      <button type="button" id="orca-model-trigger" class="orca-select-trigger"
+              aria-haspopup="listbox" aria-expanded="false"
+              aria-controls="orca-model-list">
+        <span id="orca-model-trigger-text"></span>
+        <span class="orca-caret">&#9662;</span>
+      </button>
+      <ul id="orca-model-list" role="listbox" aria-label="OrcaRouter models" hidden></ul>
+    </div>
+    <div class="orca-attach">
+      <button type="button" id="orca-attach-image" aria-pressed="false"></button>
+      <span id="orca-attach-state" class="orca-msg"></span>
+      <button type="button" id="orca-attach-remove" class="orca-hidden"></button>
+    </div>
+    <p class="orca-msg" id="orca-model-msg"></p>
+  </div>
+
+  <div class="orca-field">
+    <label id="orca-prompt-label" for="orca-prompt"></label>
+    <input id="orca-prompt" type="text" autocomplete="off">
+    <div class="orca-row">
+      <button type="button" id="orca-send" class="primary"></button>
+    </div>
+    <p class="orca-msg" id="orca-chat-msg"></p>
+  </div>
+</div>
+
+<script>
+/*__ORCA_BOOTSTRAP__*/
+</script>
+<script>
+(function () {
+  "use strict";
+  var B = window.QA_ORCAROUTER || {};
+  var T = B.i18n || {};
+  var t = function (key) { return T[key] || key; };
+
+  var state = {
+    providerId: "orcarouter",
+    capability: "chat",
+    modalities: [],
+    options: [],
+    selected: null,
+    source: "none",
+    degraded: false,
+    // Monotonic generation: every async response must still be current
+    // before it is allowed to touch credentials or UI.
+    generation: 0,
+    busy: false,
+    hint: null,
+    listOpen: false
+  };
+
+  function $(id) { return document.getElementById(id); }
+
+  function api(path, options) {
+    var opts = options || {};
+    return fetch(path, {
+      method: opts.method || "GET",
+      headers: opts.body ? { "Content-Type": "application/json" } : {},
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+      cache: "no-store"
+    }).then(function (response) {
+      return response.json().catch(function () { return {}; });
+    });
+  }
+
+  function setText(id, value) {
+    var node = $(id);
+    if (node) { node.textContent = value || ""; }
+  }
+
+  function applyI18n() {
+    document.documentElement.lang = B.locale || "en";
+    setText("panel-title", t("panel.title"));
+    setText("panel-subtitle", t("panel.subtitle"));
+    setText("orca-auth-legend", t("panel.auth.method.legend"));
+    setText("orca-api-key-label", t("panel.auth.api_key.label"));
+    setText("orca-api-key-hint", t("panel.auth.api_key.hint"));
+    setText("orca-api-key-save", t("panel.auth.api_key.submit"));
+    setText("orca-api-key-dashboard", t("panel.action.dashboard"));
+    setText("orca-oauth-label", t("panel.auth.pkce.label"));
+    setText("orca-oauth-hint", t("panel.auth.pkce.hint"));
+    setText("orca-oauth-start", t("panel.auth.pkce.start"));
+    setText("orca-oauth-finish", t("panel.auth.pkce.finish"));
+    setText("orca-oauth-cancel", t("panel.auth.pkce.cancel"));
+    setText("orca-model-label", t("panel.model.label"));
+    setText("orca-attach-image", t("panel.attachment.add_image"));
+    setText("orca-attach-remove", t("panel.attachment.remove"));
+    setText("orca-prompt-label", t("panel.chat.prompt"));
+    setText("orca-send", t("panel.chat.send"));
+    var input = $("orca-api-key-input");
+    input.placeholder = t("panel.auth.api_key.placeholder");
+    $("orca-oauth-code").placeholder = t("panel.auth.pkce.code_placeholder");
+    var provider = (B.status && B.status.providers || []).filter(function (p) {
+      return p.id === state.providerId;
+    })[0];
+    // The registry entry calls it "name"; keep "label" working too so the
+    // panel never renders an empty heading.
+    if (provider) {
+      setText("orca-api-key-label", provider.name || provider.label);
+    }
+  }
+
+  function renderStatus() {
+    var credential = (B.status && B.status.credential) || {};
+    var node = $("orca-status");
+    node.textContent = "";
+    var account = (credential.accounts || [])[0];
+    var badge = document.createElement("span");
+    badge.className = "orca-badge";
+    if (account && account.needs_reauth) {
+      badge.className += " warn";
+      badge.textContent = t("panel.status.needs_reauth");
+    } else if (account) {
+      badge.className += " ok";
+      badge.textContent = t("panel.status.connected");
+    } else {
+      badge.textContent = t("panel.status.disconnected");
+    }
+    node.appendChild(badge);
+    if (account) {
+      var detail = document.createElement("span");
+      detail.style.marginLeft = "10px";
+      detail.textContent = t("panel.status.source") + ": " + account.source +
+        " · " + t("panel.status.scope") + ": " + (account.scope || "api") +
+        " · " + account.api_key_masked;
+      node.appendChild(detail);
+    }
+    var envNode = $("orca-status-error");
+    if (B.status && B.status.api_key_env_present) {
+      envNode.classList.remove("orca-hidden");
+      envNode.className = "orca-msg";
+      envNode.textContent = t("panel.status.env");
+    }
+  }
+
+  function statusError(message) {
+    var node = $("orca-status-error");
+    if (!message) { node.classList.add("orca-hidden"); return; }
+    node.classList.remove("orca-hidden");
+    node.className = "orca-msg error";
+    node.textContent = message;
+  }
+
+  // -- model selector -------------------------------------------------
+  function filteredOptions() {
+    return state.options;
+  }
+
+  function closeList() {
+    state.listOpen = false;
+    $("orca-model-list").hidden = true;
+    $("orca-model-trigger").setAttribute("aria-expanded", "false");
+  }
+
+  function renderModelList() {
+    var list = $("orca-model-list");
+    list.textContent = "";
+    var options = filteredOptions();
+    if (!options.length) {
+      var empty = document.createElement("li");
+      empty.className = "orca-empty";
+      empty.setAttribute("role", "presentation");
+      empty.textContent = $("orca-model-msg").textContent || t("panel.model.empty");
+      list.appendChild(empty);
+      return;
+    }
+    options.forEach(function (model) {
+      var item = document.createElement("li");
+      item.setAttribute("role", "option");
+      item.id = "orca-option-" + model.id;
+      item.dataset.modelId = model.id;
+      item.setAttribute(
+        "aria-selected", model.id === state.selected ? "true" : "false"
+      );
+      var name = document.createElement("span");
+      name.textContent = model.id;
+      var meta = document.createElement("span");
+      meta.className = "orca-meta";
+      var bits = [];
+      if (model.context_length) { bits.push(Math.round(model.context_length / 1000) + "k"); }
+      (model.input_modalities || []).forEach(function (m) {
+        if (m !== "text") { bits.push(m); }
+      });
+      meta.textContent = bits.join(" · ");
+      item.appendChild(name);
+      item.appendChild(meta);
+      item.addEventListener("click", function () { selectModel(model.id); });
+      list.appendChild(item);
+    });
+  }
+
+  function openList() {
+    renderModelList();
+    state.listOpen = true;
+    $("orca-model-list").hidden = false;
+    $("orca-model-trigger").setAttribute("aria-expanded", "true");
+  }
+
+  function renderTrigger() {
+    var node = $("orca-model-trigger-text");
+    node.textContent = state.selected || t("panel.model.placeholder");
+  }
+
+  function selectModel(modelId) {
+    state.selected = modelId;
+    renderTrigger();
+    closeList();
+  }
+
+  function setMessage(text, isError) {
+    var node = $("orca-model-msg");
+    node.className = isError ? "orca-msg error" : "orca-msg";
+    node.textContent = text || "";
+  }
+
+  function loadModels(refresh) {
+    var params = [
+      "provider_id=" + encodeURIComponent(state.providerId),
+      "capability=" + encodeURIComponent(state.capability)
+    ];
+    state.modalities.forEach(function (modality) {
+      params.push("modality=" + encodeURIComponent(modality));
+    });
+    if (refresh) { params.push("refresh=1"); }
+    var previousSelection = state.selected;
+    setMessage(t("panel.model.loading"), false);
+    return api("/orcarouter/models?" + params.join("&")).then(function (body) {
+      var result = (body && body.result) || {};
+      state.options = result.options || [];
+      state.source = result.source || "none";
+      state.degraded = !!result.degraded;
+      // A model that is no longer compatible is cleared, never kept.
+      if (state.selected && !state.options.some(function (model) {
+        return model.id === state.selected;
+      })) {
+        state.selected = null;
+        renderTrigger();
+        setMessage(t("panel.model.empty") + " (" + previousSelection + ")", true);
+      } else if (result.degraded) {
+        setMessage(
+          t("panel.model.degraded") +
+          (result.error ? " — " + result.error : ""),
+          true
+        );
+      } else {
+        setMessage(
+          t("panel.model.source.live") + " (" + state.options.length + ")",
+          false
+        );
+      }
+      if (state.listOpen) { renderModelList(); }
+    }).catch(function () {
+      state.options = [];
+      state.selected = null;
+      renderTrigger();
+      setMessage(t("panel.model.error"), true);
+      if (state.listOpen) { renderModelList(); }
+    });
+  }
+
+  // -- authentication -------------------------------------------------
+  function setBusy(busy, hint) {
+    state.busy = busy;
+    state.hint = hint || null;
+    $("orca-oauth-start").disabled = !!busy;
+    $("orca-oauth-cancel").disabled = !busy;
+    $("orca-oauth-msg").textContent = busy
+      ? (hint || t("panel.auth.pkce.opening"))
+      : "";
+  }
+
+  function startOAuth() {
+    var generation = ++state.generation;
+    setBusy(true, t("panel.auth.pkce.opening"));
+    return api("/orcarouter/login/oauth/start", { method: "POST", body: {} })
+      .then(function (body) {
+        if (generation !== state.generation) { return; }
+        var result = (body && body.result) || {};
+        if (!result.authorize_url) {
+          setBusy(false);
+          statusError((body && body.error) || t("panel.error.exchange"));
+          return;
+        }
+        state.hint = result.authorize_url;
+        window.__orcaAuthorizeUrl = result.authorize_url;
+        try { window.open(result.authorize_url, "_blank"); } catch (e) {}
+        $("orca-oauth-step").classList.remove("orca-hidden");
+        $("orca-oauth-finish").dataset.generation = String(result.generation);
+        $("orca-oauth-msg").textContent = result.authorize_url;
+      });
+  }
+
+  function finishOAuth() {
+    var generation = Number($("orca-oauth-finish").dataset.generation);
+    var code = $("orca-oauth-code").value;
+    return api("/orcarouter/login/oauth/complete", {
+      method: "POST",
+      body: { generation: generation, code: code }
+    }).then(function (body) {
+      var result = (body && body.result) || {};
+      if (result.connected) {
+        setBusy(false);
+        $("orca-oauth-step").classList.add("orca-hidden");
+        $("orca-oauth-code").value = "";
+        statusError("");
+        return refreshStatus();
+      }
+      setBusy(false);
+      $("orca-oauth-msg").textContent = "";
+      statusError(result.error || t("panel.error.exchange"));
+    });
+  }
+
+  function cancelOAuth(explicit) {
+    // Invalidate first so a late response cannot resurrect this attempt.
+    state.generation += 1;
+    setBusy(false, null);
+    $("orca-oauth-step").classList.add("orca-hidden");
+    var node = $("orca-oauth-msg");
+    node.textContent = "";
+    if (!explicit) { return Promise.resolve(); }
+    // keepalive lets the cancellation outlive the page on pagehide.
+    return fetch("/orcarouter/login/oauth/cancel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ generation: state.generation }),
+      keepalive: true
+    }).catch(function () {});
+  }
+
+  function refreshStatus() {
+    return api("/orcarouter/status").then(function (body) {
+      B.status = (body && body.result) || B.status;
+      renderStatus();
+    });
+  }
+
+  // -- wiring ---------------------------------------------------------
+  function bind() {
+    $("orca-api-key-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      var value = $("orca-api-key-input").value.trim();
+      api("/orcarouter/login/key", {
+        method: "POST", body: { api_key: value }
+      }).then(function (body) {
+        if (body && body.status === 200) {
+          $("orca-api-key-input").value = "";
+          statusError("");
+          return refreshStatus();
+        }
+        statusError((body && body.error) || "could not store the key");
+      });
+    });
+    $("orca-api-key-dashboard").addEventListener("click", function () {
+      window.open(
+        (B.status && B.status.key_dashboard_url) ||
+        "https://www.orcarouter.ai/console/authorized-apps",
+        "_blank"
+      );
+    });
+    $("orca-oauth-start").addEventListener("click", startOAuth);
+    $("orca-oauth-finish").addEventListener("click", finishOAuth);
+    $("orca-oauth-cancel").addEventListener("click", function () {
+      cancelOAuth(true);
+    });
+    $("orca-model-trigger").addEventListener("click", function () {
+      if (state.listOpen) { closeList(); } else { openList(); }
+    });
+    $("orca-attach-image").addEventListener("click", function () {
+      var pressed = $("orca-attach-image").getAttribute("aria-pressed") === "true";
+      var next = !pressed;
+      $("orca-attach-image").setAttribute("aria-pressed", next ? "true" : "false");
+      state.modalities = next ? ["image"] : [];
+      $("orca-attach-state").textContent = next
+        ? t("panel.attachment.image") + " — " + t("panel.modality.requires_image")
+        : "";
+      $("orca-attach-remove").classList.toggle("orca-hidden", !next);
+      // Changing the attachment type recomputes the filtered options and
+      // drops a selection that is no longer compatible.
+      loadModels(false);
+    });
+    $("orca-attach-remove").addEventListener("click", function () {
+      $("orca-attach-image").setAttribute("aria-pressed", "false");
+      state.modalities = [];
+      $("orca-attach-state").textContent = "";
+      $("orca-attach-remove").classList.add("orca-hidden");
+      loadModels(false);
+    });
+    $("orca-send").addEventListener("click", function () {
+      var prompt = $("orca-prompt").value.trim();
+      if (!state.selected || !prompt) { return; }
+      api("/orcarouter/chat", {
+        method: "POST", body: { model: state.selected, prompt: prompt }
+      }).then(function (body) {
+        var node = $("orca-chat-msg");
+        if (body && body.status === 200) {
+          node.className = "orca-msg";
+          node.textContent = (body.result || {}).content || "";
+        } else {
+          node.className = "orca-msg error";
+          node.textContent = (body && body.error) || t("panel.error.exchange");
+        }
+      });
+    });
+    document.addEventListener("click", function (event) {
+      if (!state.listOpen) { return; }
+      if (!$("orca-select").contains(event.target)) { closeList(); }
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && state.listOpen) { closeList(); }
+    });
+    // Back-forward-cache safety: clear busy and the hint synchronously,
+    // then tell the server to release its login lock.  Relying on the
+    // guarded finally block would leave a restored page permanently busy.
+    window.addEventListener("pagehide", function () {
+      cancelOAuth(true);
+    });
+  }
+
+  applyI18n();
+  renderStatus();
+  renderTrigger();
+  bind();
+  loadModels(false);
+  window.__orcaReady = true;
+  window.__orcaState = state;
+})();
+</script>
+</body>
+</html>
