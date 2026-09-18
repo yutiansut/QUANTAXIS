@@ -15,6 +15,70 @@ Made with ❤️ by [@yutiansut](https://github.com/yutiansut) and [contributors
 
 [![Powered by OrcaRouter](https://img.shields.io/badge/Powered_by-OrcaRouter-2563eb)](https://www.orcarouter.ai/ref/ref_ce94b4f99fa4cde037ea)
 
+---
+
+## 🤖 OrcaRouter - AI 网关接入
+
+QUANTAXIS 内置 **OrcaRouter** 作为一等 provider，提供两种并列的接入方式：
+
+| 接入方式 | provider ID | 凭据来源 |
+| --- | --- | --- |
+| **API Key** | `orcarouter` | 用户粘贴已有的 `sk-orca-...` 密钥 |
+| **Connect with OrcaRouter** | `orcarouter-oauth` | 浏览器授权 (OAuth 2.0 + PKCE) 自动签发密钥 |
+
+两种方式最终都只产生**同一个普通 OrcaRouter API Key**，推理与模型目录走完全相同的代码路径；
+认证与推理使用不同的 origin：授权/兑换在 `https://www.orcarouter.ai`，
+推理与模型目录在 `https://api.orcarouter.ai/v1`。
+
+```python
+from QUANTAXIS.QAAI import QAOrcaService
+
+service = QAOrcaService()
+
+# 方式一：API Key (或设置环境变量 ORCAROUTER_API_KEY)
+service.login_with_key('sk-orca-...')
+
+# 方式二：Connect with OrcaRouter (OAuth 2.0 + PKCE, Flow B 带外验证码)
+attempt = service.oauth_start()          # 浏览器打开 attempt['authorize_url']
+service.oauth_complete(                   # 粘贴授权码完成兑换
+    attempt['generation'], code,
+    attempt['verifier'], attempt['state'],
+)
+
+# 两种方式之后的调用完全一致
+selector = service.selector(capability='chat')
+model = selector.option_ids()[0]
+service.chat([{'role': 'user', 'content': 'hello'}], model=model)
+```
+
+**模型目录**：模型清单唯一来源是当前 origin 的 `GET /v1/models`，并且按能力过滤
+（`chat` / `embedding` / `image` / `video` / `rerank`）。多模态入口先满足 chat，
+再要求模型显式声明 `architecture.input_modalities` 包含对应模态，未声明的模型
+fail closed。实时目录失败时回退到一组小而可验证的 seed，并在界面标注为降级状态，
+不会把示例列表伪装成完整目录。
+
+**凭据生命周期**：PKCE 换回的是**持久 API Key，不是 refresh token**。凭据保存在
+QUANTAXIS 已有的本地设置目录 (`~/.quantaxis/setting/`，文件权限 `0600`)，重启后复用，
+直到用户在 https://www.orcarouter.ai/console/authorized-apps 撤销。relay 返回 `401`
+时只把发出该请求的**精确账号与凭据 generation** 标记为需要重新授权，不做伪 refresh。
+
+**CLI**：
+
+```bash
+orcarouter status                        # 查看 provider 与凭据状态（密钥打码）
+orcarouter login --key sk-orca-...       # API Key 方式
+orcarouter login --oauth                 # 浏览器授权方式 (PKCE)
+orcarouter models --capability chat      # 实时目录 + 能力过滤
+orcarouter chat orcarouter/auto "你好"   # 真实推理
+orcarouter logout
+```
+
+**Web 面板**：`quantaxis --port 8010` 之后打开 `http://127.0.0.1:8010/orcarouter`，
+面板并列展示 API Key 与 Connect with OrcaRouter 两个入口；浏览器不持有 API Key，
+模型目录与推理全部在服务端完成。
+
+---
+
 > 🚀 **全新升级**: Python 3.9+、QARS2 Rust核心集成、100x性能提升
 >
 > **最新版本**: v2.1.0-alpha2 | **Python**: 3.9-3.12 | **更新日期**: 2025-10-25

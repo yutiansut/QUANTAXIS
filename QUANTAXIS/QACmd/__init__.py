@@ -712,9 +712,25 @@ class CLI(cmd.Cmd):
         QA_util_log_info("examples")
         QA_util_log_info("shell")
         QA_util_log_info("version")
+        QA_util_log_info("orcarouter")
         QA_util_log_info("quit")
         QA_util_log_info("exit")
         QA_util_log_info("MORE EXAMPLE on https://github.com/QUANTAXIS/QADemo")
+
+    def do_orcarouter(self, arg):
+        """OrcaRouter provider: connect an account, list models, run a chat.
+
+        Both authentication choices are reachable from this one command:
+
+            orcarouter status
+            orcarouter login --key sk-orca-...     # paste an existing key
+            orcarouter login --oauth               # browser authorization (PKCE)
+            orcarouter logout
+            orcarouter models [--capability chat] [--modality image]
+            orcarouter chat <model> <prompt>
+        """
+        from QUANTAXIS.QAAI.QAOrcaCli import QA_orca_command
+        return QA_orca_command(arg, log=QA_util_log_info)
 
     def help(self):
         QA_util_log_info("fn+methods name")
