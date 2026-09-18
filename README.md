@@ -56,7 +56,7 @@ account.buy("000001", 10.5, "2025-01-15", 1000)
 
 ### 核心项目
 
-- 🦀 [**QARS**](https://github.com/yutiansut/qars) - QUANTAXIS Rust核心 (高性能账户、回测引擎)
+- 🦀 [**QARS**](https://github.com/yutiansut/qa-rs) - QUANTAXIS Rust核心 (高性能账户、回测引擎)
 - ⚡ [**QADataSwap**](https://github.com/QUANTAXIS/qadataswap) - 跨语言零拷贝通信 (Python/Rust/C++)
 - 🏛️ [**QAEXCHANGE-RS**](https://github.com/yutiansut/qaexchange-rs) - Rust交易所 + HTAP混合数据库
 
@@ -626,13 +626,10 @@ QUANTAXIS得以实现离不开以下优秀的开源项目:
 ## 🗺️ 路线图
 
 ### v2.1.x (当前)
-- ✅ QARS2 Rust核心集成
+- ✅ QARS Rust核心集成
 - ✅ Python 3.9-3.12支持
 - ✅ QARSBridge桥接层
-- 🔄 QADataSwap跨语言通信 (进行中)
 - 📋 完善文档和示例
-
-### v2.2.0 (计划中)
 - 📊 完整的QADataSwap集成
 - 🔥 Polars全面替代pandas (可选)
 - ⚡ 更多Rust加速模块
